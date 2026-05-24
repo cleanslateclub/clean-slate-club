@@ -57,7 +57,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.65 }}
             className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light"
           >
-            Thoughtful household support for busy women, overwhelmed moms, and anyone who needs a trusted extra pair of hands — without the guilt of asking.
+            Because nobody's actually caught up. Thoughtful lifestyle support for busy homes, full schedules, mental overload, and the seasons where an extra set of hands makes all the difference.
           </motion.p>
 
           <motion.div
@@ -70,7 +70,7 @@ export default function HeroSection() {
               to="/book"
               className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-xl hover:shadow-coral/25 transition-all duration-500"
             >
-              Book Now — It's Free
+              Start Your Reset
             </Link>
             <Link
               to="/services"
@@ -128,7 +128,7 @@ export default function HeroSection() {
             transition={{ delay: 1.2 }}
             className="mt-10 flex flex-wrap gap-4"
           >
-            {['Licensed & Insured', 'CPR Certified', 'Background Checked'].map((badge) => (
+            {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) => (
               <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full bg-sage" />
                 {badge}
