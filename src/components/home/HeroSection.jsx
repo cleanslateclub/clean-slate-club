@@ -57,7 +57,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.65 }}
             className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light"
           >
-            Sometimes you don't need a cleaning service. You need backup.
+            Because nobody's actually caught up. Thoughtful lifestyle support for busy homes, full schedules, mental overload, and the seasons where an extra set of hands makes all the difference.
           </motion.p>
 
           <motion.div
