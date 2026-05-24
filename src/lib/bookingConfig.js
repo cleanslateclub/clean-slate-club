@@ -4,6 +4,29 @@ export const BUFFER_WRAP = 15;   // after: collect supplies, debrief
 export const TRAVEL_BUFFER = 20; // travel between clients
 
 export const SERVICE_CONFIG = {
+  consult: {
+    label: "Free Consult — Not Sure Yet",
+    color: "#B58A90",
+    baseMinutes: 15,
+    priceRange: [0, 0],
+    description: "Not sure where to start? Let's have a quick 15-minute conversation and figure it out together. No commitment, no pressure.",
+    examples: [
+      "I don't know what I need — let's just talk",
+      "I want to explain my situation and get a custom quote",
+      "I have a big project I want to walk through first",
+      "I want to see if this is the right fit before booking"
+    ],
+    addons: [],
+    intakeQuestions: [
+      { id: "situation", label: "Tell us what's going on in your home or life right now", type: "text", placeholder: "The more you share, the better we can help. No wrong answers..." },
+      { id: "biggest_pain_point", label: "What's the biggest thing weighing on you?", type: "select", options: ["The whole house is a mess", "Laundry / dishes spiral", "I'm postpartum / depleted", "Caring for an aging parent", "Just need recurring help", "I'm not sure — everything?", "Something else"] },
+      { id: "ideal_outcome", label: "What would feel like success after our visit?", type: "text", placeholder: "e.g. I want to walk into a peaceful house, feel like I have a plan..." },
+      { id: "preferred_contact", label: "Best way to reach you for the consult call", type: "select", options: ["Phone call", "Text message", "Email", "Video call (Zoom/FaceTime)"] },
+      { id: "availability_notes", label: "When are you generally available for a quick call?", type: "text", placeholder: "e.g. weekday mornings, evenings after 7pm..." },
+      { id: "wish_list_notes", label: "Anything specific you'd love help with? (optional wish list)", type: "text", placeholder: "Dream big — we'll work with your budget and timeline..." }
+    ]
+  },
+
   home_reset: {
     label: "Home Reset",
     color: "#EB9486",

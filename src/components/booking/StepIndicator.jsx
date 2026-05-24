@@ -1,8 +1,11 @@
 import React from 'react';
 
-const steps = ['Service', 'Details', 'Add-Ons', 'Schedule', 'Confirm'];
+const ALL_STEPS = ['Service', 'Details', 'Add-Ons', 'Schedule', 'Confirm'];
+const CONSULT_STEPS = ['Service', 'Details', 'Confirm'];
 
-export default function StepIndicator({ currentStep }) {
+export default function StepIndicator({ currentStep, totalSteps = 5 }) {
+  const steps = totalSteps === 3 ? CONSULT_STEPS : ALL_STEPS;
+
   return (
     <div className="flex items-center justify-center gap-0 mb-10">
       {steps.map((label, i) => {

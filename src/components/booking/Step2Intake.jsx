@@ -15,10 +15,12 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
     handleAnswer(id, updated);
   };
 
+  const isConsult = serviceKey === 'consult';
+
   return (
     <div>
-      <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Tell us about your home</h2>
-      <p className="font-body text-sm text-charcoal/45 font-light mb-8">The more detail you share, the better we can prepare. Zero judgment, always.</p>
+      <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">{isConsult ? 'Tell us a little about you' : 'Tell us about your home'}</h2>
+      <p className="font-body text-sm text-charcoal/45 font-light mb-8">{isConsult ? 'The more you share, the better we can prepare for our call. Zero judgment.' : 'The more detail you share, the better we can prepare. Zero judgment, always.'}</p>
 
       {/* Client Info */}
       <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-6">
@@ -28,7 +30,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
             { key: 'email', label: 'Email', placeholder: 'your@email.com', required: true },
             { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555', required: true },
-            { key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: true },
+            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: true }] : []),
           ].map(f => (
             <div key={f.key}>
               <label className="font-body text-xs font-light text-charcoal/50 block mb-1.5">{f.label}{f.required && <span className="text-coral ml-0.5">*</span>}</label>
@@ -102,16 +104,18 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             )}
           </div>
         ))}
-        <div>
-          <label className="font-body text-xs font-light text-charcoal/55 block mb-2">Anything else we should know?</label>
-          <textarea
-            value={answers.special_notes || ''}
-            onChange={e => handleAnswer('special_notes', e.target.value)}
-            placeholder="Alarm codes, parking instructions, dog info, anything..."
-            rows={2}
-            className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
-          />
-        </div>
+        {!isConsult && (
+          <div>
+            <label className="font-body text-xs font-light text-charcoal/55 block mb-2">Anything else we should know?</label>
+            <textarea
+              value={answers.special_notes || ''}
+              onChange={e => handleAnswer('special_notes', e.target.value)}
+              placeholder="Alarm codes, parking instructions, dog info, anything..."
+              rows={2}
+              className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

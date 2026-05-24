@@ -1,9 +1,51 @@
 import React from 'react';
 import { SERVICE_CONFIG, minutesToTime, timeToMinutes, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration }) {
+export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration, uploadedPhotos = [] }) {
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
+
+  const isConsult = serviceKey === 'consult';
+
+  if (isConsult) {
+    return (
+      <div>
+        <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Review & send</h2>
+        <p className="font-body text-sm text-charcoal/45 font-light mb-8">We'll reach out within 24 hours to set up your free 15-minute consult call.</p>
+        <div className="space-y-4">
+          <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Your Info</p>
+            <p className="font-body text-sm text-charcoal font-light">{clientInfo.name}</p>
+            <p className="font-body text-sm text-charcoal/55 font-light">{clientInfo.email} · {clientInfo.phone}</p>
+          </div>
+          {intakeAnswers.situation && (
+            <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+              <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Your Situation</p>
+              <p className="font-body text-sm text-charcoal/65 font-light leading-relaxed">{intakeAnswers.situation}</p>
+            </div>
+          )}
+          {(intakeAnswers.preferred_contact || intakeAnswers.availability_notes) && (
+            <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+              <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">How to Reach You</p>
+              {intakeAnswers.preferred_contact && <p className="font-body text-sm text-charcoal/55 font-light">Preferred: {intakeAnswers.preferred_contact}</p>}
+              {intakeAnswers.availability_notes && <p className="font-body text-sm text-charcoal/55 font-light">Availability: {intakeAnswers.availability_notes}</p>}
+            </div>
+          )}
+          {uploadedPhotos.length > 0 && (
+            <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+              <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Photos / Files Attached</p>
+              <p className="font-body text-sm text-charcoal/55 font-light">{uploadedPhotos.length} file{uploadedPhotos.length > 1 ? 's' : ''} attached — we'll review before the call.</p>
+            </div>
+          )}
+          <div className="bg-sage/10 border border-sage/20 rounded-2xl p-5">
+            <p className="font-body text-sm text-charcoal/70 font-light leading-relaxed">
+              <strong className="font-normal text-charcoal/90">100% free. Zero commitment.</strong> This is just a conversation — we'll listen, figure out what you need, and give you a custom quote. No pressure, ever.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const endTime = minutesToTime(timeToMinutes(selectedTime) + totalDuration);
   const meetTime = selectedTime;

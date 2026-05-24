@@ -17,9 +17,12 @@ export default function BookNow() {
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [uploadedPhotos, setUploadedPhotos] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
+
+  const isConsult = serviceKey === 'consult';
 
   const totalDuration = serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
   const config = serviceKey ? SERVICE_CONFIG[serviceKey] : null;
@@ -33,6 +36,7 @@ export default function BookNow() {
   const canProceed = () => {
     if (step === 1) return !!serviceKey;
     if (step === 2) {
+      if (isConsult) return !!(clientInfo.name && clientInfo.email && clientInfo.phone);
       const basicInfo = clientInfo.name && clientInfo.email && clientInfo.phone && clientInfo.address;
       const needsEmergencyContact = serviceKey === 'senior_support' || serviceKey === 'mothers_helper';
       const hasEmergencyContact = !needsEmergencyContact || !!intakeAnswers.emergency_contact;
@@ -43,11 +47,15 @@ export default function BookNow() {
     return true;
   };
 
+  // For consult: only 3 steps (select → intake → confirm), skip addons & schedule
+  const totalSteps = isConsult ? 3 : 5;
+  const displayStep = isConsult && step >= 3 ? step - 1 : step; // shift step display for consult
+
   const handleSubmit = async () => {
     setSubmitting(true);
     setError(null);
     try {
-      const endTime = minutesToTime(timeToMinutes(selectedTime) + totalDuration);
+      const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
       const addonPrice = selectedAddons.reduce((sum, id) => {
         const addon = config.addons.find(a => a.id === id);
         return sum + (addon ? addon.price : 0);
@@ -58,43 +66,57 @@ export default function BookNow() {
         client_name: clientInfo.name,
         client_email: clientInfo.email,
         client_phone: clientInfo.phone,
-        client_address: clientInfo.address,
-        service_category: serviceKey,
-        scheduled_date: selectedDate,
-        scheduled_start_time: selectedTime,
-        scheduled_end_time: endTime,
+        client_address: clientInfo.address || '',
+        service_category: isConsult ? 'home_reset' : serviceKey,
+        scheduled_date: selectedDate || new Date().toISOString().split('T')[0],
+        scheduled_start_time: selectedTime || 'TBD',
+        scheduled_end_time: isConsult ? 'TBD' : endTime,
         base_duration_minutes: config.baseMinutes,
-        total_duration_minutes: totalDuration,
+        total_duration_minutes: isConsult ? 15 : totalDuration,
         addons: selectedAddons,
-        intake_answers: intakeAnswers,
-        special_notes: intakeAnswers.special_notes || '',
+        intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos },
+        special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
         estimated_price_low: config.priceRange[0] + addonPrice,
         estimated_price_high: config.priceRange[1] + addonPrice,
+        admin_notes: isConsult ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}` : '',
       });
 
-      // Create time blocks
-      const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
-      await base44.entities.TimeBlock.bulkCreate([
-        { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config.label} — ${clientInfo.name}` },
-        { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' },
-      ]);
+      // Create time blocks (skip for consult — no date/time yet)
+      if (!isConsult && selectedDate && selectedTime) {
+        const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
+        await base44.entities.TimeBlock.bulkCreate([
+          { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config.label} — ${clientInfo.name}` },
+          { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' },
+        ]);
+      }
 
       // Send confirmation email
       const addonLabels = selectedAddons.map(id => config.addons.find(a => a.id === id)?.label).filter(Boolean);
       const displayDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-      await base44.integrations.Core.SendEmail({
-        to: clientInfo.email,
-        subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`,
-        body: `Hi ${clientInfo.name},\n\nYour booking is confirmed! Here are your details:\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nAddress: ${clientInfo.address}\n\nYour visit includes:\n• ${selectedTime} — Meet & greet (15 min)\n• Service + all selected add-ons\n• Wrap-up & supply collection (15 min)\n\nEstimated total: $${config.priceRange[0] + addonPrice}–$${config.priceRange[1] + addonPrice}\n\nQuestions? Reply to this email anytime. We can't wait to help.\n\nWith care,\nMasha\nClean Slate Club™`
-      });
-
-      // Notify Masha
-      await base44.integrations.Core.SendEmail({
-        to: 'masha@cleanslateclubpa.com',
-        subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
-        body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${config.priceRange[0] + addonPrice}–$${config.priceRange[1] + addonPrice}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
-      });
+      if (isConsult) {
+        await base44.integrations.Core.SendEmail({
+          to: clientInfo.email,
+          subject: `We got your consult request — Clean Slate Club™`,
+          body: `Hi ${clientInfo.name},\n\nWe received your free consult request and can't wait to connect!\n\nWe'll reach out via ${intakeAnswers.preferred_contact || 'email'} soon — usually within 24 hours.\n\nIn the meantime, if you want to reach us directly:\nEmail: hello@cleanslateclubpa.com\n\nWith care,\nMasha\nClean Slate Club™`
+        });
+        await base44.integrations.Core.SendEmail({
+          to: 'masha@cleanslateclubpa.com',
+          subject: `New Consult Request — ${clientInfo.name}`,
+          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+        });
+      } else {
+        await base44.integrations.Core.SendEmail({
+          to: clientInfo.email,
+          subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`,
+          body: `Hi ${clientInfo.name},\n\nYour booking is confirmed! Here are your details:\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nAddress: ${clientInfo.address}\n\nYour visit includes:\n• ${selectedTime} — Meet & greet (15 min)\n• Service + all selected add-ons\n• Wrap-up & supply collection (15 min)\n\nEstimated total: $${config.priceRange[0] + addonPrice}–$${config.priceRange[1] + addonPrice}\n\nQuestions? Reply to this email anytime. We can't wait to help.\n\nWith care,\nMasha\nClean Slate Club™`
+        });
+        await base44.integrations.Core.SendEmail({
+          to: 'masha@cleanslateclubpa.com',
+          subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
+          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${config.priceRange[0] + addonPrice}–$${config.priceRange[1] + addonPrice}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+        });
+      }
 
       setSubmitted(true);
     } catch (e) {
@@ -113,11 +135,23 @@ export default function BookNow() {
           className="max-w-md w-full text-center"
         >
           <div className="w-16 h-16 rounded-full bg-sage/40 flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
-          <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
-          <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
-          <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
-            A confirmation email is on its way to <strong>{clientInfo.email}</strong>. Masha will see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
-          </p>
+          {isConsult ? (
+            <>
+              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">We'll be in touch!</h1>
+              <p className="font-logo text-xl text-coral mb-4">Your consult request is in.</p>
+              <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
+                Masha will reach out via <strong>{intakeAnswers.preferred_contact || 'email'}</strong> within 24 hours. A confirmation has been sent to <strong>{clientInfo.email}</strong>.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
+              <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
+              <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
+                A confirmation email is on its way to <strong>{clientInfo.email}</strong>. Masha will see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
+              </p>
+            </>
+          )}
           <a href="/" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
             Back to home
           </a>
@@ -137,7 +171,7 @@ export default function BookNow() {
             <p className="font-logo text-xl text-coral">Personalized support, built around you.</p>
           </div>
 
-          <StepIndicator currentStep={step} />
+          <StepIndicator currentStep={step} totalSteps={totalSteps} />
 
           <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-7 sm:p-10">
             <AnimatePresence mode="wait">
@@ -148,11 +182,12 @@ export default function BookNow() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} />}
+                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
                 {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} />}
-                {step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} />}
-                {step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }} />}
-                {step === 5 && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} />}
+                {/* For consult: step 3 = confirm (skip addons + schedule) */}
+                {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} />}
+                {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }} />}
+                {((!isConsult && step === 5) || (isConsult && step === 3)) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} />}
               </motion.div>
             </AnimatePresence>
 
@@ -164,7 +199,7 @@ export default function BookNow() {
                 <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
               ) : <div />}
 
-              {step < 5 ? (
+              {step < (isConsult ? 3 : 5) ? (
                 <button
                   onClick={() => setStep(s => s + 1)}
                   disabled={!canProceed()}
@@ -178,7 +213,7 @@ export default function BookNow() {
                   disabled={submitting}
                   className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
                 >
-                  {submitting ? 'Booking...' : 'Confirm Booking'}
+                  {submitting ? (isConsult ? 'Sending...' : 'Booking...') : (isConsult ? 'Request My Free Consult →' : 'Confirm Booking')}
                 </button>
               )}
             </div>

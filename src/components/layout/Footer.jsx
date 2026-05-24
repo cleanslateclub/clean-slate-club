@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const serviceAreas = [
@@ -8,6 +8,9 @@ const serviceAreas = [
 ];
 
 export default function Footer() {
+  const [suggestInput, setSuggestInput] = useState('');
+  const [suggestSent, setSuggestSent] = useState(false);
+
   return (
     <footer className="bg-charcoal text-cream relative overflow-hidden">
       {/* Blob accents */}
@@ -21,23 +24,23 @@ export default function Footer() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-white/90 mb-3 leading-tight">
             Ready to breathe again?
           </h2>
-          <p className="font-body text-base text-white/40 font-light mb-8">Your first step is a 15-minute Reset Consult. No pressure. Just a conversation.</p>
+          <p className="font-body text-base text-white/40 font-light mb-8">Your first step is a 15-minute free consult. No pressure. Just a conversation.</p>
           <Link
             to="/book"
             className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-lg hover:shadow-coral/30 transition-all duration-300"
           >
-            Book Your Free Consult
+            Book Now — It's Free
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="mb-5">
               <div className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</div>
               <div className="font-logo text-2xl text-coral" style={{ lineHeight: 1.2 }}>Club™</div>
             </div>
             <p className="font-body text-white/40 text-sm leading-relaxed font-light max-w-xs">
-              Modern household support for busy women, overwhelmed moms, and families who need an extra trusted hand.
+              Thoughtful household support for busy women, overwhelmed moms, and families who deserve a little backup.
             </p>
           </div>
 
@@ -47,7 +50,7 @@ export default function Footer() {
               <Link to="/" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Home</Link>
               <Link to="/services" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Services</Link>
               <Link to="/memberships" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Memberships</Link>
-              <Link to="/book" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Book a Consult</Link>
+              <Link to="/book" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Book Now</Link>
             </div>
           </div>
 
@@ -58,6 +61,32 @@ export default function Footer() {
                 <span key={area} className="font-body text-sm text-white/35 font-light">{area}</span>
               ))}
             </div>
+            <p className="font-body text-xs text-white/20 font-light mt-4">Montgomery County, PA</p>
+          </div>
+
+          {/* Expansion suggestion */}
+          <div>
+            <h4 className="font-body text-xs tracking-[0.2em] uppercase text-white/30 mb-6 font-light">Coming Soon to You?</h4>
+            <p className="font-body text-xs text-white/35 font-light leading-relaxed mb-4">
+              We can't wait to expand to your area. Tell us where you'd like to see us pop up next.
+            </p>
+            {suggestSent ? (
+              <p className="font-body text-xs text-coral/70 font-light">💚 Thank you! We'll keep it in mind.</p>
+            ) : (
+              <form onSubmit={e => { e.preventDefault(); if (suggestInput.trim()) setSuggestSent(true); }} className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  value={suggestInput}
+                  onChange={e => setSuggestInput(e.target.value)}
+                  placeholder="Your neighborhood or zip..."
+                  className="font-body text-xs px-4 py-2.5 rounded-full border outline-none transition-colors w-full"
+                  style={{ background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)' }}
+                />
+                <button type="submit" className="font-body text-xs px-4 py-2.5 rounded-full transition-all duration-300 text-white/70 hover:text-white border border-white/20 hover:border-coral/50 text-left">
+                  Suggest my area →
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
@@ -66,7 +95,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
           <p className="font-body text-xs text-white/25 font-light">
-            Boutique household support · Montgomery County, PA
+            Boutique household support · Flourtown & surrounding areas
           </p>
         </div>
       </div>

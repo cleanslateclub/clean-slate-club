@@ -12,19 +12,22 @@ const categories = [
     color: '#EFB988',
     bg: '#EFB98818',
     services: [
-      { name: 'The Monday Miracle', tagline: 'Start the week feeling human again.', price: '$225–450', desc: 'Our signature weekday-ready home reset — tackle the chaos before the week begins.', includes: ['Dishes', 'Laundry', 'Folding', 'Light tidying', 'Bed refresh', 'Kitchen reset', 'Trash out'], signature: true },
-      { name: 'The Clean Slate', tagline: 'The full-home reset.', price: '$450–950', desc: 'A deep reset for your entire home — every room addressed.', includes: ['Every room', 'Deep laundry', 'Kitchen overhaul', 'Organization', 'Linen refresh', 'Styling touches'], signature: true },
-      { name: 'Mess to Impress', tagline: 'Company-coming reset.', price: '$175–350', desc: 'Fast turnaround before guests arrive.', includes: ['Rapid declutter', 'Surface refresh', 'Bathroom touch-up', 'Kitchen reset', 'Fresh styling'] },
-      { name: 'The Clean Getaway', tagline: 'Post-vacation recovery.', price: '$175–325', desc: 'Come home and actually relax.', includes: ['Unpacking', 'Laundry', 'Fridge reset', 'Kitchen recovery', 'Linen refresh'] },
+      { name: 'The Clean Slate™', tagline: 'Our signature. The full-home reset.', price: '$450–950', desc: 'Every room addressed — deep laundry, kitchen overhaul, organization, linen refresh, styling touches. The works.', includes: ['Every room addressed', 'Deep laundry', 'Kitchen overhaul', 'Organization & declutter', 'Linen refresh', 'Styling touches', 'Dishes & counters', 'Trash removal'], signature: true },
+      { name: 'The Monday Miracle', tagline: 'Start the week feeling human again.', price: '$225–450', desc: 'A signature weekday-ready reset — tackle the chaos before the week begins and walk in Monday morning to a home that works for you.', includes: ['Dishes', 'Laundry', 'Folding & put-away', 'Light tidying', 'Bed refresh', 'Kitchen reset', 'Trash out'], signature: true },
+      { name: 'Mess to Impress', tagline: 'Company\'s coming — fast.', price: '$175–350', desc: 'Rapid turnaround before guests arrive. Surface refresh, bathroom touch-up, kitchen reset, light styling.', includes: ['Rapid declutter', 'Surface refresh', 'Bathroom touch-up', 'Kitchen reset', 'Fresh styling', 'Trash out'] },
+      { name: 'The Clean Getaway', tagline: 'Come home and actually relax.', price: '$175–325', desc: 'Post-vacation recovery reset so you walk back into a home that feels good, not like another task.', includes: ['Unpacking help', 'Laundry start', 'Fridge reset', 'Kitchen recovery', 'Linen refresh', 'General tidy'] },
+      { name: 'The Sick Week Recovery', tagline: 'When everything piled up.', price: '$200–400', desc: 'After illness or a depleted stretch — full household reset so you can recover without the chaos.', includes: ['Full tidy', 'Laundry', 'Dishes', 'Surfaces', 'Bathroom reset', 'Trash', 'Fresh linens'] },
     ],
   },
   {
-    name: "Mother's Helper Support",
+    name: "Mother's Helper & Postpartum Support",
     color: '#EB9486',
     bg: '#EB948818',
     services: [
-      { name: 'Pardon the Mess', tagline: 'No judgment. Just relief.', price: '$300–650', desc: 'Overwhelm recovery — postpartum, burnout, ADHD paralysis, life transitions.', includes: ['Full home support', 'Burnout recovery', 'ADHD help', 'Postpartum care', 'Life transitions'], signature: true },
-      { name: 'The Newborn Reset', tagline: 'You just had a baby. Rest.', price: '$150–350', desc: 'Postpartum household support so you can focus on your baby and yourself.', includes: ['Laundry', 'Dishes', 'Light tidying', 'Meal prep support', 'Nursery reset'] },
+      { name: 'Pardon the Mess', tagline: 'No judgment. Just relief.', price: '$300–650', desc: 'Overwhelm recovery for postpartum moms, burnout, ADHD paralysis, and life transitions. You do not have to explain yourself.', includes: ['Full home support', 'Postpartum care', 'Burnout recovery', 'ADHD-friendly help', 'Life transitions', 'No judgment ever'], signature: true },
+      { name: 'The Newborn Reset', tagline: 'You just had a baby. Rest.', price: '$150–350', desc: 'Postpartum household support so you can focus entirely on your baby and your recovery.', includes: ['Laundry', 'Dishes', 'Light tidying', 'Meal prep support', 'Nursery reset', 'Snack prep'] },
+      { name: 'Extra Hands Day', tagline: 'An extra pair of trusted hands.', price: '$99–250', desc: 'General mother\'s helper support — errands, kids, household tasks while you get a moment to breathe.', includes: ['Kids supervision', 'Household help', 'Errands', 'School pickup support', 'Light meal prep'] },
+      { name: 'The School Day Reset', tagline: 'Reclaim your window.', price: '$150–300', desc: 'While the kids are at school — deep focus on the home so you don\'t spend every free minute catching up.', includes: ['Priority rooms reset', 'Laundry', 'Kitchen', 'Bathrooms', 'Surfaces', 'Tidy & style'] },
     ],
   },
   {
@@ -32,8 +35,10 @@ const categories = [
     color: '#CAE7B9',
     bg: '#CAE7B922',
     services: [
-      { name: 'Errand Era', tagline: 'The running around, done.', price: '$35–125', desc: 'Groceries, pharmacy, returns, drop-offs — your list, handled.', includes: ['Grocery pickup', 'Pharmacy runs', 'Returns & drop-offs', 'Dry cleaning'] },
-      { name: 'The Drop Off', tagline: 'Declutter without the hassle.', price: '$35–75', desc: 'Donation dropoff service — we handle the logistics.', includes: ['Donation drop-off', 'Pickup coordination'] },
+      { name: 'Errand Era', tagline: 'The running around, handled.', price: '$35–125', desc: 'Groceries, pharmacy, returns, drop-offs, dry cleaning — your entire errand list run so you don\'t have to.', includes: ['Grocery pickup & put-away', 'Pharmacy runs', 'Returns & drop-offs', 'Dry cleaning', 'Post office', 'Pet supplies'] },
+      { name: 'The Big Haul', tagline: 'Costco, Target, Whole Foods — done.', price: '$75–150', desc: 'Multiple-stop grocery and supply run with full put-away. Stock the house without spending your Saturday on it.', includes: ['Multi-store run', 'Full put-away', 'Fridge organize', 'Pantry restock', 'Receipt tracking'] },
+      { name: 'The Drop Off', tagline: 'Declutter without the hassle.', price: '$35–75', desc: 'Donation drop-off service — we take the bags you\'ve already packed and handle the logistics.', includes: ['Donation drop-off', 'Pickup coordination', 'Charity receipt if needed'] },
+      { name: 'Birthday & Gift Run', tagline: 'The gifts, wrapped and ready.', price: '$45–125', desc: 'Shopping, wrapping, card — we handle the whole gift situation so you show up on time and prepared.', includes: ['Gift shopping', 'Wrapping', 'Card sourcing', 'Delivery if needed'] },
     ],
   },
   {
@@ -41,8 +46,9 @@ const categories = [
     color: '#B58A90',
     bg: '#B58A9018',
     services: [
-      { name: 'Gentle Home Support', tagline: 'Dignified, caring household help.', price: 'Custom', desc: 'Respectful, patient household assistance for seniors and aging parents who want independence with backup.', includes: ['Light housekeeping', 'Laundry', 'Grocery support', 'Kitchen help', 'Errand assistance'] },
-      { name: 'Caregiver Relief', tagline: 'For the ones who support everyone.', price: 'Custom', desc: 'Household support for caregivers and families navigating health transitions.', includes: ['Household tasks', 'Meal prep', 'Laundry', 'Errands', 'Flexible scheduling'] },
+      { name: 'Gentle Home Support', tagline: 'Dignified, caring household help.', price: 'Custom quote', desc: 'Respectful, patient household assistance for seniors and aging parents who want to maintain independence with a little backup.', includes: ['Light housekeeping', 'Laundry', 'Grocery support', 'Kitchen help', 'Errand assistance', 'Medication reminders (non-medical)'] },
+      { name: 'Caregiver Relief', tagline: 'For the ones who hold everyone up.', price: 'Custom quote', desc: 'Household support for caregivers and families navigating health transitions, recovery, or chronic care situations.', includes: ['Household tasks', 'Meal prep', 'Laundry', 'Errands', 'Companionship time', 'Flexible scheduling'] },
+      { name: 'Post-Discharge Recovery', tagline: 'Coming home should feel like home.', price: 'Custom quote', desc: 'Home preparation and ongoing support after a hospital stay or procedure — so recovery can focus on healing.', includes: ['Home prep before return', 'Grocery & supplies', 'Light meal prep', 'Safety tidy', 'Laundry', 'Errand support'] },
     ],
   },
   {
@@ -50,8 +56,10 @@ const categories = [
     color: '#F3DE8A',
     bg: '#F3DE8A28',
     services: [
-      { name: 'The Sink or Swim', tagline: 'Kitchen rescue, no judgment.', price: '$85–150', desc: 'Full kitchen reset — dishes, counters, wipe-down, trash, refresh.', includes: ['Dishes', 'Counters', 'Wipe-down', 'Trash', 'Kitchen refresh'] },
-      { name: 'Meal Prep Session', tagline: 'Nourishment made simple.', price: '$75–200', desc: 'Basic meal prep so weeknights aren\'t a source of stress.', includes: ['Ingredient prep', 'Simple meals', 'Kitchen cleanup', 'Portioning & storage'] },
+      { name: 'The Sink or Swim', tagline: 'Kitchen rescue. No judgment.', price: '$85–150', desc: 'Full kitchen reset — dishes, counters, appliances, wipe-down, trash. Back to baseline so cooking feels possible again.', includes: ['Dishes', 'Counters', 'Stovetop wipe-down', 'Microwave', 'Trash', 'Full kitchen refresh'] },
+      { name: 'Meal Prep Session', tagline: 'Nourishment made simple.', price: '$75–200', desc: 'Simple, nourishing meal prep for the week — proteins, grains, veggies, school lunches, or whatever you need most.', includes: ['Ingredient prep', 'Simple meals', 'Portioning & storage', 'Kitchen cleanup', 'Fridge organization'] },
+      { name: 'Freezer Batch Day', tagline: 'Stock the freezer, save your weeknights.', price: '$150–350', desc: 'Bulk batch cooking session — 4–8 freezer-ready meals so you always have a fallback on the hard days.', includes: ['4–8 freezer meals', 'Portioned & labeled', 'Kitchen cleanup', 'Fridge/freezer organize', 'Simple instruction cards'] },
+      { name: 'School Lunch Prep', tagline: '5 days of lunches, sorted.', price: '$65–120', desc: 'A week\'s worth of school lunches prepped, packed, and ready to grab — one less morning battle.', includes: ['5-day lunch prep', 'Snack bags', 'Labeled containers', 'Allergy-safe options', 'Fridge-ready'] },
     ],
   },
 ];

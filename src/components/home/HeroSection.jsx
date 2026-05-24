@@ -15,11 +15,12 @@ export default function HeroSection() {
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
         <div className="absolute inset-0" style={{ clipPath: 'ellipse(85% 100% at 85% 50%)' }}>
           <img
-            src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/989f1fb47_generated_image.png"
-            alt="Warm sunlit home"
-            className="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80"
+            alt="Beautiful organized home"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #fdfcfb 0%, transparent 35%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #fdfcfb 0%, transparent 40%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, #fdfcfb11 100%)' }} />
         </div>
       </div>
 
@@ -33,7 +34,7 @@ export default function HeroSection() {
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
-            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Montgomery County, PA</span>
+            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Boutique Household Support</span>
           </motion.div>
 
           <motion.div
@@ -41,14 +42,14 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.35 }}
           >
-            <h1 className="font-heading font-semibold text-5xl md:text-6xl lg:text-7xl text-charcoal leading-[1.08] mb-3">
-              Life gets
+            <h1 className="font-heading font-light text-4xl md:text-5xl lg:text-[3.5rem] text-charcoal/60 leading-[1.1] mb-2">
+              You deserve a home
             </h1>
-            <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-3">
-              heavy.
+            <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2">
+              that feels like you.
             </h1>
-            <h1 className="font-heading font-light text-4xl md:text-5xl lg:text-6xl text-charcoal/60 leading-[1.1] mb-8">
-              Let me help.
+            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl text-charcoal/40 leading-[1.2] mb-8">
+              Let's get you there.
             </h1>
           </motion.div>
 
@@ -58,7 +59,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.65 }}
             className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light"
           >
-            Modern household support for busy moms, overwhelmed households, and high-functioning women who need an extra trusted pair of hands.
+            Thoughtful household support for busy women, overwhelmed moms, and anyone who needs a trusted extra pair of hands — without the guilt of asking.
           </motion.p>
 
           <motion.div
@@ -71,13 +72,13 @@ export default function HeroSection() {
               to="/book"
               className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-xl hover:shadow-coral/25 transition-all duration-500"
             >
-              Book Your Free Consult
+              Book Now — It's Free
             </Link>
             <Link
               to="/services"
               className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/50 py-4 hover:text-coral transition-colors duration-300"
             >
-              See our services <span className="text-coral">→</span>
+              See what we do <span className="text-coral">→</span>
             </Link>
           </motion.div>
 
