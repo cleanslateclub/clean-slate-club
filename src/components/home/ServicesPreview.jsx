@@ -2,59 +2,99 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 
+// Line-art SVG icons
+const IconHome = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <path d="M4 14L16 4l12 10v14a1 1 0 01-1 1H5a1 1 0 01-1-1V14z"/>
+    <path d="M12 29V19h8v10"/>
+  </svg>
+);
+const IconBaby = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <circle cx="16" cy="9" r="5"/>
+    <path d="M8 28c0-4.418 3.582-8 8-8s8 3.582 8 8"/>
+    <path d="M22 6c1.5-1 3.5-.5 4 1.5"/>
+    <circle cx="14" cy="8" r=".5" fill="currentColor"/>
+    <circle cx="18" cy="8" r=".5" fill="currentColor"/>
+    <path d="M14 11c.5.8 1.5.8 2 0" strokeWidth="1.2"/>
+  </svg>
+);
+const IconBag = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <path d="M7 10h18l-2 16H9L7 10z"/>
+    <path d="M12 10V8a4 4 0 018 0v2"/>
+    <path d="M12 16h8M12 20h5"/>
+  </svg>
+);
+const IconHeart = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <path d="M16 27S4 20 4 11.5A6.5 6.5 0 0116 8a6.5 6.5 0 0112 3.5C28 20 16 27 16 27z"/>
+    <path d="M16 8v4M12 12h8" strokeWidth="1.2"/>
+  </svg>
+);
+const IconPot = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <path d="M8 14h16v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z"/>
+    <path d="M6 14h20"/>
+    <path d="M12 14v-3a4 4 0 018 0v3"/>
+    <path d="M5 16H3M27 16h2"/>
+    <path d="M13 19v4M19 19v4"/>
+  </svg>
+);
+
 const categories = [
   {
-    icon: '🏠',
+    IconComp: IconHome,
     name: 'Home Resets',
     tagline: 'Your home, caught up.',
     desc: 'From the Sunday Scaries package to full-home resets — we bring your space back to baseline so you can breathe.',
     color: '#c0796b',
-    bg: '#ffd7ba30',
+    bg: '#ffd7ba55',
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png',
   },
   {
-    icon: '👶',
+    IconComp: IconBaby,
     name: "Mother's Helper Support",
     tagline: 'An extra pair of trusted hands.',
     desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
     color: '#b06e61',
-    bg: '#fce4df30',
+    bg: '#fce4df55',
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/989f1fb47_generated_image.png',
   },
   {
-    icon: '🛍️',
+    IconComp: IconBag,
     name: 'Errands & Life Logistics',
     tagline: 'Outsource the running around.',
     desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
-    color: '#5a7a6a',
-    bg: '#d8e2dc30',
+    color: '#4a7a62',
+    bg: '#cae8d855',
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/eacb9a810_generated_image.png',
   },
   {
-    icon: '💛',
+    IconComp: IconHeart,
     name: 'Senior Support',
     tagline: 'Gentle, dignified home help.',
     desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
     color: '#8c6068',
-    bg: '#ece4db30',
+    bg: '#e8d8d855',
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/c2b4431f2_generated_image.png',
   },
   {
-    icon: '🍽️',
+    IconComp: IconPot,
     name: 'Meal Prep & Kitchen Support',
     tagline: 'Nourishment made easier.',
     desc: "Simple meal prep, kitchen resets, grocery organization — so dinnertime isn't another source of stress.",
     color: '#a07830',
-    bg: '#fec89a28',
+    bg: '#fec89a48',
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png',
   },
 ];
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdfcfb' }}>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffe5d9 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf6f4' }}>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #cae8d8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-16">
@@ -80,6 +120,7 @@ export default function ServicesPreview() {
                   </div>
                 )}
                 <div className="p-7 flex flex-col flex-1" style={{ background: cat.bg }}>
+                  <div className="mb-3" style={{ color: cat.color }}><cat.IconComp /></div>
                   <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#3a3330' }}>{cat.name}</h3>
                   <p className="font-body text-sm font-light mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
                   <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#6b5e58' }}>{cat.desc}</p>

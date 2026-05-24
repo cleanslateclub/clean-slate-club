@@ -39,9 +39,9 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#f8edeb' }}>
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #fec5bb20 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc20 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
+    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#f2e4e0' }}>
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac35 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c830 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">FAQ</p>
