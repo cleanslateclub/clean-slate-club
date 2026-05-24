@@ -80,7 +80,7 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
         <div className="bg-coral/5 border border-coral/15 rounded-2xl p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-1">Estimated Total</p>
           <p className="font-heading text-2xl font-semibold text-coral">${totalLow}–${totalHigh}</p>
-          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Final pricing confirmed after your visit. No surprises.</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Final pricing confirmed before any work begins. No surprises.</p>
         </div>
       </div>
     </div>

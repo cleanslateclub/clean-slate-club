@@ -24,7 +24,7 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle }) {
       <p className="font-body text-sm text-charcoal/45 font-light mb-6">Stack on extras — each one is added to your estimated visit time.</p>
 
       {/* Time summary */}
-      <div className="bg-coral/5 border border-coral/15 rounded-2xl p-4 mb-6 flex flex-wrap gap-6 items-center">
+      <div className="rounded-2xl p-4 mb-6 flex flex-wrap gap-6 items-center" style={{ background: 'linear-gradient(135deg, #fec5bb30 0%, #f3de8a25 50%, #cae7b930 100%)', border: '1px solid #fcd5ce60' }}>
         <div>
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Base service</p>
           <p className="font-heading text-sm font-semibold text-charcoal">{config.baseMinutes} min</p>
@@ -43,7 +43,7 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ background: 'linear-gradient(160deg, #fdf6f4 0%, #f5fbf3 100%)', borderRadius: '1rem', padding: '1rem', marginBottom: '0.25rem' }}>
         {config.addons.map(addon => {
           const isSelected = selectedAddons.includes(addon.id);
           return (

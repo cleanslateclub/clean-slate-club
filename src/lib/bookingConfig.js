@@ -76,7 +76,8 @@ export const SERVICE_CONFIG = {
       { id: "nap_schedule", label: "Nap/sleep schedule during visit?", type: "select", options: ["No nap expected", "One nap", "Multiple naps", "Newborn — variable"] },
       { id: "special_needs", label: "Any special needs, sensory sensitivities, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
       { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes — friendly dog", "Yes — cat", "Yes — will be secured/separated"] },
-      { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No — full solo support needed"] }
+      { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No — full solo support needed"] },
+      { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
     ]
   },
 

@@ -95,7 +95,9 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                 onChange={e => handleAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder}
                 rows={2}
-                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
+                className={`w-full px-4 py-2.5 rounded-xl border bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none transition-colors resize-none ${
+                  q.required ? 'border-coral/30 focus:border-coral/60' : 'border-taupe/20 focus:border-coral/40'
+                }`}
               />
             )}
           </div>

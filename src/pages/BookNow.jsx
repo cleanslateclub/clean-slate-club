@@ -32,7 +32,12 @@ export default function BookNow() {
 
   const canProceed = () => {
     if (step === 1) return !!serviceKey;
-    if (step === 2) return clientInfo.name && clientInfo.email && clientInfo.phone && clientInfo.address;
+    if (step === 2) {
+      const basicInfo = clientInfo.name && clientInfo.email && clientInfo.phone && clientInfo.address;
+      const needsEmergencyContact = serviceKey === 'senior_support' || serviceKey === 'mothers_helper';
+      const hasEmergencyContact = !needsEmergencyContact || !!intakeAnswers.emergency_contact;
+      return basicInfo && hasEmergencyContact;
+    }
     if (step === 3) return true;
     if (step === 4) return !!selectedDate && !!selectedTime;
     return true;
