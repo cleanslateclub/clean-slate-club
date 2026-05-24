@@ -77,7 +77,7 @@ const categories = [
     desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
     color: '#8c6068',
     bg: '#e8d8d855',
-    img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/c2b4431f2_generated_image.png',
+    img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png',
   },
   {
     iconKey: 'pot',

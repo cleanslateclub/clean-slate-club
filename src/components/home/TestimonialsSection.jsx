@@ -20,7 +20,7 @@ const testimonials = [
     quote: "This isn't a cleaning service. This is therapy for your house. Worth every single penny — and the peace of mind? Priceless.",
     name: "Michelle R.",
     location: "Lafayette Hill",
-    detail: "Dual-income family",
+    detail: "Burned-out professional",
     color: '#CAE7B9',
   },
 ];
