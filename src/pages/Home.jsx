@@ -5,7 +5,7 @@ import ServicesPreview from '../components/home/ServicesPreview';
 import TrustSection from '../components/home/TrustSection';
 import ConsultSection from '../components/home/ConsultSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
-import MembershipPreview from '../components/home/MembershipPreview';
+import MembershipPreview from '../components/home/MembershipPreview.jsx';
 import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import CTASection from '../components/home/CTASection';
 import FAQSection from '../components/home/FAQSection';
@@ -15,21 +15,21 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <WaveDivider fill="#FDFBF8" />
+      <WaveDivider fill="#EFB98808" />
       <MashaSection />
-      <WaveDivider fill="#FAF7F2" flip />
+      <WaveDivider fill="#CAE7B908" flip />
       <ServicesPreview />
-      <WaveDivider fill="#FDFBF8" />
+      <WaveDivider fill="#7E7F9A08" />
       <TrustSection />
-      <WaveDivider fill="#FAF7F2" flip />
+      <WaveDivider fill="#F3DE8A08" flip />
       <ConsultSection />
-      <WaveDivider fill="#FDFBF8" />
+      <WaveDivider fill="#B58A9008" />
       <TestimonialsSection />
-      <WaveDivider fill="#FAF7F2" flip />
+      <WaveDivider fill="#8B93A708" flip />
       <MembershipPreview />
-      <WaveDivider fill="#FDFBF8" />
+      <WaveDivider fill="#DFE3A208" />
       <ServiceAreaSection />
-      <WaveDivider fill="#FDFBF8" />
+      <WaveDivider fill="#97A7B308" />
       <FAQSection />
       <CTASection />
     </div>

@@ -22,8 +22,9 @@ const steps = [
 
 export default function ConsultSection() {
   return (
-    <section className="py-24 lg:py-36 bg-cream relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #EB9486 0%, transparent 70%)', transform: 'translate(30%, -20%)' }} />
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#F3DE8A08' }}>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #F3DE8A 0%, transparent 70%)', transform: 'translate(30%, -20%)' }} />
+      <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #EFB988 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -47,7 +48,7 @@ export default function ConsultSection() {
           <AnimatedSection delay={0.15}>
             <div className="space-y-6">
               {steps.map((step) => (
-                <div key={step.num} className="flex gap-5 p-6 rounded-2xl bg-warm-white border border-taupe/15 hover:border-coral/20 hover:shadow-md transition-all duration-300">
+                <div key={step.num} className="flex gap-5 p-6 rounded-2xl border transition-all duration-300 hover:shadow-md" style={{ background: '#f1f1f1', borderColor: '#DCDCDC' }}>
                   <span className="font-logo text-coral text-2xl shrink-0" style={{ lineHeight: 1 }}>{step.num}</span>
                   <div>
                     <h3 className="font-heading text-base font-semibold text-charcoal mb-1">{step.title}</h3>

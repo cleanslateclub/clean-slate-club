@@ -10,24 +10,24 @@
     --font-heading: 'Montserrat', sans-serif;
     --font-body: 'Lato', sans-serif;
 
-    --background: 36 33% 97%;
-    --foreground: 220 5% 20%;
-    --card: 36 33% 97%;
-    --card-foreground: 220 5% 20%;
-    --popover: 36 33% 97%;
-    --popover-foreground: 220 5% 20%;
+    --background: 0 0% 95%;
+    --foreground: 0 0% 20%;
+    --card: 0 0% 95%;
+    --card-foreground: 0 0% 20%;
+    --popover: 0 0% 95%;
+    --popover-foreground: 0 0% 20%;
     --primary: 15 70% 72%;
-    --primary-foreground: 36 50% 97%;
+    --primary-foreground: 0 0% 95%;
     --secondary: 110 22% 73%;
-    --secondary-foreground: 220 5% 20%;
-    --muted: 36 20% 91%;
-    --muted-foreground: 220 5% 45%;
-    --accent: 36 20% 91%;
-    --accent-foreground: 220 5% 20%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 0 0% 91%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 91%;
+    --accent-foreground: 0 0% 20%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 36 15% 85%;
-    --input: 36 15% 85%;
+    --border: 0 0% 86%;
+    --input: 0 0% 86%;
     --ring: 15 70% 72%;
     --chart-1: 15 70% 72%;
     --chart-2: 110 22% 73%;
@@ -36,8 +36,9 @@
     --chart-5: 222 16% 59%;
     --radius: 1rem;
 
-    --csc-cream: #FAF7F2;
+    --csc-cream: #f1f1f1;
     --csc-sage: #CAE7B9;
+    --csc-olive: #DFE3A2;
     --csc-butter: #F3DE8A;
     --csc-peach: #EFB988;
     --csc-coral: #EB9486;
@@ -45,8 +46,7 @@
     --csc-slate: #7E7F9A;
     --csc-blue-gray: #8B93A7;
     --csc-mist: #97A7B3;
-    --csc-charcoal: #333340;
-    --csc-olive: #DFE3A2;
+    --csc-charcoal: #333333;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;

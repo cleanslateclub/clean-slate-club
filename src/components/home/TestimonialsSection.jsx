@@ -27,8 +27,9 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-24 lg:py-32 bg-warm-white relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-8 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 70%)', transform: 'translateY(-50%) translateX(-40%)' }} />
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#B58A9008' }}>
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-12 pointer-events-none" style={{ background: 'radial-gradient(circle, #B58A90 0%, transparent 70%)', transform: 'translateY(-50%) translateX(-40%)' }} />
+      <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 70%)', transform: 'translate(20%, -20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
@@ -42,7 +43,7 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((t, i) => (
             <AnimatedSection key={i} delay={i * 0.12}>
-              <div className="p-8 rounded-3xl bg-cream border border-taupe/15 h-full flex flex-col hover:shadow-lg transition-all duration-500">
+              <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-lg transition-all duration-500 border" style={{ background: '#f1f1f1', borderColor: '#DCDCDC' }}>
                 <div className="flex-1">
                   <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
                   <p className="font-body text-base text-charcoal/65 leading-relaxed font-light -mt-2 mb-8">

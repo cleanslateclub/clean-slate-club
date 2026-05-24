@@ -9,7 +9,8 @@ const areas = [
 
 export default function ServiceAreaSection() {
   return (
-    <section className="py-20 lg:py-28 bg-cream">
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#DFE3A208' }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 100%, #DFE3A220 0%, transparent 70%)' }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">Proudly Local</p>
@@ -26,7 +27,10 @@ export default function ServiceAreaSection() {
             {areas.map((area) => (
               <span
                 key={area}
-                className="font-body text-sm font-light text-charcoal/55 hover:text-coral px-5 py-2.5 rounded-full border border-taupe/25 hover:border-coral/30 hover:bg-coral/5 transition-all duration-300 cursor-default"
+                className="font-body text-sm font-light text-charcoal/55 hover:text-charcoal px-5 py-2.5 rounded-full border transition-all duration-300 cursor-default"
+                style={{ background: '#f1f1f1', borderColor: '#DCDCDC' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#DFE3A2'; e.currentTarget.style.background = '#DFE3A220'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#DCDCDC'; e.currentTarget.style.background = '#f1f1f1'; }}
               >
                 {area}
               </span>

@@ -47,8 +47,9 @@ const categories = [
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 bg-cream relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#CAE7B908' }}>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 70%)', transform: 'translate(20%, -20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-16">
@@ -78,7 +79,7 @@ export default function ServicesPreview() {
 
           {/* CTA card */}
           <AnimatedSection delay={0.5}>
-            <div className="p-7 rounded-3xl bg-coral text-white flex flex-col justify-between h-full min-h-[200px]">
+            <div className="p-7 rounded-3xl text-white flex flex-col justify-between h-full min-h-[200px]" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #B58A90 100%)' }}>
               <div>
                 <p className="font-body text-xs tracking-[0.2em] uppercase text-white/60 mb-3 font-light">Custom Support</p>
                 <h3 className="font-heading text-xl font-semibold mb-3">Not sure what you need?</h3>

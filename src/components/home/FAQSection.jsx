@@ -39,7 +39,8 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-24 lg:py-32 bg-cream">
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#97A7B308' }}>
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B320 0%, transparent 70%)', transform: 'translate(-30%, -30%)' }} />
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">FAQ</p>
@@ -55,7 +56,7 @@ export default function FAQSection() {
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="bg-warm-white rounded-2xl border border-taupe/15 px-6 data-[state=open]:shadow-md data-[state=open]:border-coral/20 transition-all duration-300"
+                className="rounded-2xl px-6 data-[state=open]:shadow-md transition-all duration-300" style={{ background: '#f1f1f1', border: '1px solid #DCDCDC' }}
               >
                 <AccordionTrigger className="font-heading text-base font-semibold text-charcoal hover:no-underline py-5 text-left">
                   {faq.q}

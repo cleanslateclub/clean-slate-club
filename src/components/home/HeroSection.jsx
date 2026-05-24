@@ -6,9 +6,10 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-cream">
       {/* Organic background blobs */}
-      <div className="absolute top-10 right-0 w-[700px] h-[700px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #EFB988 0%, transparent 70%)', transform: 'translate(20%, -10%)' }} />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #EB9486 0%, transparent 70%)' }} />
+      <div className="absolute top-10 right-0 w-[700px] h-[700px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #EFB988 0%, transparent 70%)', transform: 'translate(20%, -10%)' }} />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 70%)' }} />
+      <div className="absolute top-1/3 left-1/3 w-[200px] h-[200px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 70%)' }} />
 
       {/* Image - right side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
@@ -18,7 +19,7 @@ export default function HeroSection() {
             alt="Warm sunlit home"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #FAF7F2 0%, transparent 30%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #f1f1f1 0%, transparent 30%)' }} />
         </div>
       </div>
 
@@ -29,7 +30,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-sage/20 border border-sage/40 rounded-full px-4 py-1.5 mb-8"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#DFE3A225', borderColor: '#DFE3A260' }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
             <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Montgomery County, PA</span>
