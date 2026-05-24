@@ -32,9 +32,9 @@ const tiers = [
 
 export default function MembershipPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#8B93A708' }}>
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #8B93A730 0%, transparent 70%)', transform: 'translate(30%, 20%)' }} />
-      <div className="absolute top-0 left-0 w-[350px] h-[350px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #7E7F9A20 0%, transparent 70%)', transform: 'translate(-20%, -20%)' }} />
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdfcfb' }}>
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #fec89a25 0%, transparent 65%)', transform: 'translate(30%, 20%)' }} />
+      <div className="absolute top-0 left-0 w-[350px] h-[350px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc20 0%, transparent 65%)', transform: 'translate(-20%, -20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
@@ -53,8 +53,8 @@ export default function MembershipPreview() {
               <div
                 className="relative p-8 lg:p-10 rounded-3xl border h-full flex flex-col transition-all duration-500"
                 style={tier.featured
-                  ? { background: 'linear-gradient(135deg, #EB9486 0%, #B58A90 100%)', borderColor: 'transparent', transform: 'scale(1.04)', boxShadow: '0 20px 60px #EB948630' }
-                  : { background: '#f1f1f1', borderColor: '#DCDCDC' }
+                  ? { background: 'linear-gradient(135deg, #fec5bb 0%, #fcd5ce 40%, #ece4db 100%)', borderColor: 'transparent', transform: 'scale(1.04)', boxShadow: '0 20px 60px #fec5bb30' }
+                  : { background: 'rgba(255,255,255,0.8)', borderColor: '#f0e8e4' }
                 }
               >
                 {tier.featured && (
@@ -62,26 +62,27 @@ export default function MembershipPreview() {
                     Most Popular
                   </span>
                 )}
-                <h3 className={`font-heading text-xl font-semibold mb-2 ${tier.featured ? 'text-white' : 'text-charcoal'}`}>{tier.name}</h3>
+                <h3 className="font-heading text-xl font-semibold mb-2" style={{ color: tier.featured ? '#3a2820' : '#3a3330' }}>{tier.name}</h3>
                 <div className="flex items-baseline gap-1 mb-3">
-                  <span className={`font-heading text-3xl font-semibold ${tier.featured ? 'text-white' : 'text-coral'}`}>{tier.price}</span>
-                  <span className={`font-body text-sm font-light ${tier.featured ? 'text-white/60' : 'text-charcoal/35'}`}>{tier.period}</span>
+                  <span className="font-heading text-3xl font-semibold" style={{ color: tier.featured ? '#9a5f55' : '#c07060' }}>{tier.price}</span>
+                  <span className="font-body text-sm font-light" style={{ color: tier.featured ? '#9a8880' : '#baa090' }}>{tier.period}</span>
                 </div>
-                <p className={`font-body text-sm leading-relaxed mb-8 font-light flex-1 ${tier.featured ? 'text-white/75' : 'text-charcoal/50'}`}>{tier.desc}</p>
+                <p className="font-body text-sm leading-relaxed mb-8 font-light flex-1" style={{ color: tier.featured ? '#6a5048' : '#7a6560' }}>{tier.desc}</p>
                 <ul className="space-y-2.5 mb-8">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tier.featured ? 'rgba(255,255,255,0.6)' : tier.dotColor }} />
-                      <span className={`font-body text-sm font-light ${tier.featured ? 'text-white/75' : 'text-charcoal/55'}`}>{f}</span>
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tier.featured ? '#c07060' : tier.dotColor }} />
+                      <span className="font-body text-sm font-light" style={{ color: tier.featured ? '#6a5048' : '#7a6560' }}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link
                   to="/memberships"
-                  className={`block text-center font-body text-sm tracking-wide py-3.5 rounded-full transition-all duration-300 ${
-                    tier.featured ? 'bg-white text-coral hover:bg-white/90' : 'border text-coral hover:bg-coral hover:text-white'
-                  }`}
-                  style={!tier.featured ? { borderColor: '#EB948640' } : {}}
+                  className="block text-center font-body text-sm tracking-wide py-3.5 rounded-full transition-all duration-300 border"
+                  style={tier.featured
+                    ? { background: 'rgba(255,255,255,0.6)', borderColor: '#fcd5ce80', color: '#9a5f55' }
+                    : { background: 'transparent', borderColor: '#fcd5ce80', color: '#c07060' }
+                  }
                 >
                   Learn More
                 </Link>

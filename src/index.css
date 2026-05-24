@@ -10,24 +10,24 @@
     --font-heading: 'Montserrat', sans-serif;
     --font-body: 'Lato', sans-serif;
 
-    --background: 0 0% 95%;
-    --foreground: 0 0% 20%;
-    --card: 0 0% 95%;
-    --card-foreground: 0 0% 20%;
-    --popover: 0 0% 95%;
-    --popover-foreground: 0 0% 20%;
+    --background: 0 0% 99%;
+    --foreground: 0 0% 22%;
+    --card: 0 0% 99%;
+    --card-foreground: 0 0% 22%;
+    --popover: 0 0% 99%;
+    --popover-foreground: 0 0% 22%;
     --primary: 15 70% 72%;
-    --primary-foreground: 0 0% 95%;
+    --primary-foreground: 0 0% 99%;
     --secondary: 110 22% 73%;
-    --secondary-foreground: 0 0% 20%;
-    --muted: 0 0% 91%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 91%;
-    --accent-foreground: 0 0% 20%;
+    --secondary-foreground: 0 0% 22%;
+    --muted: 30 20% 96%;
+    --muted-foreground: 0 0% 48%;
+    --accent: 30 20% 96%;
+    --accent-foreground: 0 0% 22%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 86%;
-    --input: 0 0% 86%;
+    --border: 30 15% 92%;
+    --input: 30 15% 92%;
     --ring: 15 70% 72%;
     --chart-1: 15 70% 72%;
     --chart-2: 110 22% 73%;
@@ -36,7 +36,8 @@
     --chart-5: 222 16% 59%;
     --radius: 1rem;
 
-    --csc-cream: #f1f1f1;
+    --csc-cream: #fec5bb;
+    --csc-cream-base: #fdfcfb;
     --csc-sage: #CAE7B9;
     --csc-olive: #DFE3A2;
     --csc-butter: #F3DE8A;

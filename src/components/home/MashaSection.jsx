@@ -4,10 +4,10 @@ import AnimatedSection from '../shared/AnimatedSection';
 
 export default function MashaSection() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#EFB98808' }}>
+    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdfcfb' }}>
       {/* Background accent */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #EFB988 0%, transparent 70%)', transform: 'translate(30%, -20%)' }} />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 70%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -15,14 +15,14 @@ export default function MashaSection() {
           <AnimatedSection>
             <div className="relative">
               {/* Blob behind image */}
-              <div className="absolute -top-8 -left-8 w-[110%] h-[110%] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 30%, transparent 75%)' }} />
+              <div className="absolute -top-8 -left-8 w-[110%] h-[110%] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffe5d9 30%, transparent 75%)' }} />
               <img
-                src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/44493aea1_generated_01184082.png"
-                alt="Warm organized home, real and lived-in"
+                src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png"
+                alt="Masha helping naturally in a warm home"
                 className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10"
               />
               {/* Floating quote card */}
-              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px]" style={{ background: '#f1f1f1', boxShadow: '0 8px 30px #B58A9020' }}>
+              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px]" style={{ background: '#fdfcfb', boxShadow: '0 8px 30px #fcd5ce40' }}>
                 <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
                 <p className="font-body text-[11px] text-charcoal/40 font-light">— every client, first visit</p>
               </div>
@@ -49,7 +49,7 @@ export default function MashaSection() {
               </p>
             </div>
 
-            <div className="mt-10 p-6 rounded-2xl border" style={{ background: '#CAE7B915', borderColor: '#CAE7B940' }}>
+            <div className="mt-10 p-6 rounded-2xl border" style={{ background: '#ffe5d930', borderColor: '#fcd5ce60' }}>
               <p className="font-heading text-lg font-semibold text-charcoal mb-1">
                 "You're not failing at home."
               </p>

@@ -27,9 +27,9 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#B58A9008' }}>
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-12 pointer-events-none" style={{ background: 'radial-gradient(circle, #B58A90 0%, transparent 70%)', transform: 'translateY(-50%) translateX(-40%)' }} />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 70%)', transform: 'translate(20%, -20%)' }} />
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#ece4db' }}>
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #fec5bb 0%, transparent 65%)', transform: 'translateY(-50%) translateX(-40%)' }} />
+      <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
@@ -43,17 +43,17 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((t, i) => (
             <AnimatedSection key={i} delay={i * 0.12}>
-              <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-lg transition-all duration-500 border" style={{ background: '#f1f1f1', borderColor: '#DCDCDC' }}>
+              <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-sm transition-all duration-500 border" style={{ background: 'rgba(255,255,255,0.75)', borderColor: 'rgba(255,255,255,0.5)' }}>
                 <div className="flex-1">
                   <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
-                  <p className="font-body text-base text-charcoal/65 leading-relaxed font-light -mt-2 mb-8">
+                  <p className="font-body text-base leading-relaxed font-light -mt-2 mb-8" style={{ color: '#5a4e48' }}>
                     {t.quote}
                   </p>
                 </div>
                 <div>
                   <div className="h-px bg-taupe/25 mb-5" />
-                  <p className="font-heading text-sm font-semibold text-charcoal">{t.name}</p>
-                  <p className="font-body text-xs text-charcoal/35 mt-0.5 font-light">{t.location} · {t.detail}</p>
+                  <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{t.name}</p>
+                  <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#9a8880' }}>{t.location} · {t.detail}</p>
                 </div>
               </div>
             </AnimatedSection>

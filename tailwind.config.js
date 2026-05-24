@@ -17,7 +17,17 @@ module.exports = {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
-        cream: '#f1f1f1',
+        cream: '#fdfcfb',
+        'cream-pink': '#fec5bb',
+        'cream-peach': '#fcd5ce',
+        'cream-butter': '#fae1dd',
+        'cream-linen': '#f8edeb',
+        'cream-mist': '#e8e8e4',
+        'cream-sage': '#d8e2dc',
+        'cream-warm': '#ece4db',
+        'cream-blush': '#ffe5d9',
+        'cream-apricot': '#ffd7ba',
+        'cream-amber': '#fec89a',
         sage: '#CAE7B9',
         olive: '#DFE3A2',
         butter: '#F3DE8A',
@@ -31,7 +41,7 @@ module.exports = {
         clay: '#EB9486',
         taupe: '#DCDCDC',
         blush: '#F5EAE8',
-        'warm-white': '#f1f1f1',
+        'warm-white': '#fdfcfb',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

@@ -39,8 +39,9 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#97A7B308' }}>
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B320 0%, transparent 70%)', transform: 'translate(-30%, -30%)' }} />
+    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#f8edeb' }}>
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #fec5bb20 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc20 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">FAQ</p>
@@ -56,12 +57,12 @@ export default function FAQSection() {
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="rounded-2xl px-6 data-[state=open]:shadow-md transition-all duration-300" style={{ background: '#f1f1f1', border: '1px solid #DCDCDC' }}
+                className="rounded-2xl px-6 data-[state=open]:shadow-sm transition-all duration-300" style={{ background: 'rgba(255,255,255,0.75)', border: '1px solid #fcd5ce50' }}
               >
-                <AccordionTrigger className="font-heading text-base font-semibold text-charcoal hover:no-underline py-5 text-left">
+                <AccordionTrigger className="font-heading text-base font-semibold hover:no-underline py-5 text-left" style={{ color: '#3a3330' }}>
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body text-sm text-charcoal/55 leading-relaxed pb-6 font-light">
+                <AccordionContent className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#7a6560' }}>
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

@@ -11,8 +11,9 @@ const credentials = [
 
 export default function TrustSection() {
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#7E7F9A08' }}>
-      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #8B93A7 0%, transparent 70%)', transform: 'translate(30%, -50%)' }} />
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f8edeb' }}>
+      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #fec5bb 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">You're in Good Hands</p>
@@ -27,11 +28,11 @@ export default function TrustSection() {
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
             {credentials.map((c, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-md" style={{ background: '#f1f1f1', borderColor: '#DCDCDC' }}>
+              <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: 'rgba(255,255,255,0.8)', borderColor: '#fcd5ce60' }}>
                 <span className="text-2xl">{c.icon}</span>
                 <div>
-                  <p className="font-heading text-sm font-semibold text-charcoal">{c.label}</p>
-                  <p className="font-body text-xs text-charcoal/40 font-light">{c.detail}</p>
+                  <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{c.label}</p>
+                  <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{c.detail}</p>
                 </div>
               </div>
             ))}
