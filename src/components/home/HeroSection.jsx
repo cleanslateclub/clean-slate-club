@@ -32,7 +32,7 @@ export default function HeroSection() {
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
-            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Boutique Household Support</span>
+            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
           </motion.div>
 
           <motion.div
