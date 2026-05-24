@@ -15,21 +15,21 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <WaveDivider fill="#fdf8f5" />
+      <WaveDivider fill="#fdf5f3" />
       <MashaSection />
-      <WaveDivider fill="#fdf6f4" flip />
+      <WaveDivider fill="#fdf3f0" flip />
       <ServicesPreview />
-      <WaveDivider fill="#f5e6e2" />
+      <WaveDivider fill="#f2ddd6" />
       <TrustSection />
-      <WaveDivider fill="#fdf8f2" flip />
+      <WaveDivider fill="#fdf5ec" flip />
       <ConsultSection />
-      <WaveDivider fill="#e8ddd4" />
+      <WaveDivider fill="#e3d0c3" />
       <TestimonialsSection />
-      <WaveDivider fill="#fdf8f5" flip />
+      <WaveDivider fill="#fdf5f3" flip />
       <MembershipPreview />
-      <WaveDivider fill="#f0f6f2" />
+      <WaveDivider fill="#e5f4ec" />
       <ServiceAreaSection />
-      <WaveDivider fill="#f2e4e0" flip />
+      <WaveDivider fill="#eedbd5" flip />
       <FAQSection />
       <CTASection />
     </div>

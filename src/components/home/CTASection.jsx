@@ -9,8 +9,8 @@ export default function CTASection() {
         <AnimatedSection>
           <div className="relative rounded-[2.5rem] overflow-hidden">
             <img
-              src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/c7fc4d83b_generated_image.png"
-              alt="A woman exhaling relief in a calm bright home"
+              src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/165bbf84d_generated_image.png"
+              alt="A warm modern home with the everyday mess of real family life"
               className="w-full h-72 lg:h-96 object-cover"
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(254,197,187,0.75) 0%, rgba(252,213,206,0.5) 50%, rgba(236,228,219,0.3) 100%)' }} />

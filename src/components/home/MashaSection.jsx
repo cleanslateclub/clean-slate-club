@@ -4,7 +4,7 @@ import AnimatedSection from '../shared/AnimatedSection';
 
 export default function MashaSection() {
   return (
-    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf8f5' }}>
+    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
       {/* Background accent */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffc8a0 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />

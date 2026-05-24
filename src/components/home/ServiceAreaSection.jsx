@@ -17,7 +17,7 @@ export default function ServiceAreaSection() {
   };
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f0f6f2' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#e5f4ec' }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 100%, #b8d8c840 0%, transparent 70%)' }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
@@ -26,7 +26,7 @@ export default function ServiceAreaSection() {
             Currently Serving
           </h2>
           <p className="font-body text-base text-charcoal/45 font-light max-w-md mx-auto">
-            Boutique household support for families right here in our community.
+            Real support for real families, right here in our community.
           </p>
         </AnimatedSection>
 
