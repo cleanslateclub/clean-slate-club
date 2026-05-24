@@ -33,12 +33,14 @@ const IconLeaf = () => (
   </svg>
 );
 
+const trustIconMap = { shield: IconShield, heart: IconHeart, check: IconCheck, clipboard: IconClipboard, leaf: IconLeaf };
+
 const credentials = [
-  { Icon: IconShield, label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#eb9486' },
-  { Icon: IconHeart, label: 'CPR Certified', detail: 'Safety trained', accent: '#eb9486' },
-  { Icon: IconCheck, label: 'Background Checked', detail: 'Every time, no exception', accent: '#6aaa88' },
-  { Icon: IconClipboard, label: 'Clearances Available', detail: 'Upon request', accent: '#b58a90' },
-  { Icon: IconLeaf, label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#6aaa88' },
+  { iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#eb9486' },
+  { iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#eb9486' },
+  { iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#6aaa88' },
+  { iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#b58a90' },
+  { iconKey: 'leaf', label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#6aaa88' },
 ];
 
 export default function TrustSection() {
@@ -61,7 +63,7 @@ export default function TrustSection() {
           <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
             {credentials.map((c, i) => (
               <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: 'rgba(255,255,255,0.85)', borderColor: '#f0c8c060' }}>
-                <span style={{ color: c.accent }}><c.Icon /></span>
+                <span style={{ color: c.accent }}>{React.createElement(trustIconMap[c.iconKey])}</span>
                 <div>
                   <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{c.label}</p>
                   <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{c.detail}</p>

@@ -44,7 +44,7 @@ const IconPot = () => (
 
 const categories = [
   {
-    IconComp: IconHome,
+    iconKey: 'home',
     name: 'Home Resets',
     tagline: 'Your home, caught up.',
     desc: 'From the Sunday Scaries package to full-home resets — we bring your space back to baseline so you can breathe.',
@@ -53,7 +53,7 @@ const categories = [
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png',
   },
   {
-    IconComp: IconBaby,
+    iconKey: 'baby',
     name: "Mother's Helper Support",
     tagline: 'An extra pair of trusted hands.',
     desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
@@ -62,7 +62,7 @@ const categories = [
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/989f1fb47_generated_image.png',
   },
   {
-    IconComp: IconBag,
+    iconKey: 'bag',
     name: 'Errands & Life Logistics',
     tagline: 'Outsource the running around.',
     desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
@@ -71,7 +71,7 @@ const categories = [
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/eacb9a810_generated_image.png',
   },
   {
-    IconComp: IconHeart,
+    iconKey: 'heart',
     name: 'Senior Support',
     tagline: 'Gentle, dignified home help.',
     desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
@@ -80,7 +80,7 @@ const categories = [
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/c2b4431f2_generated_image.png',
   },
   {
-    IconComp: IconPot,
+    iconKey: 'pot',
     name: 'Meal Prep & Kitchen Support',
     tagline: 'Nourishment made easier.',
     desc: "Simple meal prep, kitchen resets, grocery organization — so dinnertime isn't another source of stress.",
@@ -89,6 +89,8 @@ const categories = [
     img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png',
   },
 ];
+
+const iconMap = { home: IconHome, baby: IconBaby, bag: IconBag, heart: IconHeart, pot: IconPot };
 
 export default function ServicesPreview() {
   return (
@@ -120,7 +122,7 @@ export default function ServicesPreview() {
                   </div>
                 )}
                 <div className="p-7 flex flex-col flex-1" style={{ background: cat.bg }}>
-                  <div className="mb-3" style={{ color: cat.color }}><cat.IconComp /></div>
+                  <div className="mb-3" style={{ color: cat.color }}>{React.createElement(iconMap[cat.iconKey])}</div>
                   <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#3a3330' }}>{cat.name}</h3>
                   <p className="font-body text-sm font-light mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
                   <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#6b5e58' }}>{cat.desc}</p>
