@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import TaskScrollPanel from './TaskScrollPanel';
 
 export default function HeroSection() {
   return (
@@ -11,16 +12,13 @@ export default function HeroSection() {
       <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffe5d9 0%, transparent 65%)' }} />
       <div className="absolute top-1/3 left-1/3 w-[200px] h-[200px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #e8e8e4 0%, transparent 65%)' }} />
 
-      {/* Image - right side */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-        <div className="absolute inset-0" style={{ clipPath: 'ellipse(85% 100% at 85% 50%)' }}>
-          <img
-            src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80"
-            alt="Beautiful organized home"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #fdfcfb 0%, transparent 40%)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, #fdfcfb11 100%)' }} />
+      {/* Task scroll panel — desktop right column */}
+      <div className="absolute right-0 top-0 bottom-0 w-[46%] hidden lg:flex flex-col justify-center overflow-hidden">
+        {/* Soft left fade so it bleeds into the content */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #fdfcfb 0%, transparent 100%)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #fdfcfb 0%, transparent 100%)' }} />
+        <div className="h-full py-20">
+          <TaskScrollPanel />
         </div>
       </div>
 
@@ -82,12 +80,53 @@ export default function HeroSection() {
             </Link>
           </motion.div>
 
+          {/* Mobile task scroll strip */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0 }}
+            className="mt-10 lg:hidden overflow-hidden"
+            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}
+          >
+            <motion.div
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
+              className="flex gap-2.5 w-max"
+            >
+              {[...Array(2)].flatMap(() =>
+                [
+                  { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
+                  { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
+                  { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
+                  { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
+                  { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
+                  { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
+                  { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
+                  { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
+                  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' },
+                ].map((t, i) => (
+                  <span
+                    key={`m-${t.label}-${i}`}
+                    className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
+                    style={{ background: t.bg, borderColor: t.color + '35' }}
+                  >
+                    <span
+                      className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
+                      style={{ background: t.color }}
+                    >✓</span>
+                    {t.emoji} {t.label}
+                  </span>
+                ))
+              )}
+            </motion.div>
+          </motion.div>
+
           {/* Trust badges */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-12 flex flex-wrap gap-4"
+            className="mt-10 flex flex-wrap gap-4"
           >
             {['Licensed & Insured', 'CPR Certified', 'Background Checked'].map((badge) => (
               <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
