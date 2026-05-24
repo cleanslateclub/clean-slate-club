@@ -11,7 +11,7 @@ export const SERVICE_CONFIG = {
     priceRange: [149, 299],
     description: "A full reset of your home — dishes, laundry, tidying, styling.",
     examples: [
-      "Sunday Scaries reset before the week starts",
+      "Monday Miracle — reset the home before the week swallows you",
       "Post-holiday chaos cleanup",
       "Pre-guests-arriving emergency tidy",
       "After a sick week when everything piled up",
@@ -36,7 +36,12 @@ export const SERVICE_CONFIG = {
       { id: "num_bathrooms", label: "Number of bathrooms", type: "select", options: ["1", "2", "3", "4+"] },
       { id: "has_pets", label: "Do you have pets?", type: "select", options: ["No", "Yes — dog", "Yes — cat", "Yes — multiple pets"] },
       { id: "clutter_level", label: "Current clutter level (be honest, no judgment!)", type: "select", options: ["Light — just needs refreshing", "Moderate — a few piles", "Heavy — it's been a week", "Disaster mode — send help"] },
+      { id: "service_focus", label: "What does your home need most? (select all that apply)", type: "multiselect", options: ["Every room addressed", "Deep laundry", "Kitchen overhaul", "Organization & declutter", "Linen refresh", "Styling touches", "Dishes & counters", "Trash removal"] },
       { id: "priority_rooms", label: "Priority rooms (select all that apply)", type: "multiselect", options: ["Kitchen", "Living Room", "Primary Bedroom", "Kids Rooms", "Bathrooms", "Mudroom/Entry", "Home Office", "Basement"] },
+      { id: "laundry_detail", label: "Laundry situation", type: "select", options: ["None needed", "One load — wash & fold", "Multiple loads", "Full household laundry + linens", "Just fold — already washed"] },
+      { id: "kitchen_detail", label: "Kitchen focus", type: "select", options: ["Light reset — counters & dishes", "Full overhaul — inside appliances too", "Fridge cleanout", "Pantry organization", "All of the above!"] },
+      { id: "organization_level", label: "Organization help needed?", type: "select", options: ["No — just clean/reset", "Light — a few areas", "Yes — closets/drawers/pantry", "Full organization overhaul"] },
+      { id: "linen_styling", label: "Linen & styling touches", type: "multiselect", options: ["Bed refresh (strip & remake)", "Fresh towels set out", "Light surface styling", "None needed"] },
       { id: "product_preference", label: "Cleaning product preference", type: "select", options: ["Use your products (eco-friendly)", "I have specific products I prefer", "No preference"] },
       { id: "allergies", label: "Any sensitivities or allergies to products?", type: "text", placeholder: "e.g. fragrance-free only, no bleach..." }
     ]

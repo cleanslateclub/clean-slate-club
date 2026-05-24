@@ -28,7 +28,7 @@ export default function CTASection() {
                 className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full hover:shadow-xl transition-all duration-500"
                 style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)', color: 'white' }}
               >
-                Book Your Free Consult
+                Book Now — It's Free
               </Link>
             </div>
           </div>

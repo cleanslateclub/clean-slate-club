@@ -3,13 +3,16 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/shared/AnimatedSection';
 import WaveDivider from '../components/shared/WaveDivider';
 
+const sectionBgs = ['#fdf8f2', '#fdf6f4', '#f0f6f2', '#f5f0f4', '#fffdf0'];
+const waveFills = ['#fdf6f4', '#f0f6f2', '#f5f0f4', '#fffdf0', '#fdfcfb'];
+
 const categories = [
   {
     name: 'Home Resets',
     color: '#EFB988',
-    bg: '#EFB98812',
+    bg: '#EFB98818',
     services: [
-      { name: 'The Sunday Scaries', tagline: 'Start Monday feeling human again.', price: '$225–450', desc: 'Our signature Sunday home reset.', includes: ['Dishes', 'Laundry', 'Folding', 'Light tidying', 'Bed refresh', 'Kitchen reset', 'Trash out'], signature: true },
+      { name: 'The Monday Miracle', tagline: 'Start the week feeling human again.', price: '$225–450', desc: 'Our signature weekday-ready home reset — tackle the chaos before the week begins.', includes: ['Dishes', 'Laundry', 'Folding', 'Light tidying', 'Bed refresh', 'Kitchen reset', 'Trash out'], signature: true },
       { name: 'The Clean Slate', tagline: 'The full-home reset.', price: '$450–950', desc: 'A deep reset for your entire home — every room addressed.', includes: ['Every room', 'Deep laundry', 'Kitchen overhaul', 'Organization', 'Linen refresh', 'Styling touches'], signature: true },
       { name: 'Mess to Impress', tagline: 'Company-coming reset.', price: '$175–350', desc: 'Fast turnaround before guests arrive.', includes: ['Rapid declutter', 'Surface refresh', 'Bathroom touch-up', 'Kitchen reset', 'Fresh styling'] },
       { name: 'The Clean Getaway', tagline: 'Post-vacation recovery.', price: '$175–325', desc: 'Come home and actually relax.', includes: ['Unpacking', 'Laundry', 'Fridge reset', 'Kitchen recovery', 'Linen refresh'] },
@@ -18,7 +21,7 @@ const categories = [
   {
     name: "Mother's Helper Support",
     color: '#EB9486',
-    bg: '#EB948612',
+    bg: '#EB948818',
     services: [
       { name: 'Pardon the Mess', tagline: 'No judgment. Just relief.', price: '$300–650', desc: 'Overwhelm recovery — postpartum, burnout, ADHD paralysis, life transitions.', includes: ['Full home support', 'Burnout recovery', 'ADHD help', 'Postpartum care', 'Life transitions'], signature: true },
       { name: 'The Newborn Reset', tagline: 'You just had a baby. Rest.', price: '$150–350', desc: 'Postpartum household support so you can focus on your baby and yourself.', includes: ['Laundry', 'Dishes', 'Light tidying', 'Meal prep support', 'Nursery reset'] },
@@ -27,7 +30,7 @@ const categories = [
   {
     name: 'Errands & Life Logistics',
     color: '#CAE7B9',
-    bg: '#CAE7B918',
+    bg: '#CAE7B922',
     services: [
       { name: 'Errand Era', tagline: 'The running around, done.', price: '$35–125', desc: 'Groceries, pharmacy, returns, drop-offs — your list, handled.', includes: ['Grocery pickup', 'Pharmacy runs', 'Returns & drop-offs', 'Dry cleaning'] },
       { name: 'The Drop Off', tagline: 'Declutter without the hassle.', price: '$35–75', desc: 'Donation dropoff service — we handle the logistics.', includes: ['Donation drop-off', 'Pickup coordination'] },
@@ -36,7 +39,7 @@ const categories = [
   {
     name: 'Senior Support',
     color: '#B58A90',
-    bg: '#B58A9012',
+    bg: '#B58A9018',
     services: [
       { name: 'Gentle Home Support', tagline: 'Dignified, caring household help.', price: 'Custom', desc: 'Respectful, patient household assistance for seniors and aging parents who want independence with backup.', includes: ['Light housekeeping', 'Laundry', 'Grocery support', 'Kitchen help', 'Errand assistance'] },
       { name: 'Caregiver Relief', tagline: 'For the ones who support everyone.', price: 'Custom', desc: 'Household support for caregivers and families navigating health transitions.', includes: ['Household tasks', 'Meal prep', 'Laundry', 'Errands', 'Flexible scheduling'] },
@@ -45,7 +48,7 @@ const categories = [
   {
     name: 'Meal Prep & Kitchen Support',
     color: '#F3DE8A',
-    bg: '#F3DE8A18',
+    bg: '#F3DE8A28',
     services: [
       { name: 'The Sink or Swim', tagline: 'Kitchen rescue, no judgment.', price: '$85–150', desc: 'Full kitchen reset — dishes, counters, wipe-down, trash, refresh.', includes: ['Dishes', 'Counters', 'Wipe-down', 'Trash', 'Kitchen refresh'] },
       { name: 'Meal Prep Session', tagline: 'Nourishment made simple.', price: '$75–200', desc: 'Basic meal prep so weeknights aren\'t a source of stress.', includes: ['Ingredient prep', 'Simple meals', 'Kitchen cleanup', 'Portioning & storage'] },
@@ -90,7 +93,7 @@ export default function Services() {
 
       {/* Service Categories */}
       {categories.map((cat, ci) => (
-        <section key={cat.name} className={`py-16 lg:py-24 ${ci % 2 === 0 ? 'bg-warm-white' : 'bg-cream'}`}>
+        <section key={cat.name} className="py-16 lg:py-24" style={{ background: sectionBgs[ci] }}>
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <AnimatedSection className="mb-10">
               <div className="flex items-center gap-3 mb-2">
@@ -103,14 +106,14 @@ export default function Services() {
                 <AnimatedSection key={service.name} delay={i * 0.08}>
                   <div
                     className="group rounded-3xl border p-7 lg:p-9 transition-all duration-500 hover:shadow-xl"
-                    style={{ backgroundColor: service.signature ? cat.bg : 'rgba(253,251,248,0.8)', borderColor: service.signature ? cat.color + '40' : '#E8E0D8' }}
+                    style={{ backgroundColor: service.signature ? cat.bg : 'rgba(255,255,255,0.75)', borderColor: service.signature ? cat.color + '50' : cat.color + '25' }}
                   >
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2 flex-wrap">
                           <h3 className="font-heading text-2xl lg:text-3xl font-semibold text-charcoal">{service.name}</h3>
                           {service.signature && (
-                            <span className="font-body text-[10px] tracking-[0.15em] uppercase px-3 py-1 rounded-full font-light" style={{ background: cat.color + '25', color: cat.color }}>
+                            <span className="font-body text-[10px] tracking-[0.15em] uppercase px-3 py-1 rounded-full font-light" style={{ background: cat.color + '30', color: cat.color }}>
                               Signature
                             </span>
                           )}
@@ -119,7 +122,7 @@ export default function Services() {
                         <p className="font-body text-sm text-charcoal/45 mb-5 font-light">{service.desc}</p>
                         <div className="flex flex-wrap gap-2">
                           {service.includes.map((item) => (
-                            <span key={item} className="font-body text-xs text-charcoal/40 px-3 py-1.5 rounded-full bg-cream border border-taupe/20 font-light">
+                            <span key={item} className="font-body text-xs px-3 py-1.5 rounded-full border font-light" style={{ background: 'rgba(255,255,255,0.8)', borderColor: cat.color + '40', color: '#5a4e48' }}>
                               {item}
                             </span>
                           ))}
@@ -127,8 +130,12 @@ export default function Services() {
                       </div>
                       <div className="lg:text-right shrink-0">
                         <p className="font-heading text-2xl font-semibold" style={{ color: cat.color }}>{service.price}</p>
-                        <Link to="/book" className="inline-block mt-3 font-body text-sm text-charcoal/45 hover:text-coral border-b border-transparent hover:border-coral transition-all duration-300 font-light">
-                          Book This →
+                        <p className="font-body text-xs text-charcoal/35 font-light mt-1 mb-3">Final price confirmed before we begin</p>
+                        <Link to="/book" className="inline-block font-body text-sm tracking-wide px-6 py-2.5 rounded-full transition-all duration-300" style={{ background: cat.color + '18', color: cat.color, border: `1px solid ${cat.color}40` }}
+                          onMouseEnter={e => { e.currentTarget.style.background = cat.color; e.currentTarget.style.color = 'white'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = cat.color + '18'; e.currentTarget.style.color = cat.color; }}
+                        >
+                          Book Now →
                         </Link>
                       </div>
                     </div>
@@ -137,7 +144,7 @@ export default function Services() {
               ))}
             </div>
           </div>
-          {ci < categories.length - 1 && <WaveDivider fill={ci % 2 === 0 ? '#FAF7F2' : '#FDFBF8'} />}
+          {ci < categories.length - 1 && <WaveDivider fill={waveFills[ci + 1]} />}
         </section>
       ))}
 
@@ -164,13 +171,14 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 lg:py-28 bg-cream">
+      <section className="py-20 lg:py-28" style={{ background: '#fdf6f4' }}>
         <AnimatedSection className="text-center max-w-2xl mx-auto px-6">
           <h2 className="font-heading text-4xl font-semibold text-charcoal mb-3">Not sure what you need?</h2>
-          <p className="font-logo text-xl text-coral mb-6">That's what the consult is for.</p>
-          <p className="font-body text-base text-charcoal/45 mb-8 font-light">Tell us what's going on and we'll build the right reset for your home.</p>
+          <p className="font-logo text-xl text-coral mb-3">That's exactly what the free consult is for.</p>
+          <p className="font-body text-base text-charcoal/45 mb-2 font-light">Tell us what's going on and we'll figure it out together — no pressure, no judgment.</p>
+          <p className="font-body text-sm text-charcoal/30 font-light mb-8">15 minutes. Free. No commitment.</p>
           <Link to="/book" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-lg hover:shadow-coral/25 transition-all duration-300">
-            Book Your Free Consult
+            Book Now — It's Free
           </Link>
         </AnimatedSection>
       </section>

@@ -55,7 +55,7 @@ export default function Navbar() {
               to="/book"
               className="bg-gradient-to-r from-[#EB9486] to-[#fcd5ce] text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:shadow-lg hover:shadow-[#EB9486]/25 hover:opacity-90 transition-all duration-300"
             >
-              Book a Consult
+              Book Now
             </Link>
           </div>
 
@@ -88,9 +88,9 @@ export default function Navbar() {
                 </a>
               ))}
               <Link to="/book" className="inline-block bg-gradient-to-r from-[#EB9486] to-[#fcd5ce] text-white font-body text-sm tracking-wide px-7 py-3 rounded-full mt-2">
-                Book a Consult
-              </Link>
-            </div>
+                Book Now
+                </Link>
+                </div>
           </motion.div>
         )}
       </AnimatePresence>
