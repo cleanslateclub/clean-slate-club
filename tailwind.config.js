@@ -5,8 +5,9 @@ module.exports = {
   theme: {
   	extend: {
       fontFamily: {
-        heading: ['var(--font-heading)'],
-        body: ['var(--font-body)'],
+        logo: ['Sarina', 'cursive'],
+        heading: ['Montserrat', 'sans-serif'],
+        body: ['Lato', 'sans-serif'],
       },
   		borderRadius: {
   			lg: 'var(--radius)',
@@ -16,15 +17,21 @@ module.exports = {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
-        cream: '#F7F3EE',
-        sage: '#A8B2A1',
-        clay: '#C98F7A',
-        taupe: '#D8CEC3',
-        charcoal: '#3A3A38',
-        olive: '#7D8775',
-        blush: '#E7D7D2',
-        gold: '#C6A978',
-        'warm-white': '#FCFAF7',
+        cream: '#FAF7F2',
+        sage: '#CAE7B9',
+        butter: '#F3DE8A',
+        peach: '#EFB988',
+        coral: '#EB9486',
+        mauve: '#B58A90',
+        slate: '#7E7F9A',
+        'blue-gray': '#8B93A7',
+        mist: '#97A7B3',
+        charcoal: '#333340',
+        olive: '#DFE3A2',
+        clay: '#EB9486',
+        taupe: '#E8E0D8',
+        blush: '#F5EAE8',
+        'warm-white': '#FDFBF8',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

@@ -12,6 +12,7 @@ import Services from './pages/Services';
 import Memberships from './pages/Memberships';
 import BookNow from './pages/BookNow';
 
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 

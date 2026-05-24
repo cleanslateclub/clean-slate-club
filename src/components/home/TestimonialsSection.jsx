@@ -3,50 +3,56 @@ import AnimatedSection from '../shared/AnimatedSection';
 
 const testimonials = [
   {
-    quote: "I cried happy tears when I walked into my house after my first Sunday Scaries reset. I could actually breathe.",
+    quote: "I cried happy tears when I walked into my house after my first visit. I could actually breathe. This isn't cleaning — it's emotional relief.",
     name: "Sarah M.",
     location: "Chestnut Hill",
     detail: "Working mom of 3",
+    color: '#EFB988',
   },
   {
-    quote: "As someone with ADHD, the overwhelm of my house was paralyzing. Clean Slate Club gave me my home back without a single ounce of judgment.",
+    quote: "As someone with ADHD, the overwhelm of my house was paralyzing. Masha showed up without judgment and gave me my home back. I can't explain how much that means.",
     name: "Jen T.",
     location: "Blue Bell",
     detail: "ADHD household",
+    color: '#EB9486',
   },
   {
-    quote: "This isn't cleaning. This is therapy for your house. Worth every single penny.",
+    quote: "This isn't a cleaning service. This is therapy for your house. Worth every single penny — and the peace of mind? Priceless.",
     name: "Michelle R.",
     location: "Lafayette Hill",
     detail: "Dual-income family",
+    color: '#CAE7B9',
   },
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-24 lg:py-32 bg-charcoal/[0.03]">
+    <section className="py-24 lg:py-32 bg-warm-white relative overflow-hidden">
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-8 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 70%)', transform: 'translateY(-50%) translateX(-40%)' }} />
+
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
-          <p className="font-body text-xs tracking-[0.25em] uppercase text-olive mb-4">Kind Words</p>
-          <h2 className="font-heading text-4xl lg:text-5xl font-light text-charcoal">
+          <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">Kind Words</p>
+          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2">
             "I can breathe again."
           </h2>
+          <p className="font-logo text-xl text-coral">Real women. Real relief.</p>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((t, i) => (
             <AnimatedSection key={i} delay={i * 0.12}>
-              <div className="p-8 lg:p-10 rounded-3xl bg-warm-white border border-taupe/15 h-full flex flex-col">
+              <div className="p-8 rounded-3xl bg-cream border border-taupe/15 h-full flex flex-col hover:shadow-lg transition-all duration-500">
                 <div className="flex-1">
-                  <span className="font-heading text-5xl text-clay/30 leading-none">"</span>
-                  <p className="font-body text-base text-charcoal/70 leading-relaxed -mt-4 mb-8">
+                  <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
+                  <p className="font-body text-base text-charcoal/65 leading-relaxed font-light -mt-2 mb-8">
                     {t.quote}
                   </p>
                 </div>
                 <div>
-                  <div className="h-px bg-taupe/30 mb-6" />
-                  <p className="font-body text-sm font-medium text-charcoal">{t.name}</p>
-                  <p className="font-body text-xs text-charcoal/40 mt-0.5">{t.location} · {t.detail}</p>
+                  <div className="h-px bg-taupe/25 mb-5" />
+                  <p className="font-heading text-sm font-semibold text-charcoal">{t.name}</p>
+                  <p className="font-body text-xs text-charcoal/35 mt-0.5 font-light">{t.location} · {t.detail}</p>
                 </div>
               </div>
             </AnimatedSection>
