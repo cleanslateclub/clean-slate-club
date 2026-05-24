@@ -16,7 +16,7 @@ const steps = [
   {
     num: '03',
     title: 'Your First Visit',
-    desc: 'Masha arrives ready to work. You get to exhale. Your home gets the reset it's been waiting for.',
+    desc: "Masha arrives ready to work. You get to exhale. Your home gets the reset it's been waiting for.",
   },
 ];
 
