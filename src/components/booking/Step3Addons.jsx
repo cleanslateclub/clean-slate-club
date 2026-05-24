@@ -1,7 +1,7 @@
 import React from 'react';
 import { SERVICE_CONFIG, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step3Addons({ serviceKey, selectedAddons, onToggle }) {
+export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dynamicEstimate }) {
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -10,40 +10,53 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle }) {
     return sum + (addon ? addon.minutes : 0);
   }, 0);
 
-  const totalMinutes = BUFFER_PREP + config.baseMinutes + addonMinutes + BUFFER_WRAP;
-  const totalHours = (totalMinutes / 60).toFixed(1);
-
   const addonPrice = selectedAddons.reduce((sum, id) => {
     const addon = config.addons.find(a => a.id === id);
     return sum + (addon ? addon.price : 0);
   }, 0);
+
+  const totalMinutes = dynamicEstimate ? dynamicEstimate.durationMinutes : (BUFFER_PREP + config.baseMinutes + addonMinutes + BUFFER_WRAP);
+  const totalHours = (totalMinutes / 60).toFixed(1);
+  const estimateLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0] + addonPrice;
+  const estimateHigh = dynamicEstimate ? dynamicEstimate.high : config.priceRange[1] + addonPrice;
+  const flags = dynamicEstimate ? dynamicEstimate.flags : [];
 
   return (
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Customize your visit</h2>
       <p className="font-body text-sm text-charcoal/45 font-light mb-6">Stack on extras — each one is added to your estimated visit time.</p>
 
-      {/* Time summary */}
-      <div className="rounded-2xl p-4 mb-6 flex flex-wrap gap-6 items-center" style={{ background: 'linear-gradient(135deg, #fec5bb30 0%, #f3de8a25 50%, #cae7b930 100%)', border: '1px solid #fcd5ce60' }}>
-        <div>
-          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Base service</p>
-          <p className="font-heading text-sm font-semibold text-charcoal">{config.baseMinutes} min</p>
+      {/* Live estimate summary */}
+      <div className="rounded-2xl p-4 mb-5" style={{ background: 'linear-gradient(135deg, #fec5bb30 0%, #f3de8a25 50%, #cae7b930 100%)', border: '1px solid #fcd5ce60' }}>
+        <div className="flex flex-wrap gap-6 items-center mb-3">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Est. visit time</p>
+            <p className="font-heading text-xl font-semibold text-charcoal">{totalHours} hrs</p>
+          </div>
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Add-ons</p>
+            <p className="font-heading text-sm font-semibold text-coral">+{addonMinutes} min · +${addonPrice}</p>
+          </div>
+          <div className="ml-auto text-right">
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Estimated total</p>
+            <p className="font-heading text-xl font-semibold text-charcoal">${estimateLow}–${estimateHigh}</p>
+          </div>
         </div>
-        <div>
-          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Setup + wrap-up</p>
-          <p className="font-heading text-sm font-semibold text-charcoal">{BUFFER_PREP + BUFFER_WRAP} min</p>
-        </div>
-        <div>
-          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Add-ons</p>
-          <p className="font-heading text-sm font-semibold text-coral">+{addonMinutes} min</p>
-        </div>
-        <div className="ml-auto text-right">
-          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/35 font-light mb-0.5">Total visit time</p>
-          <p className="font-heading text-xl font-semibold text-charcoal">{totalHours} hrs</p>
-        </div>
+
+        {/* Dynamic flags */}
+        {flags.length > 0 && (
+          <div className="space-y-1 pt-2 border-t border-taupe/15">
+            {flags.map((flag, i) => (
+              <p key={i} className="font-body text-[11px] text-charcoal/45 font-light flex items-start gap-1.5">
+                <span className="text-coral shrink-0 mt-0.5">↑</span>{flag}
+              </p>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ background: 'linear-gradient(160deg, #fdf6f4 0%, #f5fbf3 100%)', borderRadius: '1rem', padding: '1rem', marginBottom: '0.25rem' }}>
+      {/* Add-on grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ background: 'linear-gradient(160deg, #fdf6f4 0%, #f5fbf3 100%)', borderRadius: '1rem', padding: '1rem' }}>
         {config.addons.map(addon => {
           const isSelected = selectedAddons.includes(addon.id);
           return (

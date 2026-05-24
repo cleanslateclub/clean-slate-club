@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { calculateTotalDuration, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
+import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
 import StepIndicator from '@/components/booking/StepIndicator';
 import Step1Service from '@/components/booking/Step1Service';
 import Step2Intake from '@/components/booking/Step2Intake';
@@ -24,7 +24,11 @@ export default function BookNow() {
 
   const isConsult = serviceKey === 'consult';
 
-  const totalDuration = serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
+  const selectedTasks = intakeAnswers._tasks || [];
+  const dynamicEstimate = serviceKey && serviceKey !== 'consult'
+    ? getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons)
+    : null;
+  const totalDuration = dynamicEstimate ? dynamicEstimate.durationMinutes : (serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0);
   const config = serviceKey ? SERVICE_CONFIG[serviceKey] : null;
 
   const toggleAddon = (id) => {
@@ -56,6 +60,8 @@ export default function BookNow() {
     setError(null);
     try {
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
+      const estimateLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0];
+      const estimateHigh = dynamicEstimate ? dynamicEstimate.high : config.priceRange[1];
       const addonPrice = selectedAddons.reduce((sum, id) => {
         const addon = config.addons.find(a => a.id === id);
         return sum + (addon ? addon.price : 0);
@@ -76,8 +82,8 @@ export default function BookNow() {
         addons: selectedAddons,
         intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos },
         special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
-        estimated_price_low: config.priceRange[0] + addonPrice,
-        estimated_price_high: config.priceRange[1] + addonPrice,
+        estimated_price_low: estimateLow,
+        estimated_price_high: estimateHigh,
         admin_notes: isConsult ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}` : '',
       });
 
@@ -185,9 +191,9 @@ export default function BookNow() {
                 {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
                 {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} />}
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
-                {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} />}
+                {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }} />}
-                {((!isConsult && step === 5) || (isConsult && step === 3)) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} />}
+                {((!isConsult && step === 5) || (isConsult && step === 3)) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
               </motion.div>
             </AnimatePresence>
 

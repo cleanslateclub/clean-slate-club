@@ -1,7 +1,7 @@
 import React from 'react';
 import { SERVICE_CONFIG, minutesToTime, timeToMinutes, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration, uploadedPhotos = [] }) {
+export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration, uploadedPhotos = [], dynamicEstimate }) {
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -54,8 +54,10 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
 
   const addonItems = selectedAddons.map(id => config.addons.find(a => a.id === id)).filter(Boolean);
   const addonPrice = addonItems.reduce((s, a) => s + a.price, 0);
-  const totalLow = config.priceRange[0] + addonPrice;
-  const totalHigh = config.priceRange[1] + addonPrice;
+  const totalLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0] + addonPrice;
+  const totalHigh = dynamicEstimate ? dynamicEstimate.high : config.priceRange[1] + addonPrice;
+  const selectedTasks = intakeAnswers._tasks || [];
+  const estimateFlags = dynamicEstimate ? dynamicEstimate.flags : [];
 
   const displayDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
     weekday: 'long', month: 'long', day: 'numeric'
@@ -118,11 +120,34 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
           <p className="font-body text-sm text-charcoal/55 font-light">{clientInfo.address}</p>
         </div>
 
+        {/* Tasks selected */}
+        {selectedTasks.length > 0 && (
+          <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-3">Tasks Requested</p>
+            <div className="flex flex-wrap gap-2">
+              {selectedTasks.map(task => (
+                <span key={task} className="px-3 py-1 rounded-full text-xs font-body font-light text-white" style={{ background: config.color }}>
+                  {task}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Pricing */}
         <div className="bg-coral/5 border border-coral/15 rounded-2xl p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-1">Estimated Total</p>
           <p className="font-heading text-2xl font-semibold text-coral">${totalLow}–${totalHigh}</p>
-          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Final pricing confirmed before any work begins. No surprises.</p>
+          {estimateFlags.length > 0 && (
+            <div className="mt-2 space-y-1">
+              {estimateFlags.map((flag, i) => (
+                <p key={i} className="font-body text-[11px] text-charcoal/40 font-light flex items-start gap-1.5">
+                  <span className="text-coral shrink-0">↑</span>{flag}
+                </p>
+              ))}
+            </div>
+          )}
+          <p className="font-body text-xs text-charcoal/35 font-light mt-2">Final pricing confirmed before any work begins. No surprises.</p>
         </div>
       </div>
     </div>

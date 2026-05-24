@@ -5,6 +5,8 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
+  const isConsult = serviceKey === 'consult';
+
   const handleAnswer = (id, value) => onChange({ ...answers, [id]: value });
 
   const toggleMulti = (id, option) => {
@@ -15,25 +17,41 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
     handleAnswer(id, updated);
   };
 
-  const isConsult = serviceKey === 'consult';
+  const toggleTask = (task) => {
+    const current = answers._tasks || [];
+    const updated = current.includes(task)
+      ? current.filter(t => t !== task)
+      : [...current, task];
+    handleAnswer('_tasks', updated);
+  };
+
+  const selectedTasks = answers._tasks || [];
 
   return (
     <div>
-      <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">{isConsult ? 'Tell us a little about you' : 'Tell us about your home'}</h2>
-      <p className="font-body text-sm text-charcoal/45 font-light mb-8">{isConsult ? 'The more you share, the better we can prepare for our call. Zero judgment.' : 'The more detail you share, the better we can prepare. Zero judgment, always.'}</p>
+      <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">
+        {isConsult ? 'Tell us a little about you' : 'Tell us about your home'}
+      </h2>
+      <p className="font-body text-sm text-charcoal/45 font-light mb-8">
+        {isConsult
+          ? 'The more you share, the better we can prepare for our call. Zero judgment.'
+          : 'The more detail you share, the better we can prepare. Zero judgment, always.'}
+      </p>
 
       {/* Client Info */}
-      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-6">
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
         <h3 className="font-heading text-sm font-semibold text-charcoal mb-4">Your Information</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
             { key: 'email', label: 'Email', placeholder: 'your@email.com', required: true },
             { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555', required: true },
-            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: true }] : []),
+            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: false }] : []),
           ].map(f => (
             <div key={f.key}>
-              <label className="font-body text-xs font-light text-charcoal/50 block mb-1.5">{f.label}{f.required && <span className="text-coral ml-0.5">*</span>}</label>
+              <label className="font-body text-xs font-light text-charcoal/50 block mb-1.5">
+                {f.label}{f.required && <span className="text-coral ml-0.5">*</span>}
+              </label>
               <input
                 type="text"
                 value={clientInfo[f.key] || ''}
@@ -46,12 +64,56 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         </div>
       </div>
 
-      {/* Service-specific intake */}
-      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 space-y-5">
+      {/* Task checkboxes */}
+      {config.taskOptions && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
+          <h3 className="font-heading text-sm font-semibold text-charcoal mb-1">What areas need support?</h3>
+          <p className="font-body text-xs text-charcoal/40 font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
+          <div className="flex flex-wrap gap-2">
+            {config.taskOptions.map(task => {
+              const isSelected = selectedTasks.includes(task);
+              return (
+                <button
+                  key={task}
+                  type="button"
+                  onClick={() => toggleTask(task)}
+                  className={`px-3.5 py-2 rounded-full border text-xs font-body font-light transition-all duration-200 flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-coral border-coral text-white'
+                      : 'bg-cream border-taupe/20 text-charcoal/55 hover:border-coral/30'
+                  }`}
+                >
+                  <span className={`w-3 h-3 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                    isSelected ? 'bg-white border-white' : 'border-charcoal/25'
+                  }`}>
+                    {isSelected && <span className="text-coral text-[8px] font-bold leading-none">✓</span>}
+                  </span>
+                  {task}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Dynamic time hint */}
+          {selectedTasks.length > 0 && (
+            <div className="mt-4 px-4 py-3 rounded-xl text-xs font-body font-light" style={{ background: '#fdf6f3', borderLeft: '3px solid #EB9486' }}>
+              {selectedTasks.length <= 3 && <span className="text-charcoal/60">✦ <strong>1–3 tasks:</strong> Estimated 2–3 hours</span>}
+              {selectedTasks.length >= 4 && selectedTasks.length <= 6 && <span className="text-charcoal/60">✦ <strong>4–6 tasks:</strong> Estimated 4–6 hours</span>}
+              {selectedTasks.length > 6 && <span className="text-coral/80">✦ <strong>Full scope selected</strong> — we'll confirm the exact time after your intake review</span>}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Household / Service intake questions */}
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5 space-y-5">
         <h3 className="font-heading text-sm font-semibold text-charcoal">About this visit</h3>
+
         {config.intakeQuestions.map(q => (
           <div key={q.id}>
-            <label className="font-body text-xs font-light text-charcoal/55 block mb-2">{q.label}</label>
+            <label className="font-body text-xs font-light text-charcoal/55 block mb-2">
+              {q.label}{q.required && <span className="text-coral ml-0.5">*</span>}
+            </label>
             {q.type === 'select' && (
               <div className="flex flex-wrap gap-2">
                 {q.options.map(opt => (
@@ -104,6 +166,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             )}
           </div>
         ))}
+
         {!isConsult && (
           <div>
             <label className="font-body text-xs font-light text-charcoal/55 block mb-2">Anything else we should know?</label>
@@ -117,6 +180,32 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           </div>
         )}
       </div>
+
+      {/* Universal closing question */}
+      {!isConsult && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
+          <label className="font-body text-sm font-semibold text-charcoal block mb-1">
+            What would make this feel most helpful?
+          </label>
+          <p className="font-body text-xs text-charcoal/40 font-light mb-3">
+            This is the most important question. Tell us what success looks like for you — emotionally, practically, anything.
+          </p>
+          <textarea
+            value={answers.most_helpful || ''}
+            onChange={e => handleAnswer('most_helpful', e.target.value)}
+            placeholder="e.g. I just want to walk in and breathe. I need the kitchen functional. I haven't had help in months and I'm exhausted..."
+            rows={3}
+            className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
+          />
+        </div>
+      )}
+
+      {/* Service disclaimer */}
+      {config.disclaimer && (
+        <div className="px-5 py-4 rounded-2xl text-xs font-body font-light leading-relaxed text-charcoal/55" style={{ background: '#fdf6f3', borderLeft: '3px solid #fcd5ce' }}>
+          <span className="font-semibold text-charcoal/70">Please note: </span>{config.disclaimer}
+        </div>
+      )}
     </div>
   );
 }

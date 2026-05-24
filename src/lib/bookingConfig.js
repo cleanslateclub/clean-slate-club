@@ -16,7 +16,9 @@ export const SERVICE_CONFIG = {
       "I have a big project I want to walk through first",
       "I want to see if this is the right fit before booking"
     ],
+    disclaimer: null,
     addons: [],
+    taskOptions: null,
     intakeQuestions: [
       { id: "situation", label: "Tell us what's going on in your home or life right now", type: "text", placeholder: "The more you share, the better we can help. No wrong answers..." },
       { id: "biggest_pain_point", label: "What's the biggest thing weighing on you?", type: "select", options: ["The whole house is a mess", "Laundry / dishes spiral", "I'm postpartum / depleted", "Caring for an aging parent", "Just need recurring help", "I'm not sure — everything?", "Something else"] },
@@ -40,6 +42,13 @@ export const SERVICE_CONFIG = {
       "After a sick week when everything piled up",
       "Move-in or move-out refresh"
     ],
+    disclaimer: "Home Reset Support focuses on restoring household functionality and flow. This service does not include deep cleaning, heavy scrubbing, hazardous conditions, or moving heavy furniture.",
+    taskOptions: [
+      "Kitchen Reset", "Dishes", "Laundry — Wash & Dry", "Laundry Folding",
+      "Laundry Put-Away", "Bed Reset", "Surface Tidying", "Toy Pickup",
+      "Pantry Reset", "Fridge Refresh", "Mail Sorting", "Plant Watering",
+      "Pet Feeding", "Overflow Clutter", "Entryway Reset", "Guest Prep"
+    ],
     addons: [
       { id: "laundry_wash_fold", label: "Laundry — Wash, Dry & Fold", minutes: 45, price: 35 },
       { id: "laundry_extra_load", label: "Extra Laundry Load (+1)", minutes: 30, price: 20 },
@@ -57,14 +66,13 @@ export const SERVICE_CONFIG = {
     intakeQuestions: [
       { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
       { id: "num_bathrooms", label: "Number of bathrooms", type: "select", options: ["1", "2", "3", "4+"] },
-      { id: "has_pets", label: "Do you have pets?", type: "select", options: ["No", "Yes — dog", "Yes — cat", "Yes — multiple pets"] },
-      { id: "clutter_level", label: "Current clutter level (be honest, no judgment!)", type: "select", options: ["Light — just needs refreshing", "Moderate — a few piles", "Heavy — it's been a week", "Disaster mode — send help"] },
-      { id: "service_focus", label: "What does your home need most? (select all that apply)", type: "multiselect", options: ["Every room addressed", "Deep laundry", "Kitchen overhaul", "Organization & declutter", "Linen refresh", "Styling touches", "Dishes & counters", "Trash removal"] },
-      { id: "priority_rooms", label: "Priority rooms (select all that apply)", type: "multiselect", options: ["Kitchen", "Living Room", "Primary Bedroom", "Kids Rooms", "Bathrooms", "Mudroom/Entry", "Home Office", "Basement"] },
-      { id: "laundry_detail", label: "Laundry situation", type: "select", options: ["None needed", "One load — wash & fold", "Multiple loads", "Full household laundry + linens", "Just fold — already washed"] },
-      { id: "kitchen_detail", label: "Kitchen focus", type: "select", options: ["Light reset — counters & dishes", "Full overhaul — inside appliances too", "Fridge cleanout", "Pantry organization", "All of the above!"] },
-      { id: "organization_level", label: "Organization help needed?", type: "select", options: ["No — just clean/reset", "Light — a few areas", "Yes — closets/drawers/pantry", "Full organization overhaul"] },
-      { id: "linen_styling", label: "Linen & styling touches", type: "multiselect", options: ["Bed refresh (strip & remake)", "Fresh towels set out", "Light surface styling", "None needed"] },
+      { id: "num_adults", label: "Number of adults in household", type: "select", options: ["1", "2", "3+"] },
+      { id: "num_children", label: "Number of children", type: "select", options: ["None", "1", "2", "3", "4+"] },
+      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes — dog", "Yes — cat", "Yes — multiple pets"] },
+      { id: "stairs", label: "Stairs in home?", type: "select", options: ["No", "Yes — one level", "Yes — multi-level"] },
+      { id: "parking", label: "Parking situation", type: "select", options: ["Driveway available", "Street parking", "Garage only", "Difficult / limited"] },
+      { id: "clutter_level", label: "Current home condition (be honest — zero judgment!)", type: "select", options: ["Mostly maintained", "Slightly behind", "Very overwhelmed", "Major reset needed"] },
+      { id: "priority_areas", label: "Priority areas (select all that apply)", type: "multiselect", options: ["Kitchen", "Living Room", "Primary Bedroom", "Kids Rooms", "Bathrooms", "Mudroom/Entry", "Home Office", "Basement"] },
       { id: "product_preference", label: "Cleaning product preference", type: "select", options: ["Use your products (eco-friendly)", "I have specific products I prefer", "No preference"] },
       { id: "allergies", label: "Any sensitivities or allergies to products?", type: "text", placeholder: "e.g. fragrance-free only, no bleach..." }
     ]
@@ -84,6 +92,13 @@ export const SERVICE_CONFIG = {
       "Post-partum support — baby and household",
       "Toddler entertainment while you work from home"
     ],
+    disclaimer: "Clean Slate Club provides support-based household and family assistance. This is not a licensed nanny agency or medical childcare provider.",
+    taskOptions: [
+      "Homework Help", "School Pickup", "Activity Dropoff", "Snack Prep",
+      "Bottle Washing", "Baby Laundry", "Bedtime Support", "Play Supervision",
+      "Routine Support", "Toy Pickup", "Kitchen Reset (kids-related)",
+      "Parent Helper Support", "Postpartum Support", "Recovery Support"
+    ],
     addons: [
       { id: "light_meal_prep", label: "Light Meal Prep for Kids", minutes: 30, price: 25 },
       { id: "school_pickup", label: "School Pickup & Dropoff", minutes: 45, price: 35 },
@@ -97,14 +112,11 @@ export const SERVICE_CONFIG = {
     intakeQuestions: [
       { id: "num_children", label: "How many children?", type: "select", options: ["1", "2", "3", "4+"] },
       { id: "ages", label: "Ages of children", type: "text", placeholder: "e.g. 6 months, 3 years, 7 years" },
-      { id: "child_ill", label: "Is any child currently ill?", type: "select", options: ["No", "Yes — mild cold/runny nose", "Yes — fever (note: we still help!)", "Yes — stomach bug"] },
-      { id: "needs_diapers", label: "Diapering needed?", type: "select", options: ["No", "Yes — diapers provided", "Yes — need to pick up diapers too"] },
-      { id: "feeding_needs", label: "Feeding needs during visit", type: "select", options: ["None / child feeds self", "Bottle feeding (formula provided)", "Breastmilk bottle (provided)", "Snacks / light meal prep", "Special dietary needs"] },
-      { id: "mobility_needs", label: "Any child mobility/transport needs?", type: "select", options: ["No", "Stroller walks", "Car seat transport (note car required)", "Wheelchair accessible needs"] },
-      { id: "nap_schedule", label: "Nap/sleep schedule during visit?", type: "select", options: ["No nap expected", "One nap", "Multiple naps", "Newborn — variable"] },
-      { id: "special_needs", label: "Any special needs, sensory sensitivities, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
+      { id: "special_needs", label: "Special needs, allergies, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
       { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes — friendly dog", "Yes — cat", "Yes — will be secured/separated"] },
       { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No — full solo support needed"] },
+      { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, bedtime rituals..." },
+      { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes — school pickup/dropoff", "Yes — activity transport"] },
       { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
     ]
   },
@@ -120,10 +132,16 @@ export const SERVICE_CONFIG = {
       "Target/Costco haul + put away",
       "Amazon returns and post office drops",
       "Prescription pickup",
-      "School supply run",
       "Birthday gift shopping",
-      "Car wash drop-off and pickup",
       "Dry cleaning pickup and delivery"
+    ],
+    disclaimer: null,
+    taskOptions: [
+      "Grocery Shopping", "Multiple Store Run", "Grocery Put-Away",
+      "Meal Prep", "School Lunch Prep", "Snack Prep", "Produce Prep",
+      "Pantry Restock", "Fridge Organization", "Freezer Meals",
+      "Returns", "Donation Dropoff", "Pharmacy Pickup",
+      "Dry Cleaning", "Post Office Runs", "Pet Supply Run"
     ],
     addons: [
       { id: "grocery_putaway", label: "Grocery Put-Away & Fridge Organize", minutes: 20, price: 20 },
@@ -138,13 +156,14 @@ export const SERVICE_CONFIG = {
       { id: "dry_cleaning", label: "Dry Cleaning Pickup or Dropoff", minutes: 20, price: 15 }
     ],
     intakeQuestions: [
-      { id: "errand_types", label: "What errands are needed? (select all)", type: "multiselect", options: ["Grocery shopping", "Target/Walmart/Costco run", "Pharmacy/prescription", "Returns (Amazon, store)", "Post office / shipping", "Dry cleaning", "Pet supplies", "Specialty store", "Other"] },
-      { id: "grocery_store_pref", label: "Preferred grocery store?", type: "text", placeholder: "e.g. Whole Foods, Giant, Trader Joe's, ALDI..." },
+      { id: "grocery_store_pref", label: "Preferred grocery store(s)?", type: "text", placeholder: "e.g. Whole Foods, Giant, Trader Joe's, ALDI..." },
+      { id: "dietary_restrictions", label: "Dietary restrictions or allergies?", type: "text", placeholder: "e.g. gluten-free, nut-free, dairy-free, vegetarian..." },
+      { id: "household_size", label: "Household size (shopping for how many?)", type: "select", options: ["1–2 people", "3–4 people", "5–6 people", "7+ people"] },
       { id: "budget_limit", label: "Errand spend limit (we use your card or reimburse)", type: "select", options: ["Under $50", "$50–$100", "$100–$200", "$200+", "No limit — use judgment"] },
       { id: "list_ready", label: "Do you have a list ready?", type: "select", options: ["Yes — I'll share it", "Mostly — I'll finalize it", "No — please help me build one"] },
-      { id: "perishables", label: "Any perishables that need immediate refrigeration?", type: "select", options: ["No", "Yes — will be home to receive", "Yes — please put away on arrival"] },
       { id: "num_stops", label: "Estimated number of stops", type: "select", options: ["1–2", "3–4", "5+", "Not sure"] },
-      { id: "special_instructions", label: "Any special instructions, dietary restrictions, or brand preferences?", type: "text", placeholder: "e.g. organic only, nut-free, specific brands..." }
+      { id: "mileage_notes", label: "Any travel distance expectations or area limits?", type: "text", placeholder: "e.g. within 10 miles, specific towns..." },
+      { id: "special_instructions", label: "Brand preferences or special instructions?", type: "text", placeholder: "e.g. organic only, specific brands, call if substituting..." }
     ]
   },
 
@@ -161,6 +180,13 @@ export const SERVICE_CONFIG = {
       "Home organization to reduce fall hazards",
       "Post-discharge recovery support"
     ],
+    disclaimer: "Clean Slate Club provides non-medical companion-style support. Services are intended to provide the kind of practical help you might ask a trusted friend or family member for.",
+    taskOptions: [
+      "Companionship", "Grocery Shopping", "Meal Support", "Laundry",
+      "Transportation", "Appointment Accompaniment", "Light Household Reset",
+      "Plant Watering", "Pet Feeding", "Mail Assistance", "Organization Support",
+      "Recovery Support", "Shoe/Sock Assistance", "Settling-In Assistance"
+    ],
     addons: [
       { id: "meal_prep_senior", label: "Light Meal Prep & Kitchen Tidy", minutes: 45, price: 35 },
       { id: "medication_reminder", label: "Medication Reminder Support (non-medical)", minutes: 15, price: 15 },
@@ -170,12 +196,16 @@ export const SERVICE_CONFIG = {
       { id: "safety_tidy", label: "Safety-Focused Declutter (trip hazards)", minutes: 45, price: 40 }
     ],
     intakeQuestions: [
-      { id: "mobility_level", label: "Mobility level of senior", type: "select", options: ["Fully mobile", "Uses cane or walker", "Uses wheelchair", "Primarily bed/chair-bound"] },
+      { id: "client_age", label: "Approximate age of senior", type: "select", options: ["65–74", "75–84", "85–94", "95+"] },
+      { id: "mobility_level", label: "Mobility level", type: "select", options: ["Fully mobile", "Uses cane or walker", "Uses wheelchair", "Primarily bed/chair-bound"] },
+      { id: "stairs", label: "Stairs in home?", type: "select", options: ["No stairs", "Yes — one flight", "Yes — multi-level"] },
+      { id: "transportation_needed", label: "Transportation to appointments needed?", type: "select", options: ["No", "Yes — medical appointments", "Yes — general errands"] },
       { id: "cognitive_notes", label: "Any memory or cognitive considerations?", type: "select", options: ["No", "Mild — occasional forgetfulness", "Moderate — needs guidance", "Significant — please call ahead"] },
-      { id: "home_accessibility", label: "Home accessibility", type: "select", options: ["Standard home", "One-level/no stairs", "Elevator building", "Stairs only"] },
-      { id: "emergency_contact", label: "Emergency contact name & phone", type: "text", placeholder: "Name, relationship, phone number" },
+      { id: "surgery_recovery", label: "Surgery or medical recovery?", type: "select", options: ["No", "Yes — recent surgery", "Yes — ongoing recovery"] },
+      { id: "special_diet", label: "Dietary restrictions for meal support?", type: "text", placeholder: "e.g. diabetic, low sodium, soft foods only..." },
       { id: "medical_equipment", label: "Any medical equipment in home?", type: "text", placeholder: "e.g. oxygen tank, hospital bed, lift chair..." },
-      { id: "special_diet", label: "Dietary restrictions for meal prep?", type: "text", placeholder: "e.g. diabetic, low sodium, soft foods only..." }
+      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes — dog", "Yes — cat", "Yes — other"] },
+      { id: "emergency_contact", label: "Emergency contact name & phone", type: "text", placeholder: "Name, relationship, phone number" }
     ]
   },
 
@@ -192,6 +222,13 @@ export const SERVICE_CONFIG = {
       "Post-grocery put-away and meal plan setup",
       "Smoothie packs, snack bags, grab-and-go containers"
     ],
+    disclaimer: null,
+    taskOptions: [
+      "Grocery Shopping", "Multiple Store Run", "Grocery Put-Away",
+      "Meal Prep", "School Lunch Prep", "Snack Prep", "Produce Prep",
+      "Pantry Restock", "Fridge Organization", "Freezer Meals",
+      "Smoothie Packs", "Baby Food Prep", "Post-Prep Kitchen Tidy"
+    ],
     addons: [
       { id: "freezer_meals", label: "Freezer Meal Batch (4–6 meals)", minutes: 60, price: 55 },
       { id: "school_lunches", label: "Weekly School Lunch Prep (5 days)", minutes: 30, price: 30 },
@@ -207,10 +244,81 @@ export const SERVICE_CONFIG = {
       { id: "meal_types", label: "What types of meals? (select all)", type: "multiselect", options: ["Breakfasts", "Lunches", "Dinners", "Snacks", "Kids meals", "Baby food", "Smoothie packs"] },
       { id: "cooking_style", label: "Preferred cooking style", type: "select", options: ["Simple & quick", "Comfort food", "Clean eating / whole foods", "Mediterranean", "Whatever you suggest!"] },
       { id: "appliances", label: "Available appliances", type: "multiselect", options: ["Instant Pot", "Air Fryer", "Slow Cooker", "Stand Mixer", "Blender", "Standard oven only"] },
-      { id: "groceries_provided", label: "Will groceries be ready?", type: "select", options: ["Yes — all ingredients provided", "Mostly — a few things missing", "No — please add grocery run add-on"] }
+      { id: "groceries_provided", label: "Will groceries be ready?", type: "select", options: ["Yes — all ingredients provided", "Mostly — a few things missing", "No — please add grocery run add-on"] },
+      { id: "kitchen_access", label: "Kitchen setup notes (pantry systems, storage preferences)", type: "text", placeholder: "e.g. everything on counters, bins labeled, fridge layout..." }
     ]
   }
 };
+
+// ─── Dynamic estimate logic ───────────────────────────────────────────────────
+
+export function getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddonIds) {
+  const config = SERVICE_CONFIG[serviceKey];
+  if (!config) return { low: 0, high: 0, durationMinutes: 0, flags: [] };
+
+  let extraMinutes = 0;
+  const flags = [];
+
+  if (serviceKey === 'home_reset') {
+    const taskCount = (selectedTasks || []).length;
+    if (taskCount >= 4 && taskCount <= 6) { extraMinutes += 30; flags.push("4–6 tasks selected — extra time added"); }
+    if (taskCount > 6) { extraMinutes += 60; flags.push("Full reset scope — significant time added"); }
+    if ((selectedTasks || []).includes("Pantry Reset")) { extraMinutes += 20; }
+    if ((selectedTasks || []).includes("Fridge Refresh")) { extraMinutes += 15; }
+    if ((selectedTasks || []).includes("Laundry Put-Away")) { extraMinutes += 20; }
+    if (intakeAnswers.clutter_level === "Very overwhelmed") { extraMinutes += 30; flags.push("Heavy clutter — extra time added"); }
+    if (intakeAnswers.clutter_level === "Major reset needed") { extraMinutes += 60; flags.push("Major reset — substantial time added"); }
+    if (intakeAnswers.home_size === "4BR" || intakeAnswers.home_size === "5BR+") { extraMinutes += 30; flags.push("Large home — extra time added"); }
+    if (intakeAnswers.has_pets && intakeAnswers.has_pets !== "No") { extraMinutes += 10; }
+    if (intakeAnswers.stairs === "Yes — multi-level") { extraMinutes += 15; }
+    if (intakeAnswers.num_children !== "None" && intakeAnswers.num_children) { extraMinutes += 15; }
+  }
+
+  if (serviceKey === 'mothers_helper') {
+    if (intakeAnswers.num_children === "3" || intakeAnswers.num_children === "4+") { extraMinutes += 30; flags.push("3+ children — extra time added"); }
+    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== "No") { extraMinutes += 45; flags.push("Transportation — added travel time"); }
+    const taskCount = (selectedTasks || []).length;
+    if (taskCount > 5) { extraMinutes += 30; }
+  }
+
+  if (serviceKey === 'errands') {
+    if (intakeAnswers.num_stops === "3–4") { extraMinutes += 20; }
+    if (intakeAnswers.num_stops === "5+") { extraMinutes += 45; flags.push("5+ stops — significant travel time added"); }
+    if ((selectedTasks || []).includes("Freezer Meals")) { extraMinutes += 60; flags.push("Freezer meal prep — substantial time added"); }
+    if ((selectedTasks || []).includes("Multiple Store Run")) { extraMinutes += 30; flags.push("Multiple stores — extra time added"); }
+    if (intakeAnswers.household_size === "5–6 people" || intakeAnswers.household_size === "7+ people") { extraMinutes += 20; flags.push("Large household — larger shop estimated"); }
+    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) { extraMinutes += 15; flags.push("Special diet — extra sourcing time added"); }
+  }
+
+  if (serviceKey === 'senior_support') {
+    if (intakeAnswers.mobility_level === "Uses wheelchair" || intakeAnswers.mobility_level === "Primarily bed/chair-bound") { extraMinutes += 20; flags.push("Mobility assistance — extra care time added"); }
+    if (intakeAnswers.surgery_recovery && intakeAnswers.surgery_recovery !== "No") { extraMinutes += 20; flags.push("Recovery support — extra time added"); }
+    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== "No") { extraMinutes += 45; flags.push("Transportation to appointments — added travel time"); }
+  }
+
+  if (serviceKey === 'meal_prep') {
+    if (intakeAnswers.num_people === "5–6 people" || intakeAnswers.num_people === "7+ people") { extraMinutes += 30; flags.push("Large household — more prep time added"); }
+    if ((selectedTasks || []).includes("Freezer Meals")) { extraMinutes += 60; flags.push("Freezer meal batch — substantial time added"); }
+    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) { extraMinutes += 20; flags.push("Special diet — extra planning/sourcing time"); }
+    if (intakeAnswers.groceries_provided === "No — please add grocery run add-on") { extraMinutes += 45; flags.push("Grocery run needed — travel time added"); }
+  }
+
+  // Add-ons
+  const addonMinutes = (selectedAddonIds || []).reduce((sum, id) => {
+    const addon = config.addons.find(a => a.id === id);
+    return sum + (addon ? addon.minutes : 0);
+  }, 0);
+  const addonPrice = (selectedAddonIds || []).reduce((sum, id) => {
+    const addon = config.addons.find(a => a.id === id);
+    return sum + (addon ? addon.price : 0);
+  }, 0);
+
+  const totalDuration = BUFFER_PREP + config.baseMinutes + extraMinutes + addonMinutes + BUFFER_WRAP;
+  const low = config.priceRange[0] + addonPrice;
+  const high = config.priceRange[1] + addonPrice + Math.round(extraMinutes / 60 * 40);
+
+  return { low, high, durationMinutes: totalDuration, flags };
+}
 
 export const AVAILABLE_HOURS = ["8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM"];
 
