@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Services from './pages/Services';
 import Memberships from './pages/Memberships';
 import BookNow from './pages/BookNow';
+import AdminDashboard from './pages/AdminDashboard';
 
 
 const AuthenticatedApp = () => {
@@ -40,6 +41,7 @@ const AuthenticatedApp = () => {
         <Route path="/services" element={<Services />} />
         <Route path="/memberships" element={<Memberships />} />
         <Route path="/book" element={<BookNow />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -53,7 +53,7 @@ export default function Navbar() {
               to="/book"
               className="bg-coral text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:bg-coral/90 hover:shadow-lg hover:shadow-coral/20 transition-all duration-300"
             >
-              Book a Consult
+              Book Now
             </Link>
           </div>
 

@@ -1,0 +1,83 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_phone": {
+      "type": "string"
+    },
+    "client_address": {
+      "type": "string"
+    },
+    "service_category": {
+      "type": "string",
+      "enum": [
+        "home_reset",
+        "mothers_helper",
+        "errands",
+        "senior_support",
+        "meal_prep"
+      ]
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "scheduled_start_time": {
+      "type": "string"
+    },
+    "scheduled_end_time": {
+      "type": "string"
+    },
+    "base_duration_minutes": {
+      "type": "number"
+    },
+    "total_duration_minutes": {
+      "type": "number"
+    },
+    "addons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "intake_answers": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "special_notes": {
+      "type": "string"
+    },
+    "estimated_price_low": {
+      "type": "number"
+    },
+    "estimated_price_high": {
+      "type": "number"
+    },
+    "admin_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_name",
+    "client_email",
+    "service_category",
+    "scheduled_date",
+    "scheduled_start_time"
+  ]
+}
