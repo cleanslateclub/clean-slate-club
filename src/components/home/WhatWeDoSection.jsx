@@ -21,6 +21,12 @@ const services = [
     description: 'Overwhelm recovery for burnout, ADHD paralysis, postpartum, and life transitions.',
     price: '$300–650',
   },
+  {
+    name: 'Caregiving',
+    tagline: 'Support for the ones who support everyone.',
+    description: 'Household help for caregivers, aging parents, and families navigating health transitions.',
+    price: 'Custom',
+  },
 ];
 
 export default function WhatWeDoSection() {
@@ -37,7 +43,7 @@ export default function WhatWeDoSection() {
           </p>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {services.map((service, i) => (
             <AnimatedSection key={service.name} delay={i * 0.15}>
               <div className="group p-8 rounded-3xl bg-warm-white/60 border border-taupe/20 hover:border-clay/30 hover:shadow-xl hover:shadow-clay/5 transition-all duration-500">
