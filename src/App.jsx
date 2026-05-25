@@ -8,8 +8,8 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
-import Services from './pages/Services';
-import Memberships from './pages/Memberships';
+import Services from './pages/Services.jsx';
+import Memberships from './pages/Memberships.jsx';
 import BookNow from './pages/BookNow';
 import AdminDashboard from './pages/AdminDashboard';
 

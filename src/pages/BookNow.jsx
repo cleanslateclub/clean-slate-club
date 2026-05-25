@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
 import StepIndicator from '@/components/booking/StepIndicator';
 import PolicyModal from '@/components/booking/PolicyModal';
-import Step1Service from '@/components/booking/Step1Service';
+import Step1Service from '@/components/booking/Step1Service.jsx';
 import Step2Intake from '@/components/booking/Step2Intake';
 import Step3Addons from '@/components/booking/Step3Addons';
 import Step4Schedule from '@/components/booking/Step4Schedule';
@@ -25,6 +25,7 @@ export default function BookNow() {
   const [policyAccepted, setPolicyAccepted] = useState(false);
 
   const isConsult = serviceKey === 'consult';
+  // organization is a valid full booking service (not consult)
 
   const selectedTasks = intakeAnswers._tasks || [];
   const dynamicEstimate = serviceKey && serviceKey !== 'consult'
