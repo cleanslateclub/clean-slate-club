@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
 import StepIndicator from '@/components/booking/StepIndicator';
+import PolicyModal from '@/components/booking/PolicyModal';
 import Step1Service from '@/components/booking/Step1Service';
 import Step2Intake from '@/components/booking/Step2Intake';
 import Step3Addons from '@/components/booking/Step3Addons';
@@ -21,6 +22,7 @@ export default function BookNow() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
+  const [policyAccepted, setPolicyAccepted] = useState(false);
 
   const isConsult = serviceKey === 'consult';
 
@@ -261,6 +263,12 @@ export default function BookNow() {
 
   return (
     <div className="min-h-screen bg-cream">
+      {!policyAccepted && (
+        <PolicyModal
+          onAgree={() => setPolicyAccepted(true)}
+          onClose={() => window.history.back()}
+        />
+      )}
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
