@@ -52,7 +52,7 @@ const services = [
     key: 'clean_plate_club',
     label: 'Clean Plate Club',
     tagline: 'Real food, ready when you need it.',
-    description: 'Meal prep, batch cooking, freezer meals, and pantry organization. Come home to a stocked fridge and a week's worth of meals that actually taste good.',
+    description: "Meal prep, batch cooking, freezer meals, and pantry organization. Come home to a stocked fridge and a week's worth of meals that actually taste good.",
     focus: ['Batch cooking', 'Freezer meal prep', 'Weekly meal prep', 'Pantry organization', 'Grocery shopping', 'Recipe-based cooking'],
     price: '$120–$240',
     duration: '2–4 hrs',
