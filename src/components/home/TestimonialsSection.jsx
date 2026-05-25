@@ -40,7 +40,7 @@ export default function TestimonialsSection() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2">
             "I can breathe again."
           </h2>
-          <p className="font-logo text-xl text-coral">Real women. Real relief.</p>
+          <p className="font-logo text-xl text-coral">Real houses. Real relief.</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
