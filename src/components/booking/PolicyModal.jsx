@@ -25,7 +25,7 @@ const sections = [
   {
     title: 'Service Time & Scope',
     body: 'Each package includes a set amount of time. If everything cannot be completed within the booked time due to household condition, added requests, missing supplies, access delays, or other unforeseen circumstances, you will have two options:',
-    list: ['Book an additional package for another day', 'Approve additional time at $75 per hour, charged to the card on file'],
+    list: ['Book an additional package for another day', 'Approve additional time at $65/hr (members) or $85/hr (non-members), charged to the card on file'],
     note: 'Additional time is not guaranteed and depends on provider availability.',
   },
   {
@@ -74,7 +74,7 @@ const sections = [
   },
 ];
 
-const agreementText = 'I understand that all services require a $50 deposit. I understand that cancellations within 24 hours may forfeit the deposit. I understand that supplies and materials specific to my service must be available before the appointment, and that time spent sourcing missing items counts toward my booked service time. I understand that if my requested tasks exceed the booked time, I may either book an additional visit or approve extra time at $75 per hour if available. I understand that Clean Slate Club provides non-medical household, family, senior, errand, and lifestyle support only.';
+const agreementText = 'I understand that all services require a $50 deposit. I understand that cancellations within 24 hours may forfeit the deposit. I understand that supplies and materials specific to my service must be available before the appointment, and that time spent sourcing missing items counts toward my booked service time. I understand that if my requested tasks exceed the booked time, I may either book an additional visit or approve extra time at $65/hr (members) or $85/hr (non-members) if available. I understand that Clean Slate Club provides non-medical household, family, senior, errand, and lifestyle support only.';
 
 export default function PolicyModal({ onAgree, onClose }) {
   const [agreed, setAgreed] = useState(false);
