@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
+import WaveDivider from '../shared/WaveDivider';
 
 const steps = [
 {
@@ -22,6 +23,8 @@ const steps = [
 
 export default function ConsultSection() {
   return (
+    <div>
+    <WaveDivider fill="#fdf5ec" />
     <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5ec' }}>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #f8bb80 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
       <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffc898 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
@@ -67,6 +70,8 @@ export default function ConsultSection() {
           </AnimatedSection>
         </div>
       </div>
-    </section>);
+    </section>
+    <WaveDivider fill="#fdf5ec" flip />
+    </div>);
 
 }

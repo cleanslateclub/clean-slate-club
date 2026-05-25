@@ -22,7 +22,6 @@ export default function Home() {
       <WaveDivider fill="#f2ddd6" />
       <TrustSection />
       <ConsultSection />
-      <WaveDivider fill="#e3d0c3" />
       <TestimonialsSection />
       <WaveDivider fill="#fdf5f3" flip />
       <MembershipPreview />
