@@ -46,8 +46,8 @@ export default function HeroSection() {
             <h1 className="font-logo md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2 text-lg">for busy homes
 
             </h1>
-            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl text-charcoal/40 leading-[1.2] mb-8">
-              Let's get you there.
+            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl text-charcoal/40 leading-[1.2] mb-8">The burnout is real.
+
             </h1>
           </motion.div>
 
