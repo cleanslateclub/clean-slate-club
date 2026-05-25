@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
+import WaveDivider from '../shared/WaveDivider';
 
 // Line-art SVG icons
 const IconHome = () =>
@@ -9,14 +10,14 @@ const IconHome = () =>
     <path d="M12 29V19h8v10" />
   </svg>;
 
-const IconBaby = () =>
+const IconFamily = () =>
 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-    <circle cx="16" cy="9" r="5" />
-    <path d="M8 28c0-4.418 3.582-8 8-8s8 3.582 8 8" />
-    <path d="M22 6c1.5-1 3.5-.5 4 1.5" />
-    <circle cx="14" cy="8" r=".5" fill="currentColor" />
-    <circle cx="18" cy="8" r=".5" fill="currentColor" />
-    <path d="M14 11c.5.8 1.5.8 2 0" strokeWidth="1.2" />
+    <circle cx="11" cy="8" r="3.5" />
+    <path d="M4 24c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" />
+    <circle cx="22" cy="10" r="2.5" />
+    <path d="M18 24c0-2.761 1.791-5 4-5s4 2.239 4 5" />
+    <path d="M9 17.5c1-.4 2.5-.5 3.5 0" strokeWidth="1.2" />
+    <circle cx="11" cy="19.5" r="1" fill="currentColor" stroke="none" />
   </svg>;
 
 const IconBag = () =>
@@ -47,13 +48,13 @@ const categories = [
   iconKey: 'home',
   name: 'Home Resets',
   tagline: 'Your home, caught up.',
-  desc: 'From the Sunday Scaries package to full-home resets — we bring your space back to baseline so you can breathe.',
+  desc: 'Full home resets for when things have piled up — clutter, surfaces, kitchens, bathrooms. We bring your space back to baseline so you can breathe.',
   color: '#c0796b',
   bg: '#ffd7ba55',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png'
 },
 {
-  iconKey: 'baby',
+  iconKey: 'family',
   name: "Mother's Helper Support",
   tagline: 'An extra pair of trusted hands.',
   desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
@@ -90,10 +91,12 @@ const categories = [
 }];
 
 
-const iconMap = { home: IconHome, baby: IconBaby, bag: IconBag, heart: IconHeart, pot: IconPot };
+const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot };
 
 export default function ServicesPreview() {
   return (
+    <div>
+    <WaveDivider fill="#fdf3f0" />
     <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf3f0' }}>
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #cae8d8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
       <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
@@ -150,6 +153,8 @@ export default function ServicesPreview() {
           </AnimatedSection>
         </div>
       </div>
-    </section>);
+    </section>
+    <WaveDivider fill="#fdf3f0" flip />
+    </div>);
 
 }
