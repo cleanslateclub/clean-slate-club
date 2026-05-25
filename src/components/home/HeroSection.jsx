@@ -55,7 +55,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light">
+            className="font-body text-xl leading-relaxed mb-10 max-w-md font-light" style={{ color: '#333333' }}>
             
             Because nobody's actually caught up. Thoughtful lifestyle support for busy homes, full schedules, mental overload, and the seasons where an extra set of hands makes all the difference.
           </motion.p>
