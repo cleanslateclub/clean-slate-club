@@ -30,11 +30,11 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex flex-col leading-none">
+          <Link to="/" className="flex items-baseline gap-1.5 leading-none">
             <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-charcoal">
               Clean Slate
             </span>
-            <span className="font-logo text-lg text-coral" style={{ lineHeight: 1.1 }}>
+            <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>
               Club
             </span>
           </Link>
