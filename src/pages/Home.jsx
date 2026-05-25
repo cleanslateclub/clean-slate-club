@@ -21,7 +21,6 @@ export default function Home() {
       <ServicesPreview />
       <WaveDivider fill="#f2ddd6" />
       <TrustSection />
-      <WaveDivider fill="#fdf5ec" flip />
       <ConsultSection />
       <WaveDivider fill="#e3d0c3" />
       <TestimonialsSection />
