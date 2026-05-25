@@ -2,32 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 
-const tiers = [
-  {
-    name: 'Maintenance Mode',
-    price: '$299–499',
-    period: '/mo',
-    desc: '2 visits per month. For the woman who just needs a little consistent backup.',
-    features: ['Bi-monthly resets', 'Priority scheduling', 'Member pricing'],
-    dotColor: '#CAE7B9',
-  },
-  {
-    name: 'Weekly Wipeout',
-    price: '$499–899',
-    period: '/mo',
-    desc: 'Weekly reset service. Consistency that changes everything.',
-    features: ['Weekly home resets', 'Priority scheduling', 'Member pricing', 'Seasonal perks'],
-    featured: true,
-    dotColor: '#EB9486',
-  },
-  {
-    name: 'The Soft Life',
-    price: '$899–1,500',
-    period: '/mo',
-    desc: 'Resets, errands, laundry, organization — the full support system.',
-    features: ['Everything included', 'Errand support', 'Organization help', 'VIP scheduling'],
-    dotColor: '#B58A90',
-  },
+const perks = [
+  { label: 'Priority scheduling', detail: 'Book 48hrs before the calendar opens to the public', dot: '#CAE7B9' },
+  { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#EB9486' },
+  { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#EFB988' },
+  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule', dot: '#B58A90' },
+  { label: 'Monthly check-ins', detail: "Wellness check-in text from Masha every month", dot: '#CAE7B9' },
+  { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#97A7B3' },
 ];
 
 export default function MembershipPreview() {
@@ -47,49 +28,39 @@ export default function MembershipPreview() {
           </p>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {tiers.map((tier, i) => (
-            <AnimatedSection key={tier.name} delay={i * 0.12}>
-              <div
-                className="relative p-8 lg:p-10 rounded-3xl border h-full flex flex-col transition-all duration-500"
-                style={tier.featured
-                  ? { background: 'linear-gradient(135deg, #fec5bb 0%, #fcd5ce 40%, #ece4db 100%)', borderColor: 'transparent', transform: 'scale(1.04)', boxShadow: '0 20px 60px #fec5bb30' }
-                  : { background: 'rgba(255,255,255,0.8)', borderColor: '#f0e8e4' }
-                }
-              >
-                {tier.featured && (
-                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 font-body text-[10px] tracking-[0.2em] uppercase bg-charcoal text-white px-5 py-1.5 rounded-full whitespace-nowrap">
-                    Most Popular
-                  </span>
-                )}
-                <h3 className="font-heading text-xl font-semibold mb-2" style={{ color: tier.featured ? '#3a2820' : '#3a3330' }}>{tier.name}</h3>
-                <div className="flex items-baseline gap-1 mb-3">
-                  <span className="font-heading text-3xl font-semibold" style={{ color: tier.featured ? '#9a5f55' : '#c07060' }}>{tier.price}</span>
-                  <span className="font-body text-sm font-light" style={{ color: tier.featured ? '#9a8880' : '#baa090' }}>{tier.period}</span>
-                </div>
-                <p className="font-body text-sm leading-relaxed mb-8 font-light flex-1" style={{ color: tier.featured ? '#6a5048' : '#7a6560' }}>{tier.desc}</p>
-                <ul className="space-y-2.5 mb-8">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tier.featured ? '#c07060' : tier.dotColor }} />
-                      <span className="font-body text-sm font-light" style={{ color: tier.featured ? '#6a5048' : '#7a6560' }}>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/memberships"
-                  className="block text-center font-body text-sm tracking-wide py-3.5 rounded-full transition-all duration-300 border"
-                  style={tier.featured
-                    ? { background: 'rgba(255,255,255,0.6)', borderColor: '#fcd5ce80', color: '#9a5f55' }
-                    : { background: 'transparent', borderColor: '#fcd5ce80', color: '#c07060' }
-                  }
-                >
-                  Learn More
-                </Link>
+        <AnimatedSection delay={0.1}>
+          <div className="max-w-2xl mx-auto rounded-3xl overflow-hidden border border-coral/20 shadow-xl shadow-coral/5">
+            {/* Card header */}
+            <div className="p-10 text-center" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #fcd5ce 60%, #ece4db 100%)' }}>
+              <p className="font-body text-xs tracking-[0.25em] uppercase text-white/80 font-light mb-2">Monthly Membership</p>
+              <p className="font-heading text-6xl font-semibold text-white mb-1">$49</p>
+              <p className="font-body text-sm text-white/70 font-light">per month · cancel anytime</p>
+            </div>
+            {/* Perks */}
+            <div className="p-8 lg:p-10" style={{ background: 'rgba(255,255,255,0.9)' }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                {perks.map((perk, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-2" style={{ background: perk.dot }} />
+                    <div>
+                      <p className="font-body text-sm text-charcoal font-light">{perk.label}</p>
+                      <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{perk.detail}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </AnimatedSection>
-          ))}
-        </div>
+              <Link
+                to="/memberships"
+                className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 transition-all duration-300"
+              >
+                Join The Catch-Up Club™ →
+              </Link>
+              <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#baa090' }}>
+                Membership fee is separate from service costs. Services billed per visit.
+              </p>
+            </div>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   );
