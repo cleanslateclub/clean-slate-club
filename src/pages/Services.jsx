@@ -5,6 +5,18 @@ import AnimatedSection from '@/components/shared/AnimatedSection';
 
 const services = [
   {
+    key: 'consult',
+    label: "Not Sure Yet — Let's Talk",
+    tagline: 'A free 15-minute call to figure it out together.',
+    description: "Not sure where to start? Book a free consultation and we'll listen, ask the right questions, and help you figure out exactly what kind of support makes sense for your situation. No commitment, no pressure.",
+    focus: ['No obligation', 'Fully customized', '15 minutes', 'Phone or video', 'Get a real plan', 'Zero judgment'],
+    price: 'Free',
+    duration: '15 min call',
+    color: '#B58A90',
+    bg: '#f7edef',
+    bookLabel: 'Book Free Consult',
+  },
+  {
     key: 'hot_mess_express',
     label: 'Hot Mess Express',
     tagline: 'When it all caught up with you.',
@@ -155,7 +167,7 @@ export default function Services() {
                   className="inline-block text-white font-body text-xs tracking-wide px-6 py-2.5 rounded-full transition-all duration-300 hover:opacity-90"
                   style={{ background: service.color }}
                 >
-                  Book {service.label} →
+                  {service.bookLabel || `Book ${service.label}`} →
                 </Link>
               </div>
             </div>
@@ -168,7 +180,7 @@ export default function Services() {
         <div className="max-w-4xl mx-auto px-6 pb-16">
           <div className="rounded-2xl p-6 text-center" style={{ background: 'linear-gradient(135deg, #fef0ee, #eef8ea)', border: '1px solid #fcd5ce50' }}>
             <p className="font-body text-sm text-charcoal/60 font-light">
-              <strong className="font-semibold text-charcoal/80">Service hours:</strong> Monday – Saturday, 10:00 AM – 6:00 PM
+              <strong className="font-semibold text-charcoal/80">Service hours:</strong> 10:00 AM – 6:00 PM
               <span className="mx-3 text-charcoal/20">·</span>
               Members enjoy priority scheduling from 9:00 AM
             </p>
