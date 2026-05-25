@@ -57,7 +57,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.65 }}
             className="font-body text-xl leading-relaxed mb-10 max-w-md font-light" style={{ color: '#333333' }}>
             
-            For the households running on iced coffee and mental tabs. Thoughtful lifestyle support for busy homes, family logistics, and real-life overwhelm.
+            Support for busy households, mental overload, family logistics, and the never-ending little things that keep life moving.
           </motion.p>
 
           <motion.div
