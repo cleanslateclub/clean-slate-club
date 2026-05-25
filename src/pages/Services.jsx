@@ -30,7 +30,7 @@ const services = [
     key: 'the_check_in',
     label: 'The Check-In',
     tagline: 'Compassionate support for seniors.',
-    description: 'Warm, reliable support for older adults — whether it's companionship, errands, light housekeeping, or just someone to check in and make sure everything's okay.',
+    description: "Warm, reliable support for older adults — whether it's companionship, errands, light housekeeping, or just someone to check in and make sure everything's okay.",
     focus: ['Companionship visits', 'Grocery & pharmacy runs', 'Light housekeeping', 'Appointment reminders', 'Meal preparation', 'Safety check-ins'],
     price: '$100–$200',
     duration: '2–3 hrs',
