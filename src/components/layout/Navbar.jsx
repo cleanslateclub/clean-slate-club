@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: 22, height: 22 }}>
     <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 );
+
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: 22, height: 22 }}>
     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
-import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { label: 'Services', path: '/services' },
@@ -34,8 +35,13 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-xl' : 'bg-transparent'}`}
-      style={scrolled ? { background: 'rgba(253,252,251,0.93)', boxShadow: '0 1px 20px rgba(254,197,187,0.15)' } : {}}
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        transition: 'all 0.5s',
+        background: scrolled ? 'rgba(253,252,251,0.93)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        boxShadow: scrolled ? '0 1px 20px rgba(254,197,187,0.15)' : 'none',
+      }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
@@ -53,16 +59,16 @@ export default function Navbar() {
               <a
                 key={link.path}
                 href={link.path}
-                className={`font-body text-sm font-light tracking-wide transition-colors duration-300 ${
-                  location.pathname === link.path ? 'text-coral' : 'text-charcoal/60 hover:text-coral'
-                }`}
+                style={{ color: location.pathname === link.path ? '#EB9486' : undefined }}
+                className="font-body text-sm font-light tracking-wide transition-colors duration-300 text-charcoal/60 hover:text-coral"
               >
                 {link.label}
               </a>
             ))}
             <Link
               to="/book"
-              className="bg-gradient-to-r from-[#EB9486] to-[#fcd5ce] text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:shadow-lg hover:shadow-[#EB9486]/25 hover:opacity-90 transition-all duration-300"
+              className="text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:opacity-90 transition-all duration-300"
+              style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
             >
               Book Now
             </Link>
@@ -74,35 +80,32 @@ export default function Navbar() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden backdrop-blur-xl border-t"
-          style={{ background: 'rgba(253,252,251,0.97)', borderColor: '#fcd5ce40' }}
-          >
-            <div className="px-6 py-8 space-y-6">
-              <Link to="/" className="block font-heading text-xl font-semibold text-charcoal/70">Home</Link>
-              {navLinks.map((link) => (
-                <a
-                  key={link.path}
-                  href={link.path}
-                  className={`block font-heading text-xl font-semibold ${
-                    location.pathname === link.path ? 'text-coral' : 'text-charcoal/70'
-                  }`}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <Link to="/book" className="inline-block bg-gradient-to-r from-[#EB9486] to-[#fcd5ce] text-white font-body text-sm tracking-wide px-7 py-3 rounded-full mt-2">
-                Book Now
-                </Link>
-                </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {mobileOpen && (
+        <div
+          className="md:hidden border-t"
+          style={{ background: 'rgba(253,252,251,0.97)', borderColor: '#fcd5ce40', backdropFilter: 'blur(20px)' }}
+        >
+          <div className="px-6 py-8 space-y-6">
+            <Link to="/" className="block font-heading text-xl font-semibold text-charcoal/70">Home</Link>
+            {navLinks.map((link) => (
+              <a
+                key={link.path}
+                href={link.path}
+                className="block font-heading text-xl font-semibold text-charcoal/70"
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link
+              to="/book"
+              className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full mt-2"
+              style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
+            >
+              Book Now
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
