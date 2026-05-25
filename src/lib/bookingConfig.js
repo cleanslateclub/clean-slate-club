@@ -40,11 +40,11 @@ export const SERVICE_CONFIG = {
     description: "For households that need help getting back to baseline when life gets chaotic. Real help, zero judgment.",
     disclaimer: "Hot Mess Express focuses on household reset and functionality. This service does not include childcare, transportation, elder care, or deep cleaning.",
     examples: [
-      "Monday morning — reset before the week swallows you",
-      "Post-sick week when everything piled up",
-      "Pre-guests emergency tidy",
-      "After a move or busy season",
-      "ADHD paralysis reset"
+      "Dishes stacked, laundry everywhere, no idea where to start",
+      "House hasn't been touched in weeks — full reset needed",
+      "Company coming over and you need it presentable fast",
+      "Post-sick household — everything piled up while you recovered",
+      "ADHD paralysis reset — just need someone to come in and move"
     ],
     taskOptions: [
       "Help Me Choose — I'm Overwhelmed",
@@ -254,7 +254,7 @@ export const SERVICE_CONFIG = {
     description: "Nourishment support for busy households. Simple, real food — prepped and ready to go.",
     disclaimer: "Grocery costs are separate from service time. Clean Slate Club does not advance personal funds for groceries.",
     examples: [
-      "Sunday proteins, grains & veggies for the week",
+      "Weekly proteins, grains & veggies prepped and portioned",
       "School lunch prep for 5 days",
       "Freezer batch cooking — 4–6 meals",
       "Post-grocery put-away and meal plan setup",
