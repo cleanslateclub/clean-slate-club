@@ -29,8 +29,8 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}
-          >
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
+            
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
             <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
           </motion.div>
@@ -38,10 +38,10 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.35 }}
-          >
-            <h1 className="font-heading font-light text-4xl md:text-5xl lg:text-[3.5rem] text-charcoal/60 leading-[1.1] mb-2">
-              You deserve a home
+            transition={{ duration: 1, delay: 0.35 }}>
+            
+            <h1 className="font-heading font-light md:text-5xl lg:text-[3.5rem] text-charcoal/60 leading-[1.1] mb-2 text-2xl">You deserve a home
+
             </h1>
             <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2">
               that feels like you.
@@ -55,8 +55,8 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light"
-          >
+            className="font-body text-lg text-charcoal/55 leading-relaxed mb-10 max-w-md font-light">
+            
             Because nobody's actually caught up. Thoughtful lifestyle support for busy homes, full schedules, mental overload, and the seasons where an extra set of hands makes all the difference.
           </motion.p>
 
@@ -64,18 +64,18 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-start gap-4"
-          >
+            className="flex flex-col sm:flex-row items-start gap-4">
+            
             <Link
               to="/book"
-              className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-xl hover:shadow-coral/25 transition-all duration-500"
-            >
+              className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-xl hover:shadow-coral/25 transition-all duration-500">
+              
               Start Your Reset
             </Link>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/50 py-4 hover:text-coral transition-colors duration-300"
-            >
+              className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/50 py-4 hover:text-coral transition-colors duration-300">
+              
               See what we do <span className="text-coral">→</span>
             </Link>
           </motion.div>
@@ -86,37 +86,37 @@ export default function HeroSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
             className="mt-10 lg:hidden overflow-hidden"
-            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}
-          >
+            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
+            
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
               transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
-              className="flex gap-2.5 w-max"
-            >
+              className="flex gap-2.5 w-max">
+              
               {[...Array(2)].flatMap(() =>
-                [
-                  { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
-                  { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
-                  { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
-                  { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
-                  { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
-                  { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
-                  { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
-                  { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
-                  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' },
-                ].map((t, i) => (
-                  <span
-                    key={`m-${t.label}-${i}`}
-                    className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
-                    style={{ background: t.bg, borderColor: t.color + '35' }}
-                  >
+              [
+              { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
+              { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
+              { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
+              { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
+              { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
+              { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
+              { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
+              { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
+              { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' }].
+              map((t, i) =>
+              <span
+                key={`m-${t.label}-${i}`}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
+                style={{ background: t.bg, borderColor: t.color + '35' }}>
+                
                     <span
-                      className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-                      style={{ background: t.color }}
-                    >✓</span>
+                  className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
+                  style={{ background: t.color }}>
+                  ✓</span>
                     {t.emoji} {t.label}
                   </span>
-                ))
+              )
               )}
             </motion.div>
           </motion.div>
@@ -126,14 +126,14 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-4"
-          >
-            {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) => (
-              <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
+            className="mt-10 flex flex-wrap gap-4">
+            
+            {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) =>
+            <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full bg-sage" />
                 {badge}
               </span>
-            ))}
+            )}
           </motion.div>
         </div>
       </div>
@@ -143,11 +143,11 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        
         <div className="w-px h-10 bg-gradient-to-b from-charcoal/20 to-transparent" />
         <p className="font-body text-[9px] tracking-[0.3em] uppercase text-charcoal/25 font-light">Scroll</p>
       </motion.div>
-    </section>
-  );
+    </section>);
+
 }
