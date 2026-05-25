@@ -29,10 +29,10 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border hidden" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
             
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
-            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
+            <span className="font-logo text-base text-coral">Clean Slate Club™</span>
           </motion.div>
 
           {/* Mobile task scroll strip — above heading for visual impact */}
