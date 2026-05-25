@@ -4,35 +4,43 @@ import AnimatedSection from '../shared/AnimatedSection';
 const faqs = [
   {
     q: "Is this a cleaning service?",
-    a: "Not exactly. We're a household support and lifestyle assistance brand. Think of us as executive function help for your home — we tackle the overwhelm, laundry mountains, kitchen chaos, and everything that's piling up. We don't scrub baseboards or wear aprons. We show up, handle what needs handling, and leave your home — and nervous system — in a better place."
+    a: "Not exactly. We're a household support and lifestyle assistance brand. Think of us as executive function help for your home — we tackle the overwhelm, laundry mountains, kitchen chaos, and everything that's been piling up. We don't scrub baseboards or wear aprons. We show up, handle what needs handling, and leave your home — and your nervous system — in a better place."
   },
   {
     q: "Do I have to be embarrassed about the state of my house?",
-    a: "Absolutely not. There is zero judgment here — ever. Our clients are brilliant, busy, overwhelmed women carrying way too much. The state of your home doesn't define you, and we've seen it all. You don't need to clean before we arrive."
+    a: "Absolutely not. There is zero judgment here — ever. Our clients are brilliant, busy families and individuals carrying way too much. The state of your home doesn't define you, and we've seen it all. You don't need to clean before we arrive. Seriously."
   },
   {
     q: "What is the Reset Consult and why do I need one?",
-    a: "Every new client starts with a free 15-minute Reset Consult. This isn't a quote call — it's a real conversation. We use it to understand your routines, priorities, household preferences, scheduling needs, and to make sure we show up fully prepared for your home. It makes the first visit so much better."
+    a: "Every new client starts with a free 15-minute Reset Consult. This isn't a quote call — it's a real conversation. We use it to understand your routines, priorities, household preferences, scheduling needs, and to make sure we show up fully prepared for your home. It makes the first visit so much better. And it's completely free."
   },
   {
     q: "How quickly can I get scheduled?",
-    a: "We aim for 24–48 hour turnaround after your consult for most services. Members get priority scheduling and can often book same-day resets. Weekend slots fill fast — we recommend booking early in the week."
+    a: "We aim for 24–48 hour turnaround after your consult for most services. Members of the Catch-Up Club™ get priority scheduling and can often book same-day resets. Saturday slots fill fast — we recommend booking early in the week to secure your preferred time."
   },
   {
     q: "What areas do you serve?",
     a: "We serve Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Plymouth Meeting, Ambler, Glenside, Oreland, and Fort Washington — proudly local to the Main Line & Montgomery County."
   },
   {
-    q: "What's included in The Sunday Scaries package?",
-    a: "Our signature Sunday reset includes dishes, laundry (wash, dry, fold), light tidying, reset styling, bed refresh, trash out, and a full kitchen reset. You go to bed Sunday night actually rested, and start Monday feeling like a human."
-  },
-  {
     q: "Do you bring your own supplies?",
-    a: "Yes — we arrive with everything needed. If you have preferred products, sensitivities, or specific requests, just let us know during your consult and we'll accommodate."
+    a: "We arrive prepared — but we actually love using your preferred products when possible. If you have specific cleaners, sensitivities, or brands you trust in your home, just let us know and we'll use what you have. We encourage it! If you'd rather we bring everything, we've got that covered too."
   },
   {
     q: "Can you help with senior family members or caregiving situations?",
-    a: "Yes. We offer gentle, dignified household support for seniors and families navigating health transitions. All support is customized, patient, and handled with deep respect and care."
+    a: "Yes. We offer gentle, dignified household support for seniors and families navigating health transitions, new babies, recovery, or simply the chaos of a full house. All support is customized, patient, and handled with deep respect and care. Every family's situation is different — we meet you where you are."
+  },
+  {
+    q: "What is the Catch-Up Club™ membership?",
+    a: "The Catch-Up Club™ is our monthly membership for $49/month. Members get priority scheduling, early access booking hours (starting 9 AM vs. 10 AM standard), reduced overtime rates ($65/hr vs. $85/hr), preferred recurring time slots, and 2 free reschedules per month (non-members get 1). After your free reschedules, adjustments are $25, charged to your card on file. Membership renews monthly and can be cancelled anytime."
+  },
+  {
+    q: "What's your cancellation and rescheduling policy?",
+    a: "All bookings (except free consults) require a $50 deposit to hold your time. Cancellations or reschedules made with less than 24 hours notice will forfeit the deposit — no exceptions. We hold time specifically for you, and last-minute changes affect our whole day. Non-members receive 1 free reschedule; Catch-Up Club™ members receive 2 per month. After that, a $25 fee applies and is collected from your card on file."
+  },
+  {
+    q: "What if my situation doesn't fit neatly into your services?",
+    a: "That happens more than you'd think — and it's totally okay. Life is complicated, and sometimes what you need doesn't fit a tidy category. The best thing to do is book a free consultation call and just tell us what's going on. We'll figure out together whether we can help, how, and what it would look like. No pressure, no commitment."
   },
 ];
 
