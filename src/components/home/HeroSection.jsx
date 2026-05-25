@@ -40,7 +40,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.35 }}>
             
-            <h1 className="font-heading font-light md:text-5xl lg:text-[3.5rem] text-charcoal/60 leading-[1.1] mb-2 text-2xl">You deserve a home
+            <h1 className="font-heading font-light md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-2 text-[hsl(var(--foreground))] text-base">You deserve a home
 
             </h1>
             <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2">

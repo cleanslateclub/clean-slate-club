@@ -19,8 +19,8 @@ export default function MashaSection() {
               <img
                 src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png"
                 alt="Masha helping naturally in a warm home"
-                className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10"
-              />
+                className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10" />
+              
               {/* Floating quote card */}
               <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px]" style={{ background: '#fdfcfb', boxShadow: '0 8px 30px #fcd5ce40' }}>
                 <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
@@ -31,7 +31,7 @@ export default function MashaSection() {
 
           {/* Story copy */}
           <AnimatedSection delay={0.2}>
-            <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-5 font-light">The Woman Behind the Brand</p>
+            <p className="font-body tracking-[0.25em] uppercase mb-5 font-light text-[hsl(var(--card-foreground))] text-lg">THE WOMAN BEHIND THE BRAND</p>
             <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2 leading-tight">
               Meet Masha.
             </h2>
@@ -59,14 +59,14 @@ export default function MashaSection() {
             <div className="mt-8">
               <Link
                 to="/book"
-                className="inline-block font-body text-sm tracking-wide text-coral border-b border-coral/30 pb-1 hover:border-coral transition-colors duration-300 font-light"
-              >
+                className="inline-block font-body text-sm tracking-wide text-coral border-b border-coral/30 pb-1 hover:border-coral transition-colors duration-300 font-light">
+                
                 Book your consult with Masha →
               </Link>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 }
