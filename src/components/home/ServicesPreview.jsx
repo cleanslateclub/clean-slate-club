@@ -5,13 +5,13 @@ import WaveDivider from '../shared/WaveDivider';
 
 // Line-art SVG icons
 const IconHome = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
     <path d="M4 14L16 4l12 10v14a1 1 0 01-1 1H5a1 1 0 01-1-1V14z" />
     <path d="M12 29V19h8v10" />
   </svg>;
 
 const IconFamily = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
     <circle cx="11" cy="8" r="3.5" />
     <path d="M4 24c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" />
     <circle cx="22" cy="10" r="2.5" />
@@ -21,20 +21,20 @@ const IconFamily = () =>
   </svg>;
 
 const IconBag = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
     <path d="M7 10h18l-2 16H9L7 10z" />
     <path d="M12 10V8a4 4 0 018 0v2" />
     <path d="M12 16h8M12 20h5" />
   </svg>;
 
 const IconHeart = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
     <path d="M16 27S4 20 4 11.5A6.5 6.5 0 0116 8a6.5 6.5 0 0112 3.5C28 20 16 27 16 27z" />
     <path d="M16 8v4M12 12h8" strokeWidth="1.2" />
   </svg>;
 
 const IconPot = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
     <path d="M8 14h16v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" />
     <path d="M6 14h20" />
     <path d="M12 14v-3a4 4 0 018 0v3" />
