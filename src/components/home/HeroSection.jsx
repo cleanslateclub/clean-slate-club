@@ -43,10 +43,10 @@ export default function HeroSection() {
             <h1 className="font-body font-light md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-2 uppercase tracking-widest text-sm text-[hsl(var(--foreground))]">PRACTICAL SUPPORT
 
             </h1>
-            <h1 className="font-logo md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2 text-lg">for busy homes
+            <h1 className="font-logo md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2 text-base">for busy homes
 
             </h1>
-            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl leading-[1.2] mb-8 text-[hsl(var(--primary))]">Because no one is actually all caught up.
+            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl leading-[1.2] mb-8 text-[hsl(var(--primary))] lowercase">Because no one is actually all caught up.
 
             </h1>
           </motion.div>
