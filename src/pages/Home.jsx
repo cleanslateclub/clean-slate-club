@@ -24,7 +24,6 @@ export default function Home() {
       <ConsultSection />
       <TestimonialsSection />
       <MembershipPreview />
-      <WaveDivider fill="#e5f4ec" />
       <ServiceAreaSection />
       <WaveDivider fill="#eedbd5" flip />
       <FAQSection />

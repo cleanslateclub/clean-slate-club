@@ -66,7 +66,7 @@ export default function MembershipPreview() {
         </AnimatedSection>
       </div>
     </section>
-    <WaveDivider fill="#fdf5f3" flip />
+    <WaveDivider fill="#e5f4ec" flip />
     </div>);
 
 }
