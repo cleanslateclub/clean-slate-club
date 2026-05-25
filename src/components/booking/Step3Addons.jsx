@@ -1,9 +1,29 @@
 import React from 'react';
 import { SERVICE_CONFIG, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dynamicEstimate }) {
+export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dynamicEstimate, selectedTasks = [] }) {
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
+
+  // Map of add-on IDs to task keywords they correspond to
+  const addonToTaskMap = {
+    fridge_refresh: ['Refrigerator Cleanout'],
+    pantry_party: ['Pantry Straightening'],
+    closet_comeback: ['Closet Reset'],
+    bed_reset: ['Bed Linen Change'],
+    toy_story: ['Toy Pickup'],
+    pet_check: ['Pet Feeding'],
+    donation_station: ['Donation Bag Prep'],
+  };
+
+  // Check if an add-on should be hidden (already selected as a task)
+  const isAddOnDisabledByTask = (addonId) => {
+    const relatedTasks = addonToTaskMap[addonId] || [];
+    return relatedTasks.some(task => selectedTasks.includes(task));
+  };
+
+  // Filter addons: hide ones that match selected tasks
+  const availableAddons = config.addons.filter(addon => !isAddOnDisabledByTask(addon.id));
 
   const addonMinutes = selectedAddons.reduce((sum, id) => {
     const addon = config.addons.find(a => a.id === id);
@@ -57,7 +77,7 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dyna
 
       {/* Add-on grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ background: 'linear-gradient(160deg, #fdf6f4 0%, #f5fbf3 100%)', borderRadius: '1rem', padding: '1rem' }}>
-        {config.addons.map(addon => {
+        {availableAddons.map(addon => {
           const isSelected = selectedAddons.includes(addon.id);
           return (
             <button
