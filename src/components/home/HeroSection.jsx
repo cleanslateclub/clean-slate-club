@@ -35,6 +35,46 @@ export default function HeroSection() {
             <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
           </motion.div>
 
+          {/* Mobile task scroll strip — above heading for visual impact */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 lg:hidden overflow-hidden"
+            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
+            
+            <motion.div
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
+              className="flex gap-2.5 w-max">
+              
+              {[...Array(2)].flatMap(() =>
+              [
+              { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
+              { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
+              { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
+              { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
+              { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
+              { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
+              { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
+              { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
+              { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' }].
+              map((t, i) =>
+              <span
+                key={`m-top-${t.label}-${i}`}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
+                style={{ background: t.bg, borderColor: t.color + '35' }}>
+                    <span
+                  className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
+                  style={{ background: t.color }}>
+                  ✓</span>
+                    {t.emoji} {t.label}
+                  </span>
+              )
+              )}
+            </motion.div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -78,47 +118,6 @@ export default function HeroSection() {
               
               See what we do <span className="text-coral">→</span>
             </Link>
-          </motion.div>
-
-          {/* Mobile task scroll strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.0 }}
-            className="mt-10 lg:hidden overflow-hidden"
-            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
-            
-            <motion.div
-              animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
-              className="flex gap-2.5 w-max">
-              
-              {[...Array(2)].flatMap(() =>
-              [
-              { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
-              { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
-              { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
-              { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
-              { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
-              { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
-              { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
-              { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
-              { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' }].
-              map((t, i) =>
-              <span
-                key={`m-${t.label}-${i}`}
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
-                style={{ background: t.bg, borderColor: t.color + '35' }}>
-                
-                    <span
-                  className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-                  style={{ background: t.color }}>
-                  ✓</span>
-                    {t.emoji} {t.label}
-                  </span>
-              )
-              )}
-            </motion.div>
           </motion.div>
 
           {/* Trust badges */}
