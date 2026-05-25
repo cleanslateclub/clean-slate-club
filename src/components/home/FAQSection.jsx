@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const faqs = [
   {
@@ -37,6 +36,31 @@ const faqs = [
   },
 ];
 
+function FAQItem({ faq }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className="rounded-2xl px-6 transition-all duration-300"
+      style={{ background: 'rgba(255,255,255,0.75)', border: '1px solid #fcd5ce50', boxShadow: open ? '0 2px 12px #fcd5ce20' : 'none' }}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 py-5 text-left"
+      >
+        <span className="font-heading text-base font-semibold" style={{ color: '#3a3330' }}>{faq.q}</span>
+        <span className="shrink-0 w-5 h-5 flex items-center justify-center transition-transform duration-300" style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', color: '#EB9486' }}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 16, height: 16 }}>
+            <line x1="8" y1="2" x2="8" y2="14" /><line x1="2" y1="8" x2="14" y2="8" />
+          </svg>
+        </span>
+      </button>
+      {open && (
+        <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#7a6560' }}>{faq.a}</p>
+      )}
+    </div>
+  );
+}
+
 export default function FAQSection() {
   return (
     <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#eedbd5' }}>
@@ -52,22 +76,11 @@ export default function FAQSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <Accordion type="single" collapsible className="space-y-3">
+          <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <AccordionItem
-                key={i}
-                value={`faq-${i}`}
-                className="rounded-2xl px-6 data-[state=open]:shadow-sm transition-all duration-300" style={{ background: 'rgba(255,255,255,0.75)', border: '1px solid #fcd5ce50' }}
-              >
-                <AccordionTrigger className="font-heading text-base font-semibold hover:no-underline py-5 text-left" style={{ color: '#3a3330' }}>
-                  {faq.q}
-                </AccordionTrigger>
-                <AccordionContent className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#7a6560' }}>
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
+              <FAQItem key={i} faq={faq} />
             ))}
-          </Accordion>
+          </div>
         </AnimatedSection>
       </div>
     </section>
