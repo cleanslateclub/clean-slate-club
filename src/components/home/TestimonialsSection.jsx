@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
         </div>
       </div>
     </section>
-    <WaveDivider fill="#e3d0c3" flip />
+    <WaveDivider fill="#fdf5f3" flip />
     </div>);
 
 }

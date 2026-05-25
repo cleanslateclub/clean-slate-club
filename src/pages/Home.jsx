@@ -25,7 +25,7 @@ export default function Home() {
       <TestimonialsSection />
       <MembershipPreview />
       <ServiceAreaSection />
-      <WaveDivider fill="#eedbd5" flip />
+      <WaveDivider fill="#eedbd5" />
       <FAQSection />
       <CTASection />
     </div>
