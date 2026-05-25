@@ -29,7 +29,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border hidden" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
             
             <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
             <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
@@ -40,7 +40,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.35 }}>
             
-            <h1 className="font-body font-light md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-2 uppercase tracking-widest text-[hsl(var(--chart-5))] text-sm">YOU DESERVE A HOME
+            <h1 className="font-body font-light md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-2 uppercase tracking-widest text-[hsl(var(--chart-5))] text-sm">practicalsupport
 
             </h1>
             <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2">
