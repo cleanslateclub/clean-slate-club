@@ -7,10 +7,9 @@ const perks = [
   { label: 'Priority scheduling', detail: 'Book 48hrs before the calendar opens to the public', dot: '#CAE7B9' },
   { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#EB9486' },
   { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#EFB988' },
-  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule', dot: '#B58A90' },
+  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule — up to 3 sessions in a row', dot: '#B58A90' },
   { label: 'Monthly check-ins', detail: "Wellness check-in text from Masha every month", dot: '#CAE7B9' },
   { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#97A7B3' },
-  { label: 'Recurring bookings', detail: 'Schedule up to 3 sessions in a row on a consistent cadence', dot: '#EFB988' },
 ];
 
 export default function Memberships() {
@@ -77,13 +76,6 @@ export default function Memberships() {
                     </div>
                   </div>
                 ))}
-              </div>
-
-              {/* Recurring note */}
-              <div className="mb-8 p-4 rounded-2xl border" style={{ background: '#ffe5d930', borderColor: '#fcd5ce60' }}>
-                <p className="font-body text-xs text-charcoal/60 font-light leading-relaxed">
-                  <span className="font-semibold text-charcoal/80">Recurring sessions:</span> Members may book up to 3 sessions in a row on a recurring cadence. Perfect for staying consistently ahead without the mental load of rebooking every time.
-                </p>
               </div>
 
               <Link
