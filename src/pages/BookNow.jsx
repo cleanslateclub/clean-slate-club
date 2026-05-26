@@ -291,8 +291,8 @@ export default function BookNow() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
-                {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} />}
+                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onContinue={() => { if (policyAccepted) { setStep(2); } else { setShowPolicyModal(true); } }} />}
+                {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }} />}
@@ -308,15 +308,9 @@ export default function BookNow() {
                 <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
               ) : <div />}
 
-              {step < (isConsult ? 3 : 5) ? (
+              {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
                 <button
-                  onClick={() => {
-                    if (step === 1 && !policyAccepted) {
-                      setShowPolicyModal(true);
-                    } else {
-                      setStep(s => s + 1);
-                    }
-                  }}
+                  onClick={() => setStep(s => s + 1)}
                   disabled={!canProceed()}
                   className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
                 >

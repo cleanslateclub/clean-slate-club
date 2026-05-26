@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
+import { base44 } from '@/api/base44Client';
 
-export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange }) {
+export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [] }) {
+  const [uploading, setUploading] = useState(false);
+
+  const handlePhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      const urls = await Promise.all(
+        files.map(file => base44.integrations.Core.UploadFile({ file }).then(r => r.file_url))
+      );
+      onPhotoUpload([...uploadedPhotos, ...urls]);
+    } finally {
+      setUploading(false);
+    }
+  };
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -197,6 +213,24 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             rows={3}
             className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
           />
+        </div>
+      )}
+
+      {/* Photo upload */}
+      {!isConsult && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
+          <p className="font-heading text-sm font-semibold text-charcoal mb-1">Got photos? (optional)</p>
+          <p className="font-body text-xs text-charcoal/40 font-light mb-3">
+            Share photos of the spaces that need help — it helps us prepare and give you the most accurate estimate.
+          </p>
+          <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/55 hover:border-coral/30 transition-colors">
+            <span>📷</span>
+            {uploading ? 'Uploading...' : 'Upload photos'}
+            <input type="file" multiple accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
+          </label>
+          {uploadedPhotos.length > 0 && (
+            <p className="mt-2 font-body text-xs text-sage font-light">{uploadedPhotos.length} photo{uploadedPhotos.length > 1 ? 's' : ''} attached ✓</p>
+          )}
         </div>
       )}
 
