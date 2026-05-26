@@ -52,7 +52,7 @@ function FAQItem({ faq, color }) {
     <div
       className="rounded-2xl px-6 transition-all duration-300 overflow-hidden"
       style={{
-        background: open ? `${color}08` : 'rgba(255,255,255,0.80)',
+        background: 'rgba(255,255,255,0.90)',
         border: `1px solid ${open ? color + '40' : '#fcd5ce30'}`,
         borderLeft: `3px solid ${color}`,
         boxShadow: open ? `0 2px 16px ${color}18` : 'none'
