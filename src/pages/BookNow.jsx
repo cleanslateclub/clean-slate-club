@@ -266,10 +266,10 @@ export default function BookNow() {
   return (
     <div className="min-h-screen bg-cream">
       {showPolicyModal && (
-        <PolicyModal
-          onAgree={() => { setPolicyAccepted(true); setShowPolicyModal(false); setStep(2); }}
-          onClose={() => setShowPolicyModal(false)}
-        />
+      <PolicyModal
+        onAgree={() => { setPolicyAccepted(true); setShowPolicyModal(false); handleSubmit(); }}
+        onClose={() => setShowPolicyModal(false)}
+      />
       )}
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-2xl mx-auto">
@@ -291,7 +291,7 @@ export default function BookNow() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onContinue={() => { if (policyAccepted) { setStep(2); } else { setShowPolicyModal(true); } }} />}
+                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onContinue={() => setStep(2)} />}
                 {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
@@ -318,11 +318,11 @@ export default function BookNow() {
                 </button>
               ) : (
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => isConsult ? handleSubmit() : setShowPolicyModal(true)}
                   disabled={submitting}
                   className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
                 >
-                  {submitting ? (isConsult ? 'Sending...' : 'Booking...') : (isConsult ? 'Request My Free Consult →' : 'Confirm Booking')}
+                  {submitting ? (isConsult ? 'Sending...' : 'Booking...') : (isConsult ? 'Request My Free Consult →' : 'Review & Book →')}
                 </button>
               )}
             </div>
