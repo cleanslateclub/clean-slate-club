@@ -55,8 +55,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       </p>
 
       {/* Client Info */}
-      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
-        <h3 className="font-heading text-sm font-semibold text-charcoal mb-4">Your Information</h3>
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EB9486' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EB9486' }} />
+          <h3 className="font-heading text-sm font-semibold text-charcoal">Your Information</h3>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
@@ -82,8 +85,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Task checkboxes */}
       {config.taskOptions && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
-          <h3 className="font-heading text-sm font-semibold text-charcoal mb-1">What areas need support?</h3>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #CAE7B9' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#CAE7B9' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">What areas need support?</h3>
+          </div>
           <p className="font-body text-xs text-charcoal/40 font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
           <div className="flex flex-wrap gap-2">
             {config.taskOptions.map(task => {
@@ -122,8 +128,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       )}
 
       {/* Household / Service intake questions */}
-      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5 space-y-5">
-        <h3 className="font-heading text-sm font-semibold text-charcoal">About this visit</h3>
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5 space-y-5" style={{ borderLeft: '3px solid #F3DE8A' }}>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#F3DE8A' }} />
+          <h3 className="font-heading text-sm font-semibold text-charcoal">About this visit</h3>
+        </div>
 
         {config.intakeQuestions.map(q => (
           <div key={q.id}>
@@ -199,10 +208,13 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Universal closing question */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
-          <label className="font-body text-sm font-semibold text-charcoal block mb-1">
-            What would make this feel most helpful?
-          </label>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EFB988' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EFB988' }} />
+            <label className="font-body text-sm font-semibold text-charcoal block">
+              What would make this feel most helpful?
+            </label>
+          </div>
           <p className="font-body text-xs text-charcoal/40 font-light mb-3">
             This is the most important question. Tell us what success looks like for you — emotionally, practically, anything.
           </p>
@@ -218,8 +230,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Photo upload */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5">
-          <p className="font-heading text-sm font-semibold text-charcoal mb-1">Got photos? (optional)</p>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#B58A90' }} />
+            <p className="font-heading text-sm font-semibold text-charcoal">Got photos? (optional)</p>
+          </div>
           <p className="font-body text-xs text-charcoal/40 font-light mb-3">
             Share photos of the spaces that need help — it helps us prepare and give you the most accurate estimate.
           </p>

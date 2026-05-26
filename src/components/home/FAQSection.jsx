@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 
+const BRAND_COLORS = ['#EB9486', '#CAE7B9', '#F3DE8A', '#EFB988', '#B58A90', '#EB9486', '#97A7B3', '#CAE7B9', '#EFB988', '#B58A90'];
+
 const faqs = [
   {
     q: "Is this a cleaning service?",
@@ -44,26 +46,34 @@ const faqs = [
   },
 ];
 
-function FAQItem({ faq }) {
+function FAQItem({ faq, color }) {
   const [open, setOpen] = useState(false);
   return (
     <div
-      className="rounded-2xl px-6 transition-all duration-300"
-      style={{ background: 'rgba(255,255,255,0.75)', border: '1px solid #fcd5ce50', boxShadow: open ? '0 2px 12px #fcd5ce20' : 'none' }}
+      className="rounded-2xl px-6 transition-all duration-300 overflow-hidden"
+      style={{
+        background: open ? `${color}08` : 'rgba(255,255,255,0.80)',
+        border: `1px solid ${open ? color + '40' : '#fcd5ce30'}`,
+        borderLeft: `3px solid ${color}`,
+        boxShadow: open ? `0 2px 16px ${color}18` : 'none',
+      }}
     >
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between gap-4 py-5 text-left"
       >
-        <span className="font-heading text-base font-semibold" style={{ color: '#3a3330' }}>{faq.q}</span>
-        <span className="shrink-0 w-5 h-5 flex items-center justify-center transition-transform duration-300" style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', color: '#EB9486' }}>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 16, height: 16 }}>
+        <span className="font-heading text-base font-semibold" style={{ color: '#333333' }}>{faq.q}</span>
+        <span
+          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300"
+          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', background: color + '20', color }}
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ width: 12, height: 12 }}>
             <line x1="8" y1="2" x2="8" y2="14" /><line x1="2" y1="8" x2="14" y2="8" />
           </svg>
         </span>
       </button>
       {open && (
-        <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#7a6560' }}>{faq.a}</p>
+        <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#555' }}>{faq.a}</p>
       )}
     </div>
   );
@@ -72,8 +82,11 @@ function FAQItem({ faq }) {
 export default function FAQSection() {
   return (
     <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#eedbd5' }}>
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac35 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c830 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
+      {/* Brand color blobs */}
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #EB948630 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B928 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
+      <div className="absolute top-1/2 right-0 w-[200px] h-[200px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #F3DE8A20 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
+
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">FAQ</p>
@@ -86,7 +99,7 @@ export default function FAQSection() {
         <AnimatedSection delay={0.1}>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <FAQItem key={i} faq={faq} />
+              <FAQItem key={i} faq={faq} color={BRAND_COLORS[i % BRAND_COLORS.length]} />
             ))}
           </div>
         </AnimatedSection>
