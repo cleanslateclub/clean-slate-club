@@ -22,7 +22,7 @@ const faqs = [
 },
 {
   q: "What areas do you serve?",
-  a: "We serve Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Plymouth Meeting, Ambler, Glenside, Oreland, and Fort Washington — proudly local to the Main Line & Montgomery County."
+  a: "We serve Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Plymouth Meeting, Ambler, Glenside, Oreland, and Fort Washington — proudly local to Montgomery County."
 },
 {
   q: "Do you bring your own supplies?",
