@@ -116,7 +116,7 @@ export default function PolicyModal({ onAgree, onClose }) {
               </button>
             }
             <p className="font-body tracking-[0.25em] uppercase font-light mb-1 text-lg" style={{ color: '#33333360' }}>Required reading</p>
-            <h2 className="font-logo text-3xl mb-2" style={{ color: '#333333' }}>Before You Book</h2>
+            <h2 className="font-logo text-3xl mb-2 text-[hsl(var(--card-foreground))]" style={{ color: '#333333' }}>Before You Book</h2>
             <p className="font-body text-sm font-light leading-relaxed mx-auto max-w-lg" style={{ color: '#333333cc' }}>
               Clean Slate Club is designed to make life feel lighter, calmer, and more manageable. Please review our booking policies before proceeding to your deposit.
             </p>
