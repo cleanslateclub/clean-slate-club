@@ -5,7 +5,7 @@ import TaskScrollPanel from './TaskScrollPanel';
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: '#fdfcfb' }}>
+    <section className="relative min-h-screen md:min-h-0 flex items-center overflow-hidden" style={{ background: '#fdfcfb' }}>
       {/* Organic background blobs */}
       <div className="absolute top-10 right-0 w-[700px] h-[700px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -10%)' }} />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
@@ -23,7 +23,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-24 pb-16 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-24 md:pt-20 md:pb-20 pb-16 lg:pt-24 lg:pb-16 w-full">
         <div className="max-w-xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
