@@ -18,7 +18,7 @@ export default function MembershipPreview() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
-          <p className="font-body text-xs tracking-[0.25em] uppercase mb-4 font-light text-[hsl(var(--card-foreground))]">MEMBERSHIPS</p>
+          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-[hsl(var(--card-foreground))] text-lg">MEMBERSHIPS</p>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3">
             Join the <span className="font-logo font-normal" style={{ color: '#EB9486' }}>Catch-Up Club™</span>
           </h2>
@@ -39,18 +39,18 @@ export default function MembershipPreview() {
             <div className="p-8 lg:p-10" style={{ background: 'rgba(255,255,255,0.9)' }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 {perks.map((perk, i) =>
-                  <div key={i} className="flex items-start gap-3">
+                <div key={i} className="flex items-start gap-3">
                     <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-2" style={{ background: perk.dot }} />
                     <div>
                       <p className="font-body text-sm text-charcoal font-light">{perk.label}</p>
                       <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{perk.detail}</p>
                     </div>
                   </div>
-                  )}
+                )}
               </div>
               <Link
-                  to="/memberships"
-                  className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
+                to="/memberships"
+                className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
                   
                 Join The Catch-Up Club™ →
               </Link>
@@ -61,7 +61,7 @@ export default function MembershipPreview() {
           </div>
         </AnimatedSection>
       </div>
-    </section>
-    );
+    </section>);
+
 
 }
