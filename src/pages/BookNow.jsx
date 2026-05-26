@@ -23,6 +23,7 @@ export default function BookNow() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const [policyAccepted, setPolicyAccepted] = useState(false);
+  const [showPolicyModal, setShowPolicyModal] = useState(false);
 
   const isConsult = serviceKey === 'consult';
   // organization is a valid full booking service (not consult)
@@ -264,10 +265,10 @@ export default function BookNow() {
 
   return (
     <div className="min-h-screen bg-cream">
-      {!policyAccepted && (
+      {showPolicyModal && (
         <PolicyModal
-          onAgree={() => setPolicyAccepted(true)}
-          onClose={() => window.history.back()}
+          onAgree={() => { setPolicyAccepted(true); setShowPolicyModal(false); setStep(2); }}
+          onClose={() => setShowPolicyModal(false)}
         />
       )}
       <div className="pt-24 pb-16 px-6">
@@ -309,7 +310,13 @@ export default function BookNow() {
 
               {step < (isConsult ? 3 : 5) ? (
                 <button
-                  onClick={() => setStep(s => s + 1)}
+                  onClick={() => {
+                    if (step === 1 && !policyAccepted) {
+                      setShowPolicyModal(true);
+                    } else {
+                      setStep(s => s + 1);
+                    }
+                  }}
                   disabled={!canProceed()}
                   className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
                 >
