@@ -29,15 +29,15 @@ export default function BookNow() {
   // organization is a valid full booking service (not consult)
 
   const selectedTasks = intakeAnswers._tasks || [];
-  const dynamicEstimate = serviceKey && serviceKey !== 'consult'
-    ? getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons)
-    : null;
-  const totalDuration = dynamicEstimate ? dynamicEstimate.durationMinutes : (serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0);
+  const dynamicEstimate = serviceKey && serviceKey !== 'consult' ?
+  getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons) :
+  null;
+  const totalDuration = dynamicEstimate ? dynamicEstimate.durationMinutes : serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
   const config = serviceKey ? SERVICE_CONFIG[serviceKey] : null;
 
   const toggleAddon = (id) => {
-    setSelectedAddons(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    setSelectedAddons((prev) =>
+    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
@@ -66,7 +66,7 @@ export default function BookNow() {
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
 
       const addonPrice = selectedAddons.reduce((sum, id) => {
-        const addon = config.addons.find(a => a.id === id);
+        const addon = config.addons.find((a) => a.id === id);
         return sum + (addon ? addon.price : 0);
       }, 0);
       const estimateLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0] + addonPrice;
@@ -89,20 +89,20 @@ export default function BookNow() {
         special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
-        admin_notes: isConsult ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}` : '',
+        admin_notes: isConsult ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}` : ''
       });
 
       // Create time blocks (skip for consult — no date/time yet)
       if (!isConsult && selectedDate && selectedTime) {
         const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
         await base44.entities.TimeBlock.bulkCreate([
-          { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config.label} — ${clientInfo.name}` },
-          { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' },
-        ]);
+        { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config.label} — ${clientInfo.name}` },
+        { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' }]
+        );
       }
 
       // Send confirmation email
-      const addonLabels = selectedAddons.map(id => config.addons.find(a => a.id === id)?.label).filter(Boolean);
+      const addonLabels = selectedAddons.map((id) => config.addons.find((a) => a.id === id)?.label).filter(Boolean);
       const displayDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
       const emailWrapper = (innerHtml) => `<!DOCTYPE html>
@@ -156,16 +156,16 @@ export default function BookNow() {
         `);
 
         await Promise.all([
-          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
-          base44.integrations.Core.SendEmail({
-            to: 'masha@cleanslateclubpa.com',
-            subject: `New Consult Request — ${clientInfo.name}`,
-            body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
-          }),
-        ]);
+        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
+        base44.integrations.Core.SendEmail({
+          to: 'masha@cleanslateclubpa.com',
+          subject: `New Consult Request — ${clientInfo.name}`,
+          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+        })]
+        );
       } else {
         const selectedTasks = intakeAnswers._tasks || [];
-        const addonSection = addonLabels.length > 0 ? `<div class="card"><p class="card-label">Add-ons Included</p>${addonLabels.map(a => `<p class="card-value">✓ ${a}</p>`).join('')}</div>` : '';
+        const addonSection = addonLabels.length > 0 ? `<div class="card"><p class="card-label">Add-ons Included</p>${addonLabels.map((a) => `<p class="card-value">✓ ${a}</p>`).join('')}</div>` : '';
         const tasksSection = selectedTasks.length > 0 ? `<div class="card"><p class="card-label">Tasks Requested</p><p class="card-value light">${selectedTasks.join(' · ')}</p></div>` : '';
 
         const clientBody = emailWrapper(`
@@ -195,30 +195,30 @@ export default function BookNow() {
         `);
 
         await Promise.all([
-          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
-          base44.integrations.Core.SendEmail({
-            to: 'masha@cleanslateclubpa.com',
-            subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
-            body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
-          }),
-          // Add to Google Calendar
-          base44.functions.invoke('addBookingToCalendar', {
-            clientName: clientInfo.name,
-            clientEmail: clientInfo.email,
-            clientPhone: clientInfo.phone,
-            clientAddress: clientInfo.address,
-            serviceLabel: config.label,
-            addonLabels,
-            selectedDate,
-            startTime: selectedTime,
-            endTime,
-            totalDuration,
-            estimateLow,
-            estimateHigh,
-            specialNotes: intakeAnswers.situation || intakeAnswers.special_notes || '',
-            tasks: selectedTasks,
-          }),
-        ]);
+        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
+        base44.integrations.Core.SendEmail({
+          to: 'masha@cleanslateclubpa.com',
+          subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
+          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+        }),
+        // Add to Google Calendar
+        base44.functions.invoke('addBookingToCalendar', {
+          clientName: clientInfo.name,
+          clientEmail: clientInfo.email,
+          clientPhone: clientInfo.phone,
+          clientAddress: clientInfo.address,
+          serviceLabel: config.label,
+          addonLabels,
+          selectedDate,
+          startTime: selectedTime,
+          endTime,
+          totalDuration,
+          estimateLow,
+          estimateHigh,
+          specialNotes: intakeAnswers.situation || intakeAnswers.special_notes || '',
+          tasks: selectedTasks
+        })]
+        );
       }
 
       setSubmitted(true);
@@ -235,47 +235,47 @@ export default function BookNow() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full text-center"
-        >
+          className="max-w-md w-full text-center">
+          
           <div className="w-16 h-16 rounded-full bg-sage/40 flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
-          {isConsult ? (
-            <>
+          {isConsult ?
+          <>
               <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">We'll be in touch!</h1>
               <p className="font-logo text-xl text-coral mb-4">Your consult request is in.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
                 Masha will reach out via <strong>{intakeAnswers.preferred_contact || 'email'}</strong> within 24 hours. A confirmation has been sent to <strong>{clientInfo.email}</strong>.
               </p>
-            </>
-          ) : (
-            <>
+            </> :
+
+          <>
               <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
               <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
                 A confirmation email is on its way to <strong>{clientInfo.email}</strong>. Masha will see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
               </p>
             </>
-          )}
+          }
           <a href="/" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
             Back to home
           </a>
         </motion.div>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
     <div className="min-h-screen bg-cream">
-      {showPolicyModal && (
+      {showPolicyModal &&
       <PolicyModal
-        onAgree={() => { setPolicyAccepted(true); setShowPolicyModal(false); handleSubmit(); }}
-        onClose={() => setShowPolicyModal(false)}
-      />
-      )}
+        onAgree={() => {setPolicyAccepted(true);setShowPolicyModal(false);handleSubmit();}}
+        onClose={() => setShowPolicyModal(false)} />
+
+      }
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10">
-            <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/60 font-light mb-3">Let's get started</p>
+            <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-3 text-[hsl(var(--foreground))]">LET'S GET STARTED</p>
             <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">Book Your Visit</h1>
             <p className="font-logo text-xl text-coral">Personalized support, built around you.</p>
           </div>
@@ -289,14 +289,14 @@ export default function BookNow() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {step === 1 && <Step1Service selected={serviceKey} onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }} onContinue={() => setStep(2)} />}
+                transition={{ duration: 0.3 }}>
+                
+                {step === 1 && <Step1Service selected={serviceKey} onSelect={(k) => {setServiceKey(k);setSelectedAddons([]);setIntakeAnswers({});}} onContinue={() => setStep(2)} />}
                 {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
-                {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }} />}
-                {((!isConsult && step === 5) || (isConsult && step === 3)) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
+                {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}
+                {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
               </motion.div>
             </AnimatePresence>
 
@@ -304,27 +304,27 @@ export default function BookNow() {
 
             {/* Navigation */}
             <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
-              {step > 1 ? (
-                <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
-              ) : <div />}
+              {step > 1 ?
+              <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button> :
+              <div />}
 
-              {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
-                <button
-                  onClick={() => setStep(s => s + 1)}
-                  disabled={!canProceed()}
-                  className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
-                >
+              {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ?
+              <button
+                onClick={() => setStep((s) => s + 1)}
+                disabled={!canProceed()}
+                className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300">
+                
                   Continue →
+                </button> :
+
+              <button
+                onClick={() => isConsult ? handleSubmit() : setShowPolicyModal(true)}
+                disabled={submitting}
+                className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300">
+                
+                  {submitting ? isConsult ? 'Sending...' : 'Booking...' : isConsult ? 'Request My Free Consult →' : 'Review & Book →'}
                 </button>
-              ) : (
-                <button
-                  onClick={() => isConsult ? handleSubmit() : setShowPolicyModal(true)}
-                  disabled={submitting}
-                  className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
-                >
-                  {submitting ? (isConsult ? 'Sending...' : 'Booking...') : (isConsult ? 'Request My Free Consult →' : 'Review & Book →')}
-                </button>
-              )}
+              }
             </div>
           </div>
 
@@ -333,6 +333,6 @@ export default function BookNow() {
           </p>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
