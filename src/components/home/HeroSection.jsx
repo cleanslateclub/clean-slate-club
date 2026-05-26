@@ -24,7 +24,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-10 md:pt-24 md:pb-12 lg:pt-28 lg:pb-20 w-full">
-        <div className="max-w-xl">
+        <div className="max-w-xl lg:text-left text-center mx-auto lg:mx-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-start gap-4">
+            className="flex flex-col sm:flex-row items-center lg:items-start gap-4 justify-center lg:justify-start">
             
             <Link
               to="/book"
@@ -125,7 +125,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-4">
+            className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start">
             
             {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) =>
             <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
