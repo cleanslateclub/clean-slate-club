@@ -35,9 +35,9 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
-            <div className="mb-5">
-              <div className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</div>
-              <div className="font-logo text-2xl text-coral" style={{ lineHeight: 1.2 }}>Club™</div>
+            <div className="mb-5 flex items-baseline gap-1.5">
+              <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
+              <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
             </div>
             <p className="font-body text-white/40 text-sm leading-relaxed font-light max-w-xs">
               Thoughtful household support for busy women, overwhelmed moms, and families who deserve a little backup.
