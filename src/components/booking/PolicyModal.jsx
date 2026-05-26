@@ -109,21 +109,17 @@ export default function PolicyModal({ onAgree, onClose }) {
           style={{ background: '#fdfcfb' }}
         >
           {/* Header */}
-          <div className="px-8 pt-8 pb-6 shrink-0" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #fcd5ce 60%, #ece4db 100%)' }}>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="font-body text-[10px] tracking-[0.25em] uppercase text-white/70 font-light mb-1">Required reading</p>
-                <h2 className="font-heading text-2xl font-semibold text-white">Before You Book</h2>
-                <p className="font-body text-sm text-white/80 font-light mt-1.5 leading-relaxed max-w-lg">
-                  Clean Slate Club is designed to make life feel lighter, calmer, and more manageable. Please review our booking policies before proceeding to your deposit.
-                </p>
-              </div>
-              {onClose && (
-                <button onClick={onClose} className="shrink-0 p-1.5 rounded-full text-white/50 hover:text-white transition-colors mt-1">
-                  <X size={18} />
-                </button>
-              )}
-            </div>
+          <div className="px-8 pt-8 pb-6 shrink-0 text-center relative" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #fcd5ce 60%, #ece4db 100%)' }}>
+            {onClose && (
+              <button onClick={onClose} className="absolute top-5 right-5 p-1.5 rounded-full transition-colors" style={{ color: '#33333380' }}>
+                <X size={18} />
+              </button>
+            )}
+            <p className="font-body text-[10px] tracking-[0.25em] uppercase font-light mb-1" style={{ color: '#33333360' }}>Required reading</p>
+            <h2 className="font-logo text-3xl mb-2" style={{ color: '#333333' }}>Before You Book</h2>
+            <p className="font-body text-sm font-light leading-relaxed mx-auto max-w-lg" style={{ color: '#333333cc' }}>
+              Clean Slate Club is designed to make life feel lighter, calmer, and more manageable. Please review our booking policies before proceeding to your deposit.
+            </p>
           </div>
 
           {/* Scrollable body */}
