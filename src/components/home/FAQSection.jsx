@@ -6,7 +6,7 @@ const BRAND_COLORS = ['#EB9486', '#CAE7B9', '#F3DE8A', '#EFB988', '#B58A90', '#E
 const faqs = [
 {
   q: "Is this a cleaning service?",
-  a: "Not exactly. We're a household support and lifestyle assistance brand. Think of us as executive function help for your home — we tackle the overwhelm, laundry mountains, kitchen chaos, and everything that's been piling up. We don't scrub baseboards or wear aprons. We show up, handle what needs handling, and leave your home — and your nervous system — in a better place."
+  a: "Not exactly. We're a household support and lifestyle assistance brand. Think of us as executive function help for your home — we tackle the overwhelm, laundry mountains, kitchen chaos, and everything that's been piling up. We show up, handle what needs handling, and leave your home — and your nervous system — in a better place."
 },
 {
   q: "Do I have to be embarrassed about the state of my house?",
