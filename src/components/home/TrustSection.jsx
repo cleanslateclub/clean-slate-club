@@ -1,7 +1,5 @@
 import React from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
-import WaveDivider from '../shared/WaveDivider';
-
 const IconShield = () =>
 <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 24, height: 24 }}>
     <path d="M14 3L4 7v7c0 5.25 4.33 10.16 10 11 5.67-.84 10-5.75 10-11V7L14 3z" />
@@ -46,8 +44,6 @@ const credentials = [
 
 export default function TrustSection() {
   return (
-    <div>
-    <WaveDivider fill="#f2ddd6" />
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f2ddd6' }}>
       <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
@@ -77,7 +73,6 @@ export default function TrustSection() {
         </AnimatedSection>
       </div>
     </section>
-    <WaveDivider fill="#fdf5ec" flip />
-    </div>);
+    );
 
 }

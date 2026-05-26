@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
-import WaveDivider from '../shared/WaveDivider';
-
 const areas = [
   'Flourtown', 'Wyndmoor', 'Erdenheim', 'Chestnut Hill',
   'Lafayette Hill', 'Blue Bell', 'Plymouth Meeting', 'Ambler',
@@ -18,8 +16,6 @@ export default function ServiceAreaSection() {
   };
 
   return (
-    <div>
-    <WaveDivider fill="#e5f4ec" />
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#e5f4ec' }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 100%, #b8d8c840 0%, transparent 70%)' }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -84,7 +80,5 @@ export default function ServiceAreaSection() {
         </AnimatedSection>
       </div>
     </section>
-    <WaveDivider fill="#eedbd5" flip />
-    </div>
   );
 }

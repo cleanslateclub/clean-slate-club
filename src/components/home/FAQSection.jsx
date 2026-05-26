@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
-import WaveDivider from '../shared/WaveDivider';
 
 const faqs = [
   {
@@ -72,8 +71,6 @@ function FAQItem({ faq }) {
 
 export default function FAQSection() {
   return (
-    <div>
-    <WaveDivider fill="#eedbd5" />
     <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#eedbd5' }}>
       <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac35 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c830 0%, transparent 65%)', transform: 'translate(20%, 20%)' }} />
@@ -95,6 +92,5 @@ export default function FAQSection() {
         </AnimatedSection>
       </div>
     </section>
-    </div>
   );
 }

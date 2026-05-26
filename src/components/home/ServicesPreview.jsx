@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
-import WaveDivider from '../shared/WaveDivider';
-
 // Line-art SVG icons
 const IconHome = () =>
 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
@@ -95,10 +93,7 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <div>
-    <WaveDivider fill="#fdf3f0" />
     <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf3f0' }}>
-
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #cae8d8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
       <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
 
@@ -155,7 +150,6 @@ export default function ServicesPreview() {
         </div>
       </div>
     </section>
-    <WaveDivider fill="#f2ddd6" flip />
-    </div>);
+    );
 
 }
