@@ -17,6 +17,7 @@ export default function MembershipPreview() {
     <div>
     <WaveDivider fill="#fdf5f3" />
     <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
+
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #f8b87840 0%, transparent 65%)', transform: 'translate(30%, 20%)' }} />
       <div className="absolute top-0 left-0 w-[350px] h-[350px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c838 0%, transparent 65%)', transform: 'translate(-20%, -20%)' }} />
 

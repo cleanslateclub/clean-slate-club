@@ -47,6 +47,7 @@ const credentials = [
 export default function TrustSection() {
   return (
     <div>
+    <WaveDivider fill="#f2ddd6" />
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f2ddd6' }}>
       <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
@@ -76,7 +77,7 @@ export default function TrustSection() {
         </AnimatedSection>
       </div>
     </section>
-    <WaveDivider fill="#f2ddd6" flip />
+    <WaveDivider fill="#fdf5ec" flip />
     </div>);
 
 }

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
+import WaveDivider from '../shared/WaveDivider';
 
 export default function MashaSection() {
   return (
+    <div>
+    <WaveDivider fill="#fdf5f3" />
     <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
       {/* Background accent */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffc8a0 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
@@ -67,6 +70,8 @@ export default function MashaSection() {
           </AnimatedSection>
         </div>
       </div>
-    </section>);
+    </section>
+    <WaveDivider fill="#fdf5f3" flip />
+    </div>);
 
 }
