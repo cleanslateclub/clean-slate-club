@@ -157,19 +157,17 @@ export const SERVICE_CONFIG = {
     ],
     taskOptions: [
       "Help Me Choose — I'm Overwhelmed",
-      "Grocery Shopping", "Grocery Pickup", "Prescription Pickup",
-      "Post Office Run", "Dry Cleaning Pickup", "Dry Cleaning Dropoff",
+      "Grocery Shopping", "Prescription Pickup",
+      "Post Office Run", "Dry Cleaning Pickup or Dropoff",
       "Donation Dropoff", "Retail Returns", "Birthday Gift Pickup",
       "Holiday Shopping", "Household Supply Run", "Pet Supply Pickup",
       "Car Service Dropoff", "Waiting During Appointment",
       "Airport Dropoff", "Airport Pickup", "School Pickup",
-      "Multiple Store Run", "Package Shipping Assistance",
-      "Facebook Marketplace Pickup", "Pharmacy Run",
+      "Facebook Marketplace Pickup",
       "Coffee/Food Pickup", "Last-Minute Errand Assistance", "Personal Shopping Support"
     ],
     addons: [
       { id: "grocery_putaway", label: "Grocery Put-Away & Fridge Organize", minutes: 20, price: 20 },
-      { id: "multiple_stops", label: "Multiple Errand Stops (3+)", minutes: 30, price: 25 },
       { id: "returns_processing", label: "Online Returns Processing (pack + ship)", minutes: 20, price: 20 },
       { id: "reset_run", label: "Reset Run — Org Supply Shopping", minutes: 45, price: 75 },
       { id: "gift_wrapping", label: "Gift Shopping + Wrapping", minutes: 45, price: 40 },
