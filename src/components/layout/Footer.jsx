@@ -95,7 +95,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
           <p className="font-body text-xs text-white/25 font-light">
-            Boutique household support · Flourtown & surrounding areas
+            cleanslateclubpa@gmail.com · (206) 825-4061
           </p>
         </div>
       </div>

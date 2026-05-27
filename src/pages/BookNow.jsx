@@ -138,8 +138,8 @@ export default function BookNow() {
   </div>
   <div class="body">${innerHtml}</div>
   <div class="footer">
-    <p>Questions? Reply to this email or text us at (215) 555-0100</p>
-    <p>hello@cleanslateclubpa.com · cleanslateclubpa.com</p>
+    <p>Questions? Reply to this email or text us at (206) 825-4061</p>
+    <p>cleanslateclubpa@gmail.com · cleanslateclubpa.com</p>
   </div>
 </div></body></html>`;
 
@@ -158,7 +158,7 @@ export default function BookNow() {
         await Promise.all([
         base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
         base44.integrations.Core.SendEmail({
-          to: 'masha@cleanslateclubpa.com',
+          to: 'cleanslateclubpa@gmail.com',
           subject: `New Consult Request — ${clientInfo.name}`,
           body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
         })]
@@ -197,11 +197,12 @@ export default function BookNow() {
         await Promise.all([
         base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
         base44.integrations.Core.SendEmail({
-          to: 'masha@cleanslateclubpa.com',
+          to: 'cleanslateclubpa@gmail.com',
           subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
           body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
         }),
         // Add to Google Calendar
+
         base44.functions.invoke('addBookingToCalendar', {
           clientName: clientInfo.name,
           clientEmail: clientInfo.email,
@@ -329,7 +330,7 @@ export default function BookNow() {
           </div>
 
           <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
-            Questions? Text us at (215) 555-0100 or email hello@cleanslateclubpa.com
+            Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
           </p>
         </div>
       </div>

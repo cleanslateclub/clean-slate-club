@@ -102,8 +102,9 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                   className={`px-3.5 py-2 rounded-full border text-xs font-body font-light transition-all duration-200 flex items-center gap-1.5 ${
                     isSelected
                       ? 'bg-coral border-coral text-white'
-                      : 'bg-cream border-taupe/20 text-charcoal/55 hover:border-coral/30'
+                      : 'bg-cream border-taupe/20 hover:border-coral/30'
                   }`}
+                  style={!isSelected ? { color: '#333333' } : {}}
                 >
                   <span className={`w-3 h-3 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
                     isSelected ? 'bg-white border-white' : 'border-charcoal/25'
