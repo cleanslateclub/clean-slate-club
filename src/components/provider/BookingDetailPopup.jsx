@@ -28,7 +28,11 @@ export default function BookingDetailPopup({ booking, onClose }) {
 
   const handleDelete = async () => {
     setDeleting(true);
-    await base44.entities.Booking.delete(booking.id);
+    try {
+      await base44.entities.Booking.delete(booking.id);
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+    }
     setDeleting(false);
     onClose();
   };
