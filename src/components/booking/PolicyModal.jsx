@@ -86,7 +86,7 @@ const sections = [
 }];
 
 
-const smsConsentText = 'By providing my phone number, I consent to receive text messages from Clean Slate Club™ regarding my bookings, appointment reminders, scheduling updates, and service notifications. Message and data rates may apply. Reply STOP to opt out at any time. Consent is not required as a condition of purchase.';
+const smsConsentText = 'By providing my phone number and submitting this form, I agree to receive text communications from Clean Slate Club regarding appointment confirmations, reminders, schedule changes, cancellations, and customer care information. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe at any time. Consent is not required as a condition of purchase.';
 
 const agreementText = 'I understand that all services require a $50 deposit. I understand that cancellations within 24 hours may forfeit the deposit. I understand that supplies and materials specific to my service must be available before the appointment, and that time spent sourcing missing items counts toward my booked service time. I understand that if my requested tasks exceed the booked time, I may either book an additional visit or approve extra time at $65/hr (members) or $85/hr (non-members) if available. I understand that Clean Slate Club provides non-medical household, family, senior, errand, and lifestyle support only.';
 

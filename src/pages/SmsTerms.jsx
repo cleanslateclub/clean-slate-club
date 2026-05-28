@@ -16,17 +16,23 @@ export default function SmsTerms() {
           <AnimatedSection>
             <div className="rounded-2xl bg-warm-white border border-taupe/15 p-6" style={{ borderLeft: '3px solid #EB9486' }}>
               <h2 className="font-heading text-base font-semibold text-charcoal mb-3">Program Description</h2>
-              <p className="font-body text-sm text-charcoal font-light leading-relaxed">
-                By providing your mobile phone number and opting in, you consent to receive text messages from <strong>Clean Slate Club™</strong> (program name: <em>Clean Slate Club Notifications</em>). Message types include:
+              <p className="font-body text-sm text-charcoal font-light leading-relaxed mb-3">
+                Clean Slate Club uses SMS messaging to communicate appointment reminders, scheduling updates, cancellations, and customer care information.
               </p>
-              <ul className="mt-3 space-y-1.5">
+              <p className="font-body text-sm text-charcoal font-light leading-relaxed mb-3">
+                Clients opt in to receive text messages by submitting a booking request, contact form, intake form, or membership inquiry through the Clean Slate Club website.
+              </p>
+              <p className="font-body text-sm text-charcoal font-light leading-relaxed mb-4">
+                By providing a phone number and submitting a form, clients agree to receive text communications from Clean Slate Club. Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong> to unsubscribe at any time.
+              </p>
+              <p className="font-body text-xs uppercase tracking-widest text-charcoal/40 font-light mb-2">Types of messages may include:</p>
+              <ul className="space-y-1.5">
                 {[
-                  'Booking confirmations and appointment reminders',
-                  'Scheduling updates, reschedule requests, and cancellation notices',
-                  'Service arrival notifications',
-                  'Follow-up messages after a visit',
-                  'Membership-related updates',
-                  'Occasional service announcements (non-marketing only)',
+                  'Appointment confirmations',
+                  'Appointment reminders',
+                  'Schedule changes or cancellations',
+                  'Customer support communication',
+                  'Service-related updates',
                 ].map(item => (
                   <li key={item} className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-coral shrink-0 mt-2" />
