@@ -94,9 +94,17 @@ export default function Footer() {
           <p className="font-body text-xs text-white/25 font-light">
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
-          <p className="font-body text-xs text-white/25 font-light">
-            cleanslateclubpa@gmail.com · (206) 825-4061
-          </p>
+          <div className="flex items-center gap-6">
+            <p className="font-body text-xs text-white/25 font-light">
+              cleanslateclubpa@gmail.com · (206) 825-4061
+            </p>
+            <Link
+              to="/admin"
+              className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide"
+            >
+              Provider Login
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
