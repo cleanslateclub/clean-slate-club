@@ -45,7 +45,7 @@ export default function Memberships() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="font-body text-lg text-charcoal/50 font-light leading-relaxed">
+            className="font-body text-lg text-charcoal/70 font-light leading-relaxed">
             
             Priority booking, member pricing, and seasonal perks — for the home that's ready to stop playing catch-up.
           </motion.p>
@@ -72,7 +72,7 @@ export default function Memberships() {
                     <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-2" style={{ background: perk.dot }} />
                     <div>
                       <p className="font-body text-sm text-charcoal font-light">{perk.label}</p>
-                      <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{perk.detail}</p>
+                      <p className="font-body text-xs font-light" style={{ color: '#6b5248' }}>{perk.detail}</p>
                     </div>
                   </div>
                 )}
@@ -84,7 +84,7 @@ export default function Memberships() {
                 
                 Join The Catch-Up Club™ →
               </Link>
-              <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#baa090' }}>
+              <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#7a5e50' }}>
                 Membership fee is separate from service costs. Services billed per visit.
               </p>
             </div>
@@ -103,9 +103,9 @@ export default function Memberships() {
               ['Recurring slot hold', '✓ Up to 3 sessions', 'Not available']].
               map(([feature, member, standard]) =>
               <div key={feature} className="grid grid-cols-3 gap-2 text-xs font-body">
-                  <span className="text-charcoal/50 font-light">{feature}</span>
-                  <span className="text-coral font-light">{member}</span>
-                  <span className="text-charcoal/30 font-light">{standard}</span>
+                  <span className="text-charcoal/70 font-light">{feature}</span>
+                  <span className="text-coral font-semibold">{member}</span>
+                  <span className="text-charcoal/50 font-light">{standard}</span>
                 </div>
               )}
             </div>

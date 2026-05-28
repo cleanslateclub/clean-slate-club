@@ -36,7 +36,7 @@ export default function MashaSection() {
             </h2>
             <p className="font-logo text-2xl text-coral mb-8">She gets it.</p>
 
-            <div className="space-y-5 font-body text-base text-charcoal/55 leading-relaxed font-light">
+            <div className="space-y-5 font-body text-base text-charcoal/70 leading-relaxed font-light">
               <p>
                 For years, Masha was the woman holding everything together — the home, the kids, the routines, the invisible mental load that never clocked out. She was a stay-at-home mom who knew the weight of running a household like a full-time job that nobody notices.
               </p>
@@ -52,7 +52,7 @@ export default function MashaSection() {
               <p className="font-heading text-lg font-semibold text-charcoal mb-1">
                 "You're not failing at home."
               </p>
-              <p className="font-body text-sm text-charcoal/50 font-light">You're carrying more than any one person should. That's all this is.</p>
+              <p className="font-body text-sm text-charcoal/65 font-light">You're carrying more than any one person should. That's all this is.</p>
             </div>
 
             <div className="mt-8">

@@ -109,7 +109,7 @@ export default function Services() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="font-body text-lg text-charcoal/50 font-light leading-relaxed max-w-xl mx-auto mb-8"
+            className="font-body text-lg text-charcoal/70 font-light leading-relaxed max-w-xl mx-auto mb-8"
           >
             Every visit is personalized to exactly what you need. No packages, no pressure — just practical support that actually helps.
           </motion.p>
@@ -144,17 +144,17 @@ export default function Services() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-heading text-xl font-semibold text-charcoal">{service.price}</p>
-                    <p className="font-body text-xs text-charcoal/40 font-light">{service.duration}</p>
+                    <p className="font-body text-xs text-charcoal/60 font-light">{service.duration}</p>
                   </div>
                 </div>
 
-                <p className="font-body text-sm text-charcoal/60 font-light leading-relaxed mb-5">{service.description}</p>
+                <p className="font-body text-sm text-charcoal/75 font-light leading-relaxed mb-5">{service.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {service.focus.map(f => (
                     <span
                       key={f}
-                      className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/65 border"
+                      className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/75 border"
                       style={{ borderColor: service.color + '40', background: '#ffffff80' }}
                     >
                       {f}
@@ -179,8 +179,8 @@ export default function Services() {
       <AnimatedSection>
         <div className="max-w-4xl mx-auto px-6 pb-16">
           <div className="rounded-2xl p-6 text-center" style={{ background: 'linear-gradient(135deg, #fef0ee, #eef8ea)', border: '1px solid #fcd5ce50' }}>
-            <p className="font-body text-sm text-charcoal/60 font-light">
-              <strong className="font-semibold text-charcoal/80">Service hours:</strong> 10:00 AM – 6:00 PM
+            <p className="font-body text-sm text-charcoal/75 font-light">
+              <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
               <span className="mx-3 text-charcoal/20">·</span>
               Members enjoy priority scheduling from 9:00 AM
             </p>

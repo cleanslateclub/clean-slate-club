@@ -53,7 +53,7 @@ export default function TrustSection() {
           <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
             Trust isn't given. It's earned.
           </h2>
-          <p className="font-body text-base text-charcoal/45 font-light max-w-md mx-auto leading-relaxed">
+          <p className="font-body text-base text-charcoal/65 font-light max-w-md mx-auto leading-relaxed">
             When someone comes into your home, you deserve to feel completely safe. Here's what we bring to every visit.
           </p>
         </AnimatedSection>
@@ -65,7 +65,7 @@ export default function TrustSection() {
                 <span style={{ color: c.accent }}>{React.createElement(trustIconMap[c.iconKey])}</span>
                 <div>
                   <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{c.label}</p>
-                  <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{c.detail}</p>
+                  <p className="font-body text-xs font-light" style={{ color: '#6b5248' }}>{c.detail}</p>
                 </div>
               </div>
             )}

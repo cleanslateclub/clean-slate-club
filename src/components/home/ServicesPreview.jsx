@@ -103,7 +103,7 @@ export default function ServicesPreview() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             This isn't a cleaning menu.
           </h2>
-          <p className="font-body text-base text-charcoal/50 max-w-lg leading-relaxed font-light">
+          <p className="font-body text-base text-charcoal/65 max-w-lg leading-relaxed font-light">
             It's household support — organized around your life, your family, and what actually needs to happen.
           </p>
         </AnimatedSection>
@@ -124,7 +124,7 @@ export default function ServicesPreview() {
                   <div className="mb-3" style={{ color: cat.color }}>{React.createElement(iconMap[cat.iconKey])}</div>
                   <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#3a3330' }}>{cat.name}</h3>
                   <p className="font-body text-sm font-light mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
-                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#6b5e58' }}>{cat.desc}</p>
+                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#4a3e38' }}>{cat.desc}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -136,7 +136,7 @@ export default function ServicesPreview() {
               <div>
                 <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#9a7060' }}>Custom Support</p>
                 <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#3a3330' }}>Not sure what you need?</h3>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#7a6560' }}>Tell us what's going on and we'll build the right support for your home.</p>
+                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#5a4040' }}>Tell us what's going on and we'll build the right support for your home.</p>
               </div>
               <Link
                 to="/services"

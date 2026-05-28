@@ -95,7 +95,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-xl leading-relaxed mb-10 max-w-md font-light" style={{ color: '#333333' }}>
+            className="font-body text-xl leading-relaxed mb-10 max-w-md font-light" style={{ color: '#222222' }}>
             
             Support for busy households, mental overload, family logistics, and the never-ending little things that keep life moving.
           </motion.p>
@@ -114,7 +114,7 @@ export default function HeroSection() {
             </Link>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/50 py-4 hover:text-coral transition-colors duration-300">
+              className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/65 py-4 hover:text-coral transition-colors duration-300">
               
               See what we do <span className="text-coral">→</span>
             </Link>
@@ -128,7 +128,7 @@ export default function HeroSection() {
             className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start">
             
             {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) =>
-            <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/40 font-light flex items-center gap-1.5">
+            <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/60 font-light flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full bg-sage" />
                 {badge}
               </span>

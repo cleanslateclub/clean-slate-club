@@ -39,7 +39,7 @@ export default function Footer() {
               <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
               <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
             </div>
-            <p className="font-body text-white/40 text-sm leading-relaxed font-light max-w-xs">
+            <p className="font-body text-white/60 text-sm leading-relaxed font-light max-w-xs">
               Thoughtful household support for busy women, overwhelmed moms, and families who deserve a little backup.
             </p>
           </div>
@@ -47,10 +47,10 @@ export default function Footer() {
           <div>
             <h4 className="font-body text-xs tracking-[0.2em] uppercase text-white/30 mb-6 font-light">Navigate</h4>
             <div className="space-y-3">
-              <Link to="/" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Home</Link>
-              <Link to="/services" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Services</Link>
-              <Link to="/memberships" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Memberships</Link>
-              <Link to="/book" className="block font-body text-sm text-white/50 hover:text-coral transition-colors font-light">Book Now</Link>
+              <Link to="/" className="block font-body text-sm text-white/70 hover:text-coral transition-colors font-light">Home</Link>
+              <Link to="/services" className="block font-body text-sm text-white/70 hover:text-coral transition-colors font-light">Services</Link>
+              <Link to="/memberships" className="block font-body text-sm text-white/70 hover:text-coral transition-colors font-light">Memberships</Link>
+              <Link to="/book" className="block font-body text-sm text-white/70 hover:text-coral transition-colors font-light">Book Now</Link>
             </div>
           </div>
 
@@ -58,16 +58,16 @@ export default function Footer() {
             <h4 className="font-body text-xs tracking-[0.2em] uppercase text-white/30 mb-6 font-light">We Serve</h4>
             <div className="flex flex-wrap gap-x-3 gap-y-1.5">
               {serviceAreas.map((area) => (
-                <span key={area} className="font-body text-sm text-white/35 font-light">{area}</span>
+                <span key={area} className="font-body text-sm text-white/60 font-light">{area}</span>
               ))}
             </div>
-            <p className="font-body text-xs text-white/20 font-light mt-4">Montgomery County, PA</p>
+            <p className="font-body text-xs text-white/50 font-light mt-4">Montgomery County, PA</p>
           </div>
 
           {/* Expansion suggestion */}
           <div>
             <h4 className="font-body text-xs tracking-[0.2em] uppercase text-white/30 mb-6 font-light">Coming Soon to You?</h4>
-            <p className="font-body text-xs text-white/35 font-light leading-relaxed mb-4">
+            <p className="font-body text-xs text-white/60 font-light leading-relaxed mb-4">
               We can't wait to expand to your area. Tell us where you'd like to see us pop up next.
             </p>
             {suggestSent ? (
@@ -91,11 +91,11 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-body text-xs text-white/25 font-light">
+          <p className="font-body text-xs text-white/50 font-light">
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
           <div className="flex items-center gap-6">
-            <p className="font-body text-xs text-white/25 font-light">
+            <p className="font-body text-xs text-white/50 font-light">
               cleanslateclubpa@gmail.com · (206) 825-4061
             </p>
             <Link
