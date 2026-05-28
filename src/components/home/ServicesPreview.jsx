@@ -67,7 +67,7 @@ const categories = [
   desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
   color: '#4a7a62',
   bg: '#cae8d855',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/eacb9a810_generated_image.png'
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/ebc467ce8_generated_image.png'
 },
 {
   iconKey: 'heart',
