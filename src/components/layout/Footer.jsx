@@ -40,7 +40,7 @@ export default function Footer() {
               <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
             </div>
             <p className="font-body text-white/60 text-sm leading-relaxed font-light max-w-xs">
-              Thoughtful household support for busy women, overwhelmed moms, and families who deserve a little backup.
+              This isn't a traditional cleaning company. It's lifestyle support rooted in real life.
             </p>
           </div>
 
