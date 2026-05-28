@@ -9,6 +9,7 @@ const CHECKOUT_SERVICES = Object.entries(SERVICE_CONFIG)
 
 function QuickCheckoutModal({ onClose }) {
   const [clientEmail, setClientEmail] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
   const [service, setService] = useState('');
   const [amount, setAmount] = useState(50);
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,8 @@ function QuickCheckoutModal({ onClose }) {
     setLoading(true);
     const res = await base44.functions.invoke('createDepositPaymentIntent', {
       amount: amount * 100,
-      customerEmail: clientEmail,
+      customerEmail: clientEmail || undefined,
+      customerPhone: clientPhone || undefined,
       serviceLabel: SERVICE_CONFIG[service]?.label || service,
       bookingId: 'manual-' + Date.now(),
     });
@@ -51,10 +53,17 @@ function QuickCheckoutModal({ onClose }) {
           </div>
         ) : (
           <div className="space-y-4">
-            <div>
-              <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Client Email</label>
-              <input value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="client@example.com"
-                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40" />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Email</label>
+                <input value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="client@example.com"
+                  className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40" />
+              </div>
+              <div>
+                <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Phone (SMS)</label>
+                <input value={clientPhone} onChange={e => setClientPhone(e.target.value)} placeholder="(555) 555-5555"
+                  className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40" />
+              </div>
             </div>
             <div>
               <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Service</label>
@@ -69,7 +78,7 @@ function QuickCheckoutModal({ onClose }) {
               <input type="number" value={amount} onChange={e => setAmount(Number(e.target.value))} min="1"
                 className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal focus:outline-none focus:border-coral/40" />
             </div>
-            <button onClick={handleCreate} disabled={!clientEmail || !service || loading}
+            <button onClick={handleCreate} disabled={(!clientEmail && !clientPhone) || !service || loading}
               className="w-full py-3 rounded-2xl bg-coral text-white font-body text-sm tracking-wide disabled:opacity-40 hover:opacity-90 transition-all flex items-center justify-center gap-2">
               <DollarSign className="w-4 h-4" />
               {loading ? 'Creating...' : 'Create Checkout Link'}
