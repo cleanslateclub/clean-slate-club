@@ -33,7 +33,7 @@ export default function StepIndicator({ currentStep, totalSteps = 5 }) {
               </div>
               <span
                 className="text-[10px] mt-1 font-body font-light whitespace-nowrap"
-                style={{ color: active ? color : '#33333340' }}
+                style={{ color: active ? color : '#333333aa' }}
               >
                 {label}
               </span>

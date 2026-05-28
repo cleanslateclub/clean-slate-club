@@ -9,7 +9,7 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
   return (
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">What kind of support do you need?</h2>
-      <p className="font-body text-sm text-charcoal/45 font-light mb-6">Choose the service that fits best — we'll customize from there.</p>
+      <p className="font-body text-sm text-charcoal font-light mb-6">Choose the service that fits best — we'll customize from there.</p>
 
       <div className="space-y-3">
         {SERVICE_ORDER.map(key => {
@@ -39,15 +39,15 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-heading text-sm font-semibold text-charcoal">{config.label}</p>
                       {config.sublabel && (
-                        <p className="font-body text-xs text-charcoal/35 font-light">{config.sublabel}</p>
+                        <p className="font-body text-xs text-charcoal/60 font-light">{config.sublabel}</p>
                       )}
                     </div>
-                    <p className="font-body text-xs text-charcoal/50 font-light mt-0.5 leading-relaxed">{config.description}</p>
+                    <p className="font-body text-xs text-charcoal font-light mt-0.5 leading-relaxed">{config.description}</p>
                     {isConsult && (
                       <p className="font-body text-xs mt-1 font-light" style={{ color: config.color }}>Free · 15 min call</p>
                     )}
                     {!isConsult && config.priceRange && (
-                      <p className="font-body text-xs mt-1 font-light text-charcoal/40">
+                      <p className="font-body text-xs mt-1 font-light text-charcoal">
                         from ${config.priceRange[0]} · {config.baseMinutes / 60}hr base
                       </p>
                     )}
@@ -65,7 +65,7 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
                     {config.examples.slice(0, 3).map(ex => (
                       <span
                         key={ex}
-                        className="px-2.5 py-1 rounded-full text-[10px] font-body font-light text-charcoal/55 border"
+                        className="px-2.5 py-1 rounded-full text-[10px] font-body font-light text-charcoal border"
                         style={{ background: config.color + '18', borderColor: config.color + '30' }}
                       >
                         {ex}
