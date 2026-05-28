@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Clock, MapPin, User, Eye } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-export default function CalendarEvent({ block, booking, onUpdate }) {
+export default function CalendarEvent({ block, booking, onUpdate, onClick }) {
   const [expanded, setExpanded] = useState(false);
 
   if (!booking) {
@@ -29,6 +29,7 @@ export default function CalendarEvent({ block, booking, onUpdate }) {
     <div
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
+      onClick={onClick}
       className={`rounded-lg p-3 border-l-4 text-xs font-body cursor-pointer hover:shadow-md transition-all ${
         expanded ? 'ring-2 ring-coral/30' : ''
       }`}

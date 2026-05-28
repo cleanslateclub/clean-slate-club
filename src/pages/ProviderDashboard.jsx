@@ -44,6 +44,33 @@ export default function ProviderDashboard() {
     };
 
     fetchData();
+
+    // Subscribe to real-time booking updates
+    const unsubBookings = base44.entities.Booking.subscribe((event) => {
+      if (event.type === 'create') {
+        setBookings(prev => [...prev, event.data]);
+      } else if (event.type === 'update') {
+        setBookings(prev => prev.map(b => b.id === event.id ? event.data : b));
+      } else if (event.type === 'delete') {
+        setBookings(prev => prev.filter(b => b.id !== event.id));
+      }
+    });
+
+    // Subscribe to real-time time block updates
+    const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
+      if (event.type === 'create') {
+        setTimeBlocks(prev => [...prev, event.data]);
+      } else if (event.type === 'update') {
+        setTimeBlocks(prev => prev.map(b => b.id === event.id ? event.data : b));
+      } else if (event.type === 'delete') {
+        setTimeBlocks(prev => prev.filter(b => b.id !== event.id));
+      }
+    });
+
+    return () => {
+      unsubBookings();
+      unsubBlocks();
+    };
   }, []);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {

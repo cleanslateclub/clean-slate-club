@@ -2,12 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Plus } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import CalendarEvent from '@/components/provider/CalendarEvent';
+import BookingDetailPopup from '@/components/provider/BookingDetailPopup';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, onWeekChange, onTimeBlockUpdate, user, onQuickBook }) {
   const [view, setView] = useState('week');
   const [selectedDateForBooking, setSelectedDateForBooking] = useState(null);
   const [selectedTimeForBooking, setSelectedTimeForBooking] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   // Get week dates
   const getWeekDates = (date) => {
@@ -148,10 +150,14 @@ export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, o
                                 className={snapshot.isDragging ? 'opacity-50' : ''}
                               >
                                 <CalendarEvent
-                                  block={block}
-                                  booking={bookings.find(b => b.id === block.booking_id)}
-                                  onUpdate={onTimeBlockUpdate}
-                                />
+                                   block={block}
+                                   booking={bookings.find(b => b.id === block.booking_id)}
+                                   onUpdate={onTimeBlockUpdate}
+                                   onClick={() => {
+                                     const booking = bookings.find(b => b.id === block.booking_id);
+                                     if (booking) setSelectedBooking(booking);
+                                   }}
+                                 />
                               </div>
                             )}
                           </Draggable>
@@ -169,6 +175,8 @@ export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, o
       <p className="text-xs font-body text-charcoal/30 font-light mt-6 text-center">
         Drag appointments to reschedule them across days
       </p>
+
+      {selectedBooking && <BookingDetailPopup booking={selectedBooking} onClose={() => setSelectedBooking(null)} />}
     </div>
   );
 }
