@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { base44 } from '@/api/base44Client';
 
-export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [] }) {
+export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [], smsOptIn, onSmsOptInChange }) {
   const [uploading, setUploading] = useState(false);
 
   const handlePhotoUpload = async (e) => {
@@ -81,6 +81,24 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             </div>
           ))}
         </div>
+      </div>
+
+      {/* SMS opt-in */}
+      <div className="rounded-2xl border border-taupe/15 p-5 mb-5" style={{ background: '#fdfcfb' }}>
+        <label className="flex items-start gap-3 cursor-pointer group" onClick={() => onSmsOptInChange(!smsOptIn)}>
+          <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${smsOptIn ? 'bg-coral border-coral' : 'border-taupe bg-white group-hover:border-coral/40'}`}>
+            {smsOptIn && <span className="text-white text-xs font-bold">✓</span>}
+          </div>
+          <div>
+            <p className="font-body text-sm font-light text-charcoal leading-relaxed select-none">
+              Yes, send me appointment reminders & updates via text <span className="text-charcoal/40">(recommended)</span>
+            </p>
+            <p className="font-body text-[11px] text-charcoal/40 font-light mt-0.5 select-none">
+              Uncheck to receive confirmations by email only. Msg & data rates may apply.{' '}
+              <a href="/sms-terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-coral transition-colors" onClick={e => e.stopPropagation()}>SMS Terms</a>
+            </p>
+          </div>
+        </label>
       </div>
 
       {/* Task checkboxes */}

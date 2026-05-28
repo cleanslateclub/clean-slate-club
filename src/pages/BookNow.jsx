@@ -23,6 +23,7 @@ export default function BookNow() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
+  const [smsOptIn, setSmsOptIn] = useState(true);
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
   const [showPaymentStep, setShowPaymentStep] = useState(false);
@@ -87,7 +88,7 @@ export default function BookNow() {
         base_duration_minutes: config.baseMinutes,
         total_duration_minutes: isConsult ? 15 : totalDuration,
         addons: selectedAddons,
-        intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos },
+        intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos, sms_opt_in: smsOptIn },
         special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
@@ -297,7 +298,7 @@ export default function BookNow() {
                 transition={{ duration: 0.3 }}>
                 
                 {step === 1 && <Step1Service selected={serviceKey} onSelect={(k) => {setServiceKey(k);setSelectedAddons([]);setIntakeAnswers({});}} onContinue={() => setStep(2)} />}
-                {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} />}
+                {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} smsOptIn={smsOptIn} onSmsOptInChange={setSmsOptIn} />}
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}

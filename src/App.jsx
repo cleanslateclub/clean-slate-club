@@ -14,6 +14,8 @@ import BookNow from './pages/BookNow';
 import AdminDashboard from './pages/AdminDashboard';
 import MemberDashboard from './pages/MemberDashboard';
 import SmsTerms from './pages/SmsTerms';
+import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 
 const AuthenticatedApp = () => {
@@ -46,6 +48,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/dashboard" element={<MemberDashboard />} />
         <Route path="/sms-terms" element={<SmsTerms />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

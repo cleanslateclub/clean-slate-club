@@ -94,16 +94,16 @@ export default function Footer() {
           <p className="font-body text-xs text-white/50 font-light">
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
-          <div className="flex items-center gap-6">
-            <p className="font-body text-xs text-white/50 font-light">
-              cleanslateclubpa@gmail.com · (206) 825-4061
-            </p>
-            <Link
-              to="/admin"
-              className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide"
-            >
-              Provider Login
-            </Link>
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <Link to="/terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Terms & Conditions</Link>
+            <span className="text-white/20 text-xs">·</span>
+            <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Privacy Policy</Link>
+            <span className="text-white/20 text-xs">·</span>
+            <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
+            <span className="text-white/20 text-xs">·</span>
+            <p className="font-body text-xs text-white/40 font-light">cleanslateclubpa@gmail.com · (206) 825-4061</p>
+            <span className="text-white/20 text-xs">·</span>
+            <Link to="/admin" className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide">Provider Login</Link>
           </div>
         </div>
       </div>
