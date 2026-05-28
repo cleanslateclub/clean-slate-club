@@ -1,8 +1,13 @@
-import React from 'react';
-import { X, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Phone, Mail, MapPin, Clock, Trash2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 export default function BookingDetailPopup({ booking, onClose }) {
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  
   if (!booking) return null;
 
   const cfg = SERVICE_CONFIG[booking.service_category];
@@ -13,6 +18,20 @@ export default function BookingDetailPopup({ booking, onClose }) {
   const addonLabels = (booking.addons || [])
     .map(id => cfg?.addons?.find(a => a.id === id)?.label)
     .filter(Boolean);
+
+  const handleStatusChange = async (newStatus) => {
+    setUpdatingStatus(true);
+    await base44.entities.Booking.update(booking.id, { status: newStatus });
+    setUpdatingStatus(false);
+    onClose();
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await base44.entities.Booking.delete(booking.id);
+    setDeleting(false);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
@@ -90,15 +109,23 @@ export default function BookingDetailPopup({ booking, onClose }) {
 
           {/* Status */}
           <div className="bg-cream rounded-2xl p-4">
-            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Status</p>
-            <span className={`inline-block text-[10px] px-2.5 py-0.5 rounded-full border font-body font-light capitalize ${
-              booking.status === 'confirmed' ? 'bg-sage/20 border-sage/40 text-charcoal/60' :
-              booking.status === 'pending' ? 'bg-butter/20 border-butter/40 text-charcoal/60' :
-              booking.status === 'completed' ? 'bg-taupe/20 border-taupe/40 text-charcoal/60' :
-              'bg-red-50 border-red-100 text-red-600'
-            }`}>
-              {booking.status}
-            </span>
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-3">Status</p>
+            <div className="flex gap-2 flex-wrap">
+              {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
+                <button
+                  key={s}
+                  disabled={booking.status === s || updatingStatus}
+                  onClick={() => handleStatusChange(s)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-body font-light border transition-all disabled:cursor-default capitalize ${
+                    booking.status === s
+                      ? 'bg-coral/20 border-coral/40 text-charcoal'
+                      : 'border-taupe/20 bg-white text-charcoal/50 hover:border-coral/30'
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Special notes */}
@@ -108,8 +135,37 @@ export default function BookingDetailPopup({ booking, onClose }) {
               <p className="font-body text-sm text-charcoal/70 font-light">{booking.special_notes}</p>
             </div>
           )}
-        </div>
-      </div>
-    </div>
-  );
-}
+
+          {/* Delete */}
+          <div className="pt-3 border-t border-taupe/10">
+            {!confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex items-center gap-1.5 text-xs font-body font-light text-charcoal/30 hover:text-red-400 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete booking
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <p className="font-body text-xs text-charcoal/50 font-light">Delete permanently?</p>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-400 text-xs font-body font-light hover:bg-red-100 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : 'Yes'}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-xs font-body font-light text-charcoal/40 hover:text-charcoal transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+          </div>
+          </div>
+          </div>
+          );
+          }
