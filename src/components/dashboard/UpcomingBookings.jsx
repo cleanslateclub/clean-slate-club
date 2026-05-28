@@ -1,83 +1,100 @@
-import React from 'react';
-import { Calendar, Clock, MapPin, Tag } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import BookingCard from './BookingCard';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-const STATUS_STYLES = {
-  pending: { bg: 'bg-butter/30', text: 'text-charcoal/70', label: 'Pending Confirmation' },
-  confirmed: { bg: 'bg-sage/30', text: 'text-charcoal/70', label: 'Confirmed' },
-  completed: { bg: 'bg-mist/30', text: 'text-charcoal/50', label: 'Completed' },
-  cancelled: { bg: 'bg-coral/20', text: 'text-coral/80', label: 'Cancelled' },
-};
+function LastBookingSummary({ bookings }) {
+  const today = new Date().toISOString().split('T')[0];
+  // Find the most recent completed or past booking
+  const lastBooking = bookings
+    .filter(b => b.status === 'completed' || b.scheduled_date < today)
+    .sort((a, b) => b.scheduled_date.localeCompare(a.scheduled_date))[0];
 
-function BookingCard({ booking }) {
-  const config = SERVICE_CONFIG[booking.service_category];
-  const status = STATUS_STYLES[booking.status] || STATUS_STYLES.pending;
-  const displayDate = booking.scheduled_date
-    ? new Date(booking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-    : 'Date TBD';
-  const addonLabels = (booking.addons || []).map(id => config?.addons?.find(a => a.id === id)?.label).filter(Boolean);
+  if (!lastBooking) return null;
+
+  const config = SERVICE_CONFIG[lastBooking.service_category];
+  const tasks = lastBooking.intake_answers?._tasks || [];
+  const addonLabels = (lastBooking.addons || [])
+    .map(id => config?.addons?.find(a => a.id === id)?.label)
+    .filter(Boolean);
+  const displayDate = lastBooking.scheduled_date
+    ? new Date(lastBooking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : 'N/A';
+
+  if (!tasks.length && !addonLabels.length) return null;
 
   return (
-    <div
-      className="rounded-2xl border border-taupe/15 bg-warm-white p-5 hover:shadow-sm transition-shadow"
-      style={{ borderLeft: `3px solid ${config?.color || '#EB9486'}` }}
-    >
-      <div className="flex items-start justify-between gap-3 mb-3">
+    <div className="rounded-2xl p-5 mb-2" style={{ background: 'linear-gradient(135deg, #fef0ee 0%, #fdf6f3 100%)', border: '1px solid #fcd5ce40', borderLeft: `3px solid ${config?.color || '#EB9486'}` }}>
+      <div className="flex items-center gap-2 mb-3">
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: config?.color || '#EB9486' }} />
+        <p className="font-heading text-sm font-semibold text-charcoal">Last Visit Summary</p>
+        <span className="font-body text-xs text-charcoal/40 font-light ml-auto">{displayDate}</span>
+      </div>
+      <p className="font-body text-xs text-charcoal/60 font-light mb-3">{config?.label || lastBooking.service_category}</p>
+
+      {tasks.length > 0 && (
+        <div className="mb-3">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/40 font-light mb-1.5">Tasks completed</p>
+          <div className="flex flex-wrap gap-1.5">
+            {tasks.map(task => (
+              <span
+                key={task}
+                className="px-2.5 py-1 rounded-full text-[11px] font-body font-light"
+                style={{ background: (config?.color || '#EB9486') + '20', color: '#333', border: `1px solid ${config?.color || '#EB9486'}30` }}
+              >
+                {task}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {addonLabels.length > 0 && (
         <div>
-          <p className="font-heading text-base font-semibold text-charcoal">{config?.label || booking.service_category}</p>
-          {config?.sublabel && <p className="font-body text-xs text-charcoal/40 font-light">{config.sublabel}</p>}
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/40 font-light mb-1.5">Add-ons included</p>
+          <div className="flex flex-wrap gap-1.5">
+            {addonLabels.map(label => (
+              <span
+                key={label}
+                className="px-2.5 py-1 rounded-full text-[11px] font-body font-light text-charcoal/70"
+                style={{ background: '#f5f5f3', border: '1px solid #e8e8e4' }}
+              >
+                + {label}
+              </span>
+            ))}
+          </div>
         </div>
-        <span className={`shrink-0 px-3 py-1 rounded-full text-xs font-body font-light ${status.bg} ${status.text}`}>
-          {status.label}
-        </span>
-      </div>
+      )}
 
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-2 text-sm font-body font-light text-charcoal/60">
-          <Calendar className="w-3.5 h-3.5 text-coral/60 shrink-0" />
-          <span>{displayDate}</span>
-        </div>
-        {booking.scheduled_start_time && booking.scheduled_start_time !== 'TBD' && (
-          <div className="flex items-center gap-2 text-sm font-body font-light text-charcoal/60">
-            <Clock className="w-3.5 h-3.5 text-coral/60 shrink-0" />
-            <span>{booking.scheduled_start_time}{booking.scheduled_end_time && booking.scheduled_end_time !== 'TBD' ? ` – ${booking.scheduled_end_time}` : ''}</span>
-          </div>
-        )}
-        {booking.client_address && (
-          <div className="flex items-center gap-2 text-sm font-body font-light text-charcoal/60">
-            <MapPin className="w-3.5 h-3.5 text-coral/60 shrink-0" />
-            <span className="truncate">{booking.client_address}</span>
-          </div>
-        )}
-        {addonLabels.length > 0 && (
-          <div className="flex items-start gap-2 text-sm font-body font-light text-charcoal/60">
-            <Tag className="w-3.5 h-3.5 text-coral/60 shrink-0 mt-0.5" />
-            <span>{addonLabels.join(', ')}</span>
-          </div>
-        )}
-      </div>
-
-      {booking.estimated_price_low && (
-        <div className="mt-4 pt-3 border-t border-taupe/10">
-          <p className="font-body text-xs text-charcoal/40 font-light">
-            Estimated: <span className="font-semibold text-coral/80">${booking.estimated_price_low}–${booking.estimated_price_high}</span>
-            <span className="ml-1">· $50 deposit paid</span>
-          </p>
-        </div>
+      {lastBooking.estimated_price_low && (
+        <p className="font-body text-xs text-charcoal/40 font-light mt-3">
+          Estimated: <span className="font-semibold" style={{ color: config?.color || '#EB9486' }}>${lastBooking.estimated_price_low}–${lastBooking.estimated_price_high}</span>
+        </p>
       )}
     </div>
   );
 }
 
-export default function UpcomingBookings({ bookings, loading }) {
+export default function UpcomingBookings({ bookings: initialBookings, loading }) {
+  const [bookings, setBookings] = useState(initialBookings);
+
+  useEffect(() => {
+    setBookings(initialBookings);
+  }, [initialBookings]);
+
+  const handleCancelled = (cancelledId) => {
+    setBookings(prev =>
+      prev.map(b => b.id === cancelledId ? { ...b, status: 'cancelled' } : b)
+    );
+  };
+
   const today = new Date().toISOString().split('T')[0];
   const upcoming = bookings
     .filter(b => b.scheduled_date >= today && b.status !== 'cancelled')
     .sort((a, b) => a.scheduled_date.localeCompare(b.scheduled_date));
   const past = bookings
-    .filter(b => b.scheduled_date < today || b.status === 'completed')
+    .filter(b => b.scheduled_date < today || b.status === 'completed' || b.status === 'cancelled')
     .sort((a, b) => b.scheduled_date.localeCompare(a.scheduled_date))
-    .slice(0, 3);
+    .slice(0, 4);
 
   if (loading) {
     return (
@@ -91,27 +108,36 @@ export default function UpcomingBookings({ bookings, loading }) {
 
   return (
     <div className="space-y-6">
+      {/* Last booking summary */}
+      <LastBookingSummary bookings={bookings} />
+
+      {/* Upcoming */}
       <div>
         <h3 className="font-heading text-sm font-semibold text-charcoal mb-3">Upcoming Visits</h3>
         {upcoming.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-taupe/30 p-8 text-center">
-            <p className="font-body text-sm text-charcoal/40 font-light mb-3">No upcoming visits scheduled.</p>
+            <p className="font-body text-sm text-charcoal/50 font-light mb-3">No upcoming visits scheduled.</p>
             <a href="/book" className="inline-block bg-coral text-white font-body text-xs tracking-wide px-6 py-2.5 rounded-full hover:bg-coral/90 transition-colors">
               Book a Visit →
             </a>
           </div>
         ) : (
           <div className="space-y-3">
-            {upcoming.map(b => <BookingCard key={b.id} booking={b} />)}
+            {upcoming.map(b => (
+              <BookingCard key={b.id} booking={b} onCancelled={handleCancelled} />
+            ))}
           </div>
         )}
       </div>
 
+      {/* Past */}
       {past.length > 0 && (
         <div>
-          <h3 className="font-heading text-sm font-semibold text-charcoal/50 mb-3">Recent Visits</h3>
-          <div className="space-y-3 opacity-70">
-            {past.map(b => <BookingCard key={b.id} booking={b} />)}
+          <h3 className="font-heading text-sm font-semibold text-charcoal/50 mb-3">Recent & Past Visits</h3>
+          <div className="space-y-3">
+            {past.map(b => (
+              <BookingCard key={b.id} booking={b} onCancelled={handleCancelled} isPast />
+            ))}
           </div>
         </div>
       )}
