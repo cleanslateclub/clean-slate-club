@@ -5,7 +5,7 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 const CHECKOUT_SERVICES = Object.entries(SERVICE_CONFIG)
   .filter(([k]) => k !== 'consult')
-  .map(([k, v]) => ({ key: k, label: v.label, low: v.basePrice?.[0] || 0, high: v.basePrice?.[1] || 0 }));
+  .map(([k, v]) => ({ key: k, label: v.label, low: v.priceRange?.[0] || 0, high: v.priceRange?.[1] || 0 }));
 
 function QuickCheckoutModal({ onClose }) {
   const [clientEmail, setClientEmail] = useState('');
