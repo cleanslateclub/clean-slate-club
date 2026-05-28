@@ -24,7 +24,7 @@ export default function ServiceAreaSection() {
           <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
             Currently Serving
           </h2>
-          <p className="font-body text-base text-charcoal/45 font-light max-w-md mx-auto">
+          <p className="font-body text-base text-charcoal/65 font-light max-w-md mx-auto">
             Real support for real families, right here in our community.
           </p>
         </AnimatedSection>
@@ -34,7 +34,7 @@ export default function ServiceAreaSection() {
             {areas.map((area) =>
             <span
               key={area}
-              className="font-body text-sm font-light text-charcoal/55 hover:text-charcoal px-5 py-2.5 rounded-full border transition-all duration-300 cursor-default"
+              className="font-body text-sm font-light text-charcoal/70 hover:text-charcoal px-5 py-2.5 rounded-full border transition-all duration-300 cursor-default"
               style={{ background: 'rgba(255,255,255,0.75)', borderColor: '#c0ddd0' }}
               onMouseEnter={(e) => {e.currentTarget.style.borderColor = '#8bbfaa';e.currentTarget.style.background = '#e8f4ee';}}
               onMouseLeave={(e) => {e.currentTarget.style.borderColor = '#c0ddd0';e.currentTarget.style.background = 'rgba(255,255,255,0.75)';}}>
@@ -49,12 +49,12 @@ export default function ServiceAreaSection() {
         <AnimatedSection delay={0.2}>
           <div className="max-w-xl mx-auto text-center p-8 lg:p-10 rounded-3xl border" style={{ background: 'rgba(255,255,255,0.7)', borderColor: '#c0ddd060' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#6aaa8a' }}>We can't wait to grow.</p>
-            <p className="font-body text-sm text-charcoal/50 font-light mb-6 leading-relaxed">
+            <p className="font-body text-sm text-charcoal/70 font-light mb-6 leading-relaxed">
               We're a boutique service and expanding thoughtfully — neighborhood by neighborhood.<br />
               Tell us where you'd like to see Clean Slate Club™ pop up next.
             </p>
             {submitted ?
-            <p className="font-body text-sm text-charcoal/60 font-light py-2">
+            <p className="font-body text-sm text-charcoal/75 font-light py-2">
                 💚 Thank you! We'll keep your area in mind as we grow.
               </p> :
 

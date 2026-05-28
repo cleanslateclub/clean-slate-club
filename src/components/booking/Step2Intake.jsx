@@ -48,7 +48,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">
         {isConsult ? 'Tell us a little about you' : 'Tell us about your home'}
       </h2>
-      <p className="font-body text-sm text-charcoal/45 font-light mb-8">
+      <p className="font-body text-sm text-charcoal/65 font-light mb-8">
         {isConsult
           ? 'The more you share, the better we can prepare for our call. Zero judgment.'
           : 'The more detail you share, the better we can prepare. Zero judgment, always.'}
@@ -68,7 +68,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: false }] : []),
           ].map(f => (
             <div key={f.key}>
-              <label className="font-body text-xs font-light text-charcoal/50 block mb-1.5">
+              <label className="font-body text-xs font-light text-charcoal/65 block mb-1.5">
                 {f.label}{f.required && <span className="text-coral ml-0.5">*</span>}
               </label>
               <input
@@ -90,7 +90,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#CAE7B9' }} />
             <h3 className="font-heading text-sm font-semibold text-charcoal">What areas need support?</h3>
           </div>
-          <p className="font-body text-xs text-charcoal/40 font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
+          <p className="font-body text-xs text-charcoal/60 font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
           <div className="flex flex-wrap gap-2">
             {config.taskOptions.map(task => {
               const isSelected = selectedTasks.includes(task);
@@ -137,7 +137,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
         {config.intakeQuestions.map(q => (
           <div key={q.id}>
-            <label className="font-body text-xs font-light text-charcoal/55 block mb-2">
+            <label className="font-body text-xs font-light text-charcoal/70 block mb-2">
               {q.label}{q.required && <span className="text-coral ml-0.5">*</span>}
             </label>
             {q.type === 'select' && (
@@ -195,7 +195,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
         {!isConsult && (
           <div>
-            <label className="font-body text-xs font-light text-charcoal/55 block mb-2">Anything else we should know?</label>
+            <label className="font-body text-xs font-light text-charcoal/70 block mb-2">Anything else we should know?</label>
             <textarea
               value={answers.special_notes || ''}
               onChange={e => handleAnswer('special_notes', e.target.value)}
@@ -216,7 +216,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
               What would make this feel most helpful?
             </label>
           </div>
-          <p className="font-body text-xs text-charcoal/40 font-light mb-3">
+          <p className="font-body text-xs text-charcoal/60 font-light mb-3">
             This is the most important question. Tell us what success looks like for you — emotionally, practically, anything.
           </p>
           <textarea
@@ -236,7 +236,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#B58A90' }} />
             <p className="font-heading text-sm font-semibold text-charcoal">Got photos? (optional)</p>
           </div>
-          <p className="font-body text-xs text-charcoal/40 font-light mb-3">
+          <p className="font-body text-xs text-charcoal/60 font-light mb-3">
             Share photos of the spaces that need help — it helps us prepare and give you the most accurate estimate.
           </p>
           <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/55 hover:border-coral/30 transition-colors">

@@ -73,7 +73,7 @@ function FAQItem({ faq, color }) {
         </span>
       </button>
       {open &&
-      <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#555' }}>{faq.a}</p>
+      <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#333' }}>{faq.a}</p>
       }
     </div>);
 

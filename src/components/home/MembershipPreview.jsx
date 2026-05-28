@@ -22,7 +22,7 @@ export default function MembershipPreview() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3">
             Join the <span className="font-logo font-normal" style={{ color: '#EB9486' }}>Catch-Up Club™</span>
           </h2>
-          <p className="font-body text-base text-charcoal/45 max-w-md mx-auto leading-relaxed font-light">
+          <p className="font-body text-base text-charcoal/65 max-w-md mx-auto leading-relaxed font-light">
             Recurring support for homes that deserve to stay ahead. Priority booking, member pricing, and seasonal perks.
           </p>
         </AnimatedSection>
@@ -43,7 +43,7 @@ export default function MembershipPreview() {
                     <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-2" style={{ background: perk.dot }} />
                     <div>
                       <p className="font-body text-sm text-charcoal font-light">{perk.label}</p>
-                      <p className="font-body text-xs font-light" style={{ color: '#9a8880' }}>{perk.detail}</p>
+                      <p className="font-body text-xs font-light" style={{ color: '#6b5248' }}>{perk.detail}</p>
                     </div>
                   </div>
                 )}
@@ -54,7 +54,7 @@ export default function MembershipPreview() {
                   
                 Join The Catch-Up Club™ →
               </Link>
-              <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#baa090' }}>
+              <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#7a5e50' }}>
                 Membership fee is separate from service costs. Services billed per visit.
               </p>
             </div>

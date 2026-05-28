@@ -33,7 +33,7 @@ export default function ConsultSection() {
               Your Reset Consult
             </h2>
             <p className="font-logo text-2xl text-coral mb-8">A concierge onboarding experience.</p>
-            <p className="font-body text-base text-charcoal/50 leading-relaxed font-light mb-10">
+            <p className="font-body text-base text-charcoal/70 leading-relaxed font-light mb-10">
               Every new client starts with a 15-minute Reset Consult. Not a quote call — a real conversation so we can show up prepared and personalized, not generic.
             </p>
             <Link
@@ -58,7 +58,7 @@ export default function ConsultSection() {
                   <span className="font-logo text-coral text-2xl shrink-0" style={{ lineHeight: 1 }}>{step.num}</span>
                   <div>
                     <h3 className="font-heading text-base font-semibold mb-1" style={{ color: '#3a3330' }}>{step.title}</h3>
-                    <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#7a6560' }}>{step.desc}</p>
+                    <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#4a3e38' }}>{step.desc}</p>
                   </div>
                 </div>
               )}

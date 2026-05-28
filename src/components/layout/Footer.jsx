@@ -24,7 +24,7 @@ export default function Footer() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-white/90 mb-3 leading-tight">
             Ready to breathe again?
           </h2>
-          <p className="font-body text-base text-white/40 font-light mb-8">Your first step is a 15-minute free consult. No pressure. Just a conversation.</p>
+          <p className="font-body text-base text-white/65 font-light mb-8">Your first step is a 15-minute free consult. No pressure. Just a conversation.</p>
           <Link
             to="/book"
             className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-lg hover:shadow-coral/30 transition-all duration-300"
