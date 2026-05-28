@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { CalendarDays, Settings2, Star } from 'lucide-react';
+import { CalendarDays, Settings2, Star, LogOut } from 'lucide-react';
 import UpcomingBookings from '@/components/dashboard/UpcomingBookings';
 import ServicePreferencesForm from '@/components/dashboard/ServicePreferencesForm';
 
@@ -11,6 +12,7 @@ const TABS = [
 ];
 
 export default function MemberDashboard() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
@@ -18,24 +20,33 @@ export default function MemberDashboard() {
   const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(u => {
-      setUser(u);
-      if (u?.email) {
-        // Load bookings by email
-        base44.entities.Booking.filter({ client_email: u.email })
-          .then(results => {
-            setBookings(results);
-            setLoadingBookings(false);
-          });
-        // Check member status
-        base44.entities.ServicePreferences.filter({ user_email: u.email }).then(results => {
-          if (results.length > 0) setIsMember(results[0].is_member || false);
-        });
+    const checkAuth = async () => {
+      const isAuthed = await base44.auth.isAuthenticated();
+      if (!isAuthed) {
+        navigate('/member-login');
+        return;
       }
-    }).catch(() => {
-      base44.auth.redirectToLogin();
-    });
-  }, []);
+      
+      base44.auth.me().then(u => {
+        setUser(u);
+        if (u?.email) {
+          // Load bookings by email
+          base44.entities.Booking.filter({ client_email: u.email })
+            .then(results => {
+              setBookings(results);
+              setLoadingBookings(false);
+            });
+          // Check member status
+          base44.entities.ServicePreferences.filter({ user_email: u.email }).then(results => {
+            if (results.length > 0) setIsMember(results[0].is_member || false);
+          });
+        }
+      }).catch(() => {
+        navigate('/member-login');
+      });
+    };
+    checkAuth();
+  }, [navigate]);
 
   if (!user) {
     return (
@@ -48,6 +59,11 @@ export default function MemberDashboard() {
   const upcomingCount = bookings.filter(b =>
     b.scheduled_date >= new Date().toISOString().split('T')[0] && b.status !== 'cancelled'
   ).length;
+
+  const handleLogout = async () => {
+    await base44.auth.logout();
+    navigate('/member-login');
+  };
 
   return (
     <div className="min-h-screen bg-cream">
@@ -64,10 +80,17 @@ export default function MemberDashboard() {
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div>
                 <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">
-                  {user.full_name?.split(' ')[0] || 'Hi there'} 👋
+                  {user?.full_name?.split(' ')[0] || 'Hi there'} 👋
                 </h1>
                 <p className="font-logo text-lg text-coral">Your Clean Slate dashboard.</p>
               </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-taupe/20 bg-warm-white text-xs font-body font-light text-charcoal/50 hover:border-coral/30 hover:text-coral transition-colors shrink-0"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                Sign Out
+              </button>
               {isMember && (
                 <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-butter/40 border border-butter">
                   <Star className="w-3.5 h-3.5 text-charcoal/60" />

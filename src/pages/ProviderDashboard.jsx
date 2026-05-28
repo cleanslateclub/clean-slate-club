@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import { motion } from 'framer-motion';
+import { LogOut } from 'lucide-react';
 
 export default function ProviderDashboard() {
-  const { user, authError } = useAuth();
+  const navigate = useNavigate();
+  const { user, authError, isLoadingAuth } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedWeek, setSelectedWeek] = useState(new Date());
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isAuthed = await base44.auth.isAuthenticated();
+      if (!isAuthed) {
+        navigate('/provider-login');
+      }
+    };
+    if (!isLoadingAuth) checkAuth();
+  }, [isLoadingAuth, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,12 +56,26 @@ export default function ProviderDashboard() {
     }
   };
 
+  if (isLoadingAuth) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   if (authError || !user || (user.role !== 'provider' && user.role !== 'assistant')) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center px-6">
         <div className="text-center">
           <p className="font-heading text-xl font-semibold text-charcoal mb-2">Access Restricted</p>
           <p className="font-body text-sm text-charcoal/40 font-light">This dashboard is for service providers only.</p>
+          <button
+            onClick={() => navigate('/provider-login')}
+            className="mt-6 px-6 py-2.5 rounded-full bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 transition-all"
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     );
@@ -61,15 +89,29 @@ export default function ProviderDashboard() {
     );
   }
 
+  const handleLogout = async () => {
+    await base44.auth.logout();
+    navigate('/provider-login');
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <div className="pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
-            <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{user?.full_name || 'Provider'}</h1>
-            <p className="font-body text-sm text-charcoal/50">Your schedule, appointments, and earnings at a glance.</p>
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
+            <div>
+              <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
+              <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{user?.full_name || 'Provider'}</h1>
+              <p className="font-body text-sm text-charcoal/50">Your schedule, appointments, and earnings at a glance.</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-taupe/20 bg-warm-white text-xs font-body font-light text-charcoal/50 hover:border-coral/30 hover:text-coral transition-colors shrink-0"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Sign Out
+            </button>
           </motion.div>
 
           {/* Stats */}
