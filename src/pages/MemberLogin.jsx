@@ -100,7 +100,7 @@ export default function MemberLogin() {
           <p className="font-body text-xs text-charcoal/40 font-light">
             Don't have an account yet?{' '}
             <button
-              onClick={() => navigate('/book')}
+              onClick={() => navigate('/member-signup')}
               className="text-coral hover:underline font-light"
             >
               Create one
