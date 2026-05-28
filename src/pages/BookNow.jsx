@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
@@ -27,6 +27,15 @@ export default function BookNow() {
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
   const [showPaymentStep, setShowPaymentStep] = useState(false);
+  const [skipDeposit, setSkipDeposit] = useState(false);
+
+  // Check for admin booking flag in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('skip_deposit') === 'true') {
+      setSkipDeposit(true);
+    }
+  }, []);
 
   const isConsult = serviceKey === 'consult';
   // organization is a valid full booking service (not consult)
@@ -59,8 +68,16 @@ export default function BookNow() {
   };
 
   // For consult: only 3 steps (select → intake → confirm), skip addons & schedule
-  const totalSteps = isConsult ? 3 : 6;
+  // For provider bookings: skip deposit step (5 steps total)
+  const totalSteps = isConsult ? 3 : (skipDeposit ? 5 : 6);
   const displayStep = isConsult && step >= 3 ? step - 1 : step; // shift step display for consult
+  
+  // Redirect step 6 to submit if skipDeposit is true
+  useEffect(() => {
+    if (skipDeposit && step === 6) {
+      handleSubmit();
+    }
+  }, [skipDeposit, step]);
 
   const handleSubmit = async (stripePaymentIntentId = null) => {
     setSubmitting(true);
@@ -303,7 +320,7 @@ export default function BookNow() {
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}
                 {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
-                {!isConsult && step === 6 && (
+                {!isConsult && step === 6 && !skipDeposit && (
                   <Step6Payment
                     clientName={clientInfo.name}
                     clientEmail={clientInfo.email}
@@ -325,7 +342,7 @@ export default function BookNow() {
               <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button> :
               <div />}
 
-              {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ?
+              {step === 1 ? <div /> : step < (isConsult ? 3 : skipDeposit ? 5 : 5) ?
               <button
                 onClick={() => setStep((s) => s + 1)}
                 disabled={!canProceed()}
@@ -335,11 +352,11 @@ export default function BookNow() {
                 </button> :
 
               <button
-                onClick={() => isConsult ? handleSubmit() : setShowPolicyModal(true)}
+                onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setShowPolicyModal(true))}
                 disabled={submitting}
                 className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300">
                 
-                  {submitting ? isConsult ? 'Sending...' : 'Booking...' : isConsult ? 'Request My Free Consult →' : 'Review & Book →'}
+                  {submitting ? isConsult ? 'Sending...' : 'Booking...' : isConsult ? 'Request My Free Consult →' : (skipDeposit ? 'Complete Booking →' : 'Review & Book →')}
                 </button>
               }
             </div>

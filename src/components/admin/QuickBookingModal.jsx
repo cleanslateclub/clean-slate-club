@@ -60,55 +60,91 @@ export default function QuickBookingModal({ onClose, onSuccess, selectedDate, se
         addons: selectedAddons,
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
-        admin_notes: 'Booked from admin calendar'
+        admin_notes: 'Booked from admin calendar — skip deposit'
       });
 
       // Create time blocks
       if (selectedDate && selectedTime) {
-        const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
+        const blockEnd = minutesToTime(timeToMinutes(selectedTime) + totalDuration);
+        const travelEnd = minutesToTime(timeToMinutes(blockEnd) + TRAVEL_BUFFER);
         await base44.entities.TimeBlock.bulkCreate([
           {
             date: selectedDate,
             start_time: selectedTime,
-            end_time: endTime,
+            end_time: blockEnd,
             booking_id: booking.id,
             block_type: 'booking',
             label: `${cfg.label} — ${clientName}`
           },
           {
             date: selectedDate,
-            start_time: endTime,
-            end_time: blockEnd,
-            booking_id: booking.id,
+            start_time: blockEnd,
+            end_time: travelEnd,
             block_type: 'travel',
             label: 'Travel buffer'
           }
         ]);
       }
 
-      // Send notifications
+      // Generate payment link if requested
+      let paymentLink = null;
+      if (includePayLink) {
+        try {
+          const payRes = await base44.functions.invoke('createDepositPaymentIntent', {
+            amount: estimateLow * 100,
+            customerEmail: clientEmail,
+            customerPhone: clientPhone,
+            serviceLabel: cfg.label,
+            bookingId: booking.id,
+          });
+          paymentLink = payRes.data?.checkoutUrl || payRes.data?.url;
+        } catch (err) {
+          console.error('Payment link error:', err);
+        }
+      }
+
       const addonLabels = selectedAddons.map(id => cfg.addons.find(a => a.id === id)?.label).filter(Boolean);
       const displayDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
       const emailBody = `
-Hi ${clientName},
+<html>
+  <body style="font-family: Lato, sans-serif; color: #333; line-height: 1.6;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <p style="font-family: Sarina, cursive; font-size: 24px; color: #EB9486; margin: 0;">Clean Slate Club™</p>
+      </div>
+      
+      <h2 style="color: #333; font-size: 20px; margin-bottom: 20px;">Your Appointment is Confirmed!</h2>
+      
+      <div style="background: #fdfcfb; border-left: 4px solid #EB9486; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
+        <p style="margin: 0 0 12px 0;"><strong>Service:</strong> ${cfg.label}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Date:</strong> ${displayDate}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Time:</strong> ${selectedTime} – ${endTime}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Location:</strong> ${clientAddress}</p>
+        <p style="margin: 0;"><strong>Estimated Cost:</strong> $${estimateLow}–$${estimateHigh}</p>
+      </div>
 
-Your appointment is confirmed!
+      ${addonLabels.length > 0 ? `
+      <div style="margin-bottom: 20px;">
+        <p style="margin: 0 0 10px 0; font-weight: bold;">Add-ons:</p>
+        <ul style="margin: 0; padding-left: 20px;">
+          ${addonLabels.map(a => `<li style="margin-bottom: 5px;">${a}</li>`).join('')}
+        </ul>
+      </div>
+      ` : ''}
 
-Service: ${cfg.label}
-Date: ${displayDate}
-Time: ${selectedTime} – ${endTime}
-Address: ${clientAddress}
-Estimated cost: $${estimateLow}–$${estimateHigh}
+      ${paymentLink ? `
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${paymentLink}" style="display: inline-block; background: #EB9486; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">Secure Payment Link</a>
+      </div>
+      ` : ''}
 
-${addonLabels.length > 0 ? `Add-ons:\n${addonLabels.map(a => `• ${a}`).join('\n')}\n` : ''}
-
-${includePayLink ? `\nPayment Link: [View Secure Checkout]\n` : ''}
-
-Questions? Call us at (206) 825-4061
-
-Thanks,
-Masha & Clean Slate Club™
+      <p style="color: #999; font-size: 14px; margin-top: 30px;">Questions? Call us at <strong>(206) 825-4061</strong></p>
+      
+      <p style="color: #999; font-size: 14px; margin-top: 20px; text-align: center;">Masha & Clean Slate Club™</p>
+    </div>
+  </body>
+</html>
       `;
 
       // Send to client
@@ -116,34 +152,51 @@ Masha & Clean Slate Club™
         await base44.integrations.Core.SendEmail({
           to: clientEmail,
           subject: `Your appointment is confirmed — ${displayDate}`,
-          body: emailBody
+          body: emailBody,
+          from_name: 'Clean Slate Club'
         });
       }
 
       // Send to provider (Masha)
       const providerEmail = `
-New appointment booked!
+<html>
+  <body style="font-family: Lato, sans-serif; color: #333; line-height: 1.6;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <p style="font-size: 16px; margin-bottom: 20px;"><strong>New Appointment Booked!</strong></p>
+      
+      <div style="background: #fdfcfb; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
+        <p style="margin: 0 0 12px 0;"><strong>Client:</strong> ${clientName}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${clientEmail}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Phone:</strong> ${clientPhone}</p>
+        <p style="margin: 0 0 20px 0;"><strong>Address:</strong> ${clientAddress}</p>
+        
+        <p style="margin: 0 0 12px 0;"><strong>Service:</strong> ${cfg.label}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Date:</strong> ${displayDate}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Time:</strong> ${selectedTime} – ${endTime}</p>
+        <p style="margin: 0 0 12px 0;"><strong>Duration:</strong> ${(totalDuration / 60).toFixed(1)} hours</p>
+        <p style="margin: 0;"><strong>Est. Cost:</strong> $${estimateLow}–$${estimateHigh}</p>
+      </div>
 
-Client: ${clientName}
-Email: ${clientEmail}
-Phone: ${clientPhone}
-Address: ${clientAddress}
+      ${addonLabels.length > 0 ? `
+      <div style="margin-bottom: 20px;">
+        <p style="margin: 0 0 10px 0; font-weight: bold;">Add-ons:</p>
+        <ul style="margin: 0; padding-left: 20px;">
+          ${addonLabels.map(a => `<li style="margin-bottom: 5px;">${a}</li>`).join('')}
+        </ul>
+      </div>
+      ` : ''}
 
-Service: ${cfg.label}
-Date: ${displayDate}
-Time: ${selectedTime} – ${endTime}
-Duration: ${(totalDuration / 60).toFixed(1)} hours
-Est. cost: $${estimateLow}–$${estimateHigh}
-
-${addonLabels.length > 0 ? `Add-ons:\n${addonLabels.map(a => `• ${a}`).join('\n')}\n` : ''}
-
-View in dashboard: https://cleanslateclub.co/admin
+      <p style="color: #999; font-size: 12px; margin-top: 30px;"><a href="https://cleanslateclub.co/admin" style="color: #EB9486; text-decoration: none;">View in Dashboard →</a></p>
+    </div>
+  </body>
+</html>
       `;
 
       await base44.integrations.Core.SendEmail({
         to: 'cleanslateclubpa@gmail.com',
         subject: `New Booking: ${cfg.label} — ${clientName}`,
-        body: providerEmail
+        body: providerEmail,
+        from_name: 'Clean Slate Club'
       });
 
       onSuccess();
