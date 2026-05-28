@@ -60,14 +60,15 @@ export default function Navbar() {
                 key={link.path}
                 href={link.path}
                 style={{ color: location.pathname === link.path ? '#EB9486' : undefined }}
-                className="font-body text-sm font-light tracking-wide transition-colors duration-300 text-charcoal/60 hover:text-coral"
+                className="font-body text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 hover:text-coral"
+                style={{ color: location.pathname === link.path ? '#EB9486' : '#333333' }}
               >
                 {link.label}
               </a>
             ))}
             <Link
               to="/dashboard"
-              className="font-body text-sm font-light tracking-wide text-charcoal/60 hover:text-coral transition-colors duration-300"
+              className="font-body text-xs font-bold tracking-[0.15em] uppercase text-charcoal hover:text-coral transition-colors duration-300"
             >
               My Dashboard
             </Link>
@@ -106,7 +107,7 @@ export default function Navbar() {
             <Link
               to="/book"
               className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full mt-2"
-              style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
+              style={{ background: '#EB9486' }}
             >
               Book Now
             </Link>
