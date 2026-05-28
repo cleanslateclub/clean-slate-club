@@ -86,10 +86,13 @@ const sections = [
 }];
 
 
+const smsConsentText = 'By providing my phone number, I consent to receive text messages from Clean Slate Club™ regarding my bookings, appointment reminders, scheduling updates, and service notifications. Message and data rates may apply. Reply STOP to opt out at any time. Consent is not required as a condition of purchase.';
+
 const agreementText = 'I understand that all services require a $50 deposit. I understand that cancellations within 24 hours may forfeit the deposit. I understand that supplies and materials specific to my service must be available before the appointment, and that time spent sourcing missing items counts toward my booked service time. I understand that if my requested tasks exceed the booked time, I may either book an additional visit or approve extra time at $65/hr (members) or $85/hr (non-members) if available. I understand that Clean Slate Club provides non-medical household, family, senior, errand, and lifestyle support only.';
 
 export default function PolicyModal({ onAgree, onClose }) {
   const [agreed, setAgreed] = useState(false);
+  const [smsAgreed, setSmsAgreed] = useState(false);
 
   return (
     <AnimatePresence>
@@ -148,6 +151,26 @@ export default function PolicyModal({ onAgree, onClose }) {
               </div>
             )}
 
+            {/* SMS Consent box */}
+            <div className="rounded-2xl border border-taupe/20 p-5" style={{ background: '#fff' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#97A7B3' }} />
+                <h3 className="font-heading font-semibold text-charcoal tracking-wide text-lg">Text Message Notifications</h3>
+              </div>
+              <p className="font-body text-sm font-light leading-relaxed mb-4" style={{ color: '#333333' }}>{smsConsentText}</p>
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <div
+                  onClick={() => setSmsAgreed(!smsAgreed)}
+                  className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${smsAgreed ? 'bg-coral border-coral' : 'border-taupe bg-white group-hover:border-coral/40'}`}>
+                  {smsAgreed && <span className="text-white text-xs font-bold">✓</span>}
+                </div>
+                <span className="font-body text-sm font-light leading-relaxed select-none" style={{ color: '#333333' }}>
+                  I agree to receive text messages from Clean Slate Club™. Message & data rates may apply. Reply STOP to opt out. View our{' '}
+                  <a href="/sms-terms" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#EB9486' }}>SMS Terms</a>.
+                </span>
+              </label>
+            </div>
+
             {/* Agreement box */}
             <div className="rounded-2xl border-2 border-coral/30 p-5" style={{ background: 'linear-gradient(135deg, #fef0ee 0%, #fdfcfb 100%)' }}>
               <p className="font-body text-[10px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#EB9486' }}>Final Agreement</p>
@@ -156,7 +179,6 @@ export default function PolicyModal({ onAgree, onClose }) {
                 <div
                   onClick={() => setAgreed(!agreed)}
                   className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${agreed ? 'bg-coral border-coral' : 'border-taupe bg-white group-hover:border-coral/40'}`}>
-                  
                   {agreed && <span className="text-white text-xs font-bold">✓</span>}
                 </div>
                 <span className="font-body text-sm font-light leading-relaxed select-none" style={{ color: '#333333' }}>
@@ -174,8 +196,8 @@ export default function PolicyModal({ onAgree, onClose }) {
               </button> :
             <div />}
             <button
-              onClick={() => agreed && onAgree()}
-              disabled={!agreed}
+              onClick={() => agreed && smsAgreed && onAgree()}
+              disabled={!agreed || !smsAgreed}
               className="text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ background: agreed ? 'linear-gradient(to right, #EB9486, #fcd5ce)' : '#ccc' }}>
               
