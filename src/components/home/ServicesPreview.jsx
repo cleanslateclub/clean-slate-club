@@ -58,7 +58,7 @@ const categories = [
   desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
   color: '#b06e61',
   bg: '#fce4df55',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/989f1fb47_generated_image.png'
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/a7a6109ac_generated_image.png'
 },
 {
   iconKey: 'bag',
