@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
-import { Search, RefreshCw, BarChart2, Users, LayoutGrid, Archive, LogOut } from 'lucide-react';
+import { Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon, Archive, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingListItem from '@/components/admin/BookingListItem';
 import BookingDetail from '@/components/admin/BookingDetail';
@@ -11,9 +11,10 @@ import StatsOverview from '@/components/admin/StatsOverview';
 import ReportsTab from '@/components/admin/ReportsTab';
 import ProvidersTab from '@/components/admin/ProvidersTab';
 import QuickActions from '@/components/admin/QuickActions';
+import ProviderCalendar from '@/components/provider/ProviderCalendar';
 
 const TABS = [
-  { key: 'overview', label: 'Overview', icon: LayoutGrid },
+  { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
   { key: 'bookings', label: 'Bookings', icon: Search },
   { key: 'reports', label: 'Reports', icon: BarChart2 },
   { key: 'providers', label: 'Providers', icon: Users },
@@ -25,14 +26,16 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
+  const [timeBlocks, setTimeBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState('calendar');
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
   const [serviceFilter, setServiceFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedWeek, setSelectedWeek] = useState(new Date());
 
   // Check admin session on mount
   useEffect(() => {
@@ -46,10 +49,23 @@ export default function AdminDashboard() {
 
   const load = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
-    const data = await base44.entities.Booking.list('-scheduled_date', 500);
-    setBookings(data || []);
+    const [bookingData, blockData] = await Promise.all([
+      base44.entities.Booking.list('-scheduled_date', 500),
+      base44.entities.TimeBlock.list('-date', 500)
+    ]);
+    setBookings(bookingData || []);
+    setTimeBlocks(blockData || []);
     setLoading(false);
     setRefreshing(false);
+  };
+
+  const handleTimeBlockUpdate = async (blockId, updates) => {
+    try {
+      await base44.entities.TimeBlock.update(blockId, updates);
+      setTimeBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b));
+    } catch (error) {
+      console.error('Error updating time block:', error);
+    }
   };
 
   const updateStatus = async (id, status) => {
@@ -155,7 +171,27 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         <AnimatePresence mode="wait">
 
-          {/* OVERVIEW TAB */}
+          {/* CALENDAR TAB */}
+          {tab === 'calendar' && (
+            <motion.div key="calendar" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="w-6 h-6 border-2 border-taupe border-t-coral rounded-full animate-spin" />
+                </div>
+              ) : (
+                <ProviderCalendar
+                  timeBlocks={timeBlocks}
+                  bookings={bookings}
+                  selectedWeek={selectedWeek}
+                  onWeekChange={setSelectedWeek}
+                  onTimeBlockUpdate={handleTimeBlockUpdate}
+                  user={user}
+                />
+              )}
+            </motion.div>
+          )}
+
+          {/* OVERVIEW TAB (Hidden) */}
           {tab === 'overview' && (
             <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
               <StatsOverview
