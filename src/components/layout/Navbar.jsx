@@ -18,6 +18,7 @@ const navLinks = [
   { label: 'Memberships', path: '/memberships' },
   { label: 'FAQ', path: '/#faq' },
   { label: 'About', path: '/#about' },
+  { label: 'Create Account', path: '/member-signup' },
 ];
 
 export default function Navbar() {

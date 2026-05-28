@@ -10,6 +10,7 @@ import BookingDetail from '@/components/admin/BookingDetail';
 import StatsOverview from '@/components/admin/StatsOverview';
 import ReportsTab from '@/components/admin/ReportsTab';
 import ProvidersTab from '@/components/admin/ProvidersTab';
+import ClientsTab from '@/components/admin/ClientsTab';
 import QuickActions from '@/components/admin/QuickActions';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import QuickBookingModal from '@/components/admin/QuickBookingModal';
@@ -18,6 +19,7 @@ const TABS = [
   { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
   { key: 'bookings', label: 'Bookings', icon: Search },
   { key: 'reports', label: 'Reports', icon: BarChart2 },
+  { key: 'clients', label: 'Clients', icon: Users },
   { key: 'providers', label: 'Providers', icon: Users },
 ];
 
@@ -406,6 +408,13 @@ export default function AdminDashboard() {
           {tab === 'reports' && (
             <motion.div key="reports" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <ReportsTab bookings={activeBookings} />
+            </motion.div>
+          )}
+
+          {/* CLIENTS TAB */}
+          {tab === 'clients' && (
+            <motion.div key="clients" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <ClientsTab />
             </motion.div>
           )}
 
