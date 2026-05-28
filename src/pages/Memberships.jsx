@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
+import { base44 } from '@/api/base44Client';
 
 const perks = [
 { label: 'Priority scheduling', detail: 'Book 48hrs before the calendar opens to the public', dot: '#CAE7B9' },
@@ -13,6 +14,39 @@ const perks = [
 
 
 export default function Memberships() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleJoin = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let email = '';
+      let name = '';
+      try {
+        const user = await base44.auth.me();
+        email = user?.email || '';
+        name = user?.full_name || '';
+      } catch (_) {}
+
+      const res = await base44.functions.invoke('createMembershipCheckout', {
+        customerEmail: email,
+        customerName: name,
+        successUrl: `${window.location.origin}/dashboard?membership=success`,
+        cancelUrl: `${window.location.origin}/memberships`,
+      });
+      if (res.data?.url) {
+        window.location.href = res.data.url;
+      } else {
+        setError('Unable to start checkout. Please try again.');
+      }
+    } catch (e) {
+      setError('Something went wrong. Please try again or contact us.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       {/* Hero */}
@@ -78,12 +112,13 @@ export default function Memberships() {
                 )}
               </div>
 
-              <Link
-                to="/book"
-                className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
-                
-                Join The Catch-Up Club™ →
-              </Link>
+              <button
+                onClick={handleJoin}
+                disabled={loading}
+                className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 disabled:opacity-60 transition-all duration-300">
+                {loading ? 'Redirecting to checkout...' : 'Join The Catch-Up Club™ →'}
+              </button>
+              {error && <p className="text-center font-body text-xs text-red-500 mt-2">{error}</p>}
               <p className="text-center font-body text-xs font-light mt-3" style={{ color: '#7a5e50' }}>
                 Membership fee is separate from service costs. Services billed per visit.
               </p>
