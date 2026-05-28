@@ -17,6 +17,7 @@ import ProviderDashboard from './pages/ProviderDashboard';
 import MemberDashboard from './pages/MemberDashboard';
 import ProviderLogin from './pages/ProviderLogin';
 import MemberLogin from './pages/MemberLogin';
+import MemberSignup from './pages/MemberSignup';
 import SmsTerms from './pages/SmsTerms';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/dashboard" element={<MemberDashboard />} />
         <Route path="/provider-login" element={<ProviderLogin />} />
         <Route path="/member-login" element={<MemberLogin />} />
+        <Route path="/member-signup" element={<MemberSignup />} />
         <Route path="/sms-terms" element={<SmsTerms />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
