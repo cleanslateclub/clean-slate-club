@@ -66,6 +66,12 @@ export default function Navbar() {
               </a>
             ))}
             <Link
+              to="/dashboard"
+              className="font-body text-sm font-light tracking-wide text-charcoal/60 hover:text-coral transition-colors duration-300"
+            >
+              My Dashboard
+            </Link>
+            <Link
               to="/book"
               className="text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:opacity-90 transition-all duration-300"
               style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
@@ -87,6 +93,7 @@ export default function Navbar() {
         >
           <div className="px-6 py-8 space-y-6">
             <Link to="/" className="block font-heading text-xl font-semibold text-charcoal/70">Home</Link>
+            <Link to="/dashboard" className="block font-heading text-xl font-semibold text-charcoal/70">My Dashboard</Link>
             {navLinks.map((link) => (
               <a
                 key={link.path}

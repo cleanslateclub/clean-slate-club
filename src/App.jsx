@@ -12,6 +12,7 @@ import Services from './pages/Services.jsx';
 import Memberships from './pages/Memberships.jsx';
 import BookNow from './pages/BookNow';
 import AdminDashboard from './pages/AdminDashboard';
+import MemberDashboard from './pages/MemberDashboard';
 
 
 const AuthenticatedApp = () => {
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
         <Route path="/memberships" element={<Memberships />} />
         <Route path="/book" element={<BookNow />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard" element={<MemberDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -1,0 +1,57 @@
+{
+  "name": "ServicePreferences",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "preferred_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_time": {
+      "type": "string",
+      "enum": [
+        "Morning (9\u201311 AM)",
+        "Midday (11 AM\u20131 PM)",
+        "Afternoon (1\u20134 PM)",
+        "No preference"
+      ]
+    },
+    "preferred_day": {
+      "type": "string",
+      "enum": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "No preference"
+      ]
+    },
+    "supply_preference": {
+      "type": "string",
+      "enum": [
+        "Use my products",
+        "Bring your own",
+        "Either is fine"
+      ]
+    },
+    "access_notes": {
+      "type": "string"
+    },
+    "special_notes": {
+      "type": "string"
+    },
+    "is_member": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}
