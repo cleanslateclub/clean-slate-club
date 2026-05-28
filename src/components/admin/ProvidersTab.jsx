@@ -95,6 +95,7 @@ function ProviderForm({ initial, onSave, onCancel }) {
 }
 
 export default function ProvidersTab({ bookings }) {
+  const [showVisibilitySettings, setShowVisibilitySettings] = useState(false);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -146,6 +147,55 @@ export default function ProvidersTab({ bookings }) {
 
   return (
     <div className="space-y-4">
+      {/* Visibility controls */}
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Provider Dashboard Access</h3>
+            <p className="font-body text-xs text-charcoal/50 font-light mt-1">Control what providers can see on their dashboards.</p>
+          </div>
+          <button
+            onClick={() => setShowVisibilitySettings(!showVisibilitySettings)}
+            className="px-3 py-1.5 text-xs font-body rounded-full border border-coral/30 bg-coral/5 text-coral hover:bg-coral/10 transition-colors"
+          >
+            {showVisibilitySettings ? 'Done' : 'Customize'}
+          </button>
+        </div>
+
+        {showVisibilitySettings && (
+          <div className="space-y-3 pt-4 border-t border-taupe/10">
+            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-cream transition-colors">
+              <input type="checkbox" defaultChecked className="mt-1" />
+              <div>
+                <p className="font-body text-sm text-charcoal font-light">Show assigned bookings only</p>
+                <p className="font-body text-xs text-charcoal/40 font-light">Providers see only visits assigned to them</p>
+              </div>
+            </label>
+            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-cream transition-colors">
+              <input type="checkbox" defaultChecked className="mt-1" />
+              <div>
+                <p className="font-body text-sm text-charcoal font-light">Allow calendar editing</p>
+                <p className="font-body text-xs text-charcoal/40 font-light">Providers can drag-and-drop to reschedule</p>
+              </div>
+            </label>
+            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-cream transition-colors">
+              <input type="checkbox" defaultChecked={false} className="mt-1" />
+              <div>
+                <p className="font-body text-sm text-charcoal font-light">Show pricing breakdown</p>
+                <p className="font-body text-xs text-charcoal/40 font-light">Providers see deposit amount and rates</p>
+              </div>
+            </label>
+            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-cream transition-colors">
+              <input type="checkbox" defaultChecked={false} className="mt-1" />
+              <div>
+                <p className="font-body text-sm text-charcoal font-light">Show client notes</p>
+                <p className="font-body text-xs text-charcoal/40 font-light">Providers see intake answers and special requests</p>
+              </div>
+            </label>
+          </div>
+        )}
+      </div>
+
       {/* Header row */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex gap-2">
