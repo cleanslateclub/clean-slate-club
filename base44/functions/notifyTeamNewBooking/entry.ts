@@ -56,9 +56,12 @@ Deno.serve(async (req) => {
   .footer{background:#f9f4f2;padding:16px 32px;font-size:11px;color:#aaa;border-top:1px solid #f0e8e4;}
 </style></head>
 <body><div class="wrap">
-  <div class="header">
-    <h1>${isConsult ? '🌿 New Consult Request' : '✨ New Booking'}</h1>
-    <p>${serviceLabel}${!isConsult ? ` · ${dateStr}` : ''}</p>
+  <div class="header" style="text-align:center;">
+    <p style="font-family:Georgia,serif;font-size:26px;letter-spacing:0.04em;color:#fff;margin:0 0 4px;font-weight:400;">Clean Slate Club™</p>
+    <p style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);margin:0 0 12px;font-family:Arial,sans-serif;">lifestyle support · montgomery county, pa</p>
+    <div style="height:1px;background:rgba(255,255,255,0.2);margin:0 0 16px;"></div>
+    <h1 style="margin:0;font-size:18px;font-weight:700;color:#fff;letter-spacing:0.02em;font-family:Arial,sans-serif;">${isConsult ? '🌿 New Consult Request' : '✨ New Booking'}</h1>
+    <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.85);font-family:Arial,sans-serif;">${serviceLabel}${!isConsult ? ` · ${dateStr}` : ''}</p>
   </div>
   <div class="body">
     <div class="badge">${booking.status?.toUpperCase() || 'PENDING'}</div>

@@ -12,7 +12,7 @@ const STATUS_COLORS = {
   cancelled: 'bg-red-50 text-red-400 border-red-100',
 };
 
-const STATUS_LIST = ['pending', 'confirmed', 'completed', 'cancelled'];
+const STATUS_LIST = ['pending', 'confirmed', 'completed', 'cancelled', 'archived'];
 
 export default function BookingDetail({ booking, onUpdateStatus, onDelete, updatingId }) {
   const cfg = SERVICE_CONFIG[booking.service_category];
