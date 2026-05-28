@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
-import { Search, RefreshCw, BarChart2, Users, LayoutGrid, Archive, Zap } from 'lucide-react';
+import { Search, RefreshCw, BarChart2, Users, LayoutGrid, Archive, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingListItem from '@/components/admin/BookingListItem';
 import BookingDetail from '@/components/admin/BookingDetail';
@@ -21,6 +22,7 @@ const TABS = [
 const STATUS_TABS = ['all', 'pending', 'confirmed', 'completed', 'cancelled', 'archived'];
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,16 @@ export default function AdminDashboard() {
   const [serviceFilter, setServiceFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
 
+  // Check admin session on mount
+  useEffect(() => {
+    const adminSession = localStorage.getItem('adminSession');
+    if (!adminSession) {
+      navigate('/admin-login');
+      return;
+    }
+    load();
+  }, [navigate]);
+
   const load = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     const data = await base44.entities.Booking.list('-scheduled_date', 500);
@@ -39,8 +51,6 @@ export default function AdminDashboard() {
     setLoading(false);
     setRefreshing(false);
   };
-
-  useEffect(() => { load(); }, []);
 
   const updateStatus = async (id, status) => {
     setUpdatingId(id);
@@ -76,13 +86,17 @@ export default function AdminDashboard() {
 
   const selectedBooking = selected ? bookings.find(b => b.id === selected) : null;
 
-  if (user?.role !== 'admin') {
+  const handleLogout = () => {
+    localStorage.removeItem('adminSession');
+    navigate('/admin-login');
+  };
+
+  // Check admin session
+  const adminSession = typeof window !== 'undefined' ? localStorage.getItem('adminSession') : null;
+  if (!adminSession) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="text-center">
-          <p className="font-heading text-xl font-semibold text-charcoal mb-2">Access Restricted</p>
-          <p className="font-body text-sm text-charcoal/40 font-light">This dashboard is for service providers only.</p>
-        </div>
+        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -96,16 +110,20 @@ export default function AdminDashboard() {
             <p className="font-body text-[10px] tracking-[0.25em] uppercase text-coral/60 font-light">Clean Slate Club™</p>
             <h1 className="font-logo text-2xl text-coral leading-tight">Provider Dashboard</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="font-body text-xs text-charcoal/40 font-light hidden sm:block">
-              {user?.full_name}
-            </span>
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => load(true)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/50 hover:border-coral/30 transition-colors"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/50 hover:border-coral/30 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Sign Out
             </button>
           </div>
         </div>
