@@ -18,21 +18,10 @@ export default function MemberSignup() {
     setError(null);
 
     try {
-      // Create account using base44 auth
-      await base44.auth.registerWithPassword({
-        email,
-        password,
-        fullName
-      });
-
-      // Auto-login after signup
-      await base44.auth.loginWithPassword(email, password);
-      
-      // Redirect to booking page
-      navigate('/book');
+      // Redirect to login (which handles signup via platform auth)
+      await base44.auth.redirectToLogin('/member-signup');
     } catch (err) {
       setError(err.message || 'Signup failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
