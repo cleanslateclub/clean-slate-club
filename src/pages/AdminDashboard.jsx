@@ -12,6 +12,7 @@ import ReportsTab from '@/components/admin/ReportsTab';
 import ProvidersTab from '@/components/admin/ProvidersTab';
 import QuickActions from '@/components/admin/QuickActions';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
+import QuickBookingModal from '@/components/admin/QuickBookingModal';
 
 const TABS = [
   { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
@@ -36,6 +37,9 @@ export default function AdminDashboard() {
   const [serviceFilter, setServiceFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
   const [selectedWeek, setSelectedWeek] = useState(new Date());
+  const [showQuickBook, setShowQuickBook] = useState(false);
+  const [bookingDate, setBookingDate] = useState(null);
+  const [bookingTime, setBookingTime] = useState(null);
 
   // Check admin session on mount
   useEffect(() => {
@@ -179,14 +183,30 @@ export default function AdminDashboard() {
                   <div className="w-6 h-6 border-2 border-taupe border-t-coral rounded-full animate-spin" />
                 </div>
               ) : (
-                <ProviderCalendar
-                  timeBlocks={timeBlocks}
-                  bookings={bookings}
-                  selectedWeek={selectedWeek}
-                  onWeekChange={setSelectedWeek}
-                  onTimeBlockUpdate={handleTimeBlockUpdate}
-                  user={user}
-                />
+                <>
+                  <ProviderCalendar
+                    timeBlocks={timeBlocks}
+                    bookings={bookings}
+                    selectedWeek={selectedWeek}
+                    onWeekChange={setSelectedWeek}
+                    onTimeBlockUpdate={handleTimeBlockUpdate}
+                    user={user}
+                    onQuickBook={(date, time) => {
+                      setBookingDate(date);
+                      setBookingTime(time);
+                      setShowQuickBook(true);
+                    }}
+                  />
+                  {showQuickBook && (
+                    <QuickBookingModal
+                      onClose={() => setShowQuickBook(false)}
+                      onSuccess={() => load()}
+                      selectedDate={bookingDate}
+                      selectedTime={bookingTime}
+                      timeBlocks={timeBlocks}
+                    />
+                  )}
+                </>
               )}
             </motion.div>
           )}

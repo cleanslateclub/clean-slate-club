@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Plus } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import CalendarEvent from '@/components/provider/CalendarEvent';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, onWeekChange, onTimeBlockUpdate, user }) {
+export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, onWeekChange, onTimeBlockUpdate, user, onQuickBook }) {
   const [view, setView] = useState('week');
+  const [selectedDateForBooking, setSelectedDateForBooking] = useState(null);
+  const [selectedTimeForBooking, setSelectedTimeForBooking] = useState(null);
 
   // Get week dates
   const getWeekDates = (date) => {
@@ -113,6 +115,18 @@ export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, o
                     {date.getDate()}
                   </p>
                 </div>
+
+                {/* Quick book button */}
+                <button
+                  onClick={() => {
+                    setSelectedDateForBooking(dateStr);
+                    setSelectedTimeForBooking('10:00 AM');
+                    onQuickBook?.(dateStr, '10:00 AM');
+                  }}
+                  className="mb-2 w-full px-2 py-1.5 rounded-lg border border-dashed border-coral/30 bg-coral/5 text-coral text-xs font-body font-light hover:border-coral/50 hover:bg-coral/10 transition-all flex items-center justify-center gap-1"
+                >
+                  <Plus className="w-3 h-3" /> Book
+                </button>
 
                 {/* Droppable zone */}
                 <Droppable droppableId={dayIdx.toString()}>
