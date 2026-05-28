@@ -9,6 +9,7 @@ import Step2Intake from '@/components/booking/Step2Intake';
 import Step3Addons from '@/components/booking/Step3Addons';
 import Step4Schedule from '@/components/booking/Step4Schedule';
 import Step5Confirm from '@/components/booking/Step5Confirm';
+import Step6Payment from '@/components/booking/Step6Payment';
 
 export default function BookNow() {
   const [step, setStep] = useState(1);
@@ -24,6 +25,7 @@ export default function BookNow() {
   const [error, setError] = useState(null);
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
+  const [showPaymentStep, setShowPaymentStep] = useState(false);
 
   const isConsult = serviceKey === 'consult';
   // organization is a valid full booking service (not consult)
@@ -56,10 +58,10 @@ export default function BookNow() {
   };
 
   // For consult: only 3 steps (select → intake → confirm), skip addons & schedule
-  const totalSteps = isConsult ? 3 : 5;
+  const totalSteps = isConsult ? 3 : 6;
   const displayStep = isConsult && step >= 3 ? step - 1 : step; // shift step display for consult
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (stripePaymentIntentId = null) => {
     setSubmitting(true);
     setError(null);
     try {
@@ -89,7 +91,9 @@ export default function BookNow() {
         special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
-        admin_notes: isConsult ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}` : ''
+        admin_notes: isConsult
+          ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}`
+          : `Deposit paid — Stripe ID: ${stripePaymentIntentId || 'N/A'}`
       });
 
       // Create time blocks (skip for consult — no date/time yet)
@@ -268,7 +272,7 @@ export default function BookNow() {
     <div className="min-h-screen bg-cream">
       {showPolicyModal &&
       <PolicyModal
-        onAgree={() => {setPolicyAccepted(true);setShowPolicyModal(false);handleSubmit();}}
+        onAgree={() => {setPolicyAccepted(true);setShowPolicyModal(false);setStep(6);}}
         onClose={() => setShowPolicyModal(false)} />
 
       }
@@ -298,12 +302,23 @@ export default function BookNow() {
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}
                 {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
+                {!isConsult && step === 6 && (
+                  <Step6Payment
+                    clientName={clientInfo.name}
+                    clientEmail={clientInfo.email}
+                    serviceLabel={config?.label || ''}
+                    onSuccess={(paymentIntentId) => handleSubmit(paymentIntentId)}
+                    onCancel={() => setStep(5)}
+                    submitting={submitting}
+                  />
+                )}
               </motion.div>
             </AnimatePresence>
 
             {error && <p className="mt-4 text-sm text-red-500 font-body text-center">{error}</p>}
 
-            {/* Navigation */}
+            {/* Navigation — hidden on payment step (Step6Payment has its own nav) */}
+            {step !== 6 && (
             <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
               {step > 1 ?
               <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button> :
@@ -327,6 +342,7 @@ export default function BookNow() {
                 </button>
               }
             </div>
+            )}
           </div>
 
           <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
