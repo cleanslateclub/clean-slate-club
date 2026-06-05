@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import WorkInProgressBanner from '@/components/shared/WorkInProgressBanner';
 
 export default function Layout() {
   const { pathname } = useLocation();
@@ -12,6 +13,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-cream">
+      <WorkInProgressBanner />
       <Navbar />
       <main>
         <Outlet />
