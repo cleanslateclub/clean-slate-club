@@ -10,11 +10,11 @@ import MembershipManagement from '@/components/dashboard/MembershipManagement';
 import ReferralPanel from '@/components/dashboard/ReferralPanel';
 
 const TABS = [
-  { id: 'schedule', label: 'My Schedule', icon: CalendarDays },
-  { id: 'household', label: 'My Home', icon: Home },
-  { id: 'preferences', label: 'Preferences', icon: Settings2 },
-  { id: 'membership', label: 'Membership', icon: Star },
-  { id: 'referrals', label: 'Referrals', icon: Gift },
+  { id: 'schedule',   label: 'My Schedule', icon: CalendarDays },
+  { id: 'household',  label: 'My Home',      icon: Home },
+  { id: 'preferences',label: 'Preferences',  icon: Settings2 },
+  { id: 'membership', label: 'Membership',   icon: Star },
+  { id: 'referrals',  label: 'Referrals',    icon: Gift },
 ];
 
 export default function MemberDashboard() {
@@ -26,33 +26,66 @@ export default function MemberDashboard() {
   const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
+    // FIX: Full async/await rewrite — consistent, readable, all errors handled
     const checkAuth = async () => {
-      const isAuthed = await base44.auth.isAuthenticated();
-      if (!isAuthed) {
-        navigate('/member-login');
-        return;
-      }
-      
-      base44.auth.me().then(u => {
-        setUser(u);
-        if (u?.email) {
-          // Load bookings by email
-          base44.entities.Booking.filter({ client_email: u.email })
-            .then(results => {
-              setBookings(results);
-              setLoadingBookings(false);
-            });
-          // Check member status
-          base44.entities.ServicePreferences.filter({ user_email: u.email }).then(results => {
-            if (results.length > 0) setIsMember(results[0].is_member || false);
-          });
+      try {
+        const isAuthed = await base44.auth.isAuthenticated();
+        if (!isAuthed) {
+          navigate('/member-login');
+          return;
         }
-      }).catch(() => {
+
+        const u = await base44.auth.me();
+        if (!u) {
+          navigate('/member-login');
+          return;
+        }
+        setUser(u);
+
+        if (u?.email) {
+          // FIX: Load bookings and member status in parallel for speed
+          // FIX: loadingBookings always resolves via finally — no more infinite loading
+          const [bookingResults, prefResults] = await Promise.allSettled([
+            base44.entities.Booking.filter({ client_email: u.email }),
+            base44.entities.ServicePreferences.filter({ user_email: u.email })
+          ]);
+
+          if (bookingResults.status === 'fulfilled') {
+            setBookings(bookingResults.value || []);
+          } else {
+            console.error('Failed to load bookings:', bookingResults.reason);
+          }
+
+          if (prefResults.status === 'fulfilled' && prefResults.value?.length > 0) {
+            setIsMember(prefResults.value[0].is_member || false);
+          } else if (prefResults.status === 'rejected') {
+            console.error('Failed to load member status:', prefResults.reason);
+          }
+        }
+
+      } catch (err) {
+        // FIX: Any auth failure redirects cleanly instead of crashing silently
+        console.error('Auth check failed:', err);
         navigate('/member-login');
-      });
+      } finally {
+        // FIX: loadingBookings ALWAYS clears — even on error, even if email is missing
+        setLoadingBookings(false);
+      }
     };
+
     checkAuth();
   }, [navigate]);
+
+  const handleLogout = async () => {
+    // FIX: Added error handling — logout failure no longer silently fails
+    try {
+      await base44.auth.logout();
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      navigate('/member-login');
+    }
+  };
 
   if (!user) {
     return (
@@ -62,14 +95,10 @@ export default function MemberDashboard() {
     );
   }
 
+  const today = new Date().toISOString().split('T')[0];
   const upcomingCount = bookings.filter(b =>
-    b.scheduled_date >= new Date().toISOString().split('T')[0] && b.status !== 'cancelled'
+    b.scheduled_date >= today && b.status !== 'cancelled'
   ).length;
-
-  const handleLogout = async () => {
-    await base44.auth.logout();
-    navigate('/member-login');
-  };
 
   return (
     <div className="min-h-screen bg-cream">
@@ -85,8 +114,9 @@ export default function MemberDashboard() {
             <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2 text-charcoal/40">Welcome back</p>
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div>
+                {/* FIX: user is guaranteed non-null here, removed unnecessary optional chaining */}
                 <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">
-                  {user?.full_name?.split(' ')[0] || 'Hi there'} 👋
+                  {user.full_name?.split(' ')[0] || 'Hi there'} 👋
                 </h1>
                 <p className="font-logo text-lg text-coral">Your Clean Slate dashboard.</p>
               </div>
@@ -105,15 +135,19 @@ export default function MemberDashboard() {
               )}
             </div>
 
-            {/* Stats strip */}
+            {/* Stats strip — FIX: show skeletons while loading instead of misleading 0s */}
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: 'Upcoming visits', value: upcomingCount },
-                { label: 'Total bookings', value: bookings.length },
-                { label: 'Completed visits', value: bookings.filter(b => b.status === 'completed').length },
+                { label: 'Upcoming visits',   value: upcomingCount },
+                { label: 'Total bookings',     value: bookings.length },
+                { label: 'Completed visits',   value: bookings.filter(b => b.status === 'completed').length },
               ].map(stat => (
                 <div key={stat.label} className="bg-warm-white rounded-2xl border border-taupe/15 px-4 py-3 text-center">
-                  <p className="font-heading text-2xl font-semibold text-coral">{stat.value}</p>
+                  {loadingBookings ? (
+                    <div className="h-8 w-8 bg-taupe/10 rounded-lg animate-pulse mx-auto mb-1" />
+                  ) : (
+                    <p className="font-heading text-2xl font-semibold text-coral">{stat.value}</p>
+                  )}
                   <p className="font-body text-xs text-charcoal/40 font-light mt-0.5">{stat.label}</p>
                 </div>
               ))}
