@@ -1,0 +1,33 @@
+name: Consult Reminders
+
+on:
+  schedule:
+    - cron: '0 14 * * *'   # 10:00 AM ET (UTC-4) — 48hr email batch
+    - cron: '0 15 * * *'   # 11:00 AM ET — 24hr SMS batch
+    - cron: '0 16 * * *'   # 12:00 PM ET — 1hr SMS batch
+  workflow_dispatch:        # lets you trigger manually from GitHub for testing
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 48hr Email
+        if: github.event.schedule == '0 14 * * *'
+        run: |
+          curl -X POST ${{ secrets.BASE44_FUNCTION_URL }}/sendConsultReminders \
+            -H "Content-Type: application/json" \
+            -d '{"reminderType":"48hr_email"}'
+
+      - name: 24hr SMS
+        if: github.event.schedule == '0 15 * * *'
+        run: |
+          curl -X POST ${{ secrets.BASE44_FUNCTION_URL }}/sendConsultReminders \
+            -H "Content-Type: application/json" \
+            -d '{"reminderType":"24hr_sms"}'
+
+      - name: 1hr SMS
+        if: github.event.schedule == '0 16 * * *'
+        run: |
+          curl -X POST ${{ secrets.BASE44_FUNCTION_URL }}/sendConsultReminders \
+            -H "Content-Type: application/json" \
+            -d '{"reminderType":"1hr_sms"}'
