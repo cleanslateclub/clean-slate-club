@@ -237,16 +237,54 @@ export default function ProvidersTab({ bookings }) {
           </button>
         </div>
         {!showArchived && (
-          <button onClick={() => { setShowForm(true); setEditingId(null); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-coral text-white text-xs font-body tracking-wide hover:opacity-90 transition-opacity">
-            <Plus className="w-3.5 h-3.5" /> Add Provider
+          <button onClick={() => { setShowForm(true); setEditingId(null); setSelectedProviderId(null); }}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-coral text-white text-xs font-body font-light tracking-widest uppercase hover:bg-coral/90 transition-colors">
+            <Plus className="w-4 h-4" /> Add Provider
           </button>
         )}
       </div>
 
-      {showForm && !editingId && (
-        <ProviderForm onSave={handleSave} onCancel={() => setShowForm(false)} />
-      )}
+      {/* Add/Edit Provider Modal */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            key="form-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowForm(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-warm-white rounded-3xl border border-taupe/15 shadow-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            >
+              <div className="mb-6">
+                <h3 className="font-heading text-2xl font-semibold text-charcoal">
+                  {editingId ? 'Edit Provider' : 'Add New Provider'}
+                </h3>
+                <p className="font-body text-sm text-charcoal/50 font-light mt-2">
+                  {editingId ? 'Update provider details, credentials, and settings.' : 'Create a new employee or contractor profile with login credentials for portal access.'}
+                </p>
+              </div>
+              <ProviderForm
+                initial={editingId ? providers.find(p => p.id === editingId) : undefined}
+                onSave={(form) => {
+                  handleSave(form);
+                  setShowForm(false);
+                }}
+                onCancel={() => {
+                  setShowForm(false);
+                  setEditingId(null);
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {displayed.length === 0 && (
         <div className="text-center py-12 bg-warm-white rounded-2xl border border-taupe/15">
@@ -269,9 +307,7 @@ export default function ProvidersTab({ bookings }) {
               p.contractor_agreement_signed
             ].filter(Boolean).length;
 
-            return editingId === p.id ? (
-              <ProviderForm key={p.id} initial={p} onSave={handleSave} onCancel={() => setEditingId(null)} />
-            ) : (
+            return (
               <motion.button
                 key={p.id}
                 onClick={() => setSelectedProviderId(p.id)}
