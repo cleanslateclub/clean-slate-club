@@ -5,11 +5,11 @@ import Footer from './Footer';
 import WorkInProgressBanner from '@/components/shared/WorkInProgressBanner';
 
 export default function Layout() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname, search]);
 
   return (
     <div className="min-h-screen bg-cream">

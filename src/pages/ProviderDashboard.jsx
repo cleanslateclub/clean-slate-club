@@ -15,6 +15,8 @@ export default function ProviderDashboard() {
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedWeek, setSelectedWeek] = useState(new Date());
+  const [activeVisitBooking, setActiveVisitBooking] = useState(null);
+  const [providerTab, setProviderTab] = useState('calendar');
 
   // Check authentication on mount
   useEffect(() => {
@@ -116,9 +118,6 @@ export default function ProviderDashboard() {
       </div>
     );
   }
-
-  const [activeVisitBooking, setActiveVisitBooking] = useState(null);
-  const [providerTab, setProviderTab] = useState('calendar');
 
   const handleLogout = async () => {
     await base44.auth.logout();

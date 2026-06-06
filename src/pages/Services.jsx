@@ -122,7 +122,7 @@ export default function Services() {
               to="/book"
               className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300"
             >
-              Book a Visit
+              See All Options →
             </Link>
           </motion.div>
         </div>
@@ -163,7 +163,7 @@ export default function Services() {
                 </div>
 
                 <Link
-                  to="/book"
+                  to={`/book?service=${service.key}`}
                   className="inline-block text-white font-body text-xs tracking-wide px-6 py-2.5 rounded-full transition-all duration-300 hover:opacity-90"
                   style={{ background: service.color }}
                 >

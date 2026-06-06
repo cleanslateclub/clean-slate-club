@@ -14,8 +14,9 @@ import Step6Payment from '@/components/booking/Step6Payment';
 
 export default function BookNow() {
   const { getBool, getNum, loading: settingsLoading } = useAppSettings();
-  const [step, setStep] = useState(1);
-  const [serviceKey, setServiceKey] = useState(null);
+  const preselectedService = new URLSearchParams(window.location.search).get('service');
+  const [step, setStep] = useState(preselectedService ? 2 : 1);
+  const [serviceKey, setServiceKey] = useState(preselectedService || null);
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '', address: '' });
   const [intakeAnswers, setIntakeAnswers] = useState({});
   const [selectedAddons, setSelectedAddons] = useState([]);
