@@ -88,12 +88,12 @@ const sections = [
   {
     color: '#B58A90',
     title: 'Text Message Communications',
-    body: 'By providing a phone number and submitting a booking, contact, intake, or membership form, you agree to receive text communications from Clean Slate Club regarding appointment confirmations, reminders, scheduling updates, cancellations, and customer care. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe. View our SMS Terms at cleanslateclubpa.com/sms-terms.'
+    body: 'By providing a phone number and submitting a booking, contact, intake, or membership form, you agree to receive text communications from Clean Slate Club regarding appointment confirmations, reminders, scheduling updates, cancellations, and customer care. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe. View our SMS Terms at cleanslateclub.co/sms-terms.'
   },
   {
     color: '#97A7B3',
     title: 'Changes to Terms',
-    body: 'Clean Slate Club™ reserves the right to update these Terms and Conditions at any time. Continued use of our services following any changes constitutes your acceptance of the revised terms. The current version is always available at cleanslateclubpa.com.'
+    body: 'Clean Slate Club™ reserves the right to update these Terms and Conditions at any time. Continued use of our services following any changes constitutes your acceptance of the revised terms. The current version is always available at cleanslateclub.co.'
   },
   {
     color: '#EB9486',
@@ -147,7 +147,7 @@ export default function TermsAndConditions() {
           <AnimatedSection delay={0.35}>
             <div className="rounded-2xl p-5 text-center" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
               <p className="font-body text-xs text-charcoal/50 font-light">
-                Last updated: May 2026 · Clean Slate Club™ · cleanslateclubpa.com
+                Last updated: May 2026 · Clean Slate Club™ · cleanslateclub.co
               </p>
             </div>
           </AnimatedSection>

@@ -110,7 +110,7 @@ export default function SmsTerms() {
           <AnimatedSection delay={0.17}>
             <div className="rounded-2xl p-5 text-center" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
               <p className="font-body text-xs text-charcoal/50 font-light">
-                Last updated: May 2026 · Clean Slate Club™ · cleanslateclubpa.com
+                Last updated: May 2026 · Clean Slate Club™ · cleanslateclub.co
               </p>
               <p className="font-body text-xs text-charcoal/40 font-light mt-1">
                 Supported carriers include AT&T, T-Mobile, Verizon, Sprint, and most US carriers. Supported short code / long code messaging via Twilio.

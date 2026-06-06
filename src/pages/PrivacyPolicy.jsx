@@ -37,7 +37,7 @@ const sections = [
       'Reply HELP for assistance or contact us directly',
       'Consent to SMS is not required as a condition of purchase'
     ],
-    note: 'Full SMS terms are available at cleanslateclubpa.com/sms-terms'
+    note: 'Full SMS terms are available at cleanslateclub.co/sms-terms'
   },
   {
     color: '#B58A90',
@@ -81,7 +81,7 @@ const sections = [
   {
     color: '#B58A90',
     title: 'Changes to This Policy',
-    body: 'We may update this Privacy Policy from time to time. The current version will always be posted at cleanslateclubpa.com/privacy-policy. Continued use of our services following any changes constitutes your acceptance of the updated policy.'
+    body: 'We may update this Privacy Policy from time to time. The current version will always be posted at cleanslateclub.co/privacy-policy. Continued use of our services following any changes constitutes your acceptance of the updated policy.'
   },
   {
     color: '#97A7B3',
@@ -135,7 +135,7 @@ export default function PrivacyPolicy() {
           <AnimatedSection delay={0.35}>
             <div className="rounded-2xl p-5 text-center" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
               <p className="font-body text-xs text-charcoal/50 font-light">
-                Last updated: May 2026 · Clean Slate Club™ · cleanslateclubpa.com
+                Last updated: May 2026 · Clean Slate Club™ · cleanslateclub.co
               </p>
             </div>
           </AnimatedSection>

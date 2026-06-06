@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       day: 'numeric' 
     });
 
-    const message = `Hi ${booking.client_name}! Your Clean Slate Club ${serviceName} is confirmed for ${displayDate} at ${booking.scheduled_start_time}. We'll see you soon! Reply STOP to opt out.`;
+    const message = `Hi ${booking.client_name}! ✨ Your Clean Slate Club ${serviceName} is confirmed for ${displayDate} at ${booking.scheduled_start_time}. We can't wait to see you! Questions? Text us back or visit cleanslateclub.co 🌿 Reply STOP to opt out.`;
 
     const auth = btoa(`${accountSid}:${authToken}`);
     const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {

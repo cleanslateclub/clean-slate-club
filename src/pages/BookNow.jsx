@@ -169,9 +169,9 @@ export default function BookNow() {
 <style>
   body{margin:0;padding:0;background:#fdfcfb;font-family:'Lato',sans-serif;color:#333333;}
   .wrapper{max-width:600px;margin:0 auto;background:#fdfcfb;}
-  .header{background:linear-gradient(135deg,#EB9486 0%,#fcd5ce 60%,#ece4db 100%);padding:40px 40px 32px;text-align:center;}
-  .brand-name{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#fff;margin:0 0 2px;}
-  .brand-sub{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:300;color:#fff;margin:0;letter-spacing:0.04em;}
+  .header{background:linear-gradient(135deg,#EB9486 0%,#EFB988 35%,#CAE7B9 70%,#ece4db 100%);padding:44px 40px 36px;text-align:center;}
+  .brand-name{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.9);margin:0 0 0px;display:inline;}
+  .brand-sub{font-family:'Sarina',cursive;font-size:26px;font-weight:400;color:#fff;margin:0 0 0 8px;letter-spacing:0.02em;display:inline;}
   .body{padding:36px 40px;}
   .greeting{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:600;color:#333;margin:0 0 12px;}
   p{font-family:'Lato',sans-serif;font-size:15px;font-weight:300;color:#555;line-height:1.7;margin:0 0 16px;}
@@ -191,13 +191,13 @@ export default function BookNow() {
 </style></head>
 <body><div class="wrapper">
   <div class="header">
-    <p class="brand-name">Clean Slate</p>
-    <p class="brand-sub" style="font-family:'Sarina',cursive;font-size:28px;font-weight:400;color:#fff;margin:0;letter-spacing:0.02em;">Club</p>
+    <div style="margin-bottom:14px;"><span class="brand-name">CLEAN SLATE</span><span class="brand-sub">Club</span></div>
+    <div style="height:1px;background:rgba(255,255,255,0.3);margin:0 auto 16px;max-width:160px;"></div>
   </div>
   <div class="body">${innerHtml}</div>
   <div class="footer">
     <p>Questions? Reply to this email or text us at (206) 825-4061</p>
-    <p>cleanslateclubpa@gmail.com · cleanslateclubco.com</p>
+    <p>cleanslateclubpa@gmail.com · cleanslateclub.co</p>
   </div>
 </div></body></html>`;
 
@@ -240,7 +240,7 @@ export default function BookNow() {
         base44.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `New Consult Request — ${clientInfo.name}`,
-          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubco.com/admin`
+          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`
         })]
         );
       } else {
@@ -279,7 +279,7 @@ export default function BookNow() {
         base44.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
-          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubco.com/admin`
+          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclub.co/admin`
         }),
         // Add to Google Calendar
 
