@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // FIX: import Link for navigation
 import { base44 } from '@/api/base44Client';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -17,20 +17,34 @@ export default function MemberLogin() {
     setError(null);
 
     try {
-      // Use base44's login method
-      await base44.auth.loginWithPassword(email, password);
+      await base44.auth.loginWithPassword(email.trim(), password); // FIX: trim email
       const user = await base44.auth.me();
 
-      // Members can be regular users
-      if (user?.role === 'admin' || user?.role === 'provider' || user?.role === 'assistant') {
+      // FIX: Explicitly check user exists before trusting role
+      if (!user) {
+        await base44.auth.logout();
+        setError('Could not load your account. Please try again.');
+        return;
+      }
+
+      // FIX: Allowlist approach — only known member roles pass through
+      // Blocks admins, providers, assistants, AND any future unknown roles
+      const memberRoles = ['member', 'client', null, undefined, ''];
+      if (!memberRoles.includes(user.role)) {
         await base44.auth.logout();
         setError('Access denied. Member credentials required.');
         return;
       }
 
       navigate('/dashboard');
+
     } catch (err) {
-      setError('Invalid email or password.');
+      // FIX: Distinguish network errors from bad credentials
+      if (err?.message?.toLowerCase().includes('network') || err?.status === 0) {
+        setError('Connection problem. Please check your internet and try again.');
+      } else {
+        setError('Invalid email or password.');
+      }
     } finally {
       setLoading(false);
     }
@@ -42,7 +56,8 @@ export default function MemberLogin() {
         {/* Header */}
         <div className="text-center mb-10">
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/50 mb-2">Clean Slate Club™</p>
-          <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">Member Dashboard</h1>
+          {/* FIX: was "Member Dashboard" — this is the login page */}
+          <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">Member Login</h1>
           <p className="font-body text-sm text-charcoal/40 font-light">Sign in to view your bookings and preferences.</p>
         </div>
 
@@ -62,12 +77,23 @@ export default function MemberLogin() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
+              autoComplete="email" // FIX: password managers work properly
               className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
             />
           </div>
 
           <div>
-            <label className="font-body text-xs text-charcoal/50 font-light block mb-2">Password</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="font-body text-xs text-charcoal/50 font-light">Password</label>
+              {/* FIX: Added forgot password link */}
+              <button
+                type="button"
+                onClick={() => base44.auth.sendPasswordResetEmail?.(email.trim())}
+                className="font-body text-xs text-coral/70 font-light hover:text-coral hover:underline transition-colors"
+              >
+                Forgot password?
+              </button>
+            </div>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -75,6 +101,7 @@ export default function MemberLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                autoComplete="current-password" // FIX: password managers work properly
                 className="w-full px-4 py-3 pr-10 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
               />
               <button
@@ -87,9 +114,10 @@ export default function MemberLogin() {
             </div>
           </div>
 
+          {/* FIX: also disabled when fields are empty */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !email || !password}
             className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
             {loading ? 'Signing in...' : 'Sign In'}
@@ -99,12 +127,10 @@ export default function MemberLogin() {
         <div className="text-center mt-6 space-y-2">
           <p className="font-body text-xs text-charcoal/40 font-light">
             Don't have an account yet?{' '}
-            <button
-              onClick={() => navigate('/member-signup')}
-              className="text-coral hover:underline font-light"
-            >
+            {/* FIX: <Link> instead of navigate() — proper anchor, right-click works */}
+            <Link to="/member-signup" className="text-coral hover:underline font-light">
               Create one
-            </button>
+            </Link>
           </p>
           <p className="font-body text-xs text-charcoal/40 font-light">
             Need help? Contact us at (206) 825-4061
