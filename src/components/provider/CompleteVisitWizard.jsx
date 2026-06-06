@@ -18,6 +18,7 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
   const [hasIncident, setHasIncident] = useState(false);
   const [incident, setIncident] = useState({ incident_type: '', description: '', severity: 'low' });
   const [tipAmount, setTipAmount] = useState('');
+  const [actualJobAmount, setActualJobAmount] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
 
@@ -47,12 +48,13 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    const finalJobAmount = actualJobAmount ? Number(actualJobAmount) : baseRevenue;
 
     // Update booking status to completed
-    await base44.entities.Booking.update(booking.id, {
-      status: 'completed',
-      admin_notes: (booking.admin_notes || '') + `\n[Provider checkout] Extra time: ${extraTime}. Tips: $${tipAmount || 0}. Notes: ${providerNotes}`,
-    });
+     await base44.entities.Booking.update(booking.id, {
+       status: 'completed',
+       admin_notes: (booking.admin_notes || '') + `\n[Provider checkout] Actual amount: $${finalJobAmount.toFixed(2)}. Extra time: ${extraTime}. Tips: $${tipAmount || 0}. Notes: ${providerNotes}`,
+     });
 
     // Create incident if filed
     if (hasIncident) {
@@ -71,14 +73,15 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
     }
 
     // Create payout record
+    const finalPayout = (finalJobAmount * payoutRate) + Number(tipAmount || 0);
     await base44.entities.ProviderPayout.create({
       booking_id: booking.id,
       provider_name: booking.provider_name || 'Provider',
-      service_revenue: totalRevenue,
+      service_revenue: finalJobAmount,
       payout_rate: payoutRate,
-      payout_amount: totalRevenue * payoutRate,
+      payout_amount: finalJobAmount * payoutRate,
       tip_amount: Number(tipAmount || 0),
-      total_payout: providerPayout,
+      total_payout: finalPayout,
       status: 'pending',
       pay_period: getCurrentPayPeriod(),
     });
@@ -158,21 +161,30 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
                 <DollarSign className="w-8 h-8 text-coral mx-auto mb-3" />
                 <h3 className="font-heading text-lg font-semibold text-charcoal mb-2">Collect Payment</h3>
                 <p className="font-body text-sm text-charcoal/50 font-light mb-4">Get paid first, then complete the visit details.</p>
-                
-                <div className="bg-warm-white rounded-xl p-4 mb-4 space-y-2 text-left">
-                  <div className="flex justify-between">
-                    <span className="font-body text-sm text-charcoal/60 font-light">Base service</span>
-                    <span className="font-body text-sm text-charcoal font-light">${(baseRevenue).toFixed(2)}</span>
+
+                <div className="bg-warm-white rounded-xl p-4 mb-4 space-y-3 text-left">
+                  <div>
+                    <p className="font-body text-xs text-charcoal/60 font-light mb-1.5">Quote from proposal</p>
+                    <p className="font-heading text-sm text-charcoal">${(baseRevenue).toFixed(2)}</p>
                   </div>
-                  {extraTime !== 'none' && (
-                    <div className="flex justify-between">
-                      <span className="font-body text-sm text-charcoal/60 font-light">Extra time</span>
-                      <span className="font-body text-sm text-charcoal font-light">+${(extraTimeRates[extraTime] || 0).toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="border-t border-taupe/10 pt-2 flex justify-between">
+                  <div className="border-t border-taupe/10 pt-3">
+                    <label className="block mb-1.5">
+                      <p className="font-body text-xs text-charcoal/60 font-light mb-1">Actual job amount</p>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={actualJobAmount}
+                        onChange={e => setActualJobAmount(e.target.value)}
+                        placeholder={baseRevenue.toFixed(2)}
+                        className="w-full px-3 py-2 rounded-lg border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40"
+                      />
+                    </label>
+                    <p className="font-body text-[10px] text-charcoal/40 font-light">Adjust if actual service differs from quote</p>
+                  </div>
+                  <div className="border-t border-taupe/10 pt-3 flex justify-between">
                     <span className="font-heading text-base font-semibold text-charcoal">Total charge</span>
-                    <span className="font-heading text-base font-semibold text-coral">${totalRevenue.toFixed(2)}</span>
+                    <span className="font-heading text-base font-semibold text-coral">${(actualJobAmount ? Number(actualJobAmount) : baseRevenue).toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -186,11 +198,11 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
                     setStep(1);
                   }}
                   disabled={processingPayment}
-                  className="w-full py-3 bg-coral text-white font-body font-light rounded-xl hover:bg-coral/90 transition-all disabled:opacity-50"
-                >
-                  {processingPayment ? 'Processing...' : `Charge Card $${totalRevenue.toFixed(2)}`}
-                </button>
-                <p className="font-body text-[10px] text-charcoal/40 font-light mt-3">Charges posted immediately. Can adjust in final step if needed.</p>
+                   className="w-full py-3 bg-coral text-white font-body font-light rounded-xl hover:bg-coral/90 transition-all disabled:opacity-50"
+                  >
+                   {processingPayment ? 'Processing...' : `Charge Card $${(actualJobAmount ? Number(actualJobAmount) : baseRevenue).toFixed(2)}`}
+                  </button>
+                  <p className="font-body text-[10px] text-charcoal/40 font-light mt-3">Charges posted immediately.</p>
               </div>
             </div>
           )}
@@ -359,7 +371,7 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
 
               <div className="bg-coral/5 border border-coral/15 rounded-xl p-4">
                 <p className="font-body text-xs text-charcoal/50 font-light mb-2">Amount Charged to Client</p>
-                <p className="font-heading text-3xl font-semibold text-coral mb-1">${totalRevenue.toFixed(2)}</p>
+                <p className="font-heading text-3xl font-semibold text-coral mb-1">${(actualJobAmount ? Number(actualJobAmount) : baseRevenue).toFixed(2)}</p>
                 <p className="font-body text-[10px] text-charcoal/30 font-light">✓ Payment already collected</p>
               </div>
             </div>

@@ -95,11 +95,12 @@ export default function OutOfAreaModal({ city, serviceKey, onClose }) {
               />
               <div className="grid grid-cols-2 gap-3">
                 <input
-                  placeholder="City / Town"
-                  value={form.city}
-                  onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/30 focus:outline-none focus:border-coral/40"
-                />
+                    placeholder="City / Town"
+                    value={form.city}
+                    onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/30 focus:outline-none focus:border-coral/40"
+                    required
+                  />
                 <input
                   placeholder="ZIP code"
                   value={form.zip_code}
@@ -120,7 +121,7 @@ export default function OutOfAreaModal({ city, serviceKey, onClose }) {
               </label>
               <button
                 type="submit"
-                disabled={!form.email || loading}
+                disabled={!form.email || !form.city || loading}
                 className="w-full py-3 rounded-full bg-coral text-white font-body text-sm tracking-wide disabled:opacity-40 hover:bg-coral/90 transition-all"
               >
                 {loading ? 'Joining...' : 'Join the Neighborhood Waitlist →'}
