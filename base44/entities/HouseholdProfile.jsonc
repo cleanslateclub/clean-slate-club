@@ -10,7 +10,7 @@
     },
     "saved_addresses": {
       "type": "string",
-      "description": "Newline-separated addresses"
+      "description": "Newline-separated addresses. Multiple addresses allowed."
     },
     "property_type": {
       "type": "string",
@@ -77,7 +77,7 @@
     },
     "future_todo_list": {
       "type": "string",
-      "description": "Things I'd love help with in the future"
+      "description": "Things I'd Love Help With \u2014 future wish list for upcoming visits"
     },
     "preferred_provider": {
       "type": "string",
@@ -106,7 +106,7 @@
     },
     "internal_notes": {
       "type": "string",
-      "description": "CEO/Admin only"
+      "description": "CEO/Admin only \u2014 never shown to client"
     }
   },
   "required": [

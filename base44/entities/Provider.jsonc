@@ -23,11 +23,15 @@
     "status": {
       "type": "string",
       "enum": [
+        "applicant",
+        "pending_documents",
         "active",
+        "on_leave",
+        "suspended",
         "inactive",
-        "archived"
+        "terminated"
       ],
-      "default": "active"
+      "default": "applicant"
     },
     "services": {
       "type": "array",
@@ -35,8 +39,64 @@
         "type": "string"
       }
     },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional skill tags: ServeSafe, senior_support, meal_prep, pet_friendly, driver_approved, organization_specialist"
+    },
+    "territory": {
+      "type": "string",
+      "description": "Primary service territory/town"
+    },
     "calendar_color": {
       "type": "string"
+    },
+    "documents": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Required docs: background_check, drivers_license, vehicle_insurance, cpr_certification, w9, contractor_agreement"
+    },
+    "background_check_cleared": {
+      "type": "boolean",
+      "default": false
+    },
+    "drivers_license_on_file": {
+      "type": "boolean",
+      "default": false
+    },
+    "vehicle_insurance_on_file": {
+      "type": "boolean",
+      "default": false
+    },
+    "cpr_certification_on_file": {
+      "type": "boolean",
+      "default": false
+    },
+    "w9_on_file": {
+      "type": "boolean",
+      "default": false
+    },
+    "contractor_agreement_signed": {
+      "type": "boolean",
+      "default": false
+    },
+    "payout_rate": {
+      "type": "number",
+      "default": 0.5,
+      "description": "Standard 0.50, holiday 0.55"
+    },
+    "rating_average": {
+      "type": "number"
+    },
+    "jobs_completed": {
+      "type": "number",
+      "default": 0
+    },
+    "last_assigned_date": {
+      "type": "string",
+      "format": "date"
     },
     "notes": {
       "type": "string"

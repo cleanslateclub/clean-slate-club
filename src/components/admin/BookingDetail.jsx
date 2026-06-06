@@ -4,6 +4,7 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { Phone, Mail, MapPin, FileText, Image, Trash2, CalendarCheck, MessageSquare, ExternalLink } from 'lucide-react';
 import InvoiceModal from './InvoiceModal';
 import PhotoViewer from './PhotoViewer';
+import CancellationPolicyPanel from './CancellationPolicyPanel.jsx';
 
 const STATUS_COLORS = {
   pending: 'bg-butter/40 text-charcoal border-butter',
@@ -261,6 +262,11 @@ export default function BookingDetail({ booking, onUpdateStatus, onDelete, updat
             {savingNote && <p className="font-body text-[10px] text-sage font-light">Saving...</p>}
           </div>
         </div>
+
+        {/* Cancellation policy reference */}
+        {['pending', 'confirmed'].includes(booking.status) && (
+          <CancellationPolicyPanel compact />
+        )}
 
         {/* Delete */}
         <div className="pt-2 border-t border-taupe/10">

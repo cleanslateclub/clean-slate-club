@@ -54,6 +54,24 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
   const wrapStart = minutesToTime(timeToMinutes(selectedTime) + BUFFER_PREP + (totalDuration - BUFFER_PREP - BUFFER_WRAP));
 
   const addonItems = selectedAddons.map(id => config.addons.find(a => a.id === id)).filter(Boolean);
+
+  // Smart waiver logic — show relevant waivers based on intake answers
+  const waivers = [];
+  const intake = intakeAnswers || {};
+  if (intake.transportation_needed && intake.transportation_needed !== 'No')
+    waivers.push({ label: 'Transportation Waiver', body: 'Transportation services require a verified destination address. Car seat or booster seat must be installed if transporting minors. Provider may decline unsafe driving conditions.' });
+  if (intake.num_children && intake.num_children !== 'None' && intake.num_children !== '0')
+    waivers.push({ label: 'Child Safety Acknowledgement', body: 'Emergency contact, allergies, pickup/drop-off details, and behavioral needs must be provided. Provider is not a licensed childcare worker or medical professional.' });
+  if (serviceKey === 'senior_support')
+    waivers.push({ label: 'Non-Medical Support Acknowledgement', body: 'Clean Slate Club provides companion-style, non-medical support only. No medication administration, bathing, toileting, transfers, wound care, or skilled nursing.' });
+  if (intake.has_pets && intake.has_pets !== 'No')
+    waivers.push({ label: 'Pet Disclosure & Liability', body: 'All pets must be disclosed. Anxious, aggressive, or escape-prone pets must be secured. Provider may stop service if a pet creates an unsafe situation.' });
+  if (intake.parent_present === 'No — full solo support needed')
+    waivers.push({ label: 'Property Access Authorization', body: 'You authorize Clean Slate Club to access your property without you present to complete the booked service.' });
+  if (selectedAddons.some(id => config.addons.find(a => a.id === id)?.requiresFunds))
+    waivers.push({ label: 'Purchasing / Funds Acknowledgement', body: 'This service includes shopping or purchases. Guest must provide cash, Zelle, or a prepaid order before any purchases are made. Provider does not advance personal funds.' });
+  if (extraTimeAuth && extraTimeAuth !== '' && extraTimeAuth !== 'No, remain within original booking')
+    waivers.push({ label: 'Additional Time Authorization', body: `You have authorized additional time if needed. This will be billed at $65/hr (members) or $85/hr (non-members) and charged to the card on file. Authorization: "${extraTimeAuth}".` });
   const addonPrice = addonItems.reduce((s, a) => s + a.price, 0);
   const totalLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0] + addonPrice;
   const totalHigh = dynamicEstimate ? dynamicEstimate.high : config.priceRange[1] + addonPrice;
@@ -166,6 +184,19 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
             </p>
           )}
         </div>
+
+        {/* Smart Waivers */}
+        {waivers.length > 0 && (
+          <div className="space-y-2">
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light">Required Acknowledgements</p>
+            {waivers.map(w => (
+              <div key={w.label} className="rounded-xl border border-taupe/20 p-4" style={{ borderLeft: '3px solid #EB9486' }}>
+                <p className="font-body text-xs font-semibold text-charcoal mb-1">{w.label}</p>
+                <p className="font-body text-xs text-charcoal/55 font-light leading-relaxed">{w.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Pricing */}
         <div className="bg-coral/5 border border-coral/15 rounded-2xl p-5">

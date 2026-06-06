@@ -6,11 +6,13 @@ import { CalendarDays, Settings2, Star, LogOut, Home } from 'lucide-react';
 import UpcomingBookings from '@/components/dashboard/UpcomingBookings';
 import ServicePreferencesForm from '@/components/dashboard/ServicePreferencesForm';
 import HouseholdProfileForm from '@/components/dashboard/HouseholdProfileForm';
+import MembershipManagement from '@/components/dashboard/MembershipManagement';
 
 const TABS = [
   { id: 'schedule', label: 'My Schedule', icon: CalendarDays },
   { id: 'household', label: 'My Home', icon: Home },
   { id: 'preferences', label: 'Preferences', icon: Settings2 },
+  { id: 'membership', label: 'Membership', icon: Star },
 ];
 
 export default function MemberDashboard() {
@@ -159,6 +161,15 @@ export default function MemberDashboard() {
                   These preferences help your Clean Slate team prepare for every visit. They're saved to your profile and shared with whoever serves you.
                 </p>
                 <ServicePreferencesForm userEmail={user.email} />
+              </div>
+            )}
+            {activeTab === 'membership' && (
+              <div>
+                <h2 className="font-heading text-xl font-semibold text-charcoal mb-1">Membership</h2>
+                <p className="font-body text-sm text-charcoal/40 font-light mb-6">
+                  Manage your Clean Slate Club™ membership, billing, and benefits.
+                </p>
+                <MembershipManagement userEmail={user.email} userName={user.full_name} />
               </div>
             )}
           </motion.div>
