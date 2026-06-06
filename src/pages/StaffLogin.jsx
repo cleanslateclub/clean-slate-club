@@ -3,7 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Eye, EyeOff, ShieldCheck, Briefcase } from 'lucide-react';
 
-const SESSION_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
+const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
+
+// Admin username — change if needed
+const ADMIN_USERNAME = 'Masha';
+
+// SHA-256 hash of your admin password (not the password itself)
+// Generate at: emn178.github.io/online-tools/sha256.html
+// REPLACE THIS with your actual hash before pushing
+const ADMIN_PASSWORD_HASH = 'd26b24812501c39790da32bf7b5e7a53fe48ad91b14c72a60783e7d759a2e94c';
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 export default function StaffLogin() {
   const navigate = useNavigate();
@@ -19,16 +35,15 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // FIX: correct call pattern — base44.functions.adminLogin() not .invoke()
-      const res = await base44.functions.adminLogin({ username, password });
-      if (res?.success) {
+      const inputHash = await hashPassword(password);
+      if (username === ADMIN_USERNAME && inputHash === ADMIN_PASSWORD_HASH) {
         localStorage.setItem('adminSession', JSON.stringify({
-          username: res.username || username,
+          username,
           expiresAt: Date.now() + SESSION_DURATION_MS,
         }));
         navigate('/admin');
       } else {
-        setError(res?.error || 'Invalid credentials.');
+        setError('Invalid credentials.');
       }
     } catch {
       setError('Login failed. Please try again.');
@@ -42,19 +57,25 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // FIX: correct call pattern — base44.functions.verifyProviderLogin() not .invoke()
-      const res = await base44.functions.verifyProviderLogin({ username, password });
-      if (res?.success) {
-        localStorage.setItem('providerSession', JSON.stringify({
-          username,
-          providerId: res.providerId,
-          providerEmail: res.providerEmail,
-          expiresAt: Date.now() + SESSION_DURATION_MS,
-        }));
-        navigate('/provider');
-      } else {
-        setError(res?.error || 'Invalid username or password.');
+      // TODO: move to verifyProviderLogin backend function when credits restored
+      // For now: client-side check — provider passwords are already plain text in DB
+      const providers = await base44.entities.Provider.filter({ login_username: username });
+      if (!providers || providers.length === 0) {
+        setError('Invalid username or password.');
+        return;
       }
+      const provider = providers[0];
+      if (provider.login_password !== password) {
+        setError('Invalid username or password.');
+        return;
+      }
+      localStorage.setItem('providerSession', JSON.stringify({
+        username,
+        providerId: provider.id,
+        providerEmail: provider.email,
+        expiresAt: Date.now() + SESSION_DURATION_MS,
+      }));
+      navigate('/provider');
     } catch {
       setError('Login failed. Please try again.');
     } finally {
