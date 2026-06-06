@@ -43,6 +43,17 @@ export default function BookNow() {
   }, []);
 
   const isConsult = serviceKey === 'consult';
+
+  // Auto-assign consult slot when user picks consult service
+  useEffect(() => {
+    if (!isConsult) return;
+    base44.functions.invoke('scheduleConsultSlot', {}).then(res => {
+      if (res.data?.success) {
+        setSelectedDate(res.data.date);
+        setSelectedTime(res.data.time);
+      }
+    }).catch(() => {});
+  }, [isConsult]);
   // organization is a valid full booking service (not consult)
 
   const selectedTasks = intakeAnswers._tasks || [];
@@ -115,7 +126,7 @@ export default function BookNow() {
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
         admin_notes: isConsult
-          ? `CONSULT REQUEST — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}`
+          ? `CONSULT REQUEST — scheduled: ${selectedDate || 'TBD'} at ${selectedTime || 'TBD'} — preferred contact: ${intakeAnswers.preferred_contact || 'N/A'}, availability: ${intakeAnswers.availability_notes || 'N/A'}`
           : `Deposit paid — Stripe ID: ${stripePaymentIntentId || 'N/A'}`
       });
 
@@ -170,16 +181,38 @@ export default function BookNow() {
   </div>
 </div></body></html>`;
 
+      // Add consult to Google Calendar
+      if (isConsult && selectedDate && selectedTime) {
+        const consultEnd = '12:00 PM';
+        base44.functions.invoke('addBookingToCalendar', {
+          clientName: clientInfo.name,
+          clientEmail: clientInfo.email,
+          clientPhone: clientInfo.phone,
+          clientAddress: '',
+          serviceLabel: 'Free Consult Call',
+          addonLabels: [],
+          selectedDate,
+          startTime: selectedTime,
+          endTime: consultEnd,
+          totalDuration: 45,
+          estimateLow: 0,
+          estimateHigh: 0,
+          specialNotes: `Preferred contact: ${intakeAnswers.preferred_contact || 'N/A'} | Availability: ${intakeAnswers.availability_notes || 'N/A'}`,
+          tasks: []
+        }).catch(() => {});
+      }
+
       if (isConsult) {
         const clientBody = emailWrapper(`
-          <p class="greeting">We got you, ${clientInfo.name}! 🌿</p>
-          <p>Your free consult request is in. We can't wait to connect and figure out exactly how we can help.</p>
+          <p class="greeting">You're on the calendar, ${clientInfo.name}! 🌿</p>
+          <p>Your free 15-minute consult is officially scheduled. We can't wait to connect.</p>
           <div class="card">
-            <p class="card-label">What happens next</p>
-            <p class="card-value">Masha will reach out via <strong>${intakeAnswers.preferred_contact || 'email'}</strong> within 24 hours to schedule your free 15-minute call.</p>
-            ${intakeAnswers.availability_notes ? `<p class="card-value light">Your availability: ${intakeAnswers.availability_notes}</p>` : ''}
+            <p class="card-label">Your Consult</p>
+            <p class="card-value"><strong>${selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'TBD'}</strong> at <strong>${selectedTime || 'TBD'}</strong></p>
+            <p class="card-value light">Masha will call or text you at ${clientInfo.phone}.</p>
+            ${intakeAnswers.availability_notes ? `<p class="card-value light">Your availability notes: ${intakeAnswers.availability_notes}</p>` : ''}
           </div>
-          <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation.</p>
+          <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation. You'll get a reminder 24 hours before.</p>
         `);
 
         await Promise.all([

@@ -9,11 +9,23 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
   const isConsult = serviceKey === 'consult';
 
   if (isConsult) {
+    const consultDisplayDate = selectedDate
+      ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+      : null;
+
     return (
       <div>
-        <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Review & send</h2>
-        <p className="font-body text-sm text-charcoal font-light mb-8">We'll reach out within 24 hours to set up your free 15-minute consult call.</p>
+        <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Review & confirm</h2>
+        <p className="font-body text-sm text-charcoal font-light mb-8">Your free 15-minute consult has been automatically scheduled on the next available Monday slot.</p>
         <div className="space-y-4">
+          {consultDisplayDate && (
+            <div className="bg-coral/5 border border-coral/20 rounded-2xl p-5">
+              <p className="font-body text-[10px] uppercase tracking-widest text-coral/60 font-light mb-2">Your Scheduled Consult</p>
+              <p className="font-heading text-lg font-semibold text-charcoal">{consultDisplayDate}</p>
+              <p className="font-body text-sm text-charcoal/60 font-light">{selectedTime} · 15-minute call</p>
+              <p className="font-body text-xs text-charcoal/40 font-light mt-1">Masha will call or text you at {clientInfo.phone}.</p>
+            </div>
+          )}
           <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
             <p className="font-body text-[10px] uppercase tracking-widest text-charcoal font-light mb-2">Your Info</p>
             <p className="font-body text-sm text-charcoal font-light">{clientInfo.name}</p>
