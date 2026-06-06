@@ -39,16 +39,27 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      await base44.auth.loginWithPassword(email, password);
-      const user = await base44.auth.me();
-      if (user?.role !== 'provider' && user?.role !== 'assistant') {
-        await base44.auth.logout();
-        setError('Access denied. Provider credentials required.');
+      // Look up provider by username
+      const providers = await base44.entities.Provider.filter({ login_username: username });
+      if (!providers || providers.length === 0) {
+        setError('Invalid username or password.');
+        setLoading(false);
         return;
       }
+
+      const provider = providers[0];
+      
+      // Verify password matches
+      if (provider.login_password !== password) {
+        setError('Invalid username or password.');
+        setLoading(false);
+        return;
+      }
+
+      localStorage.setItem('providerSession', JSON.stringify({ username, providerId: provider.id, timestamp: Date.now() }));
       navigate('/provider');
     } catch {
-      setError('Invalid email or password.');
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -166,12 +177,12 @@ export default function StaffLogin() {
                 </div>
               )}
               <div>
-                <label className="font-body text-xs text-charcoal/50 font-light block mb-2">Email</label>
+                <label className="font-body text-xs text-charcoal/50 font-light block mb-2">Username</label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  type="text"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  placeholder="your.username"
                   required
                   className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
                 />
@@ -197,7 +208,7 @@ export default function StaffLogin() {
                 {loading ? 'Signing in...' : 'Sign In as Provider'}
               </button>
             </form>
-            <button onClick={() => { setMode(null); setError(null); setEmail(''); setPassword(''); }}
+            <button onClick={() => { setMode(null); setError(null); setUsername(''); setPassword(''); }}
               className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
               ← Back to role selection
             </button>
