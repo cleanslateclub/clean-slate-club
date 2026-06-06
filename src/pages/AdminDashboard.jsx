@@ -5,7 +5,8 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
 import {
   Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon,
-  Archive, LogOut, Settings, AlertTriangle, DollarSign, UserPlus, Briefcase
+  Archive, LogOut, Settings, AlertTriangle, DollarSign, UserPlus,
+  Briefcase, LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingListItem from '@/components/admin/BookingListItem';
@@ -24,11 +25,12 @@ import PayoutsTab from '@/components/admin/PayoutsTab';
 import { isAdmin } from '@/lib/roles';
 
 const TABS = [
+  { key: 'overview',  label: 'Overview',  icon: LayoutDashboard }, // RESTORED
   { key: 'calendar',  label: 'Calendar',  icon: CalendarIcon },
   { key: 'bookings',  label: 'Bookings',  icon: Search },
-  { key: 'guests',    label: 'Guests',    icon: UserPlus },      // FIX: was Home icon
+  { key: 'guests',    label: 'Guests',    icon: UserPlus },
   { key: 'clients',   label: 'Clients',   icon: Users },
-  { key: 'providers', label: 'Providers', icon: Briefcase },     // FIX: was duplicate Users icon
+  { key: 'providers', label: 'Providers', icon: Briefcase },
   { key: 'reports',   label: 'Revenue',   icon: BarChart2 },
   { key: 'payouts',   label: 'Payouts',   icon: DollarSign },
   { key: 'incidents', label: 'Incidents', icon: AlertTriangle },
@@ -43,7 +45,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('calendar');
+  const [tab, setTab] = useState('overview'); // Default to Overview
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -55,10 +57,8 @@ export default function AdminDashboard() {
   const [bookingDate, setBookingDate] = useState(null);
   const [bookingTime, setBookingTime] = useState(null);
 
-  // FIX: Wrapped in useCallback so it can safely be listed in useEffect deps
   const load = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
-    // FIX: Added try/catch — loading spinner no longer freezes on API failure
     try {
       const [bookingData, blockData] = await Promise.all([
         base44.entities.Booking.list('-scheduled_date', 500),
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
     });
 
     return () => { unsubBookings(); unsubBlocks(); };
-  }, [navigate, load]); // FIX: added load to dependency array
+  }, [navigate, load]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
@@ -116,7 +116,6 @@ export default function AdminDashboard() {
 
   const updateStatus = async (id, status) => {
     setUpdatingId(id);
-    // FIX: Added try/catch — UI no longer freezes if update fails
     try {
       await base44.entities.Booking.update(id, { status });
       setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
@@ -126,13 +125,13 @@ export default function AdminDashboard() {
         if (booking) {
           base44.functions
             .invoke('syncBookingToCalendar', { data: { ...booking, status: 'cancelled' } })
-            .catch((err) => console.error('Google Calendar sync failed:', err)); // FIX: errors now logged
+            .catch((err) => console.error('Google Calendar sync failed:', err));
         }
       }
     } catch (error) {
       console.error('Error updating booking status:', error);
     } finally {
-      setUpdatingId(null); // FIX: always clears, even on failure
+      setUpdatingId(null);
     }
   };
 
@@ -140,11 +139,10 @@ export default function AdminDashboard() {
     setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
     base44.entities.TimeBlock.list('-date', 500)
       .then(blocks => setTimeBlocks(blocks || []))
-      .catch(err => console.error('Failed to reload time blocks:', err)); // FIX: added catch
+      .catch(err => console.error('Failed to reload time blocks:', err));
   };
 
   const deleteBooking = async (id) => {
-    // FIX: Added try/catch — booking no longer vanishes from UI if delete fails
     try {
       await base44.entities.Booking.delete(id);
       setBookings(prev => prev.filter(b => b.id !== id));
@@ -178,7 +176,6 @@ export default function AdminDashboard() {
     navigate('/admin-login');
   };
 
-  // FIX: Removed redundant second session check — the useEffect redirect handles this
   if (user && !isAdmin(user)) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center px-6">
@@ -246,6 +243,122 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         <AnimatePresence mode="wait">
+
+          {/* OVERVIEW TAB */}
+          {tab === 'overview' && (
+            <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
+              <StatsOverview
+                bookings={activeBookings}
+                onFilterChange={(f) => { setFilter(f); setTab('bookings'); }}
+                activeFilter={filter}
+              />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <div className="lg:col-span-2">
+                  {/* Today's schedule */}
+                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+                    <p className="font-heading text-sm font-semibold text-charcoal mb-4">Today's Schedule</p>
+                    {(() => {
+                      const today = new Date().toISOString().split('T')[0];
+                      const todayBookings = activeBookings
+                        .filter(b => b.scheduled_date === today && b.status !== 'cancelled')
+                        .sort((a, b) => (a.scheduled_start_time || '').localeCompare(b.scheduled_start_time || ''));
+                      if (!todayBookings.length) return (
+                        <div className="text-center py-8">
+                          <p className="font-body text-sm text-charcoal/30 font-light">No visits scheduled today.</p>
+                          <a href="/book" target="_blank" className="inline-block mt-3 text-xs font-body text-coral hover:underline font-light">
+                            + Add a booking →
+                          </a>
+                        </div>
+                      );
+                      return (
+                        <div className="space-y-2">
+                          {todayBookings.map(b => {
+                            const cfg = SERVICE_CONFIG[b.service_category];
+                            return (
+                              <button key={b.id} onClick={() => { setSelected(b.id); setTab('bookings'); }}
+                                className="w-full flex items-center gap-3 p-3 rounded-xl border border-taupe/10 bg-cream hover:border-coral/25 transition-all text-left">
+                                <div className="w-2 h-10 rounded-full shrink-0" style={{ background: cfg?.color || '#EB9486' }} />
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-body text-sm text-charcoal font-light truncate">{b.client_name}</p>
+                                  <p className="font-body text-xs text-charcoal/40 font-light">{b.scheduled_start_time} · {cfg?.label || b.service_category}</p>
+                                </div>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-body font-light ${
+                                  b.status === 'confirmed' ? 'bg-sage/20 border-sage/40 text-charcoal/60' : 'bg-butter/20 border-butter/40 text-charcoal/60'
+                                }`}>{b.status}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Pending bookings needing action */}
+                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5 mt-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="font-heading text-sm font-semibold text-charcoal">Needs Action</p>
+                      <button onClick={() => { setFilter('pending'); setTab('bookings'); }}
+                        className="font-body text-xs text-coral font-light hover:underline">View all →</button>
+                    </div>
+                    {(() => {
+                      const pending = activeBookings.filter(b => b.status === 'pending').slice(0, 4);
+                      if (!pending.length) return <p className="font-body text-sm text-charcoal/30 font-light text-center py-4">All clear ✓</p>;
+                      return (
+                        <div className="space-y-2">
+                          {pending.map(b => {
+                            const cfg = SERVICE_CONFIG[b.service_category];
+                            return (
+                              <button key={b.id} onClick={() => { setSelected(b.id); setTab('bookings'); }}
+                                className="w-full flex items-center gap-3 p-3 rounded-xl border border-butter/30 bg-butter/5 hover:border-coral/25 transition-all text-left">
+                                <div>
+                                  <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
+                                  <p className="font-body text-xs text-charcoal/40 font-light">{cfg?.label} · {b.scheduled_date || 'TBD'}</p>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <QuickActions />
+
+                  {/* Upcoming this week */}
+                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+                    <p className="font-heading text-sm font-semibold text-charcoal mb-3">This Week</p>
+                    {(() => {
+                      const now = new Date();
+                      const start = new Date(now); start.setDate(now.getDate() - now.getDay());
+                      const end = new Date(start); end.setDate(start.getDate() + 6);
+                      const fmt = d => d.toISOString().split('T')[0];
+                      const week = activeBookings.filter(b =>
+                        b.scheduled_date >= fmt(start) && b.scheduled_date <= fmt(end) && b.status !== 'cancelled'
+                      );
+                      if (!week.length) return <p className="font-body text-xs text-charcoal/30 font-light">No visits this week.</p>;
+                      return (
+                        <div className="space-y-1.5">
+                          {week.slice(0, 5).map(b => (
+                            <div key={b.id} className="flex items-center justify-between">
+                              <p className="font-body text-xs text-charcoal/60 font-light truncate">{b.client_name}</p>
+                              <p className="font-body text-[10px] text-charcoal/30 font-light ml-2 shrink-0">
+                                {new Date(b.scheduled_date + 'T00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' })}
+                              </p>
+                            </div>
+                          ))}
+                          {week.length > 5 && (
+                            <p className="font-body text-[10px] text-charcoal/30 font-light">+{week.length - 5} more</p>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {/* CALENDAR TAB */}
           {tab === 'calendar' && (
@@ -355,7 +468,7 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* REVENUE/REPORTS TAB */}
+          {/* REVENUE TAB */}
           {tab === 'reports' && (
             <motion.div key="reports" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <ReportsTab bookings={activeBookings} />
