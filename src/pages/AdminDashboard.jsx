@@ -74,9 +74,9 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    const adminSession = localStorage.getItem('adminSession');
-    if (!adminSession) {
+useEffect(() => {
+    const session = JSON.parse(localStorage.getItem('adminSession') || '{}');
+    if (!session.token || Date.now() > session.expiresAt) {
       navigate('/admin-login');
       return;
     }
