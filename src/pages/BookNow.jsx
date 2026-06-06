@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
@@ -14,7 +15,8 @@ import Step6Payment from '@/components/booking/Step6Payment';
 
 export default function BookNow() {
   const { getBool, getNum, loading: settingsLoading } = useAppSettings();
-  const preselectedService = new URLSearchParams(window.location.search).get('service');
+  const [searchParams] = useSearchParams();
+  const preselectedService = searchParams.get('service');
   const [step, setStep] = useState(preselectedService ? 2 : 1);
   const [serviceKey, setServiceKey] = useState(preselectedService || null);
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '', address: '' });
