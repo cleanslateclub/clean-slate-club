@@ -1,14 +1,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-// Blueprint: human-readable service names mapped from DB category keys
+// FIX: 'family_support' was wrong — actual key is 'mothers_helper'
 const SERVICE_LABELS = {
-  home_reset:    'Hot Mess Express',
-  family_support:'Chaos Coordinator',
-  senior_support:'The Check-In',
-  errands:       'The Runaround',
-  meal_prep:     'Clean Plate Club',
-  organization:  'Room Service',
-  consult:       'Free Consult Call',
+  home_reset:     'Hot Mess Express',
+  mothers_helper: 'Chaos Coordinator',  // ← was 'family_support' (wrong key)
+  errands:        'The Runaround',
+  senior_support: 'The Check-In',
+  meal_prep:      'Clean Plate Club',
+  organization:   'Room Service',
+  consult:        'Free Consult Call',
 };
 
 // Blueprint: color by booking status for easy calendar scanning
