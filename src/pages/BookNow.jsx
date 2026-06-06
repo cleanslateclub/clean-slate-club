@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
 import StepIndicator from '@/components/booking/StepIndicator';
 import PolicyModal from '@/components/booking/PolicyModal';
+import { useAppSettings } from '@/hooks/useAppSettings';
 import Step1Service from '@/components/booking/Step1Service.jsx';
 import Step2Intake from '@/components/booking/Step2Intake';
 import Step3Addons from '@/components/booking/Step3Addons';
@@ -12,6 +13,7 @@ import Step5Confirm from '@/components/booking/Step5Confirm';
 import Step6Payment from '@/components/booking/Step6Payment';
 
 export default function BookNow() {
+  const { getBool, getNum, loading: settingsLoading } = useAppSettings();
   const [step, setStep] = useState(1);
   const [serviceKey, setServiceKey] = useState(null);
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '', address: '' });
@@ -251,6 +253,25 @@ export default function BookNow() {
       setSubmitting(false);
     }
   };
+
+  // Booking disabled gate
+  if (!settingsLoading && !getBool('booking_enabled')) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">🌿</div>
+          <h1 className="font-heading text-2xl font-semibold text-charcoal mb-3">Online booking is temporarily paused</h1>
+          <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-6">
+            We're taking a short break from online bookings. Please reach out directly and we'll get you scheduled right away.
+          </p>
+          <a href="tel:2068254061" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all">
+            📞 Call (206) 825-4061
+          </a>
+          <p className="mt-4 font-body text-xs text-charcoal/30 font-light">or email cleanslateclubpa@gmail.com</p>
+        </div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (

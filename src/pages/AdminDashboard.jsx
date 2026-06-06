@@ -14,6 +14,8 @@ import ClientsTab from '@/components/admin/ClientsTab';
 import QuickActions from '@/components/admin/QuickActions';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import QuickBookingModal from '@/components/admin/QuickBookingModal';
+import SettingsTab from '@/components/admin/SettingsTab';
+import { Settings } from 'lucide-react';
 
 const TABS = [
   { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
@@ -21,6 +23,7 @@ const TABS = [
   { key: 'reports', label: 'Reports', icon: BarChart2 },
   { key: 'clients', label: 'Clients', icon: Users },
   { key: 'providers', label: 'Providers', icon: Users },
+  { key: 'settings', label: 'Settings', icon: Settings },
 ];
 
 const STATUS_TABS = ['all', 'pending', 'confirmed', 'completed', 'cancelled', 'archived'];
@@ -422,6 +425,13 @@ export default function AdminDashboard() {
           {tab === 'providers' && (
             <motion.div key="providers" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <ProvidersTab bookings={activeBookings} />
+            </motion.div>
+          )}
+
+          {/* SETTINGS TAB */}
+          {tab === 'settings' && (
+            <motion.div key="settings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <SettingsTab />
             </motion.div>
           )}
 

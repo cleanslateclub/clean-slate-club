@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useAppSettings } from '@/hooks/useAppSettings';
 
 export default function WorkInProgressBanner() {
   const [visible, setVisible] = useState(false);
+  const { getBool, loading: settingsLoading } = useAppSettings();
 
   useEffect(() => {
-    // Show once per session
+    if (settingsLoading) return;
+    const wipEnabled = getBool('wip_banner_enabled');
+    if (!wipEnabled) return; // Admin toggled it off
     const dismissed = sessionStorage.getItem('wip_dismissed');
     if (!dismissed) setVisible(true);
-  }, []);
+  }, [settingsLoading]);
 
   const handleClose = () => {
     sessionStorage.setItem('wip_dismissed', 'true');

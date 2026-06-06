@@ -1,0 +1,45 @@
+{
+  "name": "AppSettings",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Unique setting key, e.g. 'booking_enabled'"
+    },
+    "value": {
+      "type": "string",
+      "description": "The setting value (stored as string, parsed as needed)"
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "feature_toggles",
+        "booking_constraints",
+        "territory",
+        "notifications",
+        "payments"
+      ],
+      "default": "feature_toggles"
+    },
+    "value_type": {
+      "type": "string",
+      "enum": [
+        "boolean",
+        "number",
+        "string"
+      ],
+      "default": "boolean"
+    }
+  },
+  "required": [
+    "key",
+    "value",
+    "category"
+  ]
+}
