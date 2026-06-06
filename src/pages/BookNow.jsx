@@ -192,12 +192,12 @@ export default function BookNow() {
 <body><div class="wrapper">
   <div class="header">
     <p class="brand-name">Clean Slate</p>
-    <p class="brand-sub">Club™</p>
+    <p class="brand-sub" style="font-family:'Sarina',cursive;font-size:28px;font-weight:400;color:#fff;margin:0;letter-spacing:0.02em;">Club</p>
   </div>
   <div class="body">${innerHtml}</div>
   <div class="footer">
     <p>Questions? Reply to this email or text us at (206) 825-4061</p>
-    <p>cleanslateclubpa@gmail.com · cleanslateclubpa.com</p>
+    <p>cleanslateclubpa@gmail.com · cleanslateclubco.com</p>
   </div>
 </div></body></html>`;
 
@@ -229,7 +229,7 @@ export default function BookNow() {
           <div class="card">
             <p class="card-label">Your Consult</p>
             <p class="card-value"><strong>${selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'TBD'}</strong> at <strong>${selectedTime || 'TBD'}</strong></p>
-            <p class="card-value light">Masha will call or text you at ${clientInfo.phone}.</p>
+            <p class="card-value light">We'll call you at ${clientInfo.phone} at the time above.</p>
             ${intakeAnswers.availability_notes ? `<p class="card-value light">Your availability notes: ${intakeAnswers.availability_notes}</p>` : ''}
           </div>
           <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation. You'll get a reminder 24 hours before.</p>
@@ -240,7 +240,7 @@ export default function BookNow() {
         base44.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `New Consult Request — ${clientInfo.name}`,
-          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclubco.com/admin`
         })]
         );
       } else {
@@ -271,7 +271,7 @@ export default function BookNow() {
             <p class="price-note">Final pricing confirmed before any work begins. No surprises, ever.</p>
           </div>
           <p style="font-size:14px;color:#888;font-weight:300;">Questions? Just reply to this email — we're always happy to help.</p>
-          <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">Masha</strong><br>Clean Slate Club™</p>
+          <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">The Clean Slate Club Team</strong></p>
         `);
 
         await Promise.all([
@@ -279,7 +279,7 @@ export default function BookNow() {
         base44.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
-          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclubco.com/admin`
         }),
         // Add to Google Calendar
 
@@ -324,6 +324,7 @@ export default function BookNow() {
             📞 Call (206) 825-4061
           </a>
           <p className="mt-4 font-body text-xs text-charcoal/30 font-light">or email cleanslateclubpa@gmail.com</p>
+          {/* domain: cleanslateclubco.com */}
         </div>
       </div>
     );
@@ -340,10 +341,10 @@ export default function BookNow() {
           <div className="w-16 h-16 rounded-full bg-sage/40 flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
           {isConsult ?
           <>
-              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">We'll be in touch!</h1>
-              <p className="font-logo text-xl text-coral mb-4">Your consult request is in.</p>
+              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're on the calendar!</h1>
+              <p className="font-logo text-xl text-coral mb-4">Your consult is booked.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
-                Masha will reach out via <strong>{intakeAnswers.preferred_contact || 'email'}</strong> within 24 hours. A confirmation has been sent to <strong>{clientInfo.email}</strong>.
+                Your free 15-minute call is confirmed. A confirmation has been sent to <strong>{clientInfo.email}</strong>. We'll call you at <strong>{clientInfo.phone}</strong> at the scheduled time.
               </p>
             </> :
 
@@ -351,7 +352,7 @@ export default function BookNow() {
               <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
               <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
-                A confirmation email is on its way to <strong>{clientInfo.email}</strong>. Masha will see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
+                A confirmation email is on its way to <strong>{clientInfo.email}</strong>. We'll see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
               </p>
             </>
           }
@@ -443,6 +444,7 @@ export default function BookNow() {
           <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
             Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
           </p>
+          {/* website: cleanslateclubco.com */}
         </div>
       </div>
     </div>);

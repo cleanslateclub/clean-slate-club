@@ -101,7 +101,7 @@ export default function Footer() {
             <span className="text-white/20 text-xs">·</span>
             <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
             <span className="text-white/20 text-xs">·</span>
-            <p className="font-body text-xs text-white/40 font-light">cleanslateclubpa@gmail.com · (206) 825-4061</p>
+            <p className="font-body text-xs text-white/40 font-light">cleanslateclubpa@gmail.com · (206) 825-4061 · cleanslateclubco.com</p>
             <span className="text-white/20 text-xs">·</span>
             <Link to="/staff-login" className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide">Team Login</Link>
           </div>

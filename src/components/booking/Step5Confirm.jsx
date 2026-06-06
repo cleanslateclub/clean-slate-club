@@ -23,7 +23,7 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
               <p className="font-body text-[10px] uppercase tracking-widest text-coral/60 font-light mb-2">Your Scheduled Consult</p>
               <p className="font-heading text-lg font-semibold text-charcoal">{consultDisplayDate}</p>
               <p className="font-body text-sm text-charcoal/60 font-light">{selectedTime} · 15-minute call</p>
-              <p className="font-body text-xs text-charcoal/40 font-light mt-1">Masha will call or text you at {clientInfo.phone}.</p>
+              <p className="font-body text-xs text-charcoal/40 font-light mt-1">We'll call you at {clientInfo.phone} at the time above.</p>
             </div>
           )}
           <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
