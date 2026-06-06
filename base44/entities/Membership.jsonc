@@ -1,0 +1,86 @@
+{
+  "name": "Membership",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Member's email address"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_subscription_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "cancelled",
+        "past_due",
+        "trialing"
+      ],
+      "default": "active"
+    },
+    "billing_cycle_anchor": {
+      "type": "string",
+      "format": "date",
+      "description": "Monthly renewal date"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "monthly_amount": {
+      "type": "number",
+      "default": 49
+    },
+    "pause_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pause_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pause_count_this_year": {
+      "type": "number",
+      "default": 0,
+      "description": "Max 2 pauses per year"
+    },
+    "cancelled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    },
+    "benefits_active_through": {
+      "type": "string",
+      "format": "date",
+      "description": "Benefits remain active through paid period after cancellation"
+    },
+    "failed_payment_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Retry at 24hr, 72hr, 7-day grace, then pause"
+    },
+    "last_failed_payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "referral_source": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

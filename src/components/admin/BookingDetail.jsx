@@ -4,7 +4,7 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { Phone, Mail, MapPin, FileText, Image, Trash2, CalendarCheck, MessageSquare, ExternalLink } from 'lucide-react';
 import InvoiceModal from './InvoiceModal';
 import PhotoViewer from './PhotoViewer';
-import CancellationPolicyPanel from './CancellationPolicyPanel.jsx';
+import CancellationPolicyPanel from './CancellationPolicyPanel';
 
 const STATUS_COLORS = {
   pending: 'bg-butter/40 text-charcoal border-butter',

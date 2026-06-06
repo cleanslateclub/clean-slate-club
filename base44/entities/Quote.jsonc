@@ -1,0 +1,87 @@
+{
+  "name": "Quote",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_phone": {
+      "type": "string"
+    },
+    "client_address": {
+      "type": "string"
+    },
+    "service_category": {
+      "type": "string"
+    },
+    "addons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "intake_answers": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "estimated_price_low": {
+      "type": "number"
+    },
+    "estimated_price_high": {
+      "type": "number"
+    },
+    "total_duration_minutes": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "viewed",
+        "accepted",
+        "declined",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "viewed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Tracked internally; do not send guest notification"
+    },
+    "accepted_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expires_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "follow_up_sent_at": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Timestamps of follow-up emails sent (48hr, 7d, 14d)"
+    },
+    "booking_id": {
+      "type": "string",
+      "description": "Linked booking if accepted"
+    },
+    "admin_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_email",
+    "service_category"
+  ]
+}
