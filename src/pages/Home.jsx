@@ -5,13 +5,13 @@ import ServicesPreview from '../components/home/ServicesPreview';
 import TrustSection from '../components/home/TrustSection';
 import ConsultSection from '../components/home/ConsultSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
-import MembershipPreview from '../components/home/MembershipPreview.jsx';
+import MembershipPreview from '../components/home/MembershipPreview'; // FIX: removed .jsx extension to match all other imports
 import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import FAQSection from '../components/home/FAQSection';
 
 export default function Home() {
   return (
-    <div>
+    <main> {/* FIX: <main> instead of <div> for accessibility + SEO */}
       <HeroSection />
       <MashaSection />
       <ServicesPreview />
@@ -21,6 +21,6 @@ export default function Home() {
       <MembershipPreview />
       <ServiceAreaSection />
       <FAQSection />
-    </div>
+    </main>
   );
 }
