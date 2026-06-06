@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import AccountMenu from './AccountMenu';
 
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: 22, height: 22 }}>
@@ -18,7 +19,6 @@ const navLinks = [
   { label: 'Memberships', path: '/memberships' },
   { label: 'FAQ', path: '/#faq' },
   { label: 'About', path: '/#about' },
-  { label: 'Create Account', path: '/member-signup' },
 ];
 
 export default function Navbar() {
@@ -55,12 +55,12 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.path}
                 href={link.path}
-                style={{ color: location.pathname === link.path ? '#EB9486' : undefined }}
                 className="font-body text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 hover:text-coral"
                 style={{ color: location.pathname === link.path ? '#EB9486' : '#333333' }}
               >
@@ -68,18 +68,13 @@ export default function Navbar() {
               </a>
             ))}
             <Link
-              to="/dashboard"
-              className="font-body text-xs font-bold tracking-[0.15em] uppercase text-charcoal hover:text-coral transition-colors duration-300"
-            >
-              My Dashboard
-            </Link>
-            <Link
               to="/book"
               className="text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:opacity-90 transition-all duration-300"
               style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
             >
               Book Now
             </Link>
+            <AccountMenu />
           </div>
 
           <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-charcoal">
@@ -88,6 +83,7 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile menu */}
       {mobileOpen && (
         <div
           className="md:hidden border-t"
@@ -95,7 +91,6 @@ export default function Navbar() {
         >
           <div className="px-6 py-8 space-y-6">
             <Link to="/" className="block font-heading text-xl font-semibold text-charcoal/70">Home</Link>
-            <Link to="/dashboard" className="block font-heading text-xl font-semibold text-charcoal/70">My Dashboard</Link>
             {navLinks.map((link) => (
               <a
                 key={link.path}
@@ -112,6 +107,12 @@ export default function Navbar() {
             >
               Book Now
             </Link>
+            {/* Mobile account link */}
+            <div className="pt-2 border-t border-taupe/10">
+              <Link to="/portal" className="flex items-center gap-2 font-body text-sm text-charcoal/50 font-light hover:text-coral transition-colors">
+                <span>👤</span> My Account
+              </Link>
+            </div>
           </div>
         </div>
       )}

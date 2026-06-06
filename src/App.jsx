@@ -21,6 +21,8 @@ import MemberSignup from './pages/MemberSignup';
 import SmsTerms from './pages/SmsTerms';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ClientPortal from './pages/ClientPortal';
+import StaffLogin from './pages/StaffLogin';
 
 
 const AuthenticatedApp = () => {
@@ -60,6 +62,11 @@ const AuthenticatedApp = () => {
         <Route path="/sms-terms" element={<SmsTerms />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/portal" element={<ClientPortal />} />
+        <Route path="/staff-login" element={<StaffLogin />} />
+        {/* Legacy redirects */}
+        <Route path="/member-login" element={<ClientPortal />} />
+        <Route path="/member-signup" element={<ClientPortal />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

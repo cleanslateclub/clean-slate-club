@@ -103,7 +103,7 @@ export default function Footer() {
             <span className="text-white/20 text-xs">·</span>
             <p className="font-body text-xs text-white/40 font-light">cleanslateclubpa@gmail.com · (206) 825-4061</p>
             <span className="text-white/20 text-xs">·</span>
-            <Link to="/admin" className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide">Provider Login</Link>
+            <Link to="/staff-login" className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide">Team Login</Link>
           </div>
         </div>
       </div>
