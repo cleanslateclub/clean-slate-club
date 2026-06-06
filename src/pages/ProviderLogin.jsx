@@ -5,7 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 export default function ProviderLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,8 +17,25 @@ export default function ProviderLogin() {
     setError(null);
 
     try {
-      // Use base44's login method
-      await base44.auth.loginWithPassword(email, password);
+      // Look up provider by username
+      const providers = await base44.entities.Provider.filter({ login_username: username });
+      if (!providers || providers.length === 0) {
+        setError('Invalid username or password.');
+        setLoading(false);
+        return;
+      }
+
+      const provider = providers[0];
+      
+      // Verify password matches
+      if (provider.login_password !== password) {
+        setError('Invalid username or password.');
+        setLoading(false);
+        return;
+      }
+
+      // Log in as the provider's email (internal use)
+      await base44.auth.loginWithPassword(provider.email, password);
       const user = await base44.auth.me();
 
       // Verify user is provider or assistant
@@ -30,7 +47,7 @@ export default function ProviderLogin() {
 
       navigate('/provider');
     } catch (err) {
-      setError('Invalid email or password.');
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -55,12 +72,12 @@ export default function ProviderLogin() {
           )}
 
           <div>
-            <label className="font-body text-xs text-charcoal/50 font-light block mb-2">Email</label>
+            <label className="font-body text-xs text-charcoal/50 font-light block mb-2">Username</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="your.username"
               required
               className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
             />
