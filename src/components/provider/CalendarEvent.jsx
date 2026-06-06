@@ -1,23 +1,82 @@
-import React, { useState } from 'react';
-import { Clock, MapPin, User, Eye } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Clock, MapPin, Phone, Mail, Tag, DollarSign, StickyNote, CheckSquare } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-export default function CalendarEvent({ block, booking, onUpdate, onClick }) {
-  const [expanded, setExpanded] = useState(false);
+function HoverTooltip({ booking, block, service, color, anchorRef }) {
+  const [pos, setPos] = useState({ top: 0, left: 0 });
 
+  useEffect(() => {
+    if (!anchorRef.current) return;
+    const rect = anchorRef.current.getBoundingClientRect();
+    const tooltipWidth = 280;
+    let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tooltipWidth - 8));
+    const top = rect.top - 8; // anchor to top of card, tooltip goes above
+    setPos({ top, left });
+  }, [anchorRef]);
+
+  const tasks = booking.intake_answers?._tasks || [];
+  const addonLabels = (booking.addons || [])
+    .map(id => service?.addons?.find(a => a.id === id)?.label)
+    .filter(Boolean);
+
+  const rows = [
+    booking.client_name && { icon: <span className="text-[10px]">👤</span>, value: booking.client_name, bold: true },
+    service?.label && { icon: <Tag size={11} />, value: service.label },
+    block.start_time && { icon: <Clock size={11} />, value: `${block.start_time} – ${block.end_time}` },
+    booking.scheduled_date && { icon: <span className="text-[10px]">📅</span>, value: new Date(booking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) },
+    booking.client_phone && { icon: <Phone size={11} />, value: booking.client_phone },
+    booking.client_email && { icon: <Mail size={11} />, value: booking.client_email, truncate: true },
+    booking.client_address && { icon: <MapPin size={11} />, value: booking.client_address },
+    (booking.estimated_price_low || booking.estimated_price_high) && { icon: <DollarSign size={11} />, value: `$${booking.estimated_price_low}–$${booking.estimated_price_high} est.` },
+    booking.total_duration_minutes && { icon: <Clock size={11} />, value: `${(booking.total_duration_minutes / 60).toFixed(1)} hrs total` },
+    booking.status && { icon: <span className="text-[10px]">●</span>, value: booking.status.charAt(0).toUpperCase() + booking.status.slice(1) },
+    tasks.length > 0 && { icon: <CheckSquare size={11} />, value: tasks.slice(0, 3).join(', ') + (tasks.length > 3 ? ` +${tasks.length - 3} more` : '') },
+    addonLabels.length > 0 && { icon: <span className="text-[10px]">+</span>, value: addonLabels.join(', ') },
+    booking.special_notes && { icon: <StickyNote size={11} />, value: booking.special_notes, truncate: true },
+    booking.admin_notes && { icon: <StickyNote size={11} />, value: booking.admin_notes, truncate: true },
+    booking.intake_answers?.preferred_contact && { icon: <span className="text-[10px]">📲</span>, value: `Pref: ${booking.intake_answers.preferred_contact}` },
+  ].filter(Boolean).slice(0, 15);
+
+  return (
+    <div
+      className="fixed z-[9999] pointer-events-none"
+      style={{ top: pos.top, left: pos.left, transform: 'translateY(-100%)' }}
+    >
+      <div className="w-[280px] bg-white rounded-xl shadow-2xl border border-taupe/20 overflow-hidden">
+        {/* Color bar */}
+        <div className="h-1 w-full" style={{ background: color }} />
+        <div className="p-3 space-y-1.5">
+          {rows.map((row, i) => (
+            <div key={i} className="flex items-start gap-2 text-[11px] font-body text-charcoal/70">
+              <span className="shrink-0 mt-0.5 text-charcoal/35 w-3">{row.icon}</span>
+              <span className={`${row.bold ? 'font-semibold text-charcoal' : 'font-light'} ${row.truncate ? 'truncate max-w-[220px]' : 'leading-snug'}`}>
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="px-3 pb-2">
+          <p className="text-[10px] font-body text-charcoal/25 font-light">Click to open full detail</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CalendarEvent({ block, booking, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const ref = useRef(null);
+
+  // Travel / prep / wrap block — no booking attached
   if (!booking) {
+    const isTravel = block.block_type === 'travel';
     return (
-      <div
-        className={`rounded-lg p-3 border-l-4 text-xs font-body cursor-pointer hover:shadow-md transition-all ${
-          block.block_type === 'booking'
-            ? 'bg-coral/10 border-coral text-charcoal'
-            : block.block_type === 'travel'
-            ? 'bg-slate/10 border-slate text-charcoal/50'
-            : 'bg-cream border-taupe text-charcoal/40'
-        }`}
-      >
-        <p className="font-light">{block.label || block.block_type}</p>
-        <p className="text-[10px] opacity-70">{block.start_time} – {block.end_time}</p>
+      <div className={`rounded px-2 py-1 text-[10px] font-body font-light border-l-2 ${
+        isTravel ? 'bg-slate/8 border-slate/40 text-charcoal/35' : 'bg-cream border-taupe/30 text-charcoal/30'
+      }`}>
+        <p>{block.label || block.block_type}</p>
+        <p className="opacity-60">{block.start_time} – {block.end_time}</p>
       </div>
     );
   }
@@ -26,55 +85,27 @@ export default function CalendarEvent({ block, booking, onUpdate, onClick }) {
   const color = service?.color || '#EB9486';
 
   return (
-    <div
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
-      onClick={onClick}
-      className={`rounded-lg p-3 border-l-4 text-xs font-body cursor-pointer hover:shadow-md transition-all ${
-        expanded ? 'ring-2 ring-coral/30' : ''
-      }`}
-      style={{ borderLeftColor: color, backgroundColor: color + '15' }}
-    >
-      {/* Collapsed view */}
-      {!expanded && (
-        <>
-          <p className="font-semibold text-charcoal truncate">{booking.client_name}</p>
-          <p className="text-[10px] text-charcoal/60 font-light">{block.start_time} – {block.end_time}</p>
-          <p className="text-[10px] text-charcoal/50 font-light mt-1">{service?.label}</p>
-        </>
-      )}
+    <div ref={ref} className="relative">
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={onClick}
+        className="rounded-lg px-3 py-2 border-l-4 text-xs font-body cursor-pointer hover:shadow-md transition-all select-none"
+        style={{ borderLeftColor: color, backgroundColor: color + '18' }}
+      >
+        <p className="font-semibold text-charcoal truncate text-[11px]">{booking.client_name}</p>
+        <p className="text-[10px] text-charcoal/55 font-light">{block.start_time} – {block.end_time}</p>
+        <p className="text-[10px] font-light mt-0.5" style={{ color }}>{service?.label}</p>
+      </div>
 
-      {/* Expanded view (tooltip) */}
-      {expanded && (
-        <div className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 bg-white rounded-lg shadow-lg border border-taupe/20 p-4 pointer-events-none">
-          <p className="font-heading font-semibold text-charcoal mb-3">{booking.client_name}</p>
-
-          <div className="space-y-2 text-xs font-body text-charcoal/60 font-light">
-            <div className="flex items-center gap-2">
-              <Clock size={14} />
-              {block.start_time} – {block.end_time}
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin size={14} />
-              {booking.client_address}
-            </div>
-            <div className="flex items-center gap-2">
-              <User size={14} />
-              {booking.client_phone}
-            </div>
-          </div>
-
-          <div className="mt-3 pt-3 border-t border-taupe/10">
-            <p className="text-[10px] text-charcoal/50 font-light">{service?.label}</p>
-            <p className="text-[10px] text-coral font-semibold mt-1">${booking.estimated_price_low}–${booking.estimated_price_high}</p>
-          </div>
-
-          {booking.special_notes && (
-            <div className="mt-3 pt-3 border-t border-taupe/10">
-              <p className="text-[10px] text-charcoal/60 italic">{booking.special_notes}</p>
-            </div>
-          )}
-        </div>
+      {hovered && (
+        <HoverTooltip
+          booking={booking}
+          block={block}
+          service={service}
+          color={color}
+          anchorRef={ref}
+        />
       )}
     </div>
   );

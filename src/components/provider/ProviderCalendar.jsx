@@ -58,7 +58,7 @@ export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, o
   const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
-    <div className="bg-white rounded-3xl border border-taupe/15 shadow-sm p-8">
+    <div className="bg-white rounded-3xl border border-taupe/15 shadow-sm p-8 overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 pb-6 border-b border-taupe/10">
         <div>
