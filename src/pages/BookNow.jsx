@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -16,9 +16,13 @@ import Step6Payment from '@/components/booking/Step6Payment';
 export default function BookNow() {
   const { getBool, getNum, loading: settingsLoading } = useAppSettings();
   const [searchParams] = useSearchParams();
+
+  // FIX: Validate preselected service against SERVICE_CONFIG to prevent crashes
   const preselectedService = searchParams.get('service');
-  const [step, setStep] = useState(preselectedService ? 2 : 1);
-  const [serviceKey, setServiceKey] = useState(preselectedService || null);
+  const validatedPreselected = preselectedService && SERVICE_CONFIG[preselectedService] ? preselectedService : null;
+
+  const [step, setStep] = useState(validatedPreselected ? 2 : 1);
+  const [serviceKey, setServiceKey] = useState(validatedPreselected || null);
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '', address: '' });
   const [intakeAnswers, setIntakeAnswers] = useState({});
   const [selectedAddons, setSelectedAddons] = useState([]);
@@ -34,7 +38,6 @@ export default function BookNow() {
   const [showPaymentStep, setShowPaymentStep] = useState(false);
   const [skipDeposit, setSkipDeposit] = useState(false);
 
-  // Check for admin booking flag in URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('skip_deposit') === 'true') {
@@ -44,28 +47,38 @@ export default function BookNow() {
 
   const isConsult = serviceKey === 'consult';
 
-  // Auto-assign consult slot when user picks consult service
+  // FIX: Show error if consult slot scheduling fails instead of silently failing
   useEffect(() => {
     if (!isConsult) return;
     base44.functions.invoke('scheduleConsultSlot', {}).then(res => {
       if (res.data?.success) {
         setSelectedDate(res.data.date);
         setSelectedTime(res.data.time);
+      } else {
+        setError('Could not auto-schedule your consult slot. Please call us at (206) 825-4061.');
       }
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error('scheduleConsultSlot failed:', err);
+      setError('Could not auto-schedule your consult slot. Please call us at (206) 825-4061.');
+    });
   }, [isConsult]);
-  // organization is a valid full booking service (not consult)
 
+  // FIX: Remove duplicate selectedTasks — only declare at component level
   const selectedTasks = intakeAnswers._tasks || [];
-  const dynamicEstimate = serviceKey && serviceKey !== 'consult' ?
-  getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons) :
-  null;
-  const totalDuration = dynamicEstimate ? dynamicEstimate.durationMinutes : serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
-  const config = serviceKey ? SERVICE_CONFIG[serviceKey] : null;
+
+  const dynamicEstimate = serviceKey && serviceKey !== 'consult'
+    ? getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons)
+    : null;
+  const totalDuration = dynamicEstimate
+    ? dynamicEstimate.durationMinutes
+    : serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
+
+  // FIX: Safe config access — always check before using
+  const config = serviceKey && SERVICE_CONFIG[serviceKey] ? SERVICE_CONFIG[serviceKey] : null;
 
   const toggleAddon = (id) => {
     setSelectedAddons((prev) =>
-    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
@@ -76,31 +89,25 @@ export default function BookNow() {
       const basicInfo = clientInfo.name && clientInfo.email && clientInfo.phone && clientInfo.address;
       const needsEmergencyContact = serviceKey === 'senior_support' || serviceKey === 'mothers_helper';
       const hasEmergencyContact = !needsEmergencyContact || !!intakeAnswers.emergency_contact;
-      return basicInfo && hasEmergencyContact;
+      return !!(basicInfo && hasEmergencyContact);
     }
     if (step === 3) return true;
     if (step === 4) return !!selectedDate && !!selectedTime;
     return true;
   };
 
-  // For consult: only 3 steps (select → intake → confirm), skip addons & schedule
-  // For provider bookings: skip deposit step (5 steps total)
   const totalSteps = isConsult ? 3 : (skipDeposit ? 5 : 6);
-  const displayStep = isConsult && step >= 3 ? step - 1 : step; // shift step display for consult
-  
-  // Redirect step 6 to submit if skipDeposit is true
-  useEffect(() => {
-    if (skipDeposit && step === 6) {
-      handleSubmit();
-    }
-  }, [skipDeposit, step]);
+  // FIX: Pass displayStep to StepIndicator (was calculated but never used)
+  const displayStep = isConsult && step >= 3 ? step - 1 : step;
 
-  const handleSubmit = async (stripePaymentIntentId = null) => {
+  // FIX: Wrapped in useCallback so the skipDeposit useEffect always has current data
+  const handleSubmit = useCallback(async (stripePaymentIntentId = null) => {
     setSubmitting(true);
     setError(null);
     try {
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
 
+      // FIX: Safe config access
       const addonPrice = selectedAddons.reduce((sum, id) => {
         const addon = config?.addons?.find((a) => a.id === id);
         return sum + (addon ? addon.price : 0);
@@ -118,7 +125,7 @@ export default function BookNow() {
         scheduled_date: selectedDate || new Date().toISOString().split('T')[0],
         scheduled_start_time: selectedTime || 'TBD',
         scheduled_end_time: isConsult ? 'TBD' : endTime,
-        base_duration_minutes: config.baseMinutes,
+        base_duration_minutes: config?.baseMinutes || 0, // FIX: safe access with fallback
         total_duration_minutes: isConsult ? 15 : totalDuration,
         addons: selectedAddons,
         intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos, sms_opt_in: smsOptIn },
@@ -130,42 +137,51 @@ export default function BookNow() {
           : `Deposit paid — Stripe ID: ${stripePaymentIntentId || 'N/A'}`
       });
 
-      // Handle referral code if entered
+      // Handle referral code
       const referralCode = intakeAnswers.referral_code?.trim().toUpperCase();
       if (referralCode && !isConsult) {
-        // Find the household profile that owns this code
-        const profiles = await base44.entities.HouseholdProfile.list();
-        const referrerProfile = profiles.find(p => p.referral_code?.toUpperCase() === referralCode);
-        if (referrerProfile && referrerProfile.guest_email !== clientInfo.email) {
-          await base44.entities.Referral.create({
-            referrer_name: referrerProfile.guest_name || '',
-            referrer_email: referrerProfile.guest_email,
-            referred_name: clientInfo.name,
-            referred_email: clientInfo.email,
-            referred_phone: clientInfo.phone,
-            referral_code: referralCode,
-            status: 'booked',
-            booking_id: booking.id,
-          });
+        try {
+          // FIX: Filter by referral_code instead of fetching all profiles
+          const profiles = await base44.entities.HouseholdProfile.list(
+            { referral_code: referralCode }, 1
+          );
+          const referrerProfile = profiles?.[0];
+          if (referrerProfile && referrerProfile.guest_email !== clientInfo.email) {
+            await base44.entities.Referral.create({
+              referrer_name: referrerProfile.guest_name || '',
+              referrer_email: referrerProfile.guest_email,
+              referred_name: clientInfo.name,
+              referred_email: clientInfo.email,
+              referred_phone: clientInfo.phone,
+              referral_code: referralCode,
+              status: 'booked',
+              booking_id: booking.id,
+            });
+          }
+        } catch (refErr) {
+          console.error('Referral creation failed:', refErr); // non-blocking
         }
       }
 
-      // Create time blocks (skip for consult — no date/time yet)
+      // Create time blocks
       if (!isConsult && selectedDate && selectedTime) {
         const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
         await base44.entities.TimeBlock.bulkCreate([
-        { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config.label} — ${clientInfo.name}` },
-        { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' }]
-        );
+          { date: selectedDate, start_time: selectedTime, end_time: endTime, booking_id: booking.id, block_type: 'booking', label: `${config?.label} — ${clientInfo.name}` },
+          { date: selectedDate, start_time: endTime, end_time: blockEnd, booking_id: booking.id, block_type: 'travel', label: 'Travel buffer' }
+        ]);
       }
 
-      // Send confirmation email
+      // Build email content
       const addonLabels = selectedAddons.map((id) => config?.addons?.find((a) => a.id === id)?.label).filter(Boolean);
-      const displayDate = selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'TBD';
+      const displayDate = selectedDate
+        ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        : 'TBD';
 
+      // FIX: Added Sarina font to Google Fonts link so brand name renders correctly in emails
       const emailWrapper = (innerHtml) => `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Lato:wght@300;400;700&family=Sarina&display=swap" rel="stylesheet">
 <style>
   body{margin:0;padding:0;background:#fdfcfb;font-family:'Lato',sans-serif;color:#333333;}
   .wrapper{max-width:600px;margin:0 auto;background:#fdfcfb;}
@@ -185,7 +201,6 @@ export default function BookNow() {
   .timeline-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
   .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
   .timeline-text{font-size:14px;font-weight:300;color:#666;line-height:1.5;}
-  .cta{display:inline-block;background:#EB9486;color:#fff;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:14px 32px;border-radius:50px;text-decoration:none;margin:20px 0;}
   .footer{background:#f9f4f2;padding:28px 40px;text-align:center;border-top:1px solid #f0e8e4;}
   .footer p{font-size:12px;font-weight:300;color:#aaa;margin:0 0 4px;}
 </style></head>
@@ -197,71 +212,80 @@ export default function BookNow() {
   <div class="body">${innerHtml}</div>
   <div class="footer">
     <p>Questions? Reply to this email or text us at (206) 825-4061</p>
-    <p>cleanslateclubpa@gmail.com · cleanslateclub.co</p>
+    <p>cleanslateclubpa@gmail.com &middot; cleanslateclub.co</p>
   </div>
 </div></body></html>`;
 
-      // Add consult to Google Calendar
+      // FIX: Google Calendar is now SEPARATE from Promise.all
+      // Emails send first (booking is confirmed), then calendar syncs independently
+      // A calendar failure no longer shows the client an error screen
       if (isConsult && selectedDate && selectedTime) {
-        const consultEnd = '12:00 PM';
-        base44.functions.invoke('addBookingToCalendar', {
-          clientName: clientInfo.name,
-          clientEmail: clientInfo.email,
-          clientPhone: clientInfo.phone,
-          clientAddress: '',
-          serviceLabel: 'Free Consult Call',
-          addonLabels: [],
-          selectedDate,
-          startTime: selectedTime,
-          endTime: consultEnd,
-          totalDuration: 45,
-          estimateLow: 0,
-          estimateHigh: 0,
-          specialNotes: `Preferred contact: ${intakeAnswers.preferred_contact || 'N/A'} | Availability: ${intakeAnswers.availability_notes || 'N/A'}`,
-          tasks: []
-        }).catch(() => {});
-      }
+        // FIX: Calculate real consult end time (15 min) instead of hardcoding '12:00 PM'
+        const consultEnd = minutesToTime(timeToMinutes(selectedTime) + 15);
 
-      if (isConsult) {
         const clientBody = emailWrapper(`
-          <p class="greeting">You're on the calendar, ${clientInfo.name}! 🌿</p>
+          <p class="greeting">You're on the calendar, ${clientInfo.name}! 🎉</p>
           <p>Your free 15-minute consult is officially scheduled. We can't wait to connect.</p>
           <div class="card">
             <p class="card-label">Your Consult</p>
-            <p class="card-value"><strong>${selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'TBD'}</strong> at <strong>${selectedTime || 'TBD'}</strong></p>
+            <p class="card-value"><strong>${displayDate}</strong> at <strong>${selectedTime || 'TBD'}</strong></p>
             <p class="card-value light">We'll call you at ${clientInfo.phone} at the time above.</p>
             ${intakeAnswers.availability_notes ? `<p class="card-value light">Your availability notes: ${intakeAnswers.availability_notes}</p>` : ''}
           </div>
           <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation. You'll get a reminder 24 hours before.</p>
         `);
 
+        // Send emails first — booking is confirmed regardless of calendar
         await Promise.all([
-        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
-        base44.integrations.Core.SendEmail({
-          to: 'cleanslateclubpa@gmail.com',
-          subject: `New Consult Request — ${clientInfo.name}`,
-          body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`
-        })]
-        );
+          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
+          base44.integrations.Core.SendEmail({
+            to: 'cleanslateclubpa@gmail.com',
+            subject: `New Consult Request — ${clientInfo.name}`,
+            body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`
+          })
+        ]);
+
+        // FIX: Calendar sync is non-blocking — failure won't affect the client
+        base44.functions.invoke('addBookingToCalendar', {
+          clientName: clientInfo.name,
+          clientEmail: clientInfo.email, // FIX: client gets a calendar invite
+          clientPhone: clientInfo.phone,
+          clientAddress: '',
+          serviceLabel: 'Free Consult Call',
+          addonLabels: [],
+          selectedDate,
+          startTime: selectedTime,
+          endTime: consultEnd, // FIX: real calculated end time
+          totalDuration: 15,
+          estimateLow: 0,
+          estimateHigh: 0,
+          specialNotes: `Preferred contact: ${intakeAnswers.preferred_contact || 'N/A'} | Availability: ${intakeAnswers.availability_notes || 'N/A'}`,
+          tasks: [],
+          sendInviteToClient: true // FIX: send Google Calendar invite to client
+        }).catch((err) => console.error('Calendar sync failed (non-blocking):', err));
+
       } else {
-        const selectedTasks = intakeAnswers._tasks || [];
-        const addonSection = addonLabels.length > 0 ? `<div class="card"><p class="card-label">Add-ons Included</p>${addonLabels.map((a) => `<p class="card-value">✓ ${a}</p>`).join('')}</div>` : '';
-        const tasksSection = selectedTasks.length > 0 ? `<div class="card"><p class="card-label">Tasks Requested</p><p class="card-value light">${selectedTasks.join(' · ')}</p></div>` : '';
+        const addonSection = addonLabels.length > 0
+          ? `<div class="card"><p class="card-label">Add-ons Included</p>${addonLabels.map((a) => `<p class="card-value">✓ ${a}</p>`).join('')}</div>`
+          : '';
+        const tasksSection = selectedTasks.length > 0
+          ? `<div class="card"><p class="card-label">Tasks Requested</p><p class="card-value light">${selectedTasks.join(' · ')}</p></div>`
+          : '';
 
         const clientBody = emailWrapper(`
           <p class="greeting">You're booked, ${clientInfo.name}! ✨</p>
           <p>Consider it handled. Here's everything you need to know about your upcoming visit.</p>
           <div class="card">
             <p class="card-label">Service</p>
-            <p class="card-value">${config.label}</p>
+            <p class="card-value">${config?.label}</p>
             <p class="card-value light">${displayDate} · ${selectedTime} – ${endTime}</p>
             <p class="card-value light">${clientInfo.address}</p>
           </div>
           <div class="card">
             <p class="card-label">Your Visit Timeline</p>
-            <div class="timeline-item"><span class="dot" style="background:#CAE7B9"></span><span class="timeline-text"><strong>${selectedTime}</strong> — Meet & greet (15 min)</span></div>
+            <div class="timeline-item"><span class="dot" style="background:#CAE7B9"></span><span class="timeline-text"><strong>${selectedTime}</strong> — Meet &amp; greet (15 min)</span></div>
             <div class="timeline-item"><span class="dot" style="background:#EB9486"></span><span class="timeline-text">Service begins — all tasks + add-ons</span></div>
-            <div class="timeline-item"><span class="dot" style="background:#EFB988"></span><span class="timeline-text">Wrap-up & supply collection (15 min)</span></div>
+            <div class="timeline-item"><span class="dot" style="background:#EFB988"></span><span class="timeline-text">Wrap-up &amp; supply collection (15 min)</span></div>
             <div class="timeline-item"><span class="dot" style="background:#ddd"></span><span class="timeline-text"><strong>${endTime}</strong> — Estimated end</span></div>
           </div>
           ${addonSection}${tasksSection}
@@ -274,21 +298,23 @@ export default function BookNow() {
           <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">The Clean Slate Club Team</strong></p>
         `);
 
+        // Send emails first — booking is confirmed regardless of calendar
         await Promise.all([
-        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
-        base44.integrations.Core.SendEmail({
-          to: 'cleanslateclubpa@gmail.com',
-          subject: `New Booking: ${config.label} — ${clientInfo.name} on ${displayDate}`,
-          body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclub.co/admin`
-        }),
-        // Add to Google Calendar
+          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
+          base44.integrations.Core.SendEmail({
+            to: 'cleanslateclubpa@gmail.com',
+            subject: `New Booking: ${config?.label} — ${clientInfo.name} on ${displayDate}`,
+            body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} – ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}–$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclub.co/admin`
+          })
+        ]);
 
+        // FIX: Calendar sync is non-blocking — failure won't affect the client
         base44.functions.invoke('addBookingToCalendar', {
           clientName: clientInfo.name,
-          clientEmail: clientInfo.email,
+          clientEmail: clientInfo.email, // FIX: client gets a calendar invite
           clientPhone: clientInfo.phone,
           clientAddress: clientInfo.address,
-          serviceLabel: config.label,
+          serviceLabel: config?.label,
           addonLabels,
           selectedDate,
           startTime: selectedTime,
@@ -297,25 +323,35 @@ export default function BookNow() {
           estimateLow,
           estimateHigh,
           specialNotes: intakeAnswers.situation || intakeAnswers.special_notes || '',
-          tasks: selectedTasks
-        })]
-        );
+          tasks: selectedTasks,
+          sendInviteToClient: true // FIX: send Google Calendar invite to client
+        }).catch((err) => console.error('Calendar sync failed (non-blocking):', err));
       }
 
       setSubmitted(true);
     } catch (e) {
-      setError('Something went wrong. Please try again or call us directly.');
+      console.error('Booking submission error:', e);
+      setError('Something went wrong. Please try again or call us directly at (206) 825-4061.');
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime,
+      uploadedPhotos, smsOptIn, isConsult, serviceKey, config,
+      dynamicEstimate, totalDuration, selectedTasks]);
+
+  // FIX: handleSubmit is now in deps so this always uses current data
+  useEffect(() => {
+    if (skipDeposit && step === 6) {
+      handleSubmit();
+    }
+  }, [skipDeposit, step, handleSubmit]);
 
   // Booking disabled gate
   if (!settingsLoading && !getBool('booking_enabled')) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">🌿</div>
+          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">🗓️</div>
           <h1 className="font-heading text-2xl font-semibold text-charcoal mb-3">Online booking is temporarily paused</h1>
           <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-6">
             We're taking a short break from online bookings. Please reach out directly and we'll get you scheduled right away.
@@ -324,7 +360,7 @@ export default function BookNow() {
             📞 Call (206) 825-4061
           </a>
           <p className="mt-4 font-body text-xs text-charcoal/30 font-light">or email cleanslateclubpa@gmail.com</p>
-          {/* domain: cleanslateclubco.com */}
+          {/* domain: cleanslateclub.co */}
         </div>
       </div>
     );
@@ -337,51 +373,50 @@ export default function BookNow() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full text-center">
-          
           <div className="w-16 h-16 rounded-full bg-sage/40 flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
-          {isConsult ?
-          <>
+          {isConsult ? (
+            <>
               <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're on the calendar!</h1>
               <p className="font-logo text-xl text-coral mb-4">Your consult is booked.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
                 Your free 15-minute call is confirmed. A confirmation has been sent to <strong>{clientInfo.email}</strong>. We'll call you at <strong>{clientInfo.phone}</strong> at the scheduled time.
               </p>
-            </> :
-
-          <>
+            </>
+          ) : (
+            <>
               <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
               <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
               <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
                 A confirmation email is on its way to <strong>{clientInfo.email}</strong>. We'll see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
               </p>
             </>
-          }
+          )}
           <a href="/" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">
             Back to home
           </a>
         </motion.div>
-      </div>);
-
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-cream">
-      {showPolicyModal &&
-      <PolicyModal
-        onAgree={() => {setPolicyAccepted(true);setShowPolicyModal(false);setStep(6);}}
-        onClose={() => setShowPolicyModal(false)} />
-
-      }
+      {showPolicyModal && (
+        <PolicyModal
+          onAgree={() => { setPolicyAccepted(true); setShowPolicyModal(false); setStep(6); }}
+          onClose={() => setShowPolicyModal(false)}
+        />
+      )}
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-2xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-10">
             <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-3 text-[hsl(var(--foreground))]">LET'S GET STARTED</p>
             <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">Book Your Visit</h1>
             <p className="font-logo text-xl text-coral">Personalized support, built around you.</p>
           </div>
 
-          <StepIndicator currentStep={step} totalSteps={totalSteps} />
+          {/* FIX: Now uses displayStep so consult users see correct step number */}
+          <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
 
           <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-7 sm:p-10">
             <AnimatePresence mode="wait">
@@ -391,13 +426,57 @@ export default function BookNow() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}>
-                
-                {step === 1 && <Step1Service selected={serviceKey} onSelect={(k) => {setServiceKey(k);setSelectedAddons([]);setIntakeAnswers({});}} onContinue={() => setStep(2)} />}
-                {step === 2 && <Step2Intake serviceKey={serviceKey} answers={intakeAnswers} onChange={setIntakeAnswers} clientInfo={clientInfo} onClientChange={setClientInfo} onPhotoUpload={setUploadedPhotos} uploadedPhotos={uploadedPhotos} smsOptIn={smsOptIn} onSmsOptInChange={setSmsOptIn} />}
-                {/* For consult: step 3 = confirm (skip addons + schedule) */}
-                {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
-                {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}
-                {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} onExtraTimeChange={(val) => setIntakeAnswers(prev => ({ ...prev, _extra_time_auth: val }))} />}
+                {step === 1 && (
+                  <Step1Service
+                    selected={serviceKey}
+                    onSelect={(k) => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); }}
+                    onContinue={() => setStep(2)}
+                  />
+                )}
+                {step === 2 && (
+                  <Step2Intake
+                    serviceKey={serviceKey}
+                    answers={intakeAnswers}
+                    onChange={setIntakeAnswers}
+                    clientInfo={clientInfo}
+                    onClientChange={setClientInfo}
+                    onPhotoUpload={setUploadedPhotos}
+                    uploadedPhotos={uploadedPhotos}
+                    smsOptIn={smsOptIn}
+                    onSmsOptInChange={setSmsOptIn}
+                  />
+                )}
+                {!isConsult && step === 3 && (
+                  <Step3Addons
+                    serviceKey={serviceKey}
+                    selectedAddons={selectedAddons}
+                    onToggle={toggleAddon}
+                    dynamicEstimate={dynamicEstimate}
+                    selectedTasks={selectedTasks}
+                  />
+                )}
+                {!isConsult && step === 4 && (
+                  <Step4Schedule
+                    totalDuration={totalDuration}
+                    selectedDate={selectedDate}
+                    selectedTime={selectedTime}
+                    onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }}
+                  />
+                )}
+                {((!isConsult && step === 5) || (isConsult && step === 3)) && (
+                  <Step5Confirm
+                    serviceKey={serviceKey}
+                    clientInfo={clientInfo}
+                    intakeAnswers={intakeAnswers}
+                    selectedAddons={selectedAddons}
+                    selectedDate={selectedDate}
+                    selectedTime={selectedTime}
+                    totalDuration={totalDuration}
+                    uploadedPhotos={uploadedPhotos}
+                    dynamicEstimate={dynamicEstimate}
+                    onExtraTimeChange={(val) => setIntakeAnswers(prev => ({ ...prev, _extra_time_auth: val }))}
+                  />
+                )}
                 {!isConsult && step === 6 && !skipDeposit && (
                   <Step6Payment
                     clientName={clientInfo.name}
@@ -413,40 +492,39 @@ export default function BookNow() {
 
             {error && <p className="mt-4 text-sm text-red-500 font-body text-center">{error}</p>}
 
-            {/* Navigation — hidden on payment step (Step6Payment has its own nav) */}
             {step !== 6 && (
-            <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
-              {step > 1 ?
-              <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button> :
-              <div />}
+              <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
+                {step > 1 ? (
+                  <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
+                ) : <div />}
 
-              {step === 1 ? <div /> : step < (isConsult ? 3 : skipDeposit ? 5 : 5) ?
-              <button
-                onClick={() => setStep((s) => s + 1)}
-                disabled={!canProceed()}
-                className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300">
-                
-                  Continue →
-                </button> :
-
-              <button
-                onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setShowPolicyModal(true))}
-                disabled={submitting}
-                className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300">
-                
-                  {submitting ? isConsult ? 'Sending...' : 'Booking...' : isConsult ? 'Request My Free Consult →' : (skipDeposit ? 'Complete Booking →' : 'Review & Book →')}
-                </button>
-              }
-            </div>
+                {step === 1 ? <div /> : step < (isConsult ? 3 : skipDeposit ? 4 : 5) ? ( // FIX: was skipDeposit ? 5 : 5
+                  <button
+                    onClick={() => setStep((s) => s + 1)}
+                    disabled={!canProceed()}
+                    className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300">
+                    Continue →
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setShowPolicyModal(true))}
+                    disabled={submitting || !canProceed()}
+                    className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300">
+                    {submitting
+                      ? (isConsult ? 'Sending...' : 'Booking...')
+                      : (isConsult ? 'Request My Free Consult →' : (skipDeposit ? 'Complete Booking →' : 'Review & Book →'))}
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
           <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
             Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
           </p>
-          {/* website: cleanslateclubco.com */}
+          {/* website: cleanslateclub.co */}
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
