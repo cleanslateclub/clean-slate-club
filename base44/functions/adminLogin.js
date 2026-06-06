@@ -13,3 +13,15 @@ Deno.serve(async (req) => {
       console.error('adminLogin: ADMIN_USERNAME or ADMIN_PASSWORD env vars not set.');
       return Response.json({ success: false, error: 'Server configuration error.' });
     }
+
+    if (username !== validUsername || password !== validPassword) {
+      return Response.json({ success: false, error: 'Invalid credentials.' });
+    }
+
+    return Response.json({ success: true, username });
+
+  } catch (error) {
+    console.error('adminLogin error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
