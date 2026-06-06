@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { CalendarDays, Settings2, Star, LogOut, Home } from 'lucide-react';
+import { CalendarDays, Settings2, Star, LogOut, Home, Gift } from 'lucide-react';
 import UpcomingBookings from '@/components/dashboard/UpcomingBookings';
 import ServicePreferencesForm from '@/components/dashboard/ServicePreferencesForm';
 import HouseholdProfileForm from '@/components/dashboard/HouseholdProfileForm';
 import MembershipManagement from '@/components/dashboard/MembershipManagement';
+import ReferralPanel from '@/components/dashboard/ReferralPanel';
 
 const TABS = [
   { id: 'schedule', label: 'My Schedule', icon: CalendarDays },
   { id: 'household', label: 'My Home', icon: Home },
   { id: 'preferences', label: 'Preferences', icon: Settings2 },
   { id: 'membership', label: 'Membership', icon: Star },
+  { id: 'referrals', label: 'Referrals', icon: Gift },
 ];
 
 export default function MemberDashboard() {
@@ -170,6 +172,15 @@ export default function MemberDashboard() {
                   Manage your Clean Slate Club™ membership, billing, and benefits.
                 </p>
                 <MembershipManagement userEmail={user.email} userName={user.full_name} />
+              </div>
+            )}
+            {activeTab === 'referrals' && (
+              <div>
+                <h2 className="font-heading text-xl font-semibold text-charcoal mb-1">Refer a Friend</h2>
+                <p className="font-body text-sm text-charcoal/40 font-light mb-6">
+                  Share the love — you'll both get $25 off when they complete their first visit.
+                </p>
+                <ReferralPanel userEmail={user.email} userName={user.full_name} />
               </div>
             )}
           </motion.div>

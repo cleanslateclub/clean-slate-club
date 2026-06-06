@@ -130,6 +130,26 @@ export default function BookNow() {
           : `Deposit paid — Stripe ID: ${stripePaymentIntentId || 'N/A'}`
       });
 
+      // Handle referral code if entered
+      const referralCode = intakeAnswers.referral_code?.trim().toUpperCase();
+      if (referralCode && !isConsult) {
+        // Find the household profile that owns this code
+        const profiles = await base44.entities.HouseholdProfile.list();
+        const referrerProfile = profiles.find(p => p.referral_code?.toUpperCase() === referralCode);
+        if (referrerProfile && referrerProfile.guest_email !== clientInfo.email) {
+          await base44.entities.Referral.create({
+            referrer_name: referrerProfile.guest_name || '',
+            referrer_email: referrerProfile.guest_email,
+            referred_name: clientInfo.name,
+            referred_email: clientInfo.email,
+            referred_phone: clientInfo.phone,
+            referral_code: referralCode,
+            status: 'booked',
+            booking_id: booking.id,
+          });
+        }
+      }
+
       // Create time blocks (skip for consult — no date/time yet)
       if (!isConsult && selectedDate && selectedTime) {
         const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);

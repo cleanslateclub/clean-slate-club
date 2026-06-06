@@ -302,6 +302,25 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         </div>
       )}
 
+      {/* Referral code */}
+      {!isConsult && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5 mb-5">
+          <label className="font-body text-xs font-light text-charcoal block mb-1.5">
+            Referral code <span className="text-charcoal/35">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={answers.referral_code || ''}
+            onChange={e => handleAnswer('referral_code', e.target.value.toUpperCase())}
+            placeholder="e.g. MASHA25"
+            className="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors uppercase tracking-widest"
+          />
+          <p className="font-body text-[11px] text-charcoal/35 font-light mt-1.5">
+            Have a friend's referral code? Enter it here — you'll both get $25 off.
+          </p>
+        </div>
+      )}
+
       {/* Service disclaimer */}
       {config.disclaimer && (
         <div className="px-5 py-4 rounded-2xl text-xs font-body font-light leading-relaxed text-charcoal" style={{ background: '#fdf6f3', borderLeft: '3px solid #fcd5ce' }}>

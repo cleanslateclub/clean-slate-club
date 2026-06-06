@@ -104,6 +104,25 @@
         "Other"
       ]
     },
+    "referral_code": {
+      "type": "string",
+      "description": "This client's unique referral code (e.g. MASHA25)"
+    },
+    "referral_credits_available": {
+      "type": "number",
+      "default": 0,
+      "description": "Total $25 credits available to use on next service"
+    },
+    "referral_credits_used": {
+      "type": "number",
+      "default": 0,
+      "description": "Total credits that have been applied to bookings"
+    },
+    "successful_referrals": {
+      "type": "number",
+      "default": 0,
+      "description": "Count of completed referrals that earned a credit"
+    },
     "internal_notes": {
       "type": "string",
       "description": "CEO/Admin only \u2014 never shown to client"

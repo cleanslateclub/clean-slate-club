@@ -17,6 +17,10 @@
     "referred_phone": {
       "type": "string"
     },
+    "referral_code": {
+      "type": "string",
+      "description": "The code used at booking time"
+    },
     "status": {
       "type": "string",
       "enum": [
