@@ -11,7 +11,7 @@ import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
-  const { user, authError, isLoadingAuth } = useAuth();
+  const [providerData, setProviderData] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [payouts, setPayouts] = useState([]);
@@ -20,35 +20,45 @@ export default function ProviderDashboard() {
   const [activeVisitBooking, setActiveVisitBooking] = useState(null);
   const [providerTab, setProviderTab] = useState('calendar');
 
-  // Check authentication on mount
+  // Check provider session on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const isAuthed = await base44.auth.isAuthenticated();
-      if (!isAuthed) {
-        navigate('/provider-login');
+      const session = localStorage.getItem('providerSession');
+      if (!session) {
+        navigate('/staff-login');
+        return;
       }
+      
+      const { providerId } = JSON.parse(session);
+      const provider = await base44.entities.Provider.get(providerId);
+      if (!provider) {
+        localStorage.removeItem('providerSession');
+        navigate('/staff-login');
+        return;
+      }
+      
+      setProviderData(provider);
+      setLoading(false);
     };
-    if (!isLoadingAuth) checkAuth();
-  }, [isLoadingAuth, navigate]);
+    checkAuth();
+  }, [navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!providerData) return;
+      
       try {
         // Providers only see confirmed/pending/completed bookings — not drafts, not other financial data
         const [allBookings, blocks, myPayouts] = await Promise.all([
           base44.entities.Booking.filter({ status: ['pending', 'confirmed', 'completed'] }),
           base44.entities.TimeBlock.list(),
-          user?.email
-            ? base44.entities.ProviderPayout.filter({ provider_email: user.email })
-            : Promise.resolve([]),
+          base44.entities.ProviderPayout.filter({ provider_email: providerData.email }),
         ]);
         setBookings(allBookings);
         setTimeBlocks(blocks);
         setPayouts(myPayouts || []);
       } catch (error) {
         console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -80,7 +90,7 @@ export default function ProviderDashboard() {
       unsubBookings();
       unsubBlocks();
     };
-  }, []);
+  }, [providerData]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
@@ -92,27 +102,10 @@ export default function ProviderDashboard() {
     }
   };
 
-  if (isLoadingAuth) {
+  if (loading || !providerData) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (authError || !user || (user.role !== 'provider' && user.role !== 'assistant')) {
-    return (
-      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
-        <div className="text-center">
-          <p className="font-heading text-xl font-semibold text-charcoal mb-2">Access Restricted</p>
-          <p className="font-body text-sm text-charcoal/40 font-light">This dashboard is for service providers only.</p>
-          <button
-            onClick={() => navigate('/provider-login')}
-            className="mt-6 px-6 py-2.5 rounded-full bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 transition-all"
-          >
-            Back to Login
-          </button>
-        </div>
       </div>
     );
   }
@@ -126,8 +119,8 @@ export default function ProviderDashboard() {
   }
 
   const handleLogout = async () => {
-    await base44.auth.logout();
-    navigate('/provider-login');
+    localStorage.removeItem('providerSession');
+    navigate('/staff-login');
   };
 
   // Today's confirmed/assigned bookings for this provider
@@ -151,7 +144,7 @@ export default function ProviderDashboard() {
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
             <div>
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
-              <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{user?.full_name || 'Provider'}</h1>
+              <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{providerData?.full_name || 'Provider'}</h1>
               <p className="font-body text-sm text-charcoal/50">Your schedule, appointments, and earnings at a glance.</p>
             </div>
             <button
@@ -218,13 +211,13 @@ export default function ProviderDashboard() {
           {providerTab === 'calendar' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <ProviderCalendar
-              timeBlocks={timeBlocks}
-              bookings={bookings}
-              selectedWeek={selectedWeek}
-              onWeekChange={setSelectedWeek}
-              onTimeBlockUpdate={handleTimeBlockUpdate}
-              user={user}
-            />
+               timeBlocks={timeBlocks}
+               bookings={bookings}
+               selectedWeek={selectedWeek}
+               onWeekChange={setSelectedWeek}
+               onTimeBlockUpdate={handleTimeBlockUpdate}
+               user={providerData}
+             />
           </motion.div>
           )}
 
