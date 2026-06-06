@@ -196,6 +196,43 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
           </div>
         )}
 
+        {/* Calendar Settings */}
+        {editMode && (
+          <div className="border-t border-taupe/10 pt-4">
+            <p className="font-heading text-sm font-semibold text-charcoal mb-3">Calendar Settings</p>
+            <div className="space-y-3">
+              <div>
+                <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Weekly Hours Available</label>
+                <input
+                  type="number"
+                  value={form.hours_available_per_week || 0}
+                  onChange={(e) => setForm({ ...form, hours_available_per_week: Number(e.target.value) })}
+                  placeholder="20"
+                  className="w-full px-3 py-2 rounded-lg border border-taupe/20 bg-cream font-body text-sm text-charcoal focus:outline-none focus:border-coral/40"
+                />
+              </div>
+              <div>
+                <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Calendar Color</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={form.calendar_color || '#EB9486'}
+                    onChange={(e) => setForm({ ...form, calendar_color: e.target.value })}
+                    className="w-12 h-10 rounded-lg border border-taupe/20 cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={form.calendar_color || '#EB9486'}
+                    onChange={(e) => setForm({ ...form, calendar_color: e.target.value })}
+                    placeholder="#EB9486"
+                    className="flex-1 px-3 py-2 rounded-lg border border-taupe/20 bg-cream font-mono text-sm text-charcoal focus:outline-none focus:border-coral/40"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Hours & Automation */}
         <div className="border-t border-taupe/10 pt-4">
           <p className="font-heading text-sm font-semibold text-charcoal mb-3">Availability & Automation</p>
