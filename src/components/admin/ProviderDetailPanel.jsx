@@ -55,11 +55,11 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
           </div>
           <div>
             <h2 className="font-heading text-xl font-semibold text-charcoal">{provider.full_name}</h2>
-            <p className="font-body text-xs text-charcoal/50 mt-0.5">
+            <p className="font-body text-xs text-charcoal/70 mt-0.5">
               {provider.role} • {provider.status}
             </p>
             {provider.territory && (
-              <p className="font-body text-xs text-charcoal/40 mt-1">{provider.territory}</p>
+              <p className="font-body text-xs text-charcoal/70 mt-1">{provider.territory}</p>
             )}
           </div>
         </div>
@@ -79,19 +79,19 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
             <p className="font-heading text-lg font-semibold text-charcoal">
               {provider.jobs_completed || 0}
             </p>
-            <p className="font-body text-[10px] text-charcoal/50 font-light mt-1">Jobs</p>
+            <p className="font-body text-xs text-charcoal font-light mt-1">Jobs</p>
           </div>
           <div className="bg-cream rounded-xl p-3 text-center">
             <p className="font-heading text-lg font-semibold text-charcoal">
               {provider.rating_average?.toFixed(1) || '—'}
             </p>
-            <p className="font-body text-[10px] text-charcoal/50 font-light mt-1">Rating</p>
+            <p className="font-body text-xs text-charcoal font-light mt-1">Rating</p>
           </div>
           <div className="bg-cream rounded-xl p-3 text-center">
             <p className="font-heading text-lg font-semibold text-charcoal">
               {provider.hours_available_per_week || 0}h
             </p>
-            <p className="font-body text-[10px] text-charcoal/50 font-light mt-1">Weekly Hrs</p>
+            <p className="font-body text-xs text-charcoal font-light mt-1">Weekly Hrs</p>
           </div>
         </div>
 
@@ -132,17 +132,17 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
                   {item.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-body text-xs text-charcoal font-light">{item.label}</p>
+                  <p className="font-body text-xs text-charcoal font-light font-medium">{item.label}</p>
                   {item.expiry && (
-                    <p className="font-body text-[10px] text-charcoal/40 font-light">
-                      Expires: {new Date(item.expiry).toLocaleDateString()}
-                    </p>
-                  )}
-                  {item.date && (
-                    <p className="font-body text-[10px] text-charcoal/40 font-light">
-                      Signed: {new Date(item.date).toLocaleDateString()}
-                    </p>
-                  )}
+                     <p className="font-body text-xs text-charcoal/70 font-light">
+                       Expires: {new Date(item.expiry).toLocaleDateString()}
+                     </p>
+                   )}
+                   {item.date && (
+                     <p className="font-body text-xs text-charcoal/70 font-light">
+                       Signed: {new Date(item.date).toLocaleDateString()}
+                     </p>
+                   )}
                 </div>
               </div>
             ))}
@@ -212,21 +212,26 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
                 />
               </div>
               <div>
-                <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Calendar Color</label>
+                <label className="font-body text-xs text-charcoal font-light block mb-2">Calendar Color</label>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={form.calendar_color || '#EB9486'}
-                    onChange={(e) => setForm({ ...form, calendar_color: e.target.value })}
-                    className="w-12 h-10 rounded-lg border border-taupe/20 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={form.calendar_color || '#EB9486'}
-                    onChange={(e) => setForm({ ...form, calendar_color: e.target.value })}
-                    placeholder="#EB9486"
-                    className="flex-1 px-3 py-2 rounded-lg border border-taupe/20 bg-cream font-mono text-sm text-charcoal focus:outline-none focus:border-coral/40"
-                  />
+                  {[
+                    { name: 'Coral', hex: '#EB9486' },
+                    { name: 'Peach', hex: '#EFB988' },
+                    { name: 'Sage', hex: '#CAE7B9' },
+                    { name: 'Olive', hex: '#DFE3A2' },
+                    { name: 'Mauve', hex: '#B58A90' },
+                    { name: 'Slate', hex: '#7E7F9A' }
+                  ].map(color => (
+                    <button
+                      key={color.hex}
+                      onClick={() => setForm({ ...form, calendar_color: color.hex })}
+                      title={color.name}
+                      className={`w-8 h-8 rounded-lg border-2 transition-all ${
+                        form.calendar_color === color.hex ? 'border-charcoal' : 'border-taupe/20'
+                      }`}
+                      style={{ background: color.hex }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -246,10 +251,10 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-body text-xs text-charcoal font-light">Auto-assign matching bookings</p>
-                <p className="font-body text-[10px] text-charcoal/40 font-light">When hours available</p>
+                <p className="font-body text-xs text-charcoal/70 font-light">When hours available</p>
               </div>
-            </label>
-            <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
+              </label>
+              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.calendar_sync_enabled !== false}
@@ -258,10 +263,10 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-body text-xs text-charcoal font-light">Sync to provider calendar</p>
-                <p className="font-body text-[10px] text-charcoal/40 font-light">Auto-update bookings</p>
+                <p className="font-body text-xs text-charcoal/70 font-light">Auto-update bookings</p>
               </div>
-            </label>
-            <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
+              </label>
+              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.sms_notifications_enabled !== false}
@@ -270,10 +275,10 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-body text-xs text-charcoal font-light">SMS notifications</p>
-                <p className="font-body text-[10px] text-charcoal/40 font-light">New bookings & reminders</p>
+                <p className="font-body text-xs text-charcoal/70 font-light">New bookings & reminders</p>
               </div>
-            </label>
-            <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
+              </label>
+              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.email_notifications_enabled !== false}
@@ -282,7 +287,7 @@ export default function ProviderDetailPanel({ provider, onClose, onUpdate }) {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-body text-xs text-charcoal font-light">Email notifications</p>
-                <p className="font-body text-[10px] text-charcoal/40 font-light">Booking confirmations</p>
+                <p className="font-body text-xs text-charcoal/70 font-light">Booking confirmations</p>
               </div>
             </label>
           </div>
