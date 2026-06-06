@@ -29,6 +29,14 @@ function ProviderForm({ initial, onSave, onCancel }) {
     email_notifications_enabled: true
   });
 
+  const generateLoginCredentials = () => {
+    const username = form.full_name
+      ? form.full_name.toLowerCase().replace(/\s+/g, '.') + Math.random().toString(36).slice(-4)
+      : 'provider' + Math.random().toString(36).slice(-6);
+    const password = Math.random().toString(36).slice(-12);
+    setForm(f => ({ ...f, login_username: username, login_password: password }));
+  };
+
   const toggleService = (key) => {
     setForm(f => ({
       ...f,
@@ -43,8 +51,6 @@ function ProviderForm({ initial, onSave, onCancel }) {
           { key: 'full_name', label: 'Full Name', placeholder: 'Provider name', required: true },
           { key: 'email', label: 'Email', placeholder: 'email@example.com', required: true },
           { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555' },
-          { key: 'login_username', label: 'Portal Username', placeholder: 'Username for access' },
-          { key: 'login_password', label: 'Portal Password', placeholder: 'Access password', type: 'password' },
           { key: 'hours_available_per_week', label: 'Weekly Hours Available', placeholder: '20', type: 'number' },
         ].map(f => (
           <div key={f.key}>
@@ -58,6 +64,41 @@ function ProviderForm({ initial, onSave, onCancel }) {
             />
           </div>
         ))}
+
+        {/* Login Credentials Section */}
+        <div className="sm:col-span-2">
+          <div className="flex items-center justify-between mb-3">
+            <label className="font-body text-xs text-charcoal/50 font-light">Portal Login Credentials<span className="text-coral ml-0.5">*</span></label>
+            <button
+              type="button"
+              onClick={generateLoginCredentials}
+              className="text-[10px] font-body text-coral hover:underline font-light"
+            >
+              Generate →
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <input
+                type="text"
+                value={form.login_username || ''}
+                onChange={e => setForm(p => ({ ...p, login_username: e.target.value }))}
+                placeholder="Username"
+                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value={form.login_password || ''}
+                onChange={e => setForm(p => ({ ...p, login_password: e.target.value }))}
+                placeholder="Password"
+                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40"
+              />
+            </div>
+          </div>
+          <p className="font-body text-[10px] text-charcoal/40 font-light mt-1.5">Share these credentials with the provider. They can update them after first login.</p>
+        </div>
         <div>
           <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Role</label>
           <select
@@ -104,8 +145,8 @@ function ProviderForm({ initial, onSave, onCancel }) {
       <div className="flex gap-3 pt-1">
         <button onClick={onCancel} className="flex-1 py-2.5 rounded-2xl border border-taupe/20 text-charcoal/50 font-body text-sm font-light hover:border-coral/30 transition-colors">Cancel</button>
         <button
-          onClick={() => form.full_name && form.email && onSave(form)}
-          disabled={!form.full_name || !form.email}
+          onClick={() => form.full_name && form.email && form.login_username && form.login_password && onSave(form)}
+          disabled={!form.full_name || !form.email || !form.login_username || !form.login_password}
           className="flex-1 py-2.5 rounded-2xl bg-coral text-white font-body text-sm tracking-wide disabled:opacity-40 hover:opacity-90 transition-all flex items-center justify-center gap-2"
         >
           <Check className="w-4 h-4" /> Save Provider
