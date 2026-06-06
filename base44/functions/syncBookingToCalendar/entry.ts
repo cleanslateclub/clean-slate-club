@@ -1,12 +1,20 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
 
-    const booking = body.data;
+    const booking = body.data || body.booking;
     if (!booking || booking.status === 'cancelled') {
+      // If cancelled and we have a calendar event ID, delete it
+      if (booking?.google_calendar_event_id) {
+        const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
+        await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/primary/events/${booking.google_calendar_event_id}`,
+          { method: 'DELETE', headers: { 'Authorization': `Bearer ${accessToken}` } }
+        );
+      }
       return Response.json({ skipped: true });
     }
 
@@ -33,6 +41,7 @@ Deno.serve(async (req) => {
       ``,
       `QUOTED COST: $${booking.estimated_price_low || 0}–$${booking.estimated_price_high || 0}`,
       booking.special_notes ? `Notes: ${booking.special_notes}` : '',
+      booking.admin_notes ? `Admin Notes: ${booking.admin_notes}` : '',
     ].filter(Boolean).join('\n');
 
     const startDateTime = `${booking.scheduled_date}T${to24h(booking.scheduled_start_time)}:00`;
@@ -54,25 +63,46 @@ Deno.serve(async (req) => {
       },
     };
 
-    const calRes = await fetch(
-      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event),
-      }
-    );
+    const existingEventId = booking.google_calendar_event_id;
+
+    let calRes;
+    if (existingEventId) {
+      // UPDATE existing event
+      calRes = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${existingEventId}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(event),
+        }
+      );
+    } else {
+      // CREATE new event
+      calRes = await fetch(
+        'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+        {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(event),
+        }
+      );
+    }
 
     if (!calRes.ok) {
       const err = await calRes.text();
       return Response.json({ error: err }, { status: 500 });
     }
 
-    const created = await calRes.json();
-    return Response.json({ success: true, eventId: created.id });
+    const result = await calRes.json();
+
+    // If we created a new event, save the event ID back to the booking (best-effort)
+    if (!existingEventId && booking.id) {
+      base44.asServiceRole.entities.Booking.update(booking.id, {
+        google_calendar_event_id: result.id
+      }).catch(() => {});
+    }
+
+    return Response.json({ success: true, eventId: result.id });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

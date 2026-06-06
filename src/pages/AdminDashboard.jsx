@@ -53,7 +53,7 @@ export default function AdminDashboard() {
   const [bookingDate, setBookingDate] = useState(null);
   const [bookingTime, setBookingTime] = useState(null);
 
-  // Check admin session on mount
+  // Check admin session on mount + real-time subscriptions
   useEffect(() => {
     const adminSession = localStorage.getItem('adminSession');
     if (!adminSession) {
@@ -61,6 +61,28 @@ export default function AdminDashboard() {
       return;
     }
     load();
+
+    const unsubBookings = base44.entities.Booking.subscribe((event) => {
+      if (event.type === 'create') {
+        setBookings(prev => [event.data, ...prev]);
+      } else if (event.type === 'update') {
+        setBookings(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
+      } else if (event.type === 'delete') {
+        setBookings(prev => prev.filter(b => b.id !== event.id));
+      }
+    });
+
+    const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
+      if (event.type === 'create') {
+        setTimeBlocks(prev => [event.data, ...prev]);
+      } else if (event.type === 'update') {
+        setTimeBlocks(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
+      } else if (event.type === 'delete') {
+        setTimeBlocks(prev => prev.filter(b => b.id !== event.id));
+      }
+    });
+
+    return () => { unsubBookings(); unsubBlocks(); };
   }, [navigate]);
 
   const load = async (showRefresh = false) => {
@@ -90,6 +112,17 @@ export default function AdminDashboard() {
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
     setUpdatingId(null);
     if (status === 'archived') setSelected(null);
+    // Sync cancellation to Google Calendar
+    if (status === 'cancelled') {
+      const booking = bookings.find(b => b.id === id);
+      if (booking) base44.functions.invoke('syncBookingToCalendar', { data: { ...booking, status: 'cancelled' } }).catch(() => {});
+    }
+  };
+
+  const handleBookingUpdated = (id, updates) => {
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+    // Also reload time blocks to reflect any date/time changes in calendar
+    base44.entities.TimeBlock.list('-date', 500).then(blocks => setTimeBlocks(blocks || []));
   };
 
   const deleteBooking = async (id) => {
@@ -413,7 +446,7 @@ export default function AdminDashboard() {
                   <AnimatePresence mode="wait">
                     {selectedBooking ? (
                       <motion.div key={selectedBooking.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
-                        <BookingDetail booking={selectedBooking} onUpdateStatus={updateStatus} onDelete={deleteBooking} updatingId={updatingId} />
+                        <BookingDetail booking={selectedBooking} onUpdateStatus={updateStatus} onDelete={deleteBooking} updatingId={updatingId} onBookingUpdated={handleBookingUpdated} />
                       </motion.div>
                     ) : (
                       <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}

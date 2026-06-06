@@ -71,6 +71,10 @@
     },
     "admin_notes": {
       "type": "string"
+    },
+    "google_calendar_event_id": {
+      "type": "string",
+      "description": "Google Calendar event ID for syncing updates and deletions"
     }
   },
   "required": [
