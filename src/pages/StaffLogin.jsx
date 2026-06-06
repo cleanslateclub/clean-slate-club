@@ -3,16 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Eye, EyeOff, ShieldCheck, Briefcase } from 'lucide-react';
 
-const ADMIN_CREDENTIALS = {
-  username: 'Masha',
-  password: 'Anya13579!'
-};
+// 8 hours — matches AdminDashboard + ProviderDashboard expiry checks
+const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
 
 export default function StaffLogin() {
   const navigate = useNavigate();
   const [mode, setMode] = useState(null); // 'admin' | 'provider'
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,12 +20,20 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        localStorage.setItem('adminSession', JSON.stringify({ username, timestamp: Date.now() }));
+      // FIX 1: Credentials validated server-side — never compared in frontend
+      const res = await base44.functions.invoke('adminLogin', { username, password });
+      if (res.data?.success) {
+        // FIX 3: expiresAt added — AdminDashboard requires it to enforce session expiry
+        localStorage.setItem('adminSession', JSON.stringify({
+          username: res.data.username || username,
+          expiresAt: Date.now() + SESSION_DURATION_MS,
+        }));
         navigate('/admin');
       } else {
         setError('Invalid credentials.');
       }
+    } catch {
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -39,36 +44,40 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // Look up provider by username
-      const providers = await base44.entities.Provider.filter({ login_username: username });
-      if (!providers || providers.length === 0) {
+      // FIX 2: Password verified server-side — provider record never exposed to browser
+      const res = await base44.functions.invoke('verifyProviderLogin', { username, password });
+      if (res.data?.success) {
+        // FIX 4: expiresAt + providerEmail added — both required by ProviderDashboard
+        localStorage.setItem('providerSession', JSON.stringify({
+          username,
+          providerId: res.data.providerId,
+          providerEmail: res.data.providerEmail,
+          expiresAt: Date.now() + SESSION_DURATION_MS,
+        }));
+        navigate('/provider');
+      } else {
         setError('Invalid username or password.');
-        setLoading(false);
-        return;
       }
-
-      const provider = providers[0];
-      
-      // Verify password matches
-      if (provider.login_password !== password) {
-        setError('Invalid username or password.');
-        setLoading(false);
-        return;
-      }
-
-      localStorage.setItem('providerSession', JSON.stringify({ username, providerId: provider.id, timestamp: Date.now() }));
-      navigate('/provider');
     } catch {
       setError('Login failed. Please try again.');
     } finally {
-      setLoading(false);
+      setLoading(false); // FIX 6: only here — removed redundant calls in early returns
     }
   };
 
+  // FIX 6: Extracted shared reset logic to avoid repetition
+  const resetForm = () => {
+    setMode(null);
+    setError(null);
+    setUsername('');
+    setPassword('');
+  };
+
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+    // FIX 7: <main> for semantic HTML + accessibility
+    <main className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
-        {/* Header */}
+
         <div className="text-center mb-10">
           <div className="flex items-baseline gap-1.5 justify-center mb-4">
             <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-charcoal/50">Clean Slate</span>
@@ -132,6 +141,7 @@ export default function StaffLogin() {
                   onChange={e => setUsername(e.target.value)}
                   placeholder="Enter username"
                   required
+                  autoComplete="username"
                   className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
                 />
               </div>
@@ -144,6 +154,7 @@ export default function StaffLogin() {
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    autoComplete="current-password"
                     className="w-full px-4 py-3 pr-10 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal/30 hover:text-charcoal/50">
@@ -156,7 +167,7 @@ export default function StaffLogin() {
                 {loading ? 'Signing in...' : 'Sign In as Admin'}
               </button>
             </form>
-            <button onClick={() => { setMode(null); setError(null); setUsername(''); setPassword(''); }}
+            <button onClick={resetForm}
               className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
               ← Back to role selection
             </button>
@@ -184,6 +195,7 @@ export default function StaffLogin() {
                   onChange={e => setUsername(e.target.value)}
                   placeholder="your.username"
                   required
+                  autoComplete="username"
                   className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
                 />
               </div>
@@ -196,6 +208,7 @@ export default function StaffLogin() {
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    autoComplete="current-password"
                     className="w-full px-4 py-3 pr-10 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal/30 hover:text-charcoal/50">
@@ -208,7 +221,7 @@ export default function StaffLogin() {
                 {loading ? 'Signing in...' : 'Sign In as Provider'}
               </button>
             </form>
-            <button onClick={() => { setMode(null); setError(null); setUsername(''); setPassword(''); }}
+            <button onClick={resetForm}
               className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
               ← Back to role selection
             </button>
@@ -219,6 +232,6 @@ export default function StaffLogin() {
           Need help? Contact us at (206) 825-4061
         </p>
       </div>
-    </div>
+    </main>
   );
 }
