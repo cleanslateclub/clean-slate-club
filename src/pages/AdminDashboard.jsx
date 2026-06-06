@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
-import { Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon, Archive, LogOut } from 'lucide-react';
+import {
+  Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon,
+  Archive, LogOut, Settings, AlertTriangle, DollarSign, UserPlus, Briefcase
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingListItem from '@/components/admin/BookingListItem';
 import BookingDetail from '@/components/admin/BookingDetail';
@@ -18,19 +21,18 @@ import SettingsTab from '@/components/admin/SettingsTab';
 import GuestsTab from '@/components/admin/GuestsTab';
 import IncidentsTab from '@/components/admin/IncidentsTab';
 import PayoutsTab from '@/components/admin/PayoutsTab';
-import { Settings, AlertTriangle, DollarSign, Home } from 'lucide-react';
 import { isAdmin } from '@/lib/roles';
 
 const TABS = [
-  { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
-  { key: 'bookings', label: 'Bookings', icon: Search },
-  { key: 'guests', label: 'Guests', icon: Home },
-  { key: 'clients', label: 'Clients', icon: Users },
-  { key: 'providers', label: 'Providers', icon: Users },
-  { key: 'reports', label: 'Revenue', icon: BarChart2 },
-  { key: 'payouts', label: 'Payouts', icon: DollarSign },
+  { key: 'calendar',  label: 'Calendar',  icon: CalendarIcon },
+  { key: 'bookings',  label: 'Bookings',  icon: Search },
+  { key: 'guests',    label: 'Guests',    icon: UserPlus },      // FIX: was Home icon
+  { key: 'clients',   label: 'Clients',   icon: Users },
+  { key: 'providers', label: 'Providers', icon: Briefcase },     // FIX: was duplicate Users icon
+  { key: 'reports',   label: 'Revenue',   icon: BarChart2 },
+  { key: 'payouts',   label: 'Payouts',   icon: DollarSign },
   { key: 'incidents', label: 'Incidents', icon: AlertTriangle },
-  { key: 'settings', label: 'Settings', icon: Settings },
+  { key: 'settings',  label: 'Settings',  icon: Settings },
 ];
 
 const STATUS_TABS = ['all', 'pending', 'confirmed', 'completed', 'cancelled', 'archived'];
@@ -53,7 +55,25 @@ export default function AdminDashboard() {
   const [bookingDate, setBookingDate] = useState(null);
   const [bookingTime, setBookingTime] = useState(null);
 
-  // Check admin session on mount + real-time subscriptions
+  // FIX: Wrapped in useCallback so it can safely be listed in useEffect deps
+  const load = useCallback(async (showRefresh = false) => {
+    if (showRefresh) setRefreshing(true);
+    // FIX: Added try/catch — loading spinner no longer freezes on API failure
+    try {
+      const [bookingData, blockData] = await Promise.all([
+        base44.entities.Booking.list('-scheduled_date', 500),
+        base44.entities.TimeBlock.list('-date', 500)
+      ]);
+      setBookings(bookingData || []);
+      setTimeBlocks(blockData || []);
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
     const adminSession = localStorage.getItem('adminSession');
     if (!adminSession) {
@@ -83,19 +103,7 @@ export default function AdminDashboard() {
     });
 
     return () => { unsubBookings(); unsubBlocks(); };
-  }, [navigate]);
-
-  const load = async (showRefresh = false) => {
-    if (showRefresh) setRefreshing(true);
-    const [bookingData, blockData] = await Promise.all([
-      base44.entities.Booking.list('-scheduled_date', 500),
-      base44.entities.TimeBlock.list('-date', 500)
-    ]);
-    setBookings(bookingData || []);
-    setTimeBlocks(blockData || []);
-    setLoading(false);
-    setRefreshing(false);
-  };
+  }, [navigate, load]); // FIX: added load to dependency array
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
@@ -108,30 +116,44 @@ export default function AdminDashboard() {
 
   const updateStatus = async (id, status) => {
     setUpdatingId(id);
-    await base44.entities.Booking.update(id, { status });
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
-    setUpdatingId(null);
-    if (status === 'archived') setSelected(null);
-    // Sync cancellation to Google Calendar
-    if (status === 'cancelled') {
-      const booking = bookings.find(b => b.id === id);
-      if (booking) base44.functions.invoke('syncBookingToCalendar', { data: { ...booking, status: 'cancelled' } }).catch(() => {});
+    // FIX: Added try/catch — UI no longer freezes if update fails
+    try {
+      await base44.entities.Booking.update(id, { status });
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
+      if (status === 'archived') setSelected(null);
+      if (status === 'cancelled') {
+        const booking = bookings.find(b => b.id === id);
+        if (booking) {
+          base44.functions
+            .invoke('syncBookingToCalendar', { data: { ...booking, status: 'cancelled' } })
+            .catch((err) => console.error('Google Calendar sync failed:', err)); // FIX: errors now logged
+        }
+      }
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+    } finally {
+      setUpdatingId(null); // FIX: always clears, even on failure
     }
   };
 
   const handleBookingUpdated = (id, updates) => {
     setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
-    // Also reload time blocks to reflect any date/time changes in calendar
-    base44.entities.TimeBlock.list('-date', 500).then(blocks => setTimeBlocks(blocks || []));
+    base44.entities.TimeBlock.list('-date', 500)
+      .then(blocks => setTimeBlocks(blocks || []))
+      .catch(err => console.error('Failed to reload time blocks:', err)); // FIX: added catch
   };
 
   const deleteBooking = async (id) => {
-    await base44.entities.Booking.delete(id);
-    setBookings(prev => prev.filter(b => b.id !== id));
-    setSelected(null);
+    // FIX: Added try/catch — booking no longer vanishes from UI if delete fails
+    try {
+      await base44.entities.Booking.delete(id);
+      setBookings(prev => prev.filter(b => b.id !== id));
+      setSelected(null);
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+    }
   };
 
-  // Active bookings (non-archived) used for stats/reports
   const activeBookings = useMemo(() => bookings.filter(b => b.status !== 'archived'), [bookings]);
 
   const filtered = useMemo(() => {
@@ -156,17 +178,7 @@ export default function AdminDashboard() {
     navigate('/admin-login');
   };
 
-  // Check admin session (local gate) + role gate
-  const adminSession = typeof window !== 'undefined' ? localStorage.getItem('adminSession') : null;
-  if (!adminSession) {
-    return (
-      <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Secondary role-based guard: if a logged-in non-admin somehow has a session token, block them
+  // FIX: Removed redundant second session check — the useEffect redirect handles this
   if (user && !isAdmin(user)) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center px-6">
@@ -271,126 +283,9 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* OVERVIEW TAB (Hidden) */}
-          {tab === 'overview' && (
-            <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
-              <StatsOverview
-                bookings={activeBookings}
-                onFilterChange={(f) => { setFilter(f); setTab('bookings'); }}
-                activeFilter={filter}
-              />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div className="lg:col-span-2">
-                  {/* Today's schedule */}
-                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
-                    <p className="font-heading text-sm font-semibold text-charcoal mb-4">Today's Schedule</p>
-                    {(() => {
-                      const today = new Date().toISOString().split('T')[0];
-                      const todayBookings = activeBookings
-                        .filter(b => b.scheduled_date === today && b.status !== 'cancelled')
-                        .sort((a, b) => (a.scheduled_start_time || '').localeCompare(b.scheduled_start_time || ''));
-                      if (!todayBookings.length) return (
-                        <div className="text-center py-8">
-                          <p className="font-body text-sm text-charcoal/30 font-light">No visits scheduled today.</p>
-                          <a href="/book" target="_blank" className="inline-block mt-3 text-xs font-body text-coral hover:underline font-light">
-                            + Add a booking →
-                          </a>
-                        </div>
-                      );
-                      return (
-                        <div className="space-y-2">
-                          {todayBookings.map(b => {
-                            const cfg = SERVICE_CONFIG[b.service_category];
-                            return (
-                              <button key={b.id} onClick={() => { setSelected(b.id); setTab('bookings'); }}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl border border-taupe/10 bg-cream hover:border-coral/25 transition-all text-left">
-                                <div className="w-2 h-10 rounded-full shrink-0" style={{ background: cfg?.color || '#EB9486' }} />
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-body text-sm text-charcoal font-light truncate">{b.client_name}</p>
-                                  <p className="font-body text-xs text-charcoal/40 font-light">{b.scheduled_start_time} · {cfg?.label || b.service_category}</p>
-                                </div>
-                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-body font-light ${
-                                  b.status === 'confirmed' ? 'bg-sage/20 border-sage/40 text-charcoal/60' : 'bg-butter/20 border-butter/40 text-charcoal/60'
-                                }`}>{b.status}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Pending bookings needing action */}
-                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5 mt-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="font-heading text-sm font-semibold text-charcoal">Needs Action</p>
-                      <button onClick={() => { setFilter('pending'); setTab('bookings'); }}
-                        className="font-body text-xs text-coral font-light hover:underline">View all →</button>
-                    </div>
-                    {(() => {
-                      const pending = activeBookings.filter(b => b.status === 'pending').slice(0, 4);
-                      if (!pending.length) return <p className="font-body text-sm text-charcoal/30 font-light text-center py-4">All clear ✓</p>;
-                      return (
-                        <div className="space-y-2">
-                          {pending.map(b => {
-                            const cfg = SERVICE_CONFIG[b.service_category];
-                            return (
-                              <button key={b.id} onClick={() => { setSelected(b.id); setTab('bookings'); }}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl border border-butter/30 bg-butter/5 hover:border-coral/25 transition-all text-left">
-                                <div>
-                                  <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
-                                  <p className="font-body text-xs text-charcoal/40 font-light">{cfg?.label} · {b.scheduled_date || 'TBD'}</p>
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <QuickActions />
-
-                  {/* Upcoming this week */}
-                  <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
-                    <p className="font-heading text-sm font-semibold text-charcoal mb-3">This Week</p>
-                    {(() => {
-                      const now = new Date();
-                      const start = new Date(now); start.setDate(now.getDate() - now.getDay());
-                      const end = new Date(start); end.setDate(start.getDate() + 6);
-                      const fmt = d => d.toISOString().split('T')[0];
-                      const week = activeBookings.filter(b =>
-                        b.scheduled_date >= fmt(start) && b.scheduled_date <= fmt(end) && b.status !== 'cancelled'
-                      );
-                      if (!week.length) return <p className="font-body text-xs text-charcoal/30 font-light">No visits this week.</p>;
-                      return (
-                        <div className="space-y-1.5">
-                          {week.slice(0, 5).map(b => (
-                            <div key={b.id} className="flex items-center justify-between">
-                              <p className="font-body text-xs text-charcoal/60 font-light truncate">{b.client_name}</p>
-                              <p className="font-body text-[10px] text-charcoal/30 font-light ml-2 shrink-0">
-                                {new Date(b.scheduled_date + 'T00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' })}
-                              </p>
-                            </div>
-                          ))}
-                          {week.length > 5 && (
-                            <p className="font-body text-[10px] text-charcoal/30 font-light">+{week.length - 5} more</p>
-                          )}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
           {/* BOOKINGS TAB */}
           {tab === 'bookings' && (
             <motion.div key="bookings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              {/* Search + filters */}
               <div className="flex flex-col sm:flex-row gap-3 mb-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/30" />
@@ -413,7 +308,6 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              {/* Status tabs */}
               <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
                 {STATUS_TABS.map(t => (
                   <button key={t} onClick={() => setFilter(t)}
@@ -427,7 +321,6 @@ export default function AdminDashboard() {
                 ))}
               </div>
 
-              {/* 2-col layout */}
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
                 <div className="lg:col-span-2 space-y-2">
                   {loading && <div className="flex items-center justify-center py-16"><div className="w-6 h-6 border-2 border-taupe border-t-coral rounded-full animate-spin" /></div>}
@@ -451,7 +344,7 @@ export default function AdminDashboard() {
                     ) : (
                       <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         className="bg-warm-white rounded-3xl border border-taupe/15 flex flex-col items-center justify-center py-24 px-8 text-center">
-                        <div className="w-12 h-12 rounded-full bg-cream-linen flex items-center justify-center mb-4 text-xl">✦</div>
+                        <div className="w-12 h-12 rounded-full bg-cream-linen flex items-center justify-center mb-4 text-xl">✶</div>
                         <p className="font-heading text-base font-semibold text-charcoal mb-1">Select a booking</p>
                         <p className="font-body text-sm text-charcoal/35 font-light">Click any booking to view details, contact the client, send invoices, and more.</p>
                       </motion.div>
@@ -462,7 +355,7 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* REPORTS TAB — CEO/Admin only (revenue, margins, analytics) */}
+          {/* REVENUE/REPORTS TAB */}
           {tab === 'reports' && (
             <motion.div key="reports" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <ReportsTab bookings={activeBookings} />
