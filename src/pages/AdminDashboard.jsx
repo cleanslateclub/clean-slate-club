@@ -19,6 +19,7 @@ import GuestsTab from '@/components/admin/GuestsTab';
 import IncidentsTab from '@/components/admin/IncidentsTab';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import { Settings, AlertTriangle, DollarSign, Home } from 'lucide-react';
+import { isAdmin } from '@/lib/roles';
 
 const TABS = [
   { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
@@ -122,12 +123,27 @@ export default function AdminDashboard() {
     navigate('/admin-login');
   };
 
-  // Check admin session
+  // Check admin session (local gate) + role gate
   const adminSession = typeof window !== 'undefined' ? localStorage.getItem('adminSession') : null;
   if (!adminSession) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Secondary role-based guard: if a logged-in non-admin somehow has a session token, block them
+  if (user && !isAdmin(user)) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+        <div className="text-center">
+          <p className="font-heading text-xl font-semibold text-charcoal mb-2">Access Denied</p>
+          <p className="font-body text-sm text-charcoal/40 font-light">Admin access required.</p>
+          <button onClick={handleLogout} className="mt-6 px-6 py-2.5 rounded-full bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 transition-all">
+            Sign Out
+          </button>
+        </div>
       </div>
     );
   }
@@ -413,10 +429,16 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* REPORTS TAB */}
+          {/* REPORTS TAB — CEO/Admin only (revenue, margins, analytics) */}
           {tab === 'reports' && (
             <motion.div key="reports" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <ReportsTab bookings={activeBookings} />
+              {isAdmin(user) ? (
+                <ReportsTab bookings={activeBookings} />
+              ) : (
+                <div className="flex items-center justify-center py-24">
+                  <p className="font-body text-sm text-charcoal/30 font-light">Reports are restricted to admin users.</p>
+                </div>
+              )}
             </motion.div>
           )}
 

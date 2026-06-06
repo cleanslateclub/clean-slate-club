@@ -6,13 +6,15 @@ import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
-import { LogOut, CheckSquare, CalendarDays } from 'lucide-react';
+import { LogOut, CheckSquare, CalendarDays, DollarSign } from 'lucide-react';
+import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
   const { user, authError, isLoadingAuth } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
+  const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedWeek, setSelectedWeek] = useState(new Date());
   const [activeVisitBooking, setActiveVisitBooking] = useState(null);
@@ -32,13 +34,17 @@ export default function ProviderDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get all bookings (provider will see their assigned ones via filter later)
-        const allBookings = await base44.entities.Booking.list();
+        // Providers only see confirmed/pending/completed bookings — not drafts, not other financial data
+        const [allBookings, blocks, myPayouts] = await Promise.all([
+          base44.entities.Booking.filter({ status: ['pending', 'confirmed', 'completed'] }),
+          base44.entities.TimeBlock.list(),
+          user?.email
+            ? base44.entities.ProviderPayout.filter({ provider_email: user.email })
+            : Promise.resolve([]),
+        ]);
         setBookings(allBookings);
-
-        // Get time blocks
-        const blocks = await base44.entities.TimeBlock.list();
         setTimeBlocks(blocks);
+        setPayouts(myPayouts || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -157,8 +163,8 @@ export default function ProviderDashboard() {
             </button>
           </motion.div>
 
-          {/* Stats */}
-          <ProviderStats bookings={bookings} user={user} />
+          {/* Stats — own earnings only, no company revenue */}
+          <ProviderStats bookings={bookings} payouts={payouts} />
 
           {/* Today's Jobs Banner */}
           {todaysJobs.length > 0 && (
@@ -186,8 +192,31 @@ export default function ProviderDashboard() {
             </motion.div>
           )}
 
+          {/* Tab switcher */}
+          <div className="flex gap-1 bg-warm-white border border-taupe/15 rounded-2xl p-1 mb-6">
+            {[
+              { id: 'calendar', label: 'My Calendar', icon: CalendarDays },
+              { id: 'earnings', label: 'My Earnings', icon: DollarSign },
+            ].map(t => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setProviderTab(t.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-body font-light transition-all duration-200 ${
+                    providerTab === t.id ? 'bg-coral text-white shadow-sm' : 'text-charcoal/50 hover:text-charcoal/70'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Calendar */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          {providerTab === 'calendar' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <ProviderCalendar
               timeBlocks={timeBlocks}
               bookings={bookings}
@@ -197,6 +226,16 @@ export default function ProviderDashboard() {
               user={user}
             />
           </motion.div>
+          )}
+
+          {/* Own Earnings — no company revenue, no Stripe dashboard */}
+          {providerTab === 'earnings' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-8">
+              <ProviderPayoutsPanel payouts={payouts} />
+            </div>
+          </motion.div>
+          )}
         </div>
       </div>
     </div>
