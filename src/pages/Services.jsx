@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
-// FIX: Import SERVICE_CONFIG directly — no more duplicated/out-of-sync data
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 // Display order for services page (excludes consult — shown separately as hero CTA)
@@ -15,16 +14,17 @@ const SERVICE_ORDER = [
   'organization',
 ];
 
-// FIX: senior_support was same color as consult (#B58A90) — give it a distinct color
+// senior_support was same color as consult (#B58A90) — give it a distinct color
 const COLOR_OVERRIDES = {
   senior_support: '#D4A574', // warm amber — distinct from consult mauve
 };
 
 export default function Services() {
-  const consult = SERVICE_CONFIG['consult'];
+  // Null guard — consult may be missing during dev or config refactor
+  const consult = SERVICE_CONFIG['consult'] ?? null;
 
   return (
-    <main className="min-h-screen bg-cream"> {/* FIX: <main> for accessibility + SEO */}
+    <main className="min-h-screen bg-cream">
       {/* Hero */}
       <div
         className="pt-28 pb-16 px-6"
@@ -69,49 +69,53 @@ export default function Services() {
         </div>
       </div>
 
-      {/* Free Consult Banner */}
-      <div className="max-w-4xl mx-auto px-6 pt-12 pb-4">
-        <AnimatedSection>
-          <div
-            className="rounded-3xl border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6"
-            style={{ borderColor: consult.color + '40', background: '#f7edef' }}
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <span className="w-3 h-3 rounded-full shrink-0" style={{ background: consult.color }} />
-                <h2 className="font-heading text-xl font-semibold text-charcoal">{consult.label}</h2>
+      {/* Free Consult Banner — only renders if consult config exists */}
+      {consult && (
+        <div className="max-w-4xl mx-auto px-6 pt-12 pb-4">
+          <AnimatedSection>
+            <div
+              className="rounded-3xl border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6"
+              style={{ borderColor: consult.color + '40', background: '#f7edef' }}
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-3 h-3 rounded-full shrink-0" style={{ background: consult.color }} />
+                  <h2 className="font-heading text-xl font-semibold text-charcoal">{consult.label}</h2>
+                </div>
+                <p className="font-logo text-base ml-6 mb-3" style={{ color: consult.color }}>
+                  A free 15-minute call to figure it out together.
+                </p>
+                <p className="font-body text-sm text-charcoal/70 font-light">{consult.description}</p>
+                {/* Guard against undefined scheduleNote */}
+                {consult.scheduleNote && (
+                  <p className="font-body text-xs text-charcoal/50 font-light mt-2 italic">
+                    ⏰ {consult.scheduleNote}
+                  </p>
+                )}
               </div>
-              <p className="font-logo text-base ml-6 mb-3" style={{ color: consult.color }}>
-                A free 15-minute call to figure it out together.
-              </p>
-              <p className="font-body text-sm text-charcoal/70 font-light">{consult.description}</p>
-              {/* FIX: Monday-only note prominently displayed */}
-              <p className="font-body text-xs text-charcoal/50 font-light mt-2 italic">
-                ⏰ {consult.scheduleNote}
-              </p>
+              <div className="shrink-0 text-center sm:text-right">
+                <p className="font-heading text-2xl font-semibold text-charcoal mb-1">Free</p>
+                <p className="font-body text-xs text-charcoal/60 font-light mb-4">15 min call</p>
+                <Link
+                  to="/book?service=consult"
+                  className="inline-block text-white font-body text-xs tracking-wide px-6 py-2.5 rounded-full transition-all duration-300 hover:opacity-90"
+                  style={{ background: consult.color }}
+                >
+                  Book Free Consult →
+                </Link>
+              </div>
             </div>
-            <div className="shrink-0 text-center sm:text-right">
-              <p className="font-heading text-2xl font-semibold text-charcoal mb-1">Free</p>
-              <p className="font-body text-xs text-charcoal/60 font-light mb-4">15 min call</p>
-              <Link
-                to="/book?service=consult"
-                className="inline-block text-white font-body text-xs tracking-wide px-6 py-2.5 rounded-full transition-all duration-300 hover:opacity-90"
-                style={{ background: consult.color }}
-              >
-                Book Free Consult →
-              </Link>
-            </div>
-          </div>
-        </AnimatedSection>
-      </div>
+          </AnimatedSection>
+        </div>
+      )}
 
-      {/* Service Cards — FIX: data comes directly from SERVICE_CONFIG, always accurate */}
+      {/* Service Cards */}
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
         {SERVICE_ORDER.map((key, i) => {
           const service = SERVICE_CONFIG[key];
           if (!service) return null;
           const color = COLOR_OVERRIDES[key] || service.color;
-          const bgColor = color + '15'; // soft background from color
+          const bgColor = color + '15';
           const [priceLow, priceHigh] = service.priceRange || [0, 0];
           const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
           const priceNote = priceLow > 0 ? `Range $${priceLow}–$${priceHigh}+` : null;
@@ -150,18 +154,22 @@ export default function Services() {
                     {service.description}
                   </p>
 
-                  {/* FIX: Use real task options from SERVICE_CONFIG as focus items */}
+                  {/* Sort alphabetically so clients can scan easily */}
                   {service.taskOptions && (
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {service.taskOptions.slice(1, 7).map(task => ( // skip 'Help Me Choose', show first 6
-                        <span
-                          key={task}
-                          className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/75 border"
-                          style={{ borderColor: color + '40', background: '#ffffff80' }}
-                        >
-                          {task}
-                        </span>
-                      ))}
+                      {service.taskOptions
+                        .filter(task => task !== 'Help Me Choose')
+                        .sort((a, b) => a.localeCompare(b))
+                        .slice(0, 6)
+                        .map(task => (
+                          <span
+                            key={task}
+                            className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/75 border"
+                            style={{ borderColor: color + '40', background: '#ffffff80' }}
+                          >
+                            {task}
+                          </span>
+                        ))}
                     </div>
                   )}
 
@@ -185,7 +193,7 @@ export default function Services() {
         })}
       </div>
 
-      {/* Hours note */}
+      {/* Hours note — blueprint: 10AM–6PM, Monday–Saturday, no Sundays */}
       <AnimatedSection>
         <div className="max-w-4xl mx-auto px-6 pb-16">
           <div
@@ -195,7 +203,7 @@ export default function Services() {
             <p className="font-body text-sm text-charcoal/75 font-light">
               <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
               <span className="mx-3 text-charcoal/20">·</span>
-              Members enjoy priority scheduling from 9:00 AM
+              Monday – Saturday
               <span className="mx-3 text-charcoal/20">·</span>
               No Sundays
             </p>
