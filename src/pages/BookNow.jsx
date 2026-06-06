@@ -91,11 +91,11 @@ export default function BookNow() {
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
 
       const addonPrice = selectedAddons.reduce((sum, id) => {
-        const addon = config.addons.find((a) => a.id === id);
+        const addon = config?.addons?.find((a) => a.id === id);
         return sum + (addon ? addon.price : 0);
       }, 0);
-      const estimateLow = dynamicEstimate ? dynamicEstimate.low : config.priceRange[0] + addonPrice;
-      const estimateHigh = dynamicEstimate ? dynamicEstimate.high : config.priceRange[1] + addonPrice;
+      const estimateLow = dynamicEstimate ? dynamicEstimate.low : (config?.priceRange?.[0] || 0) + addonPrice;
+      const estimateHigh = dynamicEstimate ? dynamicEstimate.high : (config?.priceRange?.[1] || 0) + addonPrice;
 
       const booking = await base44.entities.Booking.create({
         status: 'pending',
@@ -129,8 +129,8 @@ export default function BookNow() {
       }
 
       // Send confirmation email
-      const addonLabels = selectedAddons.map((id) => config.addons.find((a) => a.id === id)?.label).filter(Boolean);
-      const displayDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      const addonLabels = selectedAddons.map((id) => config?.addons?.find((a) => a.id === id)?.label).filter(Boolean);
+      const displayDate = selectedDate ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'TBD';
 
       const emailWrapper = (innerHtml) => `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
