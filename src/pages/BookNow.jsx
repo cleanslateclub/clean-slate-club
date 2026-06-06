@@ -14,7 +14,7 @@ import Step5Confirm from '@/components/booking/Step5Confirm';
 import Step6Payment from '@/components/booking/Step6Payment';
 
 export default function BookNow() {
-  const { getBool, getNum, loading: settingsLoading } = useAppSettings();
+  const { getBool, loading: settingsLoading } = useAppSettings();
   const [searchParams] = useSearchParams();
 
   // FIX: Validate preselected service against SERVICE_CONFIG to prevent crashes
@@ -35,7 +35,6 @@ export default function BookNow() {
   const [smsOptIn, setSmsOptIn] = useState(true);
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
-  const [showPaymentStep, setShowPaymentStep] = useState(false);
   const [skipDeposit, setSkipDeposit] = useState(false);
 
   useEffect(() => {
@@ -97,8 +96,11 @@ export default function BookNow() {
   };
 
   const totalSteps = isConsult ? 3 : (skipDeposit ? 5 : 6);
-  // FIX: Pass displayStep to StepIndicator (was calculated but never used)
-  const displayStep = isConsult && step >= 3 ? step - 1 : step;
+
+  // FIX: Consult steps map cleanly 1→2→3 — no subtraction needed.
+  // Previous formula `isConsult && step >= 3 ? step - 1 : step` showed
+  // "Step 2 of 3" on the confirm screen instead of "Step 3 of 3".
+  const displayStep = step;
 
   // FIX: Wrapped in useCallback so the skipDeposit useEffect always has current data
   const handleSubmit = useCallback(async (stripePaymentIntentId = null) => {
@@ -107,7 +109,11 @@ export default function BookNow() {
     try {
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
 
-      // FIX: Safe config access
+      // Hoisted before if/else so both branches and SMS trigger can use it
+      const displayDate = selectedDate
+        ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        : 'TBD';
+
       const addonPrice = selectedAddons.reduce((sum, id) => {
         const addon = config?.addons?.find((a) => a.id === id);
         return sum + (addon ? addon.price : 0);
@@ -121,11 +127,12 @@ export default function BookNow() {
         client_email: clientInfo.email,
         client_phone: clientInfo.phone,
         client_address: clientInfo.address || '',
-        service_category: isConsult ? 'home_reset' : serviceKey,
+        // FIX: consult gets its own category — was wrongly set to 'home_reset'
+        service_category: isConsult ? 'consult' : serviceKey,
         scheduled_date: selectedDate || new Date().toISOString().split('T')[0],
         scheduled_start_time: selectedTime || 'TBD',
         scheduled_end_time: isConsult ? 'TBD' : endTime,
-        base_duration_minutes: config?.baseMinutes || 0, // FIX: safe access with fallback
+        base_duration_minutes: config?.baseMinutes || 0,
         total_duration_minutes: isConsult ? 15 : totalDuration,
         addons: selectedAddons,
         intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos, sms_opt_in: smsOptIn },
@@ -174,9 +181,6 @@ export default function BookNow() {
 
       // Build email content
       const addonLabels = selectedAddons.map((id) => config?.addons?.find((a) => a.id === id)?.label).filter(Boolean);
-      const displayDate = selectedDate
-        ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-        : 'TBD';
 
       // FIX: Added Sarina font to Google Fonts link so brand name renders correctly in emails
       const emailWrapper = (innerHtml) => `<!DOCTYPE html>
@@ -216,7 +220,7 @@ export default function BookNow() {
   </div>
 </div></body></html>`;
 
-      // FIX: Google Calendar is now SEPARATE from Promise.all
+      // FIX: Google Calendar is SEPARATE from Promise.all
       // Emails send first (booking is confirmed), then calendar syncs independently
       // A calendar failure no longer shows the client an error screen
       if (isConsult && selectedDate && selectedTime) {
@@ -235,7 +239,6 @@ export default function BookNow() {
           <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation. You'll get a reminder 24 hours before.</p>
         `);
 
-        // Send emails first — booking is confirmed regardless of calendar
         await Promise.all([
           base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `We got your consult request — Clean Slate Club™`, body: clientBody }),
           base44.integrations.Core.SendEmail({
@@ -248,20 +251,20 @@ export default function BookNow() {
         // FIX: Calendar sync is non-blocking — failure won't affect the client
         base44.functions.invoke('addBookingToCalendar', {
           clientName: clientInfo.name,
-          clientEmail: clientInfo.email, // FIX: client gets a calendar invite
+          clientEmail: clientInfo.email,
           clientPhone: clientInfo.phone,
           clientAddress: '',
           serviceLabel: 'Free Consult Call',
           addonLabels: [],
           selectedDate,
           startTime: selectedTime,
-          endTime: consultEnd, // FIX: real calculated end time
+          endTime: consultEnd,
           totalDuration: 15,
           estimateLow: 0,
           estimateHigh: 0,
           specialNotes: `Preferred contact: ${intakeAnswers.preferred_contact || 'N/A'} | Availability: ${intakeAnswers.availability_notes || 'N/A'}`,
           tasks: [],
-          sendInviteToClient: true // FIX: send Google Calendar invite to client
+          sendInviteToClient: true
         }).catch((err) => console.error('Calendar sync failed (non-blocking):', err));
 
       } else {
@@ -298,7 +301,6 @@ export default function BookNow() {
           <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">The Clean Slate Club Team</strong></p>
         `);
 
-        // Send emails first — booking is confirmed regardless of calendar
         await Promise.all([
           base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club™ booking is confirmed — ${displayDate}`, body: clientBody }),
           base44.integrations.Core.SendEmail({
@@ -311,7 +313,7 @@ export default function BookNow() {
         // FIX: Calendar sync is non-blocking — failure won't affect the client
         base44.functions.invoke('addBookingToCalendar', {
           clientName: clientInfo.name,
-          clientEmail: clientInfo.email, // FIX: client gets a calendar invite
+          clientEmail: clientInfo.email,
           clientPhone: clientInfo.phone,
           clientAddress: clientInfo.address,
           serviceLabel: config?.label,
@@ -324,8 +326,22 @@ export default function BookNow() {
           estimateHigh,
           specialNotes: intakeAnswers.situation || intakeAnswers.special_notes || '',
           tasks: selectedTasks,
-          sendInviteToClient: true // FIX: send Google Calendar invite to client
+          sendInviteToClient: true
         }).catch((err) => console.error('Calendar sync failed (non-blocking):', err));
+      }
+
+      // FIX: SMS confirmation — was never triggered anywhere (critical automation gap)
+      // Non-blocking: SMS failure must never prevent a booking from completing
+      if (smsOptIn && clientInfo.phone) {
+        base44.functions.invoke('sendClientSmsConfirmation', {
+          clientName: clientInfo.name,
+          clientPhone: clientInfo.phone,
+          serviceLabel: isConsult ? 'Free Consult Call' : (config?.label || ''),
+          scheduledDate: displayDate,
+          scheduledTime: selectedTime || 'TBD',
+          isConsult,
+          bookingId: booking.id,
+        }).catch(err => console.error('SMS confirmation failed (non-blocking):', err));
       }
 
       setSubmitted(true);
@@ -351,7 +367,7 @@ export default function BookNow() {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">🗓️</div>
+          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">⏸️</div>
           <h1 className="font-heading text-2xl font-semibold text-charcoal mb-3">Online booking is temporarily paused</h1>
           <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-6">
             We're taking a short break from online bookings. Please reach out directly and we'll get you scheduled right away.
@@ -415,7 +431,6 @@ export default function BookNow() {
             <p className="font-logo text-xl text-coral">Personalized support, built around you.</p>
           </div>
 
-          {/* FIX: Now uses displayStep so consult users see correct step number */}
           <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
 
           <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-7 sm:p-10">
@@ -498,7 +513,10 @@ export default function BookNow() {
                   <button onClick={() => setStep((s) => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
                 ) : <div />}
 
-                {step === 1 ? <div /> : step < (isConsult ? 3 : skipDeposit ? 4 : 5) ? ( // FIX: was skipDeposit ? 5 : 5
+                {/* FIX: threshold is always 5 for non-consult regardless of skipDeposit.
+                    Previous value of 4 caused the Schedule page (step 4) to show the
+                    "Complete Booking" button instead of "Continue" — skipping confirmation. */}
+                {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
                   <button
                     onClick={() => setStep((s) => s + 1)}
                     disabled={!canProceed()}
