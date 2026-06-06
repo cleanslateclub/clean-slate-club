@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
+// FIX: removed unused useAuth import
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
 import { LogOut, CheckSquare, CalendarDays, DollarSign } from 'lucide-react';
 import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
+
+const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
@@ -20,42 +22,62 @@ export default function ProviderDashboard() {
   const [activeVisitBooking, setActiveVisitBooking] = useState(null);
   const [providerTab, setProviderTab] = useState('calendar');
 
-  // Check provider session on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const session = localStorage.getItem('providerSession');
-      if (!session) {
-        navigate('/staff-login');
-        return;
-      }
-      
-      const { providerId } = JSON.parse(session);
-      const provider = await base44.entities.Provider.get(providerId);
-      if (!provider) {
+      // FIX: Wrapped in try/catch — corrupted session no longer causes infinite spinner
+      try {
+        const session = localStorage.getItem('providerSession');
+        if (!session) {
+          navigate('/staff-login');
+          return;
+        }
+
+        const parsed = JSON.parse(session);
+        const providerId = parsed?.providerId;
+
+        // FIX: Validate providerId exists before using it
+        if (!providerId) {
+          localStorage.removeItem('providerSession');
+          navigate('/staff-login');
+          return;
+        }
+
+        const provider = await base44.entities.Provider.get(providerId);
+        if (!provider) {
+          localStorage.removeItem('providerSession');
+          navigate('/staff-login');
+          return;
+        }
+
+        setProviderData(provider);
+      } catch (err) {
+        console.error('Provider auth check failed:', err);
         localStorage.removeItem('providerSession');
         navigate('/staff-login');
-        return;
+      } finally {
+        setLoading(false);
       }
-      
-      setProviderData(provider);
-      setLoading(false);
     };
     checkAuth();
   }, [navigate]);
 
   useEffect(() => {
+    // FIX: Guard entire effect — subscriptions no longer register before auth completes
+    if (!providerData) return;
+
     const fetchData = async () => {
-      if (!providerData) return;
-      
       try {
-        // Providers only see confirmed/pending/completed bookings — not drafts, not other financial data
+        // FIX: Filter bookings by THIS provider's email — providers no longer see all bookings
         const [allBookings, blocks, myPayouts] = await Promise.all([
-          base44.entities.Booking.filter({ status: ['pending', 'confirmed', 'completed'] }),
+          base44.entities.Booking.filter({
+            status: ALLOWED_BOOKING_STATUSES,
+            provider_email: providerData.email // FIX: scoped to this provider only
+          }),
           base44.entities.TimeBlock.list(),
           base44.entities.ProviderPayout.filter({ provider_email: providerData.email }),
         ]);
-        setBookings(allBookings);
-        setTimeBlocks(blocks);
+        setBookings(allBookings || []);
+        setTimeBlocks(blocks || []);
         setPayouts(myPayouts || []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -64,10 +86,14 @@ export default function ProviderDashboard() {
 
     fetchData();
 
-    // Subscribe to real-time booking updates
     const unsubBookings = base44.entities.Booking.subscribe((event) => {
       if (event.type === 'create') {
-        setBookings(prev => [...prev, event.data]);
+        // FIX: Only add booking if it belongs to this provider AND has allowed status
+        const isOwn = event.data?.provider_email === providerData.email;
+        const isAllowed = ALLOWED_BOOKING_STATUSES.includes(event.data?.status);
+        if (isOwn && isAllowed) {
+          setBookings(prev => [...prev, event.data]);
+        }
       } else if (event.type === 'update') {
         setBookings(prev => prev.map(b => b.id === event.id ? event.data : b));
       } else if (event.type === 'delete') {
@@ -75,7 +101,6 @@ export default function ProviderDashboard() {
       }
     });
 
-    // Subscribe to real-time time block updates
     const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
       if (event.type === 'create') {
         setTimeBlocks(prev => [...prev, event.data]);
@@ -95,35 +120,32 @@ export default function ProviderDashboard() {
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
       await base44.entities.TimeBlock.update(blockId, updates);
-      const updated = timeBlocks.map(b => b.id === blockId ? { ...b, ...updates } : b);
-      setTimeBlocks(updated);
+      setTimeBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b));
     } catch (error) {
       console.error('Error updating time block:', error);
     }
   };
 
+  const handleLogout = () => {
+    // FIX: no async needed — just clear session and redirect
+    try {
+      localStorage.removeItem('providerSession');
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      navigate('/staff-login');
+    }
+  };
+
+  // FIX: Removed duplicate loading spinner — one guard handles both cases
   if (loading || !providerData) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-taupe border-t-clay rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  const handleLogout = async () => {
-    localStorage.removeItem('providerSession');
-    navigate('/staff-login');
-  };
-
-  // Today's confirmed/assigned bookings for this provider
   const today = new Date().toISOString().split('T')[0];
   const todaysJobs = bookings.filter(b =>
     b.scheduled_date === today && ['confirmed', 'pending'].includes(b.status)
@@ -134,17 +156,19 @@ export default function ProviderDashboard() {
       {activeVisitBooking && (
         <CompleteVisitWizard
           booking={activeVisitBooking}
-          onComplete={() => { setActiveVisitBooking(null); }}
+          onComplete={() => setActiveVisitBooking(null)}
           onClose={() => setActiveVisitBooking(null)}
         />
       )}
       <div className="pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
+
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
             <div>
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
-              <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{providerData?.full_name || 'Provider'}</h1>
+              {/* FIX: providerData is guaranteed non-null here, removed unnecessary ?. */}
+              <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{providerData.full_name || 'Provider'}</h1>
               <p className="font-body text-sm text-charcoal/50">Your schedule, appointments, and earnings at a glance.</p>
             </div>
             <button
@@ -156,7 +180,6 @@ export default function ProviderDashboard() {
             </button>
           </motion.div>
 
-          {/* Stats — own earnings only, no company revenue */}
           <ProviderStats bookings={bookings} payouts={payouts} />
 
           {/* Today's Jobs Banner */}
@@ -169,7 +192,10 @@ export default function ProviderDashboard() {
                     <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
                       <div>
                         <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
-                        <p className="font-body text-xs text-charcoal/40 font-light">{b.scheduled_start_time} · {b.service_category?.replace('_', ' ')}</p>
+                        {/* FIX: replace all underscores, not just the first one */}
+                        <p className="font-body text-xs text-charcoal/40 font-light">
+                          {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
+                        </p>
                       </div>
                       <button
                         onClick={() => setActiveVisitBooking(b)}
@@ -207,29 +233,28 @@ export default function ProviderDashboard() {
             })}
           </div>
 
-          {/* Calendar */}
           {providerTab === 'calendar' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <ProviderCalendar
-               timeBlocks={timeBlocks}
-               bookings={bookings}
-               selectedWeek={selectedWeek}
-               onWeekChange={setSelectedWeek}
-               onTimeBlockUpdate={handleTimeBlockUpdate}
-               user={providerData}
-               onStartVisit={setActiveVisitBooking}
-             />
-          </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <ProviderCalendar
+                timeBlocks={timeBlocks}
+                bookings={bookings}
+                selectedWeek={selectedWeek}
+                onWeekChange={setSelectedWeek}
+                onTimeBlockUpdate={handleTimeBlockUpdate}
+                user={providerData}
+                onStartVisit={setActiveVisitBooking}
+              />
+            </motion.div>
           )}
 
-          {/* Own Earnings — no company revenue, no Stripe dashboard */}
           {providerTab === 'earnings' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-8">
-              <ProviderPayoutsPanel payouts={payouts} />
-            </div>
-          </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-8">
+                <ProviderPayoutsPanel payouts={payouts} />
+              </div>
+            </motion.div>
           )}
+
         </div>
       </div>
     </div>
