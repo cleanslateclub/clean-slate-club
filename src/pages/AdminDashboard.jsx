@@ -465,13 +465,7 @@ export default function AdminDashboard() {
           {/* REPORTS TAB — CEO/Admin only (revenue, margins, analytics) */}
           {tab === 'reports' && (
             <motion.div key="reports" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              {isAdmin(user) ? (
-                <ReportsTab bookings={activeBookings} />
-              ) : (
-                <div className="flex items-center justify-center py-24">
-                  <p className="font-body text-sm text-charcoal/30 font-light">Reports are restricted to admin users.</p>
-                </div>
-              )}
+              <ReportsTab bookings={activeBookings} />
             </motion.div>
           )}
 
