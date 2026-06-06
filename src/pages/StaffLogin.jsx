@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Eye, EyeOff, ShieldCheck, Briefcase } from 'lucide-react';
 
-// 8 hours — matches AdminDashboard + ProviderDashboard expiry checks
-const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
+const SESSION_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 export default function StaffLogin() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState(null); // 'admin' | 'provider'
+  const [mode, setMode] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,17 +19,16 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // FIX 1: Credentials validated server-side — never compared in frontend
-      const res = await base44.functions.invoke('adminLogin', { username, password });
-      if (res.data?.success) {
-        // FIX 3: expiresAt added — AdminDashboard requires it to enforce session expiry
+      // FIX: correct call pattern — base44.functions.adminLogin() not .invoke()
+      const res = await base44.functions.adminLogin({ username, password });
+      if (res?.success) {
         localStorage.setItem('adminSession', JSON.stringify({
-          username: res.data.username || username,
+          username: res.username || username,
           expiresAt: Date.now() + SESSION_DURATION_MS,
         }));
         navigate('/admin');
       } else {
-        setError('Invalid credentials.');
+        setError(res?.error || 'Invalid credentials.');
       }
     } catch {
       setError('Login failed. Please try again.');
@@ -44,28 +42,26 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // FIX 2: Password verified server-side — provider record never exposed to browser
-      const res = await base44.functions.invoke('verifyProviderLogin', { username, password });
-      if (res.data?.success) {
-        // FIX 4: expiresAt + providerEmail added — both required by ProviderDashboard
+      // FIX: correct call pattern — base44.functions.verifyProviderLogin() not .invoke()
+      const res = await base44.functions.verifyProviderLogin({ username, password });
+      if (res?.success) {
         localStorage.setItem('providerSession', JSON.stringify({
           username,
-          providerId: res.data.providerId,
-          providerEmail: res.data.providerEmail,
+          providerId: res.providerId,
+          providerEmail: res.providerEmail,
           expiresAt: Date.now() + SESSION_DURATION_MS,
         }));
         navigate('/provider');
       } else {
-        setError('Invalid username or password.');
+        setError(res?.error || 'Invalid username or password.');
       }
     } catch {
       setError('Login failed. Please try again.');
     } finally {
-      setLoading(false); // FIX 6: only here — removed redundant calls in early returns
+      setLoading(false);
     }
   };
 
-  // FIX 6: Extracted shared reset logic to avoid repetition
   const resetForm = () => {
     setMode(null);
     setError(null);
@@ -74,7 +70,6 @@ export default function StaffLogin() {
   };
 
   return (
-    // FIX 7: <main> for semantic HTML + accessibility
     <main className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
 
@@ -87,7 +82,6 @@ export default function StaffLogin() {
           <p className="font-body text-sm text-charcoal/40 font-light">Select your role to continue.</p>
         </div>
 
-        {/* Role selector */}
         {!mode && (
           <div className="space-y-3">
             <button
@@ -120,7 +114,6 @@ export default function StaffLogin() {
           </div>
         )}
 
-        {/* Admin form */}
         {mode === 'admin' && (
           <>
             <form onSubmit={handleAdminLogin} className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-5">
@@ -174,7 +167,6 @@ export default function StaffLogin() {
           </>
         )}
 
-        {/* Provider form */}
         {mode === 'provider' && (
           <>
             <form onSubmit={handleProviderLogin} className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-5">
