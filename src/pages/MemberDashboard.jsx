@@ -156,7 +156,7 @@ export default function MemberDashboard() {
               <div>
                 <h2 className="font-heading text-xl font-semibold text-charcoal mb-1">Service Preferences</h2>
                 <p className="font-body text-sm text-charcoal/40 font-light mb-6">
-                  These preferences help Masha prepare for every visit. They're saved to your profile and applied automatically.
+                  These preferences help your Clean Slate team prepare for every visit. They're saved to your profile and shared with whoever serves you.
                 </p>
                 <ServicePreferencesForm userEmail={user.email} />
               </div>
