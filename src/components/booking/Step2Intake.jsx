@@ -110,6 +110,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                 }}
                 onBlur={e => { if (f.key === 'address') checkServiceArea(e.target.value); }}
                 placeholder={f.placeholder}
+                required={f.required}
                 className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
               />
             </div>
