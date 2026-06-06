@@ -17,38 +17,46 @@ export default function ProviderLogin() {
     setError(null);
 
     try {
-      // Look up provider by username
-      const providers = await base44.entities.Provider.filter({ login_username: username });
-      if (!providers || providers.length === 0) {
+      // FIX: Password verification moved to backend function
+      // Provider passwords are never sent to the browser
+      const result = await base44.functions.invoke('verifyProviderLogin', {
+        data: {
+          username: username.trim(), // FIX: trim whitespace
+          password: password
+        }
+      });
+
+      if (!result?.data?.success) {
         setError('Invalid username or password.');
-        setLoading(false);
         return;
       }
 
-      const provider = providers[0];
-      
-      // Verify password matches
-      if (provider.login_password !== password) {
-        setError('Invalid username or password.');
-        setLoading(false);
-        return;
-      }
+      const { providerId, providerEmail } = result.data;
 
-      // Log in as the provider's email (internal use)
-      await base44.auth.loginWithPassword(provider.email, password);
+      // Log in with base44 auth
+      await base44.auth.loginWithPassword(providerEmail, password);
       const user = await base44.auth.me();
 
-      // Verify user is provider or assistant
       if (user?.role !== 'provider' && user?.role !== 'assistant') {
         await base44.auth.logout();
         setError('Access denied. Provider credentials required.');
         return;
       }
 
+      // FIX: Store session so ProviderDashboard can authenticate
+      // Previously this was missing entirely — making the login completely non-functional
+      localStorage.setItem('providerSession', JSON.stringify({
+        providerId,
+        email: providerEmail,
+        expiresAt: Date.now() + (8 * 60 * 60 * 1000) // 8-hour expiry
+      }));
+
       navigate('/provider');
     } catch (err) {
+      console.error('Provider login error:', err);
       setError('Login failed. Please try again.');
     } finally {
+      // FIX: Removed redundant setLoading(false) calls — finally always handles it
       setLoading(false);
     }
   };
@@ -79,6 +87,7 @@ export default function ProviderLogin() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="your.username"
               required
+              autoComplete="username" // FIX: password manager support
               className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
             />
           </div>
@@ -92,6 +101,7 @@ export default function ProviderLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                autoComplete="current-password" // FIX: password manager support
                 className="w-full px-4 py-3 pr-10 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
               />
               <button
@@ -104,9 +114,10 @@ export default function ProviderLogin() {
             </div>
           </div>
 
+          {/* FIX: disabled when fields are empty */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !username || !password}
             className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
             {loading ? 'Signing in...' : 'Sign In'}
