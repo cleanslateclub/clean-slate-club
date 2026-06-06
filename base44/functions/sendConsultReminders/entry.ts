@@ -60,9 +60,9 @@ Deno.serve(async (req) => {
     <p style="font-size:16px;font-weight:600;color:#333;margin:0 0 4px;">${displayDate}</p>
     <p style="font-size:14px;font-weight:300;color:#777;margin:0;">${displayTime} (15 min call)</p>
   </div>
-  <p style="font-size:14px;font-weight:300;color:#777;line-height:1.7;">Masha will call or text you at <strong>${booking.client_phone}</strong> to kick things off. No prep needed — just show up as you are.</p>
+  <p style="font-size:14px;font-weight:300;color:#777;line-height:1.7;">We'll call you at <strong>${booking.client_phone}</strong> to kick things off. No prep needed — just show up as you are.</p>
   <p style="font-size:13px;color:#aaa;margin-top:24px;">Need to reschedule? Reply to this email or text (206) 825-4061.</p>
-  <p style="font-size:13px;font-weight:300;color:#888;margin-top:24px;">With care,<br><strong style="color:#EB9486;font-family:Montserrat,sans-serif;">Masha</strong><br>Clean Slate Club™</p>
+  <p style="font-size:13px;font-weight:300;color:#888;margin-top:24px;">With care,<br><strong style="color:#EB9486;font-family:Montserrat,sans-serif;">The Clean Slate Club Team</strong></p>
 </div></body></html>`
         });
 
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         const displayTime = consultDt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
 
         await sendSms(accountSid, authToken, fromNumber, booking.client_phone,
-          `Hi ${booking.client_name}! 🌿 Just a reminder — your free Clean Slate consult is tomorrow, ${displayDate} at ${displayTime}. Masha will reach out at this number. See you then! Reply STOP to opt out.`
+          `Hi ${booking.client_name}! 🌿 Just a reminder — your free Clean Slate consult is tomorrow, ${displayDate} at ${displayTime}. We'll call you at this number. See you then! Reply STOP to opt out.`
         );
 
         results.push({ id: booking.id, name: booking.client_name, sent: '24hr_sms' });
@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
         const displayTime = consultDt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
 
         await sendSms(accountSid, authToken, fromNumber, booking.client_phone,
-          `Hi ${booking.client_name}! Your Clean Slate consult starts in about 1 hour (${displayTime}). Masha is looking forward to connecting! Reply STOP to opt out.`
+          `Hi ${booking.client_name}! Your Clean Slate consult starts in about 1 hour (${displayTime}). We're looking forward to connecting! Reply STOP to opt out.`
         );
 
         results.push({ id: booking.id, name: booking.client_name, sent: '1hr_sms' });

@@ -130,9 +130,9 @@ Deno.serve(async (req) => {
       <div class="value light">${booking.intake_answers.availability_notes || '—'}</div>
     </div>` : ''}
 
-    <a class="cta" href="https://cleanslateclubpa.com/admin">View in Dashboard →</a>
+    <a class="cta" href="https://cleanslateclubco.com/admin">View in Dashboard →</a>
   </div>
-  <div class="footer">Clean Slate Club™ · cleanslateclubpa@gmail.com · (206) 825-4061</div>
+  <div class="footer">Clean Slate Club · cleanslateclubpa@gmail.com · (206) 825-4061</div>
 </div></body></html>`;
 
     await base44.asServiceRole.integrations.Core.SendEmail({
