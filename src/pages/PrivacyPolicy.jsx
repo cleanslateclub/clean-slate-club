@@ -1,5 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // FIX: import Link for internal navigation
 import AnimatedSection from '@/components/shared/AnimatedSection';
+
+// FIX: Single source of truth for policy date — change it once, updates everywhere
+const POLICY_DATE = 'May 2026';
 
 const sections = [
   {
@@ -11,7 +15,7 @@ const sections = [
       'Service preferences, intake answers, and special instructions',
       'Payment information (processed securely via Stripe — we do not store card details)',
       'Photos you voluntarily upload during the booking process',
-      'Emergency contact information for senior support or mother\'s helper services'
+      "Emergency contact information for senior support or mother's helper services"
     ]
   },
   {
@@ -37,7 +41,10 @@ const sections = [
       'Reply HELP for assistance or contact us directly',
       'Consent to SMS is not required as a condition of purchase'
     ],
-    note: 'Full SMS terms are available at cleanslateclub.co/sms-terms'
+    // FIX: note now uses a Link component via noteLink prop
+    noteText: 'Full SMS terms are available at ',
+    noteLinkText: 'cleanslateclub.co/sms-terms',
+    noteLinkTo: '/sms-terms'
   },
   {
     color: '#B58A90',
@@ -63,7 +70,7 @@ const sections = [
   },
   {
     color: '#CAE7B9',
-    title: 'Children\'s Privacy',
+    title: "Children's Privacy",
     body: 'Our website and services are intended for adults. We do not knowingly collect personal information from individuals under the age of 13. If you believe a child has submitted personal information to us, please contact us and we will remove it promptly.'
   },
   {
@@ -81,7 +88,11 @@ const sections = [
   {
     color: '#B58A90',
     title: 'Changes to This Policy',
-    body: 'We may update this Privacy Policy from time to time. The current version will always be posted at cleanslateclub.co/privacy-policy. Continued use of our services following any changes constitutes your acceptance of the updated policy.'
+    body: 'We may update this Privacy Policy from time to time. The current version will always be posted at ',
+    // FIX: URL in body is now a link via bodyLink prop
+    bodyLinkText: 'cleanslateclub.co/privacy-policy',
+    bodyLinkTo: '/privacy-policy',
+    bodySuffix: '. Continued use of our services following any changes constitutes your acceptance of the updated policy.'
   },
   {
     color: '#97A7B3',
@@ -97,13 +108,14 @@ const sections = [
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-cream pt-28 pb-20 px-6">
+    <main className="min-h-screen bg-cream pt-28 pb-20 px-6"> {/* FIX: <main> for accessibility + SEO */}
       <div className="max-w-2xl mx-auto">
         <AnimatedSection>
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-3 text-coral/60">Legal</p>
           <h1 className="font-heading text-4xl font-semibold text-charcoal mb-2">Privacy Policy</h1>
           <p className="font-logo text-xl text-coral mb-3">Clean Slate Club™</p>
-          <p className="font-body text-sm text-charcoal/50 font-light mb-10">Effective date: May 2026</p>
+          {/* FIX: uses POLICY_DATE constant — one place to update */}
+          <p className="font-body text-sm text-charcoal/50 font-light mb-10">Effective date: {POLICY_DATE}</p>
         </AnimatedSection>
 
         <div className="space-y-5">
@@ -111,7 +123,16 @@ export default function PrivacyPolicy() {
             <AnimatedSection key={s.title} delay={i * 0.03}>
               <div className="rounded-2xl bg-warm-white border border-taupe/15 p-6" style={{ borderLeft: `3px solid ${s.color}` }}>
                 <h2 className="font-heading text-base font-semibold text-charcoal mb-3">{s.title}</h2>
-                <p className="font-body text-sm text-charcoal font-light leading-relaxed">{s.body}</p>
+
+                {/* FIX: Support inline links in body text */}
+                <p className="font-body text-sm text-charcoal font-light leading-relaxed">
+                  {s.body}
+                  {s.bodyLinkText && (
+                    <Link to={s.bodyLinkTo} className="text-coral hover:underline">{s.bodyLinkText}</Link>
+                  )}
+                  {s.bodySuffix}
+                </p>
+
                 {s.list && (
                   <ul className="mt-3 space-y-1.5">
                     {s.list.map(item => (
@@ -122,10 +143,16 @@ export default function PrivacyPolicy() {
                     ))}
                   </ul>
                 )}
-                {s.note && (
-                  <p className="font-body text-xs font-light leading-relaxed mt-3 italic px-3 py-2 rounded-xl"
-                    style={{ color: '#555', background: s.color + '12', borderLeft: `3px solid ${s.color}50` }}>
-                    {s.note}
+
+                {/* FIX: SMS note renders with a real clickable link */}
+                {(s.note || s.noteText) && (
+                  <p
+                    className="font-body text-xs font-light leading-relaxed mt-3 italic px-3 py-2 rounded-xl"
+                    style={{ color: '#555', background: s.color + '12', borderLeft: `3px solid ${s.color}50` }}
+                  >
+                    {s.noteText ? (
+                      <>{s.noteText}<Link to={s.noteLinkTo} className="text-coral hover:underline">{s.noteLinkText}</Link></>
+                    ) : s.note}
                   </p>
                 )}
               </div>
@@ -134,13 +161,14 @@ export default function PrivacyPolicy() {
 
           <AnimatedSection delay={0.35}>
             <div className="rounded-2xl p-5 text-center" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
+              {/* FIX: uses POLICY_DATE constant — both dates always stay in sync */}
               <p className="font-body text-xs text-charcoal/50 font-light">
-                Last updated: May 2026 · Clean Slate Club™ · cleanslateclub.co
+                Last updated: {POLICY_DATE} · Clean Slate Club™ · cleanslateclub.co
               </p>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
