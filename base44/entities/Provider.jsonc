@@ -11,6 +11,14 @@
     "phone": {
       "type": "string"
     },
+    "login_username": {
+      "type": "string",
+      "description": "Provider portal login username"
+    },
+    "login_password": {
+      "type": "string",
+      "description": "Provider portal login password (encrypted)"
+    },
     "role": {
       "type": "string",
       "enum": [
@@ -62,6 +70,10 @@
       "type": "boolean",
       "default": false
     },
+    "background_check_expiry": {
+      "type": "string",
+      "format": "date"
+    },
     "drivers_license_on_file": {
       "type": "boolean",
       "default": false
@@ -74,6 +86,10 @@
       "type": "boolean",
       "default": false
     },
+    "cpr_expiry": {
+      "type": "string",
+      "format": "date"
+    },
     "w9_on_file": {
       "type": "boolean",
       "default": false
@@ -81,6 +97,10 @@
     "contractor_agreement_signed": {
       "type": "boolean",
       "default": false
+    },
+    "contract_signed_date": {
+      "type": "string",
+      "format": "date"
     },
     "payout_rate": {
       "type": "number",
@@ -97,6 +117,32 @@
     "last_assigned_date": {
       "type": "string",
       "format": "date"
+    },
+    "hours_available_per_week": {
+      "type": "number",
+      "description": "Maximum hours provider is available"
+    },
+    "hours_assigned_this_week": {
+      "type": "number",
+      "default": 0,
+      "description": "Tracked hours for the current week"
+    },
+    "calendar_sync_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "sms_notifications_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "email_notifications_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "auto_assign_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-assign matching bookings when availability allows"
     },
     "notes": {
       "type": "string"

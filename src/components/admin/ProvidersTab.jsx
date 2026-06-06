@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Plus, X, Archive, Phone, Mail, Edit2, Check } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
+import ProviderDetailPanel from '@/components/admin/ProviderDetailPanel';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SERVICE_OPTIONS = Object.entries(SERVICE_CONFIG)
   .filter(([k]) => k !== 'consult')
@@ -10,7 +12,22 @@ const SERVICE_OPTIONS = Object.entries(SERVICE_CONFIG)
 const ROLE_COLORS = { owner: '#EB9486', provider: '#CAE7B9', assistant: '#EFB988' };
 
 function ProviderForm({ initial, onSave, onCancel }) {
-  const [form, setForm] = useState(initial || { full_name: '', email: '', phone: '', role: 'provider', services: [], status: 'active', notes: '' });
+  const [form, setForm] = useState(initial || {
+    full_name: '',
+    email: '',
+    phone: '',
+    login_username: '',
+    login_password: '',
+    role: 'provider',
+    services: [],
+    status: 'active',
+    notes: '',
+    hours_available_per_week: 20,
+    auto_assign_enabled: false,
+    calendar_sync_enabled: true,
+    sms_notifications_enabled: true,
+    email_notifications_enabled: true
+  });
 
   const toggleService = (key) => {
     setForm(f => ({
@@ -26,12 +43,16 @@ function ProviderForm({ initial, onSave, onCancel }) {
           { key: 'full_name', label: 'Full Name', placeholder: 'Provider name', required: true },
           { key: 'email', label: 'Email', placeholder: 'email@example.com', required: true },
           { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555' },
+          { key: 'login_username', label: 'Portal Username', placeholder: 'Username for access' },
+          { key: 'login_password', label: 'Portal Password', placeholder: 'Access password', type: 'password' },
+          { key: 'hours_available_per_week', label: 'Weekly Hours Available', placeholder: '20', type: 'number' },
         ].map(f => (
           <div key={f.key}>
             <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">{f.label}{f.required && <span className="text-coral ml-0.5">*</span>}</label>
             <input
+              type={f.type || 'text'}
               value={form[f.key] || ''}
-              onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
+              onChange={e => setForm(p => ({ ...p, [f.key]: f.type === 'number' ? Number(e.target.value) : e.target.value }))}
               placeholder={f.placeholder}
               className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40"
             />
@@ -101,6 +122,7 @@ export default function ProvidersTab({ bookings }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [showArchived, setShowArchived] = useState(false);
+  const [selectedProviderId, setSelectedProviderId] = useState(null);
 
   const load = async () => {
     const data = await base44.entities.Provider.list('-created_date', 100);
@@ -119,6 +141,12 @@ export default function ProvidersTab({ bookings }) {
     setShowForm(false);
     setEditingId(null);
     load();
+  };
+
+  const handleUpdateProvider = async (id, updates) => {
+    await base44.entities.Provider.update(id, updates);
+    load();
+    setSelectedProviderId(null);
   };
 
   const handleArchive = async (id) => {
@@ -228,73 +256,116 @@ export default function ProvidersTab({ bookings }) {
         </div>
       )}
 
-      <div className="space-y-3">
-        {displayed.map(p => (
-          editingId === p.id ? (
-            <ProviderForm key={p.id} initial={p} onSave={handleSave} onCancel={() => setEditingId(null)} />
-          ) : (
-            <div key={p.id} className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
-              <div className="flex items-start justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-heading font-semibold text-sm shrink-0"
-                    style={{ background: ROLE_COLORS[p.role] || '#EB9486' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Provider List */}
+        <div className="lg:col-span-1 space-y-3">
+          {displayed.map(p => {
+            const complianceCount = [
+              p.background_check_cleared,
+              p.drivers_license_on_file,
+              p.vehicle_insurance_on_file,
+              p.cpr_certification_on_file,
+              p.w9_on_file,
+              p.contractor_agreement_signed
+            ].filter(Boolean).length;
+
+            return editingId === p.id ? (
+              <ProviderForm key={p.id} initial={p} onSave={handleSave} onCancel={() => setEditingId(null)} />
+            ) : (
+              <motion.button
+                key={p.id}
+                onClick={() => setSelectedProviderId(p.id)}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`w-full text-left bg-warm-white rounded-2xl border transition-all ${
+                  selectedProviderId === p.id
+                    ? 'border-coral/40 shadow-md bg-coral/5'
+                    : 'border-taupe/15 hover:border-coral/20'
+                } p-4`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-heading font-bold shrink-0"
+                    style={{ background: ROLE_COLORS[p.role] || '#EB9486' }}
+                  >
                     {p.full_name?.[0]?.toUpperCase()}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-heading text-sm font-semibold text-charcoal">{p.full_name}</p>
-                      <span className="px-2 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-body font-light border"
-                        style={{ color: ROLE_COLORS[p.role], borderColor: ROLE_COLORS[p.role] + '40', background: ROLE_COLORS[p.role] + '10' }}>
-                        {p.role}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-heading text-sm font-semibold text-charcoal truncate">{p.full_name}</p>
+                    <p className="font-body text-xs text-charcoal/50 font-light mt-0.5">{p.role}</p>
+                    {/* Compliance and stats badge */}
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-body font-light ${
+                          complianceCount === 6
+                            ? 'bg-sage/10 text-sage'
+                            : 'bg-butter/10 text-charcoal/60'
+                        }`}
+                      >
+                        {complianceCount}/6 docs
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-body font-light bg-cream text-charcoal/60">
+                        {p.jobs_completed || 0} jobs
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 mt-0.5">
-                      <a href={`mailto:${p.email}`} className="font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors flex items-center gap-1">
-                        <Mail className="w-3 h-3" />{p.email}
-                      </a>
-                      {p.phone && (
-                        <a href={`tel:${p.phone}`} className="font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors flex items-center gap-1">
-                          <Phone className="w-3 h-3" />{p.phone}
-                        </a>
-                      )}
-                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => { setEditingId(p.id); setShowForm(false); }}
-                    className="p-2 rounded-full hover:bg-taupe/10 text-charcoal/30 hover:text-charcoal transition-colors">
-                    <Edit2 className="w-3.5 h-3.5" />
-                  </button>
                   {showArchived ? (
-                    <button onClick={() => handleRestore(p.id)}
-                      className="px-3 py-1.5 rounded-full border border-sage/40 text-sage text-xs font-body font-light hover:bg-sage/10 transition-colors">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRestore(p.id);
+                      }}
+                      className="px-2 py-1 rounded border border-sage/40 text-sage text-[10px] font-body font-light hover:bg-sage/10 transition-colors shrink-0"
+                    >
                       Restore
                     </button>
                   ) : (
-                    <button onClick={() => handleArchive(p.id)}
-                      className="p-2 rounded-full hover:bg-taupe/10 text-charcoal/25 hover:text-charcoal/50 transition-colors">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleArchive(p.id);
+                      }}
+                      className="p-1.5 rounded hover:bg-taupe/10 text-charcoal/25 hover:text-charcoal/50 transition-colors shrink-0"
+                    >
                       <Archive className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
-              </div>
+              </motion.button>
+            );
+          })}
+        </div>
 
-              {p.services?.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {p.services.map(s => (
-                    <span key={s} className="px-2.5 py-0.5 rounded-full bg-cream border border-taupe/20 text-[10px] font-body font-light text-charcoal/50">
-                      {SERVICE_CONFIG[s]?.label || s}
-                    </span>
-                  ))}
+        {/* Detail Panel */}
+        <div className="lg:col-span-2">
+          <AnimatePresence mode="wait">
+            {selectedProviderId ? (
+              <ProviderDetailPanel
+                provider={providers.find(p => p.id === selectedProviderId)}
+                onClose={() => setSelectedProviderId(null)}
+                onUpdate={handleUpdateProvider}
+              />
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="bg-warm-white rounded-3xl border border-taupe/15 flex flex-col items-center justify-center py-24 px-8 text-center"
+              >
+                <div className="w-12 h-12 rounded-full bg-cream-linen flex items-center justify-center mb-4 text-2xl">
+                  👥
                 </div>
-              )}
-
-              {p.notes && (
-                <p className="font-body text-xs text-charcoal/40 font-light mt-2 italic">{p.notes}</p>
-              )}
-            </div>
-          )
-        ))}
+                <p className="font-heading text-base font-semibold text-charcoal mb-1">
+                  Select a provider
+                </p>
+                <p className="font-body text-sm text-charcoal/35 font-light">
+                  Click any provider name to view compliance, manage access, set automations, and edit availability.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
