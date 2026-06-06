@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SERVICE_CONFIG, minutesToTime, timeToMinutes, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration, uploadedPhotos = [], dynamicEstimate }) {
+export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime, totalDuration, uploadedPhotos = [], dynamicEstimate, onExtraTimeChange }) {
+  const [extraTimeAuth, setExtraTimeAuth] = useState(intakeAnswers._extra_time_auth || '');
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -133,6 +134,38 @@ export default function Step5Confirm({ serviceKey, clientInfo, intakeAnswers, se
             </div>
           </div>
         )}
+
+        {/* Additional time authorization */}
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Additional Time Authorization</p>
+          <p className="font-body text-xs text-charcoal/60 font-light mb-3 leading-relaxed">
+            If more time is needed to complete your requested tasks, may we extend the appointment?
+          </p>
+          <div className="flex flex-col gap-2">
+            {[
+              'Yes, up to 1 additional hour',
+              'Yes, up to 2 additional hours',
+              'Yes, up to 4 additional hours',
+              'Contact me first',
+              'No, remain within original booking'
+            ].map(opt => (
+              <label key={opt} className="flex items-center gap-3 cursor-pointer group">
+                <div
+                  onClick={() => { setExtraTimeAuth(opt); onExtraTimeChange && onExtraTimeChange(opt); }}
+                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${extraTimeAuth === opt ? 'bg-coral border-coral' : 'border-taupe/40 group-hover:border-coral/40'}`}
+                >
+                  {extraTimeAuth === opt && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                </div>
+                <span className="font-body text-sm text-charcoal/70 font-light">{opt}</span>
+              </label>
+            ))}
+          </div>
+          {extraTimeAuth && extraTimeAuth !== 'No, remain within original booking' && (
+            <p className="mt-3 font-body text-xs text-charcoal/40 font-light">
+              Additional time billed at <span className="text-coral">$65/hr (members)</span> or <span className="text-coral">$85/hr (non-members)</span>. We will always notify you before extending.
+            </p>
+          )}
+        </div>
 
         {/* Pricing */}
         <div className="bg-coral/5 border border-coral/15 rounded-2xl p-5">

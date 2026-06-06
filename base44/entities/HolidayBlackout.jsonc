@@ -1,0 +1,50 @@
+{
+  "name": "HolidayBlackout",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "blackout",
+        "premium",
+        "normal"
+      ],
+      "default": "blackout"
+    },
+    "booking_allowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "manual_approval_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "surcharge_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "surcharge_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "provider_override_allowed": {
+      "type": "boolean",
+      "default": true
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "date",
+    "type"
+  ]
+}

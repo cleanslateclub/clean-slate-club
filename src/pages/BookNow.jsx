@@ -319,7 +319,7 @@ export default function BookNow() {
                 {/* For consult: step 3 = confirm (skip addons + schedule) */}
                 {!isConsult && step === 3 && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} onToggle={toggleAddon} dynamicEstimate={dynamicEstimate} selectedTasks={selectedTasks} />}
                 {!isConsult && step === 4 && <Step4Schedule totalDuration={totalDuration} selectedDate={selectedDate} selectedTime={selectedTime} onSelect={(d, t) => {setSelectedDate(d);setSelectedTime(t);}} />}
-                {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} />}
+                {(!isConsult && step === 5 || isConsult && step === 3) && <Step5Confirm serviceKey={serviceKey} clientInfo={clientInfo} intakeAnswers={intakeAnswers} selectedAddons={selectedAddons} selectedDate={selectedDate} selectedTime={selectedTime} totalDuration={totalDuration} uploadedPhotos={uploadedPhotos} dynamicEstimate={dynamicEstimate} onExtraTimeChange={(val) => setIntakeAnswers(prev => ({ ...prev, _extra_time_auth: val }))} />}
                 {!isConsult && step === 6 && !skipDeposit && (
                   <Step6Payment
                     clientName={clientInfo.name}

@@ -3,17 +3,26 @@ import { base44 } from '@/api/base44Client';
 import { AVAILABLE_HOURS, timeToMinutes, minutesToTime, isSlotAvailable, TRAVEL_BUFFER } from '@/lib/bookingConfig';
 
 const DAYS_AHEAD = 30;
+const MIN_NOTICE_HOURS = 24;
 
 function getAvailableDates() {
   const dates = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (let i = 1; i <= DAYS_AHEAD; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    if (d.getDay() !== 0) { // no Sundays
-      dates.push(d);
-    }
+  const now = new Date();
+  const cutoff = new Date(now.getTime() + MIN_NOTICE_HOURS * 60 * 60 * 1000);
+  cutoff.setHours(0, 0, 0, 0);
+  // Start from tomorrow or the day after if today is close to cutoff
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() + 1);
+
+  for (let i = 0; i <= DAYS_AHEAD; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    // No Sundays (day 0)
+    if (d.getDay() === 0) continue;
+    // Must be at least 24hrs from now
+    if (d < cutoff) continue;
+    dates.push(d);
   }
   return dates;
 }
@@ -28,6 +37,7 @@ function formatDisplayDate(date) {
 
 export default function Step4Schedule({ totalDuration, selectedDate, selectedTime, onSelect }) {
   const [timeBlocks, setTimeBlocks] = useState([]);
+  const [blackoutDates, setBlackoutDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [weekOffset, setWeekOffset] = useState(0);
 
@@ -36,14 +46,24 @@ export default function Step4Schedule({ totalDuration, selectedDate, selectedTim
   const visibleDates = allDates.slice(weekOffset * datesPerPage, (weekOffset + 1) * datesPerPage);
 
   useEffect(() => {
-    base44.entities.TimeBlock.list().then(blocks => {
+    Promise.all([
+      base44.entities.TimeBlock.list(),
+      base44.entities.HolidayBlackout.filter({ booking_allowed: false })
+    ]).then(([blocks, holidays]) => {
       setTimeBlocks(blocks || []);
+      setBlackoutDates((holidays || []).map(h => h.date));
       setLoading(false);
     });
   }, []);
 
+  const getHolidayMessage = (dateStr) => {
+    // For premium dates (booking_allowed=true), show a note but don't block
+    return null;
+  };
+
   const getAvailableSlots = (date) => {
     const dateStr = formatDate(date);
+    if (blackoutDates.includes(dateStr)) return [];
     return AVAILABLE_HOURS.filter(time =>
       isSlotAvailable(dateStr, time, totalDuration, timeBlocks)
     );
@@ -58,7 +78,7 @@ export default function Step4Schedule({ totalDuration, selectedDate, selectedTim
       <p className="font-body text-sm text-charcoal font-light mb-2">
         Your visit is estimated at <span className="text-coral font-semibold">{(totalDuration / 60).toFixed(1)} hours</span> — includes 15 min meet & greet + 15 min wrap-up.
       </p>
-      <p className="font-body text-xs text-charcoal font-light mb-6">Only slots with enough time are shown. We don't double-book.</p>
+      <p className="font-body text-xs text-charcoal font-light mb-6">Services require at least 24 hours advance notice. Only slots with enough time are shown. We don't double-book.</p>
 
       {/* Date picker */}
       <div className="mb-6">

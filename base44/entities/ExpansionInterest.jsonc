@@ -1,0 +1,50 @@
+{
+  "name": "ExpansionInterest",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "zip_code": {
+      "type": "string"
+    },
+    "desired_service": {
+      "type": "string"
+    },
+    "marketing_opt_in": {
+      "type": "boolean",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "contacted",
+        "territory_opened",
+        "converted"
+      ],
+      "default": "waiting"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "email"
+  ]
+}

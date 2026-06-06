@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { base44 } from '@/api/base44Client';
+import OutOfAreaModal from '@/components/booking/OutOfAreaModal';
 
 export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [], smsOptIn, onSmsOptInChange }) {
   const [uploading, setUploading] = useState(false);
+  const [territories, setTerritories] = useState([]);
+  const [outOfArea, setOutOfArea] = useState(false);
+  const [outOfAreaCity, setOutOfAreaCity] = useState('');
+
+  useEffect(() => {
+    base44.entities.Territory.filter({ is_active: true }).then(t => setTerritories(t || []));
+  }, []);
+
+  const checkServiceArea = (address) => {
+    if (!address || territories.length === 0) return;
+    const addressLower = address.toLowerCase();
+    const match = territories.some(t => addressLower.includes(t.name.toLowerCase()));
+    if (!match) {
+      // Try to extract city from address
+      const parts = address.split(',');
+      const city = parts.length > 1 ? parts[parts.length - 2].trim() : address.trim();
+      setOutOfAreaCity(city);
+      setOutOfArea(true);
+    } else {
+      setOutOfArea(false);
+    }
+  };
 
   const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -45,6 +68,13 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
   return (
     <div>
+      {outOfArea && (
+        <OutOfAreaModal
+          city={outOfAreaCity}
+          serviceKey={serviceKey}
+          onClose={() => setOutOfArea(false)}
+        />
+      )}
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">
         {isConsult ? 'Tell us a little about you' : 'Tell us about your home'}
       </h2>
@@ -74,7 +104,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
               <input
                 type="text"
                 value={clientInfo[f.key] || ''}
-                onChange={e => onClientChange({ ...clientInfo, [f.key]: e.target.value })}
+                onChange={e => {
+                  onClientChange({ ...clientInfo, [f.key]: e.target.value });
+                  if (f.key === 'address') checkServiceArea(e.target.value);
+                }}
+                onBlur={e => { if (f.key === 'address') checkServiceArea(e.target.value); }}
                 placeholder={f.placeholder}
                 className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
               />

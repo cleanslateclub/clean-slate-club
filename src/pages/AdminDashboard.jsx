@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div>
             <p className="font-body text-[10px] tracking-[0.25em] uppercase text-coral/60 font-light">Clean Slate Club™</p>
-            <h1 className="font-logo text-2xl text-coral leading-tight">Provider Dashboard</h1>
+            <h1 className="font-logo text-2xl text-coral leading-tight">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <button
