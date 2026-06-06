@@ -2,15 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 
-// ── Keep in sync with PrivacyPolicy.jsx ──────────────────────────────────────
 const POLICY_DATE = 'May 2026';
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default function SmsTerms() {
   return (
-    // FIX 2: <main> wrapper for semantic HTML + accessibility
     <main className="min-h-screen bg-cream pt-28 pb-20 px-6">
       <div className="max-w-2xl mx-auto">
+
         <AnimatedSection>
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-3 text-coral/60">Legal</p>
           <h1 className="font-heading text-4xl font-semibold text-charcoal mb-2">SMS & Text Message Terms</h1>
@@ -86,9 +84,12 @@ export default function SmsTerms() {
                 Reply <strong>HELP</strong> to any message for assistance, or contact us directly:
               </p>
               <ul className="mt-3 space-y-1.5">
-                {/* FIX 1: Replaced corrupted ?? emoji with explicit unicode */}
-                <li className="font-body text-sm text-charcoal font-light">📱 Text or call: <strong>(206) 825-4061</strong></li>
-                <li className="font-body text-sm text-charcoal font-light">✉️ Email: <strong>cleanslateclubpa@gmail.com</strong></li>
+                <li className="font-body text-sm text-charcoal font-light">
+                  Text or call: <strong>(206) 825-4061</strong>
+                </li>
+                <li className="font-body text-sm text-charcoal font-light">
+                  Email: <strong>cleanslateclubpa@gmail.com</strong>
+                </li>
               </ul>
             </div>
           </AnimatedSection>
@@ -102,7 +103,6 @@ export default function SmsTerms() {
               <p className="font-body text-sm text-charcoal font-light leading-relaxed mt-3">
                 Carriers are not liable for delayed or undelivered messages.
               </p>
-              {/* FIX 4: Cross-link to Privacy Policy (TCPA best practice) */}
               <p className="font-body text-sm text-charcoal font-light leading-relaxed mt-3">
                 For full details on how we handle your personal information, please review our{' '}
                 <Link to="/privacy-policy" className="text-coral underline underline-offset-2 hover:text-coral/70 transition-colors">
@@ -123,15 +123,17 @@ export default function SmsTerms() {
 
           <AnimatedSection delay={0.17}>
             <div className="rounded-2xl p-5 text-center" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
-              {/* FIX 3: POLICY_DATE constant instead of hardcoded string */}
               <p className="font-body text-xs text-charcoal/50 font-light">
-                Last updated: {POLICY_DATE} · Clean Slate Club™ · cleanslateclub.co
+                Last updated: {POLICY_DATE} &middot; Clean Slate Club™ &middot; cleanslateclub.co
               </p>
-              {/* FIX 5: Removed "Sprint" — merged into T-Mobile in 2020 */}
               <p className="font-body text-xs text-charcoal/40 font-light mt-1">
-                Supported carriers include AT&T, T-Mobile, Verizon, and most US carriers. SMS delivery via Twilio.
+                Supported carriers include AT&amp;T, T-Mobile, Verizon, and most US carriers. SMS delivery via Twilio.
               </p>
             </div>
           </AnimatedSection>
 
         </div>
+      </div>
+    </main>
+  );
+}
