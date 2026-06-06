@@ -46,9 +46,14 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
                     {isConsult && (
                       <p className="font-body text-xs mt-1 font-light" style={{ color: config.color }}>Free · 15 min call</p>
                     )}
+                    {isConsult && config.scheduleNote && (
+                      <p className="font-body text-xs mt-1 font-light" style={{ color: config.color }}>
+                        {config.scheduleNote}
+                      </p>
+                    )}
                     {!isConsult && config.priceRange && (
                       <p className="font-body text-xs mt-1 font-light text-charcoal">
-                        from ${config.priceRange[0]} · {config.baseMinutes / 60}hr base
+                        starting around ${config.priceRange[0]} · {config.baseMinutes / 60}hr base
                       </p>
                     )}
                   </div>

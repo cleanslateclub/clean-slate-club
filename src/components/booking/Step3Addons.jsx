@@ -5,15 +5,18 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dyna
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
-  // Map of add-on IDs to task keywords they correspond to
+  // Map of add-on IDs to task keywords they correspond to (hide if task already selected)
   const addonToTaskMap = {
-    fridge_refresh: ['Refrigerator Cleanout'],
-    pantry_party: ['Pantry Straightening'],
-    closet_comeback: ['Closet Reset'],
-    bed_reset: ['Bed Linen Change'],
-    toy_story: ['Toy Pickup'],
+    fridge_refresh: ['Refrigerator Cleanout', 'Refrigerator Organization'],
+    pantry_party: ['Pantry Straightening', 'Pantry Organization', 'Pantry Restocking'],
+    closet_comeback: ['Closet Reset', 'Light Closet Straightening', 'Closet Assistance'],
+    bed_reset: ['Bed Linen Change', 'Linen Refresh'],
+    toy_story: ['Toy Pickup', 'Toy Organization'],
     pet_check: ['Pet Feeding'],
-    donation_station: ['Donation Bag Prep'],
+    donation_station: ['Donation Bag Prep', 'Donation Sorting'],
+    produce_prep: ['Produce Prep', 'Ingredient Washing'],
+    grocery_run_meals: ['Grocery Shopping'],
+    school_lunches: ['School Lunch Prep'],
   };
 
   // Check if an add-on should be hidden (already selected as a task)
@@ -99,7 +102,7 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dyna
                   </span>
                   <div>
                     <p className="font-body text-sm text-charcoal font-light">{addon.label}</p>
-                    <p className="font-body text-xs text-charcoal font-light">+{addon.minutes} min</p>
+                    <p className="font-body text-xs text-charcoal font-light">+{addon.minutes} min{addon.requiresFunds ? ' · funds required' : ''}</p>
                   </div>
                 </div>
                 <span className="font-body text-sm text-coral font-light shrink-0">+${addon.price}</span>
