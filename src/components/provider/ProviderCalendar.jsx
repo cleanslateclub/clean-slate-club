@@ -5,7 +5,7 @@ import CalendarEvent from '@/components/provider/CalendarEvent';
 import BookingDetailPopup from '@/components/provider/BookingDetailPopup';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, onWeekChange, onTimeBlockUpdate, user, onQuickBook }) {
+export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, onWeekChange, onTimeBlockUpdate, user, onQuickBook, onStartVisit }) {
   const [view, setView] = useState('week');
   const [selectedDateForBooking, setSelectedDateForBooking] = useState(null);
   const [selectedTimeForBooking, setSelectedTimeForBooking] = useState(null);
@@ -157,6 +157,10 @@ export default function ProviderCalendar({ timeBlocks, bookings, selectedWeek, o
                                      const booking = bookings.find(b => b.id === block.booking_id);
                                      if (booking) setSelectedBooking(booking);
                                    }}
+                                   onStartVisit={onStartVisit ? () => {
+                                     const booking = bookings.find(b => b.id === block.booking_id);
+                                     if (booking) onStartVisit(booking);
+                                   } : null}
                                  />
                               </div>
                             )}

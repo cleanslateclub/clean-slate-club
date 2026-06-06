@@ -3,11 +3,11 @@ import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { CheckCircle2, Circle, Camera, Clock, AlertTriangle, DollarSign, ChevronRight, ChevronLeft } from 'lucide-react';
 
-const STEPS = ['Clock In', 'Checklist', 'Extra Time', 'Add-Ons', 'Photos', 'Notes', 'Incident', 'Submit'];
+const STEPS = ['Collect Payment', 'Checklist', 'Extra Time & Add-Ons', 'Photos', 'Notes & Incident', 'Complete'];
 
 export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
   const [step, setStep] = useState(0);
-  const [clockInTime] = useState(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+  const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [checklist, setChecklist] = useState({});
   const [extraTime, setExtraTime] = useState('none');
   const [completedAddons, setCompletedAddons] = useState([]);
@@ -15,10 +15,11 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
   const [uploading, setUploading] = useState(false);
   const [providerNotes, setProviderNotes] = useState('');
   const [opportunityNotes, setOpportunityNotes] = useState('');
-  const [hasIncident, setHasIncident] = useState(null);
+  const [hasIncident, setHasIncident] = useState(false);
   const [incident, setIncident] = useState({ incident_type: '', description: '', severity: 'low' });
   const [tipAmount, setTipAmount] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   const config = SERVICE_CONFIG[booking?.service_category];
   const isMember = booking?.intake_answers?.is_member || false;
@@ -135,7 +136,7 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
             <div>
               <p className="font-body text-[10px] tracking-widest uppercase text-coral/60 font-light">Complete Visit Wizard</p>
               <p className="font-heading text-lg font-semibold text-charcoal">{booking?.client_name}</p>
-              <p className="font-body text-xs text-charcoal/40 font-light">{config?.label} · Clocked in at {clockInTime}</p>
+              <p className="font-body text-xs text-charcoal/40 font-light">{config?.label}</p>
             </div>
             <button onClick={onClose} className="text-charcoal/30 hover:text-charcoal text-xl">×</button>
           </div>
@@ -150,22 +151,52 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
 
         <div className="p-6 max-h-[60vh] overflow-y-auto">
 
-          {/* Step 0: Clock In */}
+          {/* Step 0: Collect Payment */}
           {step === 0 && (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 rounded-full bg-sage/20 flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-sage" />
+            <div className="space-y-4">
+              <div className="text-center py-4 bg-coral/5 border border-coral/15 rounded-2xl">
+                <DollarSign className="w-8 h-8 text-coral mx-auto mb-3" />
+                <h3 className="font-heading text-lg font-semibold text-charcoal mb-2">Collect Payment</h3>
+                <p className="font-body text-sm text-charcoal/50 font-light mb-4">Get paid first, then complete the visit details.</p>
+                
+                <div className="bg-warm-white rounded-xl p-4 mb-4 space-y-2 text-left">
+                  <div className="flex justify-between">
+                    <span className="font-body text-sm text-charcoal/60 font-light">Base service</span>
+                    <span className="font-body text-sm text-charcoal font-light">${(baseRevenue).toFixed(2)}</span>
+                  </div>
+                  {extraTime !== 'none' && (
+                    <div className="flex justify-between">
+                      <span className="font-body text-sm text-charcoal/60 font-light">Extra time</span>
+                      <span className="font-body text-sm text-charcoal font-light">+${(extraTimeRates[extraTime] || 0).toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="border-t border-taupe/10 pt-2 flex justify-between">
+                    <span className="font-heading text-base font-semibold text-charcoal">Total charge</span>
+                    <span className="font-heading text-base font-semibold text-coral">${totalRevenue.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={async () => {
+                    setProcessingPayment(true);
+                    // Simulate payment processing
+                    await new Promise(r => setTimeout(r, 1500));
+                    setPaymentProcessed(true);
+                    setProcessingPayment(false);
+                    setStep(1);
+                  }}
+                  disabled={processingPayment}
+                  className="w-full py-3 bg-coral text-white font-body font-light rounded-xl hover:bg-coral/90 transition-all disabled:opacity-50"
+                >
+                  {processingPayment ? 'Processing...' : `Charge Card $${totalRevenue.toFixed(2)}`}
+                </button>
+                <p className="font-body text-[10px] text-charcoal/40 font-light mt-3">Charges posted immediately. Can adjust in final step if needed.</p>
               </div>
-              <h3 className="font-heading text-xl font-semibold text-charcoal mb-2">You're clocked in!</h3>
-              <p className="font-body text-sm text-charcoal/50 font-light mb-2">Arrival time: <strong className="text-charcoal">{clockInTime}</strong></p>
-              <p className="font-body text-xs text-charcoal/40 font-light leading-relaxed">
-                Complete the walkthrough with the client, note any concerns, and begin service. Use this wizard when you finish.
-              </p>
             </div>
           )}
 
-          {/* Step 1: Checklist */}
-          {step === 1 && (
+          {/* Step 1: Quick Checklist */}
+          {step === 1 && paymentProcessed && (
             <div>
               <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Package Checklist</h3>
               <p className="font-body text-xs text-charcoal/40 font-light mb-4">Mark tasks as completed. Unmarked items will be noted.</p>
@@ -185,56 +216,54 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
             </div>
           )}
 
-          {/* Step 2: Extra Time */}
+          {/* Step 2: Extra Time & Add-Ons */}
           {step === 2 && (
-            <div>
-              <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Extra Time Needed?</h3>
-              <p className="font-body text-xs text-charcoal/40 font-light mb-4">
-                Only add if client authorized additional time. Billed at <strong>{isMember ? '$65/hr (member)' : '$85/hr (non-member)'}</strong>.
-              </p>
-              <div className="space-y-2">
-                {[
-                  { id: 'none', label: 'No extra time needed', sub: 'Complete within original booking' },
-                  { id: '30min', label: '+30 Minutes', sub: `+$${extraTimeRates['30min']}` },
-                  { id: '1hr', label: '+1 Hour', sub: `+$${extraTimeRates['1hr']}` },
-                  { id: '2hr', label: '+2 Hours', sub: `+$${extraTimeRates['2hr']}` },
-                ].map(opt => (
-                  <button key={opt.id} onClick={() => setExtraTime(opt.id)}
-                    className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all ${extraTime === opt.id ? 'bg-coral/10 border-coral/40' : 'bg-cream border-taupe/15 hover:border-coral/20'}`}>
-                    <div>
-                      <p className={`font-body text-sm font-light ${extraTime === opt.id ? 'text-coral' : 'text-charcoal'}`}>{opt.label}</p>
-                      <p className="font-body text-xs text-charcoal/40 font-light">{opt.sub}</p>
-                    </div>
-                    {extraTime === opt.id && <CheckCircle2 className="w-4 h-4 text-coral shrink-0" />}
-                  </button>
-                ))}
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-heading text-base font-semibold text-charcoal mb-3">Extra Time?</h3>
+                <div className="space-y-2">
+                  {[
+                    { id: 'none', label: 'No extra time', sub: 'Finished on schedule' },
+                    { id: '30min', label: '+30 min', sub: `+$${extraTimeRates['30min']}` },
+                    { id: '1hr', label: '+1 hour', sub: `+$${extraTimeRates['1hr']}` },
+                    { id: '2hr', label: '+2 hours', sub: `+$${extraTimeRates['2hr']}` },
+                  ].map(opt => (
+                    <button key={opt.id} onClick={() => setExtraTime(opt.id)}
+                      className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${extraTime === opt.id ? 'bg-coral/10 border-coral/40' : 'bg-cream border-taupe/15 hover:border-coral/20'}`}>
+                      <div>
+                        <p className={`font-body text-sm font-light ${extraTime === opt.id ? 'text-coral' : 'text-charcoal'}`}>{opt.label}</p>
+                        <p className="font-body text-xs text-charcoal/40 font-light">{opt.sub}</p>
+                      </div>
+                      {extraTime === opt.id && <CheckCircle2 className="w-4 h-4 text-coral shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-taupe/10 pt-4">
+                <h3 className="font-heading text-base font-semibold text-charcoal mb-3">Add-Ons Completed</h3>
+                <div className="space-y-2">
+                  {addons.length === 0 ? (
+                    <p className="font-body text-sm text-charcoal/30 font-light text-center py-4">None for this service</p>
+                  ) : (
+                    addons.map(a => (
+                      <button key={a.id} onClick={() => toggleAddon(a.id)}
+                        className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${completedAddons.includes(a.id) ? 'bg-coral/10 border-coral/40' : 'bg-cream border-taupe/15 hover:border-coral/20'}`}>
+                        <div>
+                          <p className={`font-body text-sm font-light ${completedAddons.includes(a.id) ? 'text-coral' : 'text-charcoal'}`}>{a.label}</p>
+                          <p className="font-body text-xs text-charcoal/30 font-light">+${a.price}</p>
+                        </div>
+                        {completedAddons.includes(a.id) && <CheckCircle2 className="w-4 h-4 text-coral shrink-0" />}
+                      </button>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Step 3: Completed Add-Ons */}
+          {/* Step 3: Photos */}
           {step === 3 && (
-            <div>
-              <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Add-Ons Completed</h3>
-              <p className="font-body text-xs text-charcoal/40 font-light mb-4">Select any add-ons that were completed or approved during this visit.</p>
-              <div className="space-y-2">
-                {addons.map(a => (
-                  <button key={a.id} onClick={() => toggleAddon(a.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all ${completedAddons.includes(a.id) ? 'bg-coral/10 border-coral/40' : 'bg-cream border-taupe/15 hover:border-coral/20'}`}>
-                    <div>
-                      <p className={`font-body text-sm font-light ${completedAddons.includes(a.id) ? 'text-coral' : 'text-charcoal'}`}>{a.label}</p>
-                      <p className="font-body text-xs text-charcoal/30 font-light">+${a.price}</p>
-                    </div>
-                    {completedAddons.includes(a.id) && <CheckCircle2 className="w-4 h-4 text-coral shrink-0" />}
-                  </button>
-                ))}
-                {addons.length === 0 && <p className="font-body text-sm text-charcoal/30 font-light text-center py-4">No add-ons for this service.</p>}
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Photos */}
-          {step === 4 && (
             <div>
               <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Before & After Photos</h3>
               <p className="font-body text-xs text-charcoal/40 font-light mb-4">Upload photos where relevant. Marketing use requires client permission.</p>
@@ -256,131 +285,82 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
             </div>
           )}
 
-          {/* Step 5: Notes */}
-          {step === 5 && (
-            <div className="space-y-4">
+          {/* Step 4: Notes & Incident */}
+          {step === 4 && (
+            <div className="space-y-6">
               <div>
-                <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Provider Notes</h3>
-                <p className="font-body text-xs text-charcoal/40 font-light mb-3">Notes visible to admin and future assigned providers.</p>
+                <h3 className="font-heading text-base font-semibold text-charcoal mb-3">Visit Notes</h3>
                 <textarea
                   value={providerNotes}
                   onChange={e => setProviderNotes(e.target.value)}
-                  placeholder="How did the visit go? Any access notes, client preferences, things to remember..."
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 resize-none"
-                />
-              </div>
-              <div>
-                <label className="font-body text-xs text-charcoal/60 font-light block mb-1.5">Opportunity Tracker (optional)</label>
-                <textarea
-                  value={opportunityNotes}
-                  onChange={e => setOpportunityNotes(e.target.value)}
-                  placeholder="Spaces that could use help in the future, services the client mentioned needing..."
+                  placeholder="How did it go? Access notes, special requests, follow-up items..."
                   rows={2}
                   className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 resize-none"
                 />
               </div>
-            </div>
-          )}
 
-          {/* Step 6: Incident */}
-          {step === 6 && (
-            <div>
-              <h3 className="font-heading text-base font-semibold text-charcoal mb-1">Incident Report</h3>
-              <p className="font-body text-xs text-charcoal/40 font-light mb-4">Did anything happen during this visit that should be reported?</p>
-              <div className="flex gap-3 mb-4">
-                {[{ v: false, label: 'No incident to report' }, { v: true, label: 'Yes, file an incident' }].map(opt => (
-                  <button key={String(opt.v)} onClick={() => setHasIncident(opt.v)}
-                    className={`flex-1 py-3 rounded-xl border text-xs font-body font-light transition-all ${hasIncident === opt.v ? (opt.v ? 'bg-coral/10 border-coral/40 text-coral' : 'bg-sage/10 border-sage/40 text-charcoal/70') : 'bg-cream border-taupe/15 text-charcoal/40 hover:border-coral/20'}`}>
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-              {hasIncident && (
-                <div className="space-y-3 p-4 rounded-xl bg-coral/5 border border-coral/15">
-                  <div>
-                    <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Incident Type</label>
+              <div>
+                <h3 className="font-heading text-base font-semibold text-charcoal mb-3">Any Incident?</h3>
+                <div className="flex gap-2 mb-3">
+                  {[{ v: false, label: 'No' }, { v: true, label: 'Yes' }].map(opt => (
+                    <button key={String(opt.v)} onClick={() => setHasIncident(opt.v)}
+                      className={`flex-1 py-2 rounded-lg border text-xs font-body font-light transition-all ${hasIncident === opt.v ? (opt.v ? 'bg-coral/10 border-coral/40 text-coral' : 'bg-sage/10 border-sage/40 text-charcoal') : 'bg-cream border-taupe/15 text-charcoal/40 hover:border-coral/20'}`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {hasIncident && (
+                  <div className="space-y-2 p-3 rounded-xl bg-coral/5 border border-coral/15">
                     <select value={incident.incident_type} onChange={e => setIncident(p => ({ ...p, incident_type: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-xl border border-taupe/20 bg-warm-white font-body text-sm text-charcoal focus:outline-none focus:border-coral/40">
-                      <option value="">Select type...</option>
+                      className="w-full px-3 py-2 rounded-lg border border-taupe/20 bg-warm-white font-body text-xs text-charcoal focus:outline-none focus:border-coral/40">
+                      <option value="">Type...</option>
                       <option value="property_damage">Property Damage</option>
                       <option value="safety_concern">Safety Concern</option>
                       <option value="scope_refusal">Scope Refusal</option>
                       <option value="access_issue">Access Issue</option>
                       <option value="pet_incident">Pet Incident</option>
-                      <option value="client_behavior">Client Behavior</option>
                       <option value="other">Other</option>
                     </select>
+                    <textarea value={incident.description} onChange={e => setIncident(p => ({ ...p, description: e.target.value }))}
+                      placeholder="Describe..."
+                      rows={2}
+                      className="w-full px-3 py-2 rounded-lg border border-taupe/20 bg-warm-white font-body text-xs text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 resize-none" />
                   </div>
-                  <div>
-                    <label className="font-body text-xs text-charcoal/50 font-light block mb-1.5">Severity</label>
-                    <div className="flex gap-2">
-                      {['low', 'medium', 'high', 'critical'].map(s => (
-                        <button key={s} onClick={() => setIncident(p => ({ ...p, severity: s }))}
-                          className={`flex-1 py-1.5 rounded-lg border text-[10px] font-body font-light capitalize transition-colors ${incident.severity === s ? 'bg-coral border-coral text-white' : 'border-taupe/20 text-charcoal/40 hover:border-coral/30'}`}>{s}</button>
-                      ))}
-                    </div>
-                  </div>
-                  <textarea value={incident.description} onChange={e => setIncident(p => ({ ...p, description: e.target.value }))}
-                    placeholder="Describe what happened in detail..."
-                    rows={3}
-                    className="w-full px-3 py-2 rounded-xl border border-taupe/20 bg-warm-white font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 resize-none" />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
 
-          {/* Step 7: Submit */}
-          {step === 7 && (
+          {/* Step 5: Complete */}
+          {step === 5 && (
             <div>
               <h3 className="font-heading text-base font-semibold text-charcoal mb-4">Summary & Submit</h3>
-              <div className="space-y-3 mb-5">
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Clocked In</span>
-                  <span className="font-body text-xs text-charcoal font-light">{clockInTime}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Tasks Completed</span>
-                  <span className="font-body text-xs text-charcoal font-light">{Object.values(checklist).filter(Boolean).length} marked</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Extra Time</span>
-                  <span className="font-body text-xs text-charcoal font-light">{extraTime === 'none' ? 'None' : extraTime}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Add-Ons Completed</span>
-                  <span className="font-body text-xs text-charcoal font-light">{completedAddons.length} add-on{completedAddons.length !== 1 ? 's' : ''}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Photos</span>
-                  <span className="font-body text-xs text-charcoal font-light">{photos.length} uploaded</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-taupe/10">
-                  <span className="font-body text-xs text-charcoal/50 font-light">Incident Filed</span>
-                  <span className={`font-body text-xs font-light ${hasIncident ? 'text-coral' : 'text-charcoal'}`}>{hasIncident ? 'Yes — admin will be notified' : 'No'}</span>
-                </div>
-              </div>
-
-              {/* Tip line */}
-              <div className="bg-butter/20 border border-butter/40 rounded-xl p-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-4 h-4 text-charcoal/40" />
-                  <div className="flex-1">
-                    <p className="font-body text-sm text-charcoal font-light">Tip Amount (100% yours)</p>
-                    <p className="font-body text-[10px] text-charcoal/40 font-light">Cash tip received, or added via Stripe invoice</p>
+              <div className="space-y-3 mb-5 bg-cream rounded-xl p-4">
+                <p className="font-heading text-sm font-semibold text-charcoal mb-3">Visit Summary</p>
+                <div className="space-y-2 text-sm font-body font-light text-charcoal/60">
+                  <div className="flex justify-between">
+                    <span>Tasks completed</span>
+                    <span className="text-charcoal">{Object.values(checklist).filter(Boolean).length} marked</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-body text-sm text-charcoal/40">$</span>
-                    <input type="number" min="0" value={tipAmount} onChange={e => setTipAmount(e.target.value)} placeholder="0"
-                      className="w-16 px-2 py-1.5 rounded-lg border border-taupe/20 bg-warm-white font-body text-sm text-charcoal text-center focus:outline-none focus:border-coral/40" />
+                  <div className="flex justify-between">
+                    <span>Extra time</span>
+                    <span className="text-charcoal">{extraTime === 'none' ? 'None' : extraTime}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Add-ons</span>
+                    <span className="text-charcoal">{completedAddons.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Photos</span>
+                    <span className="text-charcoal">{photos.length}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-coral/5 border border-coral/15 rounded-xl p-4">
-                <p className="font-body text-xs text-charcoal/50 font-light mb-1">Estimated Payout This Visit</p>
-                <p className="font-heading text-2xl font-semibold text-coral">${providerPayout.toFixed(2)}</p>
-                <p className="font-body text-[10px] text-charcoal/30 font-light">50% service + 100% tips · Bi-weekly payout</p>
+                <p className="font-body text-xs text-charcoal/50 font-light mb-2">Amount Charged to Client</p>
+                <p className="font-heading text-3xl font-semibold text-coral mb-1">${totalRevenue.toFixed(2)}</p>
+                <p className="font-body text-[10px] text-charcoal/30 font-light">✓ Payment already collected</p>
               </div>
             </div>
           )}
@@ -388,31 +368,31 @@ export default function CompleteVisitWizard({ booking, onComplete, onClose }) {
         </div>
 
         {/* Footer nav */}
-        <div className="px-6 py-4 border-t border-taupe/10 flex items-center justify-between">
+        <div className="px-6 py-4 border-t border-taupe/10 flex items-center justify-between gap-3">
           <button
             onClick={() => step > 0 ? setStep(s => s - 1) : onClose()}
             className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors flex items-center gap-1"
           >
             <ChevronLeft className="w-4 h-4" />
-            {step === 0 ? 'Cancel' : 'Back'}
+            {step === 0 ? 'Close' : 'Back'}
           </button>
 
           {step < STEPS.length - 1 ? (
             <button
               onClick={() => setStep(s => s + 1)}
-              disabled={step === 6 && hasIncident === null}
+              disabled={(step === 0 && !paymentProcessed) || (step === 4 && hasIncident && !incident.description)}
               className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 disabled:opacity-30 transition-all"
             >
-              {step === 0 ? 'Start Checklist' : 'Continue'}
+              Next
               <ChevronRight className="w-4 h-4" />
             </button>
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={submitting || (hasIncident && !incident.description)}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 disabled:opacity-40 transition-all"
+              disabled={submitting}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-sage text-white font-body text-sm tracking-widest uppercase font-light hover:bg-sage/90 disabled:opacity-40 transition-all"
             >
-              {submitting ? 'Submitting...' : 'Complete Visit ✓'}
+              {submitting ? '...' : 'Finish Visit ✓'}
             </button>
           )}
         </div>

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Clock, MapPin, Phone, Mail, Tag, DollarSign, StickyNote, CheckSquare } from 'lucide-react';
+import { Clock, MapPin, Phone, Mail, Tag, DollarSign, StickyNote, CheckSquare, Play } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-function HoverTooltip({ booking, block, service, color, anchorRef }) {
+function HoverTooltip({ booking, block, service, color, anchorRef, onStartVisit, onClick }) {
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
@@ -56,15 +56,34 @@ function HoverTooltip({ booking, block, service, color, anchorRef }) {
             </div>
           ))}
         </div>
-        <div className="px-3 pb-2">
-          <p className="text-[10px] font-body text-charcoal/25 font-light">Click to open full detail</p>
+        <div className="px-3 pb-3 flex gap-2">
+          {onStartVisit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartVisit();
+              }}
+              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 bg-coral text-white rounded-lg text-[10px] font-body font-light hover:bg-coral/90 transition-colors"
+            >
+              <Play className="w-3 h-3" /> Start
+            </button>
+          )}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.();
+            }}
+            className="flex-1 px-2 py-1.5 border border-taupe/20 rounded-lg text-charcoal/60 text-[10px] font-body font-light hover:border-coral/30 transition-colors"
+          >
+            Details
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-export default function CalendarEvent({ block, booking, onClick }) {
+export default function CalendarEvent({ block, booking, onClick, onStartVisit }) {
   const [hovered, setHovered] = useState(false);
   const ref = useRef(null);
 
@@ -89,13 +108,23 @@ export default function CalendarEvent({ block, booking, onClick }) {
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onClick={onClick}
-        className="rounded-lg px-3 py-2 border-l-4 text-xs font-body cursor-pointer hover:shadow-md transition-all select-none"
+        className="rounded-lg px-3 py-2 border-l-4 text-xs font-body hover:shadow-md transition-all select-none group"
         style={{ borderLeftColor: color, backgroundColor: color + '18' }}
       >
         <p className="font-semibold text-charcoal truncate text-[11px]">{booking.client_name}</p>
         <p className="text-[10px] text-charcoal/55 font-light">{block.start_time} – {block.end_time}</p>
         <p className="text-[10px] font-light mt-0.5" style={{ color }}>{service?.label}</p>
+        {onStartVisit && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onStartVisit();
+            }}
+            className="mt-1.5 w-full flex items-center justify-center gap-1 px-2 py-1 bg-coral text-white rounded text-[9px] font-light opacity-0 group-hover:opacity-100 transition-opacity hover:bg-coral/90"
+          >
+            <Play className="w-3 h-3" /> Start Visit
+          </button>
+        )}
       </div>
 
       {hovered && (
@@ -105,6 +134,8 @@ export default function CalendarEvent({ block, booking, onClick }) {
           service={service}
           color={color}
           anchorRef={ref}
+          onStartVisit={onStartVisit}
+          onClick={onClick}
         />
       )}
     </div>

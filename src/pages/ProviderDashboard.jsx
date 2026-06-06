@@ -217,6 +217,7 @@ export default function ProviderDashboard() {
                onWeekChange={setSelectedWeek}
                onTimeBlockUpdate={handleTimeBlockUpdate}
                user={providerData}
+               onStartVisit={setActiveVisitBooking}
              />
           </motion.div>
           )}
