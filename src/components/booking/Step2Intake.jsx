@@ -95,7 +95,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
             { key: 'email', label: 'Email', placeholder: 'your@email.com', required: true },
             { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555', required: true },
-            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: false }] : []),
+            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: true }] : []),
           ].map(f => (
             <div key={f.key}>
               <label className="font-body text-xs font-light text-charcoal block mb-1.5">
