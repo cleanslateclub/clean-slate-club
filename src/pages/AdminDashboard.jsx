@@ -15,14 +15,20 @@ import QuickActions from '@/components/admin/QuickActions';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import QuickBookingModal from '@/components/admin/QuickBookingModal';
 import SettingsTab from '@/components/admin/SettingsTab';
-import { Settings } from 'lucide-react';
+import GuestsTab from '@/components/admin/GuestsTab';
+import IncidentsTab from '@/components/admin/IncidentsTab';
+import PayoutsTab from '@/components/admin/PayoutsTab';
+import { Settings, AlertTriangle, DollarSign, Home } from 'lucide-react';
 
 const TABS = [
   { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
   { key: 'bookings', label: 'Bookings', icon: Search },
+  { key: 'guests', label: 'Guests', icon: Home },
   { key: 'reports', label: 'Reports', icon: BarChart2 },
   { key: 'clients', label: 'Clients', icon: Users },
   { key: 'providers', label: 'Providers', icon: Users },
+  { key: 'payouts', label: 'Payouts', icon: DollarSign },
+  { key: 'incidents', label: 'Incidents', icon: AlertTriangle },
   { key: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -425,6 +431,27 @@ export default function AdminDashboard() {
           {tab === 'providers' && (
             <motion.div key="providers" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <ProvidersTab bookings={activeBookings} />
+            </motion.div>
+          )}
+
+          {/* GUESTS TAB */}
+          {tab === 'guests' && (
+            <motion.div key="guests" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <GuestsTab bookings={activeBookings} />
+            </motion.div>
+          )}
+
+          {/* PAYOUTS TAB */}
+          {tab === 'payouts' && (
+            <motion.div key="payouts" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <PayoutsTab />
+            </motion.div>
+          )}
+
+          {/* INCIDENTS TAB */}
+          {tab === 'incidents' && (
+            <motion.div key="incidents" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <IncidentsTab />
             </motion.div>
           )}
 

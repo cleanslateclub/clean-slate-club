@@ -1,0 +1,63 @@
+{
+  "name": "ProviderPayout",
+  "type": "object",
+  "properties": {
+    "provider_name": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "booking_id": {
+      "type": "string"
+    },
+    "service_revenue": {
+      "type": "number"
+    },
+    "payout_rate": {
+      "type": "number",
+      "description": "0.50 standard, 0.55 holiday"
+    },
+    "payout_amount": {
+      "type": "number"
+    },
+    "tip_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "total_payout": {
+      "type": "number"
+    },
+    "is_holiday_rate": {
+      "type": "boolean",
+      "default": false
+    },
+    "pay_period": {
+      "type": "string",
+      "description": "e.g. 2026-06-01 to 2026-06-14"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "paid",
+        "on_hold"
+      ],
+      "default": "pending"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider_name",
+    "booking_id",
+    "service_revenue",
+    "payout_amount"
+  ]
+}

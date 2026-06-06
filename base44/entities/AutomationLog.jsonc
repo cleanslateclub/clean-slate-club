@@ -1,0 +1,58 @@
+{
+  "name": "AutomationLog",
+  "type": "object",
+  "properties": {
+    "automation_name": {
+      "type": "string"
+    },
+    "trigger_event": {
+      "type": "string"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "sms",
+        "email",
+        "internal"
+      ]
+    },
+    "recipient_email": {
+      "type": "string"
+    },
+    "recipient_phone": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "guest",
+        "provider",
+        "admin"
+      ]
+    },
+    "message_preview": {
+      "type": "string"
+    },
+    "booking_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "delivered",
+        "failed",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "error_message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "automation_name",
+    "channel",
+    "audience"
+  ]
+}

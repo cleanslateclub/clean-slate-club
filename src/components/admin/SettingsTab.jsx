@@ -25,6 +25,19 @@ const DEFAULT_SETTINGS = [
   { key: 'notify_new_booking', label: 'Notify on New Booking', description: 'Send admin email for every new booking', category: 'notifications', value_type: 'boolean', value: 'true' },
   { key: 'notify_cancellation', label: 'Notify on Cancellation', description: 'Send admin email when a booking is cancelled', category: 'notifications', value_type: 'boolean', value: 'true' },
   { key: 'client_reminder_hours', label: 'Client Reminder (hours before)', description: 'Hours before appointment to send SMS/email reminder', category: 'notifications', value_type: 'number', value: '24' },
+
+  // Payments
+  { key: 'gift_cards_enabled', label: 'Gift Cards', description: 'Enable gift card purchases through Stripe', category: 'payments', value_type: 'boolean', value: 'false' },
+  { key: 'bnpl_enabled', label: 'Buy Now Pay Later (Klarna/Affirm)', description: 'Enable BNPL options through Stripe where available', category: 'payments', value_type: 'boolean', value: 'false' },
+  { key: 'provider_payout_standard', label: 'Provider Payout Rate — Standard (%)', description: 'Percentage of service revenue paid to provider (standard jobs)', category: 'payments', value_type: 'number', value: '50' },
+  { key: 'provider_payout_holiday', label: 'Provider Payout Rate — Holiday (%)', description: 'Percentage of service revenue paid to provider (premium holiday jobs)', category: 'payments', value_type: 'number', value: '55' },
+  { key: 'extra_hour_rate_member', label: 'Extra Hour Rate — Members ($/hr)', description: 'Hourly rate billed for additional time — members', category: 'payments', value_type: 'number', value: '65' },
+  { key: 'extra_hour_rate_nonmember', label: 'Extra Hour Rate — Non-Members ($/hr)', description: 'Hourly rate billed for additional time — non-members', category: 'payments', value_type: 'number', value: '85' },
+  { key: 'membership_price', label: 'Membership Monthly Price ($)', description: 'Monthly price for the Clean Slate Club Membership', category: 'payments', value_type: 'number', value: '49' },
+
+  // Territory/Expansion
+  { key: 'expansion_enabled', label: 'Territory Expansion', description: 'Allow bookings from towns outside the active territory list', category: 'territory', value_type: 'boolean', value: 'false' },
+  { key: 'travel_fees_enabled', label: 'Travel Fees', description: 'Charge travel/mileage fees for out-of-area or distant jobs', category: 'territory', value_type: 'boolean', value: 'false' },
 ];
 
 const CATEGORY_META = {

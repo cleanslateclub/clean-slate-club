@@ -1,0 +1,115 @@
+{
+  "name": "HouseholdProfile",
+  "type": "object",
+  "properties": {
+    "guest_email": {
+      "type": "string"
+    },
+    "guest_name": {
+      "type": "string"
+    },
+    "saved_addresses": {
+      "type": "string",
+      "description": "Newline-separated addresses"
+    },
+    "property_type": {
+      "type": "string",
+      "enum": [
+        "House",
+        "Apartment",
+        "Condo",
+        "Townhome",
+        "Senior Community",
+        "Other"
+      ]
+    },
+    "household_size": {
+      "type": "string",
+      "enum": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5+"
+      ]
+    },
+    "children_present": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Infant",
+        "Toddler",
+        "School Age",
+        "Teen",
+        "Multiple ages"
+      ]
+    },
+    "seniors_present": {
+      "type": "boolean",
+      "default": false
+    },
+    "mobility_concerns": {
+      "type": "boolean",
+      "default": false
+    },
+    "mobility_notes": {
+      "type": "string"
+    },
+    "pets": {
+      "type": "string",
+      "description": "Pet names, types, behavior notes"
+    },
+    "access_notes": {
+      "type": "string",
+      "description": "Gate code, parking, entry instructions"
+    },
+    "supply_preferences": {
+      "type": "string",
+      "description": "Fragrance-free, no bleach, etc."
+    },
+    "laundry_preferences": {
+      "type": "string"
+    },
+    "shoe_policy": {
+      "type": "boolean",
+      "default": false,
+      "description": "Shoes off requested"
+    },
+    "future_todo_list": {
+      "type": "string",
+      "description": "Things I'd love help with in the future"
+    },
+    "preferred_provider": {
+      "type": "string",
+      "description": "Preferred provider name/ID"
+    },
+    "preferred_contact_method": {
+      "type": "string",
+      "enum": [
+        "Text",
+        "Email",
+        "Phone call"
+      ]
+    },
+    "lead_source": {
+      "type": "string",
+      "enum": [
+        "Google",
+        "Instagram",
+        "Facebook",
+        "Referral",
+        "Event",
+        "Flyer",
+        "School",
+        "Other"
+      ]
+    },
+    "internal_notes": {
+      "type": "string",
+      "description": "CEO/Admin only"
+    }
+  },
+  "required": [
+    "guest_email"
+  ]
+}

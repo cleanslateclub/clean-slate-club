@@ -1,0 +1,77 @@
+{
+  "name": "Incident",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "property_damage",
+        "safety_concern",
+        "scope_refusal",
+        "access_issue",
+        "pet_incident",
+        "client_behavior",
+        "provider_behavior",
+        "other"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "low"
+    },
+    "photos_attached": {
+      "type": "boolean",
+      "default": false
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under_review",
+        "resolved",
+        "escalated"
+      ],
+      "default": "open"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "admin_notified": {
+      "type": "boolean",
+      "default": false
+    },
+    "booking_blocked": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "booking_id",
+    "incident_type",
+    "description"
+  ]
+}

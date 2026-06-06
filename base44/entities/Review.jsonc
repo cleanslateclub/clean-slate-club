@@ -1,0 +1,68 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "comment": {
+      "type": "string"
+    },
+    "internal_rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Internal satisfaction check before public request"
+    },
+    "internal_feedback": {
+      "type": "string"
+    },
+    "google_review_requested": {
+      "type": "boolean",
+      "default": false
+    },
+    "google_review_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "referral_requested": {
+      "type": "boolean",
+      "default": false
+    },
+    "membership_invited": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_internal",
+        "admin_alerted",
+        "resolved",
+        "published"
+      ],
+      "default": "pending_internal"
+    },
+    "admin_notes": {
+      "type": "string"
+    },
+    "service_category": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "booking_id",
+    "rating"
+  ]
+}

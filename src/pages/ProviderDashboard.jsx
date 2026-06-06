@@ -4,8 +4,9 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
+import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
-import { LogOut } from 'lucide-react';
+import { LogOut, CheckSquare, CalendarDays } from 'lucide-react';
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
@@ -116,13 +117,29 @@ export default function ProviderDashboard() {
     );
   }
 
+  const [activeVisitBooking, setActiveVisitBooking] = useState(null);
+  const [providerTab, setProviderTab] = useState('calendar');
+
   const handleLogout = async () => {
     await base44.auth.logout();
     navigate('/provider-login');
   };
 
+  // Today's confirmed/assigned bookings for this provider
+  const today = new Date().toISOString().split('T')[0];
+  const todaysJobs = bookings.filter(b =>
+    b.scheduled_date === today && ['confirmed', 'pending'].includes(b.status)
+  );
+
   return (
     <div className="min-h-screen bg-cream">
+      {activeVisitBooking && (
+        <CompleteVisitWizard
+          booking={activeVisitBooking}
+          onComplete={() => { setActiveVisitBooking(null); }}
+          onClose={() => setActiveVisitBooking(null)}
+        />
+      )}
       <div className="pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -143,6 +160,32 @@ export default function ProviderDashboard() {
 
           {/* Stats */}
           <ProviderStats bookings={bookings} user={user} />
+
+          {/* Today's Jobs Banner */}
+          {todaysJobs.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+              <div className="bg-coral/5 border border-coral/15 rounded-2xl p-4">
+                <p className="font-body text-xs tracking-widest uppercase text-coral/60 font-light mb-3">Today's Jobs</p>
+                <div className="space-y-2">
+                  {todaysJobs.map(b => (
+                    <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
+                      <div>
+                        <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
+                        <p className="font-body text-xs text-charcoal/40 font-light">{b.scheduled_start_time} · {b.service_category?.replace('_', ' ')}</p>
+                      </div>
+                      <button
+                        onClick={() => setActiveVisitBooking(b)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white font-body text-xs tracking-wide hover:bg-coral/90 transition-all shrink-0"
+                      >
+                        <CheckSquare className="w-3.5 h-3.5" />
+                        Complete Visit
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {/* Calendar */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>

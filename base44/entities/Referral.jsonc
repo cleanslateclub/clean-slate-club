@@ -1,0 +1,57 @@
+{
+  "name": "Referral",
+  "type": "object",
+  "properties": {
+    "referrer_name": {
+      "type": "string"
+    },
+    "referrer_email": {
+      "type": "string"
+    },
+    "referred_name": {
+      "type": "string"
+    },
+    "referred_email": {
+      "type": "string"
+    },
+    "referred_phone": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "booked",
+        "completed",
+        "credited"
+      ],
+      "default": "pending"
+    },
+    "referrer_credit_amount": {
+      "type": "number",
+      "default": 25
+    },
+    "referred_discount_amount": {
+      "type": "number",
+      "default": 25
+    },
+    "referrer_credit_issued": {
+      "type": "boolean",
+      "default": false
+    },
+    "referred_discount_issued": {
+      "type": "boolean",
+      "default": false
+    },
+    "booking_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "referrer_email",
+    "referred_email"
+  ]
+}

@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { CalendarDays, Settings2, Star, LogOut } from 'lucide-react';
+import { CalendarDays, Settings2, Star, LogOut, Home } from 'lucide-react';
 import UpcomingBookings from '@/components/dashboard/UpcomingBookings';
 import ServicePreferencesForm from '@/components/dashboard/ServicePreferencesForm';
+import HouseholdProfileForm from '@/components/dashboard/HouseholdProfileForm';
 
 const TABS = [
   { id: 'schedule', label: 'My Schedule', icon: CalendarDays },
-  { id: 'preferences', label: 'Service Preferences', icon: Settings2 },
+  { id: 'household', label: 'My Home', icon: Home },
+  { id: 'preferences', label: 'Preferences', icon: Settings2 },
 ];
 
 export default function MemberDashboard() {
@@ -146,6 +148,9 @@ export default function MemberDashboard() {
           >
             {activeTab === 'schedule' && (
               <UpcomingBookings bookings={bookings} loading={loadingBookings} />
+            )}
+            {activeTab === 'household' && (
+              <HouseholdProfileForm userEmail={user.email} userName={user.full_name} />
             )}
             {activeTab === 'preferences' && (
               <div>
