@@ -147,7 +147,7 @@ export default function MemberDashboard() {
             className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-6 sm:p-8"
           >
             {activeTab === 'schedule' && (
-              <UpcomingBookings bookings={bookings} loading={loadingBookings} />
+              <UpcomingBookings bookings={bookings} loading={loadingBookings} userEmail={user.email} userName={user.full_name} />
             )}
             {activeTab === 'household' && (
               <HouseholdProfileForm userEmail={user.email} userName={user.full_name} />

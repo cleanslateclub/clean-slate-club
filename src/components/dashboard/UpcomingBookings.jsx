@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import BookingCard from './BookingCard';
+import LeaveReviewModal from './LeaveReviewModal';
+import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
+import { Star } from 'lucide-react';
 
 function LastBookingSummary({ bookings }) {
   const today = new Date().toISOString().split('T')[0];
@@ -74,12 +77,21 @@ function LastBookingSummary({ bookings }) {
   );
 }
 
-export default function UpcomingBookings({ bookings: initialBookings, loading }) {
+export default function UpcomingBookings({ bookings: initialBookings, loading, userEmail, userName }) {
   const [bookings, setBookings] = useState(initialBookings);
+  const [reviewedIds, setReviewedIds] = useState(new Set());
+  const [reviewBooking, setReviewBooking] = useState(null);
 
   useEffect(() => {
     setBookings(initialBookings);
   }, [initialBookings]);
+
+  useEffect(() => {
+    if (!userEmail) return;
+    base44.entities.Review.filter({ client_email: userEmail }).then(reviews => {
+      setReviewedIds(new Set((reviews || []).map(r => r.booking_id)));
+    });
+  }, [userEmail]);
 
   const handleCancelled = (cancelledId) => {
     setBookings(prev =>
@@ -136,10 +148,36 @@ export default function UpcomingBookings({ bookings: initialBookings, loading })
           <h3 className="font-heading text-sm font-semibold text-charcoal/50 mb-3">Recent & Past Visits</h3>
           <div className="space-y-3">
             {past.map(b => (
-              <BookingCard key={b.id} booking={b} onCancelled={handleCancelled} isPast />
+              <div key={b.id}>
+                <BookingCard booking={b} onCancelled={handleCancelled} isPast />
+                {b.status === 'completed' && !reviewedIds.has(b.id) && (
+                  <button
+                    onClick={() => setReviewBooking(b)}
+                    className="mt-1.5 ml-1 flex items-center gap-1.5 text-xs font-body font-light text-coral hover:underline transition-colors"
+                  >
+                    <Star className="w-3.5 h-3.5" />
+                    Leave a review for this visit
+                  </button>
+                )}
+                {reviewedIds.has(b.id) && (
+                  <p className="mt-1.5 ml-1 text-xs font-body font-light text-sage flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-sage stroke-sage" /> Review submitted — thank you!
+                  </p>
+                )}
+              </div>
             ))}
           </div>
         </div>
+      )}
+
+      {reviewBooking && (
+        <LeaveReviewModal
+          booking={reviewBooking}
+          userEmail={userEmail}
+          userName={userName}
+          onClose={() => setReviewBooking(null)}
+          onSubmitted={() => setReviewedIds(prev => new Set([...prev, reviewBooking.id]))}
+        />
       )}
     </div>
   );

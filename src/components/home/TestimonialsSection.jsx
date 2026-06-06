@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
-const testimonials = [
+import { base44 } from '@/api/base44Client';
+import { Star } from 'lucide-react';
+
+const STATIC_TESTIMONIALS = [
 {
   quote: "I cried happy tears when I walked into my house after my first visit. I could actually breathe. This isn't cleaning — it's emotional relief.",
   name: "Sarah M.",
@@ -23,8 +26,31 @@ const testimonials = [
   color: '#CAE7B9'
 }];
 
+const STAR_COLORS = ['#EB9486', '#EFB988', '#CAE7B9', '#B58A90', '#97A7B3'];
+
 
 export default function TestimonialsSection() {
+  const [liveReviews, setLiveReviews] = useState([]);
+
+  useEffect(() => {
+    base44.entities.Review.filter({ status: 'published' }, '-created_date', 6).then(results => {
+      setLiveReviews((results || []).filter(r => r.comment && r.rating >= 4));
+    });
+  }, []);
+
+  const allTestimonials = [
+    ...liveReviews.map((r, i) => ({
+      quote: r.comment,
+      name: r.client_name || 'Happy Client',
+      location: '',
+      detail: '★'.repeat(r.rating),
+      color: STAR_COLORS[i % STAR_COLORS.length],
+      isLive: true,
+      rating: r.rating,
+    })),
+    ...STATIC_TESTIMONIALS,
+  ].slice(0, 6);
+
   return (
     <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#e3d0c3' }}>
       <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translateY(-50%) translateX(-40%)' }} />
@@ -40,23 +66,35 @@ export default function TestimonialsSection() {
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((t, i) =>
+          {allTestimonials.map((t, i) =>
             <AnimatedSection key={i} delay={i * 0.12}>
               <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-sm transition-all duration-500 border" style={{ background: 'rgba(255,255,255,0.75)', borderColor: 'rgba(255,255,255,0.5)' }}>
                 <div className="flex-1">
-                  <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
+                  {t.isLive ? (
+                    <div className="flex gap-0.5 mb-4">
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} className="w-4 h-4" fill={s <= t.rating ? t.color : 'none'} stroke={s <= t.rating ? t.color : '#ddd'} strokeWidth={1.5} />
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
+                  )}
                   <p className="font-body text-base leading-relaxed font-light -mt-2 mb-8" style={{ color: '#3a3330' }}>
-                    {t.quote}
+                    {t.isLive ? `"${t.quote}"` : t.quote}
                   </p>
                 </div>
                 <div>
                   <div className="h-px bg-taupe/25 mb-5" />
                   <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{t.name}</p>
-                  <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#6b5248' }}>{t.location} · {t.detail}</p>
+                  {(t.location || t.detail) && (
+                    <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#6b5248' }}>
+                      {[t.location, !t.isLive && t.detail].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
                 </div>
               </div>
             </AnimatedSection>
-            )}
+          )}
         </div>
       </div>
     </section>
