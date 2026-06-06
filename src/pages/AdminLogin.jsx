@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-
-const ADMIN_CREDENTIALS = {
-  username: 'Masha',
-  password: 'Anya13579!'
-};
+import { base44 } from '@/api/base44Client';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -20,18 +16,30 @@ export default function AdminLogin() {
     setLoading(true);
     setError(null);
 
+    // FIX: Credentials are NEVER checked in the browser.
+    // The backend validates them and returns a signed token.
+    // Anyone inspecting your source code sees nothing sensitive.
     try {
-      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        // Store admin session in localStorage
+      const result = await base44.functions.invoke('adminLogin', {
+        data: {
+          username: username.trim(), // FIX: trim whitespace
+          password: password
+        }
+      });
+
+      if (result?.success && result?.token) {
         localStorage.setItem('adminSession', JSON.stringify({
-          username: username,
-          timestamp: Date.now()
+          username: username.trim(),
+          token: result.token,
+          expiresAt: Date.now() + (8 * 60 * 60 * 1000) // FIX: 8-hour expiry
         }));
         navigate('/admin');
       } else {
         setError('Invalid username or password.');
       }
     } catch (err) {
+      // FIX: catch now actually handles real failures (network, server errors)
+      console.error('Admin login error:', err);
       setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
@@ -64,6 +72,7 @@ export default function AdminLogin() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username"
               required
+              autoComplete="username"
               className="w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
             />
           </div>
@@ -77,6 +86,7 @@ export default function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                autoComplete="current-password"
                 className="w-full px-4 py-3 pr-10 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
               />
               <button
@@ -91,7 +101,7 @@ export default function AdminLogin() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !username || !password}
             className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
             {loading ? 'Signing in...' : 'Sign In'}
@@ -100,7 +110,7 @@ export default function AdminLogin() {
 
         <div className="text-center mt-6">
           <p className="font-body text-xs text-charcoal/40 font-light">
-            Need help? Contact us at (206) 825-4061
+            Need help? Contact your administrator.
           </p>
         </div>
       </div>
