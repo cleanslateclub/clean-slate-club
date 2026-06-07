@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function AdminLogin() {
-  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const attemptLogin = async (user, pass) => {
+    const result = await base44.functions.invoke('adminLogin', {
+      data: { username: user, password: pass }
+    });
+    return result?.data ?? result;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,31 +22,29 @@ export default function AdminLogin() {
     setError(null);
 
     try {
-      const result = await base44.functions.invoke('adminLogin', {
-        data: {
-          username: username.trim(),
-          password: password
-        }
-      });
+      const user = username.trim();
+      const pass = password;
 
-      // ✅ FIX: Base44 SDK sometimes wraps the response under result.data
-      // This handles both { success, token } and { data: { success, token } }
-      const payload = result?.data ?? result;
+      let payload = await attemptLogin(user, pass);
 
-      // ✅ DEBUG: Log the raw result so we can confirm the shape
-      console.log('[adminLogin] raw result:', result);
-      console.log('[adminLogin] resolved payload:', payload);
+      // Auto-retry once on cold start (Deno drops body on first invocation)
+      if (!payload?.success && payload?.error === 'Missing credentials.') {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        payload = await attemptLogin(user, pass);
+      }
 
       if (payload?.success && payload?.token) {
         localStorage.setItem('adminSession', JSON.stringify({
-          username: username.trim(),
+          username: user,
           token: payload.token,
           expiresAt: Date.now() + (8 * 60 * 60 * 1000) // 8-hour expiry
         }));
-        console.log('[adminLogin] session saved, navigating to /admin');
-        navigate('/admin');
+
+        // ✅ FIX: Use full page navigation instead of React Router navigate.
+        // This avoids Base44 SDK interceptors and React auth state race conditions
+        // that redirect away from /admin before the dashboard can fully mount.
+        window.location.href = '/admin';
       } else {
-        console.warn('[adminLogin] login failed — payload was:', payload);
         setError(payload?.error || 'Invalid username or password.');
       }
     } catch (err) {
