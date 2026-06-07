@@ -3,11 +3,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     // Required: Base44 runtime uses this to initialise the function.
-    // Without this call the platform returns 404 before your code runs.
     createClientFromRequest(req);
 
     const body = await req.json();
-    const { username, password } = body;
+
+    // ✅ FIX: Base44 SDK wraps the payload under a 'data' key when invoking functions.
+    // So the actual body arrives as { data: { username, password } }, not { username, password }.
+    const { username, password } = body?.data ?? body;
 
     if (!username || !password) {
       return Response.json({ success: false, error: 'Missing credentials.' });
