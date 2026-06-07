@@ -2,17 +2,30 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
-    // Required: Base44 runtime uses this to initialise the function.
+    // ✅ FIX: Clone the request BEFORE passing to createClientFromRequest.
+    // In Deno, the request body is a one-time readable stream.
+    // If createClientFromRequest reads the body internally, req.json() would
+    // return empty. Cloning gives each one its own fresh stream.
+    const reqClone = req.clone();
     createClientFromRequest(req);
 
-    const body = await req.json();
+    const body = await reqClone.json();
 
-    // ✅ FIX: Base44 SDK wraps the payload under a 'data' key when invoking functions.
-    // So the actual body arrives as { data: { username, password } }, not { username, password }.
-    const { username, password } = body?.data ?? body;
+    // Unwrap Base44 SDK data envelope if present
+    const payload = body?.data ?? body;
+    const { username, password } = payload ?? {};
 
     if (!username || !password) {
-      return Response.json({ success: false, error: 'Missing credentials.' });
+      // Temporary debug — remove after confirming login works
+      return Response.json({
+        success: false,
+        error: 'Missing credentials.',
+        _debug: {
+          bodyKeys: Object.keys(body ?? {}),
+          payloadKeys: Object.keys(payload ?? {}),
+          hasData: !!body?.data,
+        }
+      });
     }
 
     const validUsername = Deno.env.get('ADMIN_USERNAME');
