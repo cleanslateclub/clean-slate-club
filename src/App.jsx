@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -27,6 +27,7 @@ import StaffLogin from './pages/StaffLogin';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const location = useLocation(); // ✅ FIX: track current route
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -36,7 +37,14 @@ const AuthenticatedApp = () => {
     );
   }
 
-  if (authError) {
+  // ✅ FIX: Admin routes use their own localStorage session.
+  // Skip the Base44 auth check entirely for /admin and /admin-login
+  // so the Base44 AuthContext never intercepts and redirects them.
+  const isAdminRoute =
+    location.pathname === '/admin' ||
+    location.pathname === '/admin-login';
+
+  if (!isAdminRoute && authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
