@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Eye, EyeOff, ShieldCheck, Briefcase } from 'lucide-react';
 
@@ -10,7 +9,6 @@ const ADMIN_USERNAME = 'Masha';
 
 // SHA-256 hash of your admin password (not the password itself)
 // Generate at: emn178.github.io/online-tools/sha256.html
-// REPLACE THIS with your actual hash before pushing
 const ADMIN_PASSWORD_HASH = 'd26b24812501c39790da32bf7b5e7a53fe48ad91b14c72a60783e7d759a2e94c';
 
 async function hashPassword(password) {
@@ -22,7 +20,6 @@ async function hashPassword(password) {
 }
 
 export default function StaffLogin() {
-  const navigate = useNavigate();
   const [mode, setMode] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,9 +36,11 @@ export default function StaffLogin() {
       if (username === ADMIN_USERNAME && inputHash === ADMIN_PASSWORD_HASH) {
         localStorage.setItem('adminSession', JSON.stringify({
           username,
+          token: crypto.randomUUID(), // ✅ FIX: AdminDashboard checks !session.token — without this it always redirects back
           expiresAt: Date.now() + SESSION_DURATION_MS,
         }));
-        navigate('/admin');
+        // ✅ FIX: Full page navigation avoids React auth state race conditions
+        window.location.href = '/admin';
       } else {
         setError('Invalid credentials.');
       }
@@ -57,8 +56,6 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      // TODO: move to verifyProviderLogin backend function when credits restored
-      // For now: client-side check — provider passwords are already plain text in DB
       const providers = await base44.entities.Provider.filter({ login_username: username });
       if (!providers || providers.length === 0) {
         setError('Invalid username or password.');
@@ -75,7 +72,7 @@ export default function StaffLogin() {
         providerEmail: provider.email,
         expiresAt: Date.now() + SESSION_DURATION_MS,
       }));
-      navigate('/provider');
+      window.location.href = '/provider'; // ✅ FIX: consistent full page nav
     } catch {
       setError('Login failed. Please try again.');
     } finally {
@@ -176,7 +173,7 @@ export default function StaffLogin() {
                   </button>
                 </div>
               </div>
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || !username || !password}
                 className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all">
                 {loading ? 'Signing in...' : 'Sign In as Admin'}
               </button>
@@ -229,7 +226,7 @@ export default function StaffLogin() {
                   </button>
                 </div>
               </div>
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || !username || !password}
                 className="w-full bg-charcoal text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-charcoal/90 disabled:opacity-50 transition-all">
                 {loading ? 'Signing in...' : 'Sign In as Provider'}
               </button>
