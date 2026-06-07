@@ -27,7 +27,7 @@ import StaffLogin from './pages/StaffLogin';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-  const location = useLocation(); // ✅ FIX: track current route
+  const location = useLocation();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -37,12 +37,13 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // ✅ FIX: Admin routes use their own localStorage session.
-  // Skip the Base44 auth check entirely for /admin and /admin-login
-  // so the Base44 AuthContext never intercepts and redirects them.
+  // Admin and staff routes use their own localStorage session.
+  // Skip the Base44 auth check for these routes so the SDK never
+  // intercepts and redirects away from them.
   const isAdminRoute =
     location.pathname === '/admin' ||
-    location.pathname === '/admin-login';
+    location.pathname === '/admin-login' ||
+    location.pathname === '/staff-login'; // ✅ added
 
   if (!isAdminRoute && authError) {
     if (authError.type === 'user_not_registered') {
