@@ -16,30 +16,36 @@ export default function AdminLogin() {
     setLoading(true);
     setError(null);
 
-    // FIX: Credentials are NEVER checked in the browser.
-    // The backend validates them and returns a signed token.
-    // Anyone inspecting your source code sees nothing sensitive.
     try {
       const result = await base44.functions.invoke('adminLogin', {
         data: {
-          username: username.trim(), // FIX: trim whitespace
+          username: username.trim(),
           password: password
         }
       });
 
-      if (result?.success && result?.token) {
+      // ✅ FIX: Base44 SDK sometimes wraps the response under result.data
+      // This handles both { success, token } and { data: { success, token } }
+      const payload = result?.data ?? result;
+
+      // ✅ DEBUG: Log the raw result so we can confirm the shape
+      console.log('[adminLogin] raw result:', result);
+      console.log('[adminLogin] resolved payload:', payload);
+
+      if (payload?.success && payload?.token) {
         localStorage.setItem('adminSession', JSON.stringify({
           username: username.trim(),
-          token: result.token,
-          expiresAt: Date.now() + (8 * 60 * 60 * 1000) // FIX: 8-hour expiry
+          token: payload.token,
+          expiresAt: Date.now() + (8 * 60 * 60 * 1000) // 8-hour expiry
         }));
+        console.log('[adminLogin] session saved, navigating to /admin');
         navigate('/admin');
       } else {
-        setError('Invalid username or password.');
+        console.warn('[adminLogin] login failed — payload was:', payload);
+        setError(payload?.error || 'Invalid username or password.');
       }
     } catch (err) {
-      // FIX: catch now actually handles real failures (network, server errors)
-      console.error('Admin login error:', err);
+      console.error('[adminLogin] exception:', err);
       setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
