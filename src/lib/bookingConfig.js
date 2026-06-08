@@ -62,17 +62,17 @@ export const SERVICE_CONFIG = {
       "Restocking Household Supplies", "Guest Room Preparation"
     ],
     addons: [
-      { id: "fold_rush", label: "The Fold Rush - Laundry Wash, Dry & Fold", minutes: 60, price: 95 },
-      { id: "extra_load", label: "Extra Laundry Load (+1)", minutes: 30, price: 25 },
-      { id: "fridge_refresh", label: "Fridge Refresh - Cleanout & Reorganize", minutes: 30, price: 65 },
+      { id: "fold_rush", label: "The Fold Rush - Laundry Wash, Dry & Fold", minutes: 90, price: 95 },
+      { id: "extra_load", label: "Extra Laundry Load (+1)", minutes: 60, price: 45 },
+      { id: "fridge_refresh", label: "Fridge Refresh - Cleanout & Reorganize", minutes: 30, price: 95 },
       { id: "pantry_party", label: "Pantry Party - Straighten & Zone", minutes: 45, price: 95 },
       { id: "bed_reset", label: "Bed Reset - All Rooms", minutes: 20, price: 45 },
-      { id: "pet_check", label: "Pet Check - Feeding, Water, Litter", minutes: 20, price: 35 },
-      { id: "stocked_up", label: "Stocked Up - Household Supply Restock", minutes: 30, price: 65 },
-      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 45 },
-      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Sort", minutes: 30, price: 65 },
+      { id: "pet_check", label: "Pet Check - Feeding, Water, Litter", minutes: 20, price: 30 },
+      { id: "stocked_up", label: "Stocked Up - Household Supply Restock", minutes: 30, price: 30 },
+      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 30 },
+      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Sort", minutes: 30, price: 50 },
       { id: "toy_story", label: "Toy Story - Toy Pickup & Room Reset", minutes: 45, price: 75 },
-      { id: "closet_comeback", label: "Closet Comeback - Light Reset & Fold", minutes: 60, price: 175 }
+      { id: "closet_comeback", label: "Closet Comeback - Light Reset & Fold", minutes: 60, price: 100 }
     ],
     intakeQuestions: [
       { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
