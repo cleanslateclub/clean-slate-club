@@ -10,7 +10,7 @@ export const SERVICE_CONFIG = {
     baseMinutes: 15,
     priceRange: [0, 0],
     description: "Not sure where to start? Book a free 15-minute call and we'll figure it out together. No commitment, no pressure. Available Mondays 10am–12pm.",
-    scheduleNote: "Consultations are available Mondays only, 10am–12pm. Google Meet default; phone optional.",
+    scheduleNote: "Consultations are available Mondays only, 10am–12pm. We'll connect by phone first — video call available if needed."",
     examples: [
       "I don't know what I need — let's just talk",
       "I want a custom quote for my situation",
