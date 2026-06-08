@@ -10,7 +10,6 @@ export const SERVICE_CONFIG = {
     baseMinutes: 15,
     priceRange: [0, 0],
     description: "Not sure where to start? Book a free 15-minute call and we'll figure it out together. No commitment, no pressure. Available Mondays 10am-12pm.",
-    // FIX: Phone is always the first point of contact. Video call is secondary/upon request only.
     scheduleNote: "Consultations are available Mondays only, 10am-12pm. We'll reach you by phone first - video call available upon request.",
     examples: [
       "I don't know what I need - let's just talk",
@@ -38,7 +37,6 @@ export const SERVICE_CONFIG = {
     color: "#EB9486",
     baseMinutes: 240,
     priceRange: [180, 400],
-    maxEstimate: 400,
     hourlyRate: [75, 95],
     minHours: 2,
     mileage_enabled: false,
@@ -387,7 +385,6 @@ export function getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, sel
     if (intakeAnswers.home_size === '4BR' || intakeAnswers.home_size === '5BR+') { extraMinutes += 30; flags.push('Large home - extra time added'); }
     if (intakeAnswers.has_pets && intakeAnswers.has_pets !== 'No') { extraMinutes += 10; }
     if (intakeAnswers.stairs === 'Yes - multi-level') { extraMinutes += 15; }
-    // FIX: Only add time for 4+ children, not any children
     if (intakeAnswers.num_children === '4+') { extraMinutes += 15; flags.push('4+ children - extra time added'); }
   }
 
@@ -433,21 +430,17 @@ export function getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, sel
   const hourlyLow = config.hourlyRate ? config.hourlyRate[0] : 75;
   const hourlyHigh = config.hourlyRate ? config.hourlyRate[1] : 95;
 
-  // FIX: Hourly rate applies to BASE service time only.
-  // Add-on minutes are included in totalDuration for scheduling,
-  // but add-ons are flat-rate and are NOT charged at the hourly rate.
+  // Hourly rate applies to BASE service time only.
+  // Add-ons are flat-rate and are NOT charged at the hourly rate.
+  // totalDuration includes addon minutes for scheduling purposes only.
   const baseDuration = BUFFER_PREP + config.baseMinutes + extraMinutes + BUFFER_WRAP;
   const totalDuration = baseDuration + addonMinutes;
   const baseHours = baseDuration / 60;
 
-  let low = Math.round(baseHours * hourlyLow) + addonPrice;
-  let high = Math.round(baseHours * hourlyHigh) + addonPrice;
-
-  // FIX: Cap at maxEstimate if defined for this service
-  if (config.maxEstimate) {
-    low = Math.min(low, config.maxEstimate);
-    high = Math.min(high, config.maxEstimate);
-  }
+  // No cap - quote can go as high as needed based on selections.
+  // priceRange in service config is only for the service card display.
+  const low = Math.round(baseHours * hourlyLow) + addonPrice;
+  const high = Math.round(baseHours * hourlyHigh) + addonPrice;
 
   return { low, high, durationMinutes: totalDuration, flags };
 }
