@@ -14,11 +14,15 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   }, []);
 
   const checkServiceArea = (address) => {
-    if (!address || territories.length === 0) return;
+    // ✅ FIX: Only validate when address looks complete (must have a comma,
+    // meaning the user has typed at least "Street, City").
+    // Previously this fired on every keystroke via onChange, triggering
+    // the out-of-area modal mid-typing even for valid addresses.
+    if (!address || territories.length === 0 || !address.includes(',')) return;
+
     const addressLower = address.toLowerCase();
     const match = territories.some(t => addressLower.includes(t.name.toLowerCase()));
     if (!match) {
-      // Try to extract city from address
       const parts = address.split(',');
       const city = parts.length > 1 ? parts[parts.length - 2].trim() : address.trim();
       setOutOfAreaCity(city);
@@ -41,6 +45,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       setUploading(false);
     }
   };
+
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -106,9 +111,13 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                 value={clientInfo[f.key] || ''}
                 onChange={e => {
                   onClientChange({ ...clientInfo, [f.key]: e.target.value });
+                  // ✅ FIX: Removed checkServiceArea from onChange.
+                  // It was firing mid-keystroke and triggering false out-of-area warnings.
+                }}
+                onBlur={e => {
+                  // ✅ FIX: Only validate on blur (when user finishes typing and moves on).
                   if (f.key === 'address') checkServiceArea(e.target.value);
                 }}
-                onBlur={e => { if (f.key === 'address') checkServiceArea(e.target.value); }}
                 placeholder={f.placeholder}
                 required={f.required}
                 className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
@@ -170,12 +179,11 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             })}
           </div>
 
-          {/* Dynamic time hint */}
           {selectedTasks.length > 0 && (
             <div className="mt-4 px-4 py-3 rounded-xl text-xs font-body font-light" style={{ background: '#fdf6f3', borderLeft: '3px solid #EB9486' }}>
-              {selectedTasks.length <= 3 && <span className="text-charcoal">✦ <strong>1–3 tasks:</strong> Estimated 2–3 hours</span>}
-              {selectedTasks.length >= 4 && selectedTasks.length <= 6 && <span className="text-charcoal">✦ <strong>4–6 tasks:</strong> Estimated 4–6 hours</span>}
-              {selectedTasks.length > 6 && <span className="text-coral/80">✦ <strong>Full scope selected</strong> — we'll confirm the exact time after your intake review</span>}
+              {selectedTasks.length <= 3 && <span className="text-charcoal">❖ <strong>1–3 tasks:</strong> Estimated 2–3 hours</span>}
+              {selectedTasks.length >= 4 && selectedTasks.length <= 6 && <span className="text-charcoal">❖ <strong>4–6 tasks:</strong> Estimated 4–6 hours</span>}
+              {selectedTasks.length > 6 && <span className="text-coral/80">❖ <strong>Full scope selected</strong> — we'll confirm the exact time after your intake review</span>}
             </div>
           )}
         </div>
