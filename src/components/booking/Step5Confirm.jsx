@@ -90,7 +90,7 @@ export default function Step5Confirm({
         'Book an additional visit for another day',
         'Approve extra time at $65/hr (members) or $85/hr (non-members) if the team member is available',
         'Additional time is not guaranteed and depends on team member availability',
-        'Delays caused by household access issues, missing supplies, or scope changes count toward booked time',
+        'Delays caused by access issues, missing supplies, or scope changes count toward booked time',
       ]
     });
     requiredAcks.push({
@@ -113,17 +113,19 @@ export default function Step5Confirm({
     requiredAcks.push({
       id: 'supplies',
       color: '#F3DE8A',
-      title: 'Supplies & Materials',
-      body: 'All necessary supplies must be ready before the appointment. If supplies are missing and a team member must source them, that time counts toward the booked service. Clean Slate Club does not advance personal funds for purchases. Examples of supplies clients are responsible for:',
+      title: 'Supplies & Products',
+      // FIX: Reworded to reflect that team arrives prepared with their own supplies.
+      // Clients choose whether to use team supplies, their own, or a mix - just communicate preference.
+      body: 'Clean Slate Club team members arrive equipped with professional supplies and are ready to get to work. Clients are also welcome to have preferred household products available - just let the team know in advance whether to use the team\'s supplies, the client\'s own preferred items, or a mix of both. If specialty items must be sourced during the visit, that travel time counts toward the booked service.',
       bullets: [
-        'Cleaning supplies, mops, vacuum bags, brooms, and sponges',
-        'Laundry detergent, fabric softener, and dryer sheets',
-        'Trash bags, paper towels, and dish soap',
-        'Organization bins, labels, hangers, and baskets',
-        'Meal prep containers and reusable grocery bags',
-        'Pet food, litter, and feeding supplies',
-        'Plant care tools and watering instructions',
-        'Specialty or hard-to-find grocery items and products',
+        'If specific brands or preferred products should be used, note this in the booking or ahead of the visit',
+        'Organization bins, labels, dividers, hangers, and baskets should be on hand for all sort & organize services',
+        'Laundry detergent, fabric softener, or dryer sheet brand preferences should be noted if applicable',
+        'Meal prep containers, reusable grocery bags, and specialty cooking items if preferred',
+        'Pet food, litter, and feeding supplies specific to each pet\'s needs',
+        'Plant care instructions and any specialty watering tools or fertilizers',
+        'Specialty or hard-to-find grocery items that require a specific store',
+        'If no preference is noted, the team will use their own standard professional supplies',
       ]
     });
     requiredAcks.push({
@@ -186,7 +188,6 @@ export default function Step5Confirm({
       ]
     });
 
-    // Service-specific
     if (intake.transportation_needed && intake.transportation_needed !== 'No') {
       requiredAcks.push({
         id: 'transportation',
@@ -310,7 +311,6 @@ export default function Step5Confirm({
     const consultDisplayDate = selectedDate
       ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
       : null;
-
     return (
       <div>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Review & confirm</h2>
@@ -384,10 +384,8 @@ export default function Step5Confirm({
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Review & confirm</h2>
       <p className="font-body text-sm text-charcoal font-light mb-8">Review the booking details and confirm each acknowledgement below to proceed.</p>
-
       <div className="space-y-4">
 
-        {/* Service */}
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal font-light mb-2">Service</p>
           <div className="flex items-center gap-2">
@@ -405,7 +403,6 @@ export default function Step5Confirm({
           )}
         </div>
 
-        {/* Schedule */}
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal font-light mb-2">Schedule</p>
           <p className="font-heading text-base font-semibold text-charcoal mb-3">{displayDate}</p>
@@ -418,7 +415,6 @@ export default function Step5Confirm({
           <p className="font-body text-[11px] text-charcoal font-light mt-2">Total: {(totalDuration / 60).toFixed(1)} hours</p>
         </div>
 
-        {/* Client info */}
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal font-light mb-2">Your Info</p>
           <p className="font-body text-sm text-charcoal font-light">{clientInfo.name}</p>
@@ -426,7 +422,6 @@ export default function Step5Confirm({
           <p className="font-body text-sm text-charcoal font-light">{clientInfo.address}</p>
         </div>
 
-        {/* Emergency contact - tap-to-call */}
         {showEmergency && (
           <div className="rounded-2xl border-2 border-coral/25 overflow-hidden" style={{ background: '#fff8f7' }}>
             <div className="px-5 pt-4 pb-2">
@@ -435,10 +430,7 @@ export default function Step5Confirm({
               <p className="font-body text-[11px] text-charcoal/40 font-light mt-1">Accessible to the team member during the visit.</p>
             </div>
             {emergencyPhone && (
-              <a
-                href={`tel:${emergencyPhone}`}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 transition-all"
-              >
+              <a href={`tel:${emergencyPhone}`} className="flex items-center justify-center gap-2 w-full py-3 bg-coral text-white font-body text-sm tracking-wide hover:bg-coral/90 transition-all">
                 <Phone className="w-4 h-4" />
                 Tap to Call Emergency Contact
               </a>
@@ -446,7 +438,6 @@ export default function Step5Confirm({
           </div>
         )}
 
-        {/* Tasks */}
         {selectedTasks.length > 0 && (
           <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
             <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-3">Tasks Requested</p>
@@ -458,7 +449,6 @@ export default function Step5Confirm({
           </div>
         )}
 
-        {/* Additional time authorization */}
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Additional Time Authorization</p>
           <p className="font-body text-xs text-charcoal/60 font-light mb-3 leading-relaxed">If more time is needed to complete all requested tasks, may the team extend the appointment?</p>
@@ -484,7 +474,6 @@ export default function Step5Confirm({
           )}
         </div>
 
-        {/* Pricing */}
         <div className="bg-coral/5 border border-coral/15 rounded-2xl p-5">
           <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-1">Estimated Total</p>
           <p className="font-heading text-2xl font-semibold text-coral">${totalLow}-${totalHigh}</p>
@@ -500,7 +489,6 @@ export default function Step5Confirm({
           <p className="font-body text-xs text-charcoal font-light mt-2">Final pricing confirmed before any work begins. No surprises.</p>
         </div>
 
-        {/* Required Acknowledgements */}
         {requiredAcks.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
