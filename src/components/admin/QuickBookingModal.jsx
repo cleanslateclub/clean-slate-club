@@ -14,6 +14,8 @@ import {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+const DEPOSIT_AMOUNT = 50; // flat deposit for all bookings
+
 const TIME_SLOTS = (() => {
   const slots = [];
   for (let h = 8; h <= 20; h++) {
@@ -39,6 +41,16 @@ const CHECKLIST = [
   { id: 'identity_confirmed',  label: 'Client identity confirmed (known in person)',         required: false },
 ];
 
+const SERVICE_TERMS = [
+  '24-hour cancellation policy — the $50 deposit is non-refundable within 24 hours of the appointment.',
+  'Payment is due at the time of service. The $50 deposit will be applied toward the total.',
+  'We are not responsible for pre-existing damage or normal wear and tear.',
+  'Please ensure safe, accessible conditions for our team on arrival.',
+  'Satisfaction guarantee — report any concerns within 24 hours of service completion.',
+  'We use professional-grade, eco-friendly products. Inform us of any sensitivities.',
+  'Clean Slate Club reserves the right to decline service in unsafe or hazardous conditions.',
+];
+
 const STEPS = ['Client', 'Service', 'Checklist', 'Deposit', 'Confirm'];
 
 const inp = 'w-full px-4 py-3 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40';
@@ -62,12 +74,12 @@ export default function QuickBookingModal({
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
 
-  // Step 1
+  // Step 1 — Client
   const [clientName,  setClientName]  = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
 
-  // Step 2
+  // Step 2 — Service & Schedule
   const [serviceKey,     setServiceKey]     = useState('home_reset');
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [date,           setDate]           = useState(resolvedDate);
@@ -77,7 +89,7 @@ export default function QuickBookingModal({
   const [numBathrooms,   setNumBathrooms]   = useState('');
   const [specialNotes,   setSpecialNotes]   = useState('');
 
-  // Step 3
+  // Step 3 — Checklist
   const [checks,        setChecks]        = useState(
     Object.fromEntries(CHECKLIST.map(i => [i.id, false]))
   );
@@ -85,14 +97,17 @@ export default function QuickBookingModal({
   const [accessCode,    setAccessCode]    = useState('');
   const [petDetails,    setPetDetails]    = useState('');
   const [allergyDetail, setAllergyDetail] = useState('');
+  const [termsExpanded, setTermsExpanded] = useState(false);
+  const [termsSent,     setTermsSent]     = useState(false);
+  const [sendingTerms,  setSendingTerms]  = useState(false);
 
-  // Step 4
+  // Step 4 — Deposit
   const [requireDeposit, setRequireDeposit] = useState(true);
   const [depositSent,    setDepositSent]    = useState(false);
   const [depositUrl,     setDepositUrl]     = useState(null);
   const [sendingDep,     setSendingDep]     = useState(false);
 
-  // Derived values
+  // Derived
   const cfg           = SERVICE_CONFIG[serviceKey] || {};
   const totalDuration = calculateTotalDuration
     ? calculateTotalDuration(serviceKey, selectedAddons)
@@ -100,9 +115,8 @@ export default function QuickBookingModal({
   const endTime = time
     ? minutesToTime(timeToMinutes(time) + totalDuration)
     : 'TBD';
-  const addonPrice  = selectedAddons.reduce((sum, id) => {
-    return sum + (cfg.addons?.find(a => a.id === id)?.price || 0);
-  }, 0);
+  const addonPrice   = selectedAddons.reduce((sum, id) =>
+    sum + (cfg.addons?.find(a => a.id === id)?.price || 0), 0);
   const estimateLow  = (cfg.priceRange?.[0] || 0) + addonPrice;
   const estimateHigh = (cfg.priceRange?.[1] || 0) + addonPrice;
   const displayDate  = date
@@ -125,12 +139,28 @@ export default function QuickBookingModal({
     p.includes(id) ? p.filter(x => x !== id) : [...p, id]
   );
 
+  const sendTermsLink = async () => {
+    setSendingTerms(true);
+    try {
+      await base44.functions.invoke('sendClientSmsConfirmation', {
+        clientPhone,
+        clientName,
+        message: `Hi ${clientName.split(' ')[0]}! Please review Clean Slate Club's service terms before your appointment: https://cleanslateclub.co/terms ✨`,
+      });
+      setTermsSent(true);
+    } catch {
+      // silent — provider can still proceed verbally
+    } finally {
+      setSendingTerms(false);
+    }
+  };
+
   const sendDepositLink = async () => {
     setSendingDep(true);
     setError(null);
     try {
       const res = await base44.functions.invoke('createDepositPaymentIntent', {
-        amount:        estimateLow * 100,
+        amount:        DEPOSIT_AMOUNT * 100,
         customerEmail: clientEmail || undefined,
         customerPhone: clientPhone,
         serviceLabel:  cfg.label,
@@ -142,12 +172,12 @@ export default function QuickBookingModal({
         await base44.functions.invoke('sendClientSmsConfirmation', {
           clientPhone,
           clientName,
-          message: `Hi ${clientName.split(' ')[0]}! Your $${estimateLow} deposit link for your Clean Slate Club appointment on ${displayDate}: ${url} 🧹`,
+          message: `Hi ${clientName.split(' ')[0]}! Your $${DEPOSIT_AMOUNT} deposit link for your Clean Slate Club appointment on ${displayDate}: ${url} 🧹`,
         }).catch(() => {});
       }
       setDepositSent(true);
     } catch {
-      setError('Could not generate deposit link. You can proceed and collect later.');
+      setError('Could not generate deposit link — you can proceed and collect later.');
     } finally {
       setSendingDep(false);
     }
@@ -188,15 +218,16 @@ export default function QuickBookingModal({
           allergy_details:            allergyDetail,
           special_notes:              specialNotes,
           verbal_checklist_completed: true,
+          terms_link_sent:            termsSent,
           checklist_items:            { ...checks },
         },
         admin_notes: [
           'Manually booked by provider on-site.',
           requireDeposit && depositSent
-            ? `Deposit link ($${estimateLow}) sent to ${clientPhone}.`
-            : 'No deposit collected.',
+            ? `$${DEPOSIT_AMOUNT} deposit link sent to ${clientPhone}.`
+            : 'No deposit collected at time of booking.',
+          termsSent ? 'Terms link sent to client via SMS.' : 'Terms acknowledged verbally.',
           depositUrl ? `Deposit URL: ${depositUrl}` : '',
-          'Verbal acknowledgements collected via checklist.',
         ].filter(Boolean).join(' '),
       });
 
@@ -210,7 +241,7 @@ export default function QuickBookingModal({
         ]);
       }
 
-      // SMS confirmation
+      // Confirmation SMS
       await base44.functions.invoke('sendClientSmsConfirmation', {
         clientPhone, clientName, clientAddress,
         serviceLabel: cfg.label, displayDate,
@@ -218,7 +249,7 @@ export default function QuickBookingModal({
         bookingId: booking.id, addonLabels,
       }).catch(() => {});
 
-      // Email confirmation
+      // Confirmation email
       if (clientEmail) {
         await base44.functions.invoke('sendQuickBookingEmail', {
           clientEmail, clientName, clientAddress,
@@ -237,7 +268,7 @@ export default function QuickBookingModal({
     }
   };
 
-  // ─── Render ───────────────────────────────────────────────────────────────
+  // ─── Sub-component ────────────────────────────────────────────────────────
 
   const CheckRow = ({ id, label, required: req }) => (
     <button type="button" onClick={() => toggleCheck(id)}
@@ -254,6 +285,8 @@ export default function QuickBookingModal({
       </span>
     </button>
   );
+
+  // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -301,7 +334,7 @@ export default function QuickBookingModal({
               <div className="text-center pb-2">
                 <p className="font-heading text-base font-semibold text-charcoal">Who are you booking?</p>
                 <p className="font-body text-xs text-charcoal/40 font-light mt-1">
-                  Name + phone required. Email optional but sends them a confirmation.
+                  Name + phone required. Email sends them a confirmation too.
                 </p>
               </div>
               <div className="relative">
@@ -312,7 +345,7 @@ export default function QuickBookingModal({
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/30" />
                 <input type="tel" value={clientPhone} onChange={e => setClientPhone(e.target.value)}
-                  placeholder="Phone number * (SMS confirmation sent here)" className={`${inp} pl-10`} />
+                  placeholder="Phone number * — SMS confirmation sent here" className={`${inp} pl-10`} />
               </div>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/30" />
@@ -474,9 +507,48 @@ export default function QuickBookingModal({
                 )}
               </div>
 
-              {/* Other required items */}
+              {/* Required items — terms gets special expansion */}
               {CHECKLIST.filter(i => i.required && i.id !== 'access_confirmed').map(item => (
-                <CheckRow key={item.id} {...item} />
+                <div key={item.id} className="space-y-2">
+                  <CheckRow {...item} />
+
+                  {/* Terms expansion — verbal script + SMS option */}
+                  {item.id === 'terms_accepted' && (
+                    <div className="ml-8 space-y-2">
+                      <button type="button" onClick={() => setTermsExpanded(p => !p)}
+                        className="font-body text-xs text-coral hover:underline font-light">
+                        {termsExpanded ? '↑ Hide terms' : '↓ View key terms to read aloud'}
+                      </button>
+
+                      {termsExpanded && (
+                        <div className="bg-white border border-taupe/15 rounded-xl p-3 space-y-2">
+                          <p className="font-body text-[10px] text-charcoal/35 font-light uppercase tracking-widest mb-1">
+                            Read to client:
+                          </p>
+                          {SERVICE_TERMS.map((term, i) => (
+                            <p key={i} className="font-body text-xs text-charcoal/65 font-light flex gap-2 leading-snug">
+                              <span className="text-coral shrink-0 mt-0.5">•</span>
+                              <span>{term}</span>
+                            </p>
+                          ))}
+                        </div>
+                      )}
+
+                      {!termsSent ? (
+                        <button type="button" onClick={sendTermsLink}
+                          disabled={!clientPhone || sendingTerms}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-coral/30 bg-coral/5 text-coral font-body text-xs font-light hover:bg-coral/10 transition-colors disabled:opacity-40">
+                          <MessageSquare className="w-3 h-3" />
+                          {sendingTerms ? 'Sending...' : 'Or text terms link to client instead'}
+                        </button>
+                      ) : (
+                        <p className="font-body text-xs text-sage font-light flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Terms link sent to {clientPhone}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
 
               <p className="font-body text-[10px] text-charcoal/25 font-light text-center tracking-widest uppercase">— Optional —</p>
@@ -502,7 +574,9 @@ export default function QuickBookingModal({
               </div>
 
               {/* Remaining optional */}
-              {CHECKLIST.filter(i => !i.required && i.id !== 'pets_in_home' && i.id !== 'allergies').map(item => (
+              {CHECKLIST.filter(i =>
+                !i.required && i.id !== 'pets_in_home' && i.id !== 'allergies'
+              ).map(item => (
                 <CheckRow key={item.id} {...item} />
               ))}
 
@@ -520,21 +594,19 @@ export default function QuickBookingModal({
               <div className="text-center pb-1">
                 <p className="font-heading text-base font-semibold text-charcoal">Deposit</p>
                 <p className="font-body text-xs text-charcoal/40 font-light mt-1">
-                  Collect a deposit now or skip and collect later.
+                  Collect $50 now or skip and collect later.
                 </p>
               </div>
 
               {/* Toggle */}
               <div className="bg-cream rounded-2xl p-4 flex items-center justify-between">
                 <div>
-                  <p className="font-body text-sm text-charcoal font-light">Require deposit</p>
+                  <p className="font-body text-sm text-charcoal font-light">Require $50 deposit</p>
                   <p className="font-body text-xs text-charcoal/40 font-light">Recommended for new clients</p>
                 </div>
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => { setRequireDeposit(p => !p); setDepositSent(false); setDepositUrl(null); }}
-                  className={`w-12 h-6 rounded-full transition-all relative ${requireDeposit ? 'bg-coral' : 'bg-taupe/30'}`}
-                >
+                  className={`w-12 h-6 rounded-full transition-all relative ${requireDeposit ? 'bg-coral' : 'bg-taupe/30'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${requireDeposit ? 'left-7' : 'left-1'}`} />
                 </button>
               </div>
@@ -543,22 +615,17 @@ export default function QuickBookingModal({
                 <>
                   <div className="bg-coral/5 border border-coral/15 rounded-2xl p-4">
                     <p className="font-body text-xs text-charcoal/50 font-light mb-1">Deposit amount</p>
-                    <p className="font-heading text-3xl font-semibold text-coral">${estimateLow}</p>
+                    <p className="font-heading text-3xl font-semibold text-coral">${DEPOSIT_AMOUNT}</p>
                     <p className="font-body text-xs text-charcoal/40 font-light mt-1">
-                      Based on {cfg.label} — ${estimateLow}–${estimateHigh} total estimate
+                      Flat deposit — applied toward {cfg.label} total (${estimateLow}–${estimateHigh})
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={sendDepositLink}
-                    disabled={sendingDep}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold shadow-lg hover:bg-coral/85 active:scale-[0.98] transition-all disabled:opacity-50"
-                  >
+                  <button type="button" onClick={sendDepositLink} disabled={sendingDep}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold shadow-lg hover:bg-coral/85 active:scale-[0.98] transition-all disabled:opacity-50">
                     {sendingDep
                       ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      : <MessageSquare className="w-4 h-4" />
-                    }
-                    {sendingDep ? 'Sending...' : `Text $${estimateLow} payment link to ${clientPhone}`}
+                      : <MessageSquare className="w-4 h-4" />}
+                    {sendingDep ? 'Sending...' : `Text $${DEPOSIT_AMOUNT} payment link to ${clientPhone}`}
                   </button>
                 </>
               )}
@@ -566,7 +633,9 @@ export default function QuickBookingModal({
               {requireDeposit && depositSent && (
                 <div className="bg-sage/10 border border-sage/30 rounded-2xl p-4 text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-sage mx-auto" />
-                  <p className="font-body text-sm text-charcoal font-light">Payment link sent to {clientPhone}</p>
+                  <p className="font-body text-sm text-charcoal font-light">
+                    $50 payment link sent to {clientPhone}
+                  </p>
                   {depositUrl && (
                     <a href={depositUrl} target="_blank" rel="noreferrer"
                       className="font-body text-xs text-coral hover:underline font-light">
@@ -598,27 +667,28 @@ export default function QuickBookingModal({
                 {[
                   ['Client',    clientName],
                   ['Phone',     clientPhone],
-                  clientEmail && ['Email', clientEmail],
+                  clientEmail   && ['Email',    clientEmail],
                   ['Service',   cfg.label],
                   ['Date',      displayDate],
                   ['Time',      `${time} – ${endTime}`],
                   ['Address',   clientAddress],
-                  numBedrooms  && ['Bedrooms',  numBedrooms],
-                  numBathrooms && ['Bathrooms', numBathrooms],
+                  numBedrooms   && ['Beds',     numBedrooms],
+                  numBathrooms  && ['Baths',    numBathrooms],
                   selectedAddons.length > 0 && [
                     'Add-ons',
                     selectedAddons.map(id => cfg.addons?.find(a => a.id === id)?.label).filter(Boolean).join(', ')
                   ],
-                  ['Estimate',  `$${estimateLow} – $${estimateHigh}`],
-                  ['Deposit',   requireDeposit ? (depositSent ? `Sent — $${estimateLow}` : 'Not sent yet') : 'Skipped'],
-                  accessMethod && ['Access', accessMethod.replace(/_/g, ' ')],
-                  accessCode   && ['Code',   accessCode],
+                  ['Estimate',  `$${estimateLow}–${estimateHigh}`],
+                  ['Deposit',   requireDeposit ? (depositSent ? `Sent — $${DEPOSIT_AMOUNT}` : 'Not sent yet') : 'Skipped'],
+                  ['Terms',     termsSent ? 'Link sent via SMS' : 'Acknowledged verbally'],
+                  accessMethod  && ['Access',   accessMethod.replace(/_/g, ' ')],
+                  accessCode    && ['Code',     accessCode],
                   checks.pets_in_home  && ['Pets',      petDetails    || 'Yes'],
                   checks.allergies     && ['Allergies', allergyDetail || 'Yes'],
                   specialNotes         && ['Notes',     specialNotes],
                 ].filter(Boolean).map(([label, value]) => (
                   <div key={label} className="flex items-start justify-between gap-3">
-                    <span className="font-body text-xs text-charcoal/40 font-light shrink-0 w-20">{label}</span>
+                    <span className="font-body text-xs text-charcoal/40 font-light shrink-0 w-16">{label}</span>
                     <span className="font-body text-xs text-charcoal font-light text-right flex-1">{value}</span>
                   </div>
                 ))}
@@ -647,12 +717,9 @@ export default function QuickBookingModal({
               <div className="bg-cream rounded-2xl p-4 space-y-1.5 text-left">
                 <p className="font-body text-xs text-charcoal/50 font-light">✓ Added to calendar & database</p>
                 <p className="font-body text-xs text-charcoal/50 font-light">✓ Confirmation SMS sent to {clientPhone}</p>
-                {clientEmail && (
-                  <p className="font-body text-xs text-charcoal/50 font-light">✓ Confirmation email sent to {clientEmail}</p>
-                )}
-                {depositSent && (
-                  <p className="font-body text-xs text-charcoal/50 font-light">✓ Deposit payment link sent</p>
-                )}
+                {clientEmail && <p className="font-body text-xs text-charcoal/50 font-light">✓ Confirmation email sent to {clientEmail}</p>}
+                {depositSent && <p className="font-body text-xs text-charcoal/50 font-light">✓ ${DEPOSIT_AMOUNT} deposit link sent</p>}
+                {termsSent   && <p className="font-body text-xs text-charcoal/50 font-light">✓ Terms link sent to client</p>}
               </div>
             </div>
           )}
@@ -676,48 +743,34 @@ export default function QuickBookingModal({
             </button>
           )}
 
-          {/* Steps 1–3 next button */}
           {step >= 1 && step <= 3 && (
-            <button
-              onClick={() => { setError(null); setStep(s => s + 1); }}
+            <button onClick={() => { setError(null); setStep(s => s + 1); }}
               disabled={!canNext(step)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold disabled:opacity-40 hover:bg-coral/85 active:scale-[0.98] transition-all"
-            >
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold disabled:opacity-40 hover:bg-coral/85 active:scale-[0.98] transition-all">
               Continue <ChevronRight className="w-4 h-4" />
             </button>
           )}
 
-          {/* Step 4 — always can continue */}
           {step === 4 && (
-            <button
-              onClick={() => setStep(5)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold hover:bg-coral/85 active:scale-[0.98] transition-all"
-            >
+            <button onClick={() => setStep(5)}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold hover:bg-coral/85 active:scale-[0.98] transition-all">
               {requireDeposit && !depositSent ? 'Continue Without Deposit' : 'Continue'} <ChevronRight className="w-4 h-4" />
             </button>
           )}
 
-          {/* Step 5 — Book! */}
           {step === 5 && (
-            <button
-              onClick={handleBook}
-              disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-base font-bold shadow-2xl ring-2 ring-coral/30 hover:bg-coral/85 active:scale-[0.98] transition-all disabled:opacity-50"
-            >
+            <button onClick={handleBook} disabled={loading}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-base font-bold shadow-2xl ring-2 ring-coral/30 hover:bg-coral/85 active:scale-[0.98] transition-all disabled:opacity-50">
               {loading
                 ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                : <Zap className="w-5 h-5" />
-              }
+                : <Zap className="w-5 h-5" />}
               {loading ? 'Booking...' : '⚡ Book & Notify Client'}
             </button>
           )}
 
-          {/* Step 6 — Done */}
           {step === 6 && (
-            <button
-              onClick={() => { (onSuccess || onBookingCreated)?.(); onClose(); }}
-              className="flex-1 py-3 rounded-2xl bg-coral text-white font-body text-sm font-semibold hover:bg-coral/85 transition-all"
-            >
+            <button onClick={() => { (onSuccess || onBookingCreated)?.(); onClose(); }}
+              className="flex-1 py-3 rounded-2xl bg-coral text-white font-body text-sm font-semibold hover:bg-coral/85 transition-all">
               Done ✓
             </button>
           )}
