@@ -1,0 +1,93 @@
+{
+  "name": "MileageLog",
+  "type": "object",
+  "properties": {
+    "provider_email": {
+      "type": "string",
+      "description": "Links this entry to a specific provider"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Denormalized for quick display without a join"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the trip occurred"
+    },
+    "year": {
+      "type": "number",
+      "description": "Tax year — auto-derived from date on creation, used for annual report filtering"
+    },
+    "booking_id": {
+      "type": "string",
+      "description": "Optional — links to a Booking record if this trip was for a specific job"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Optional — client name for quick reference on job-related trips"
+    },
+    "trip_purpose": {
+      "type": "string",
+      "enum": [
+        "job_travel",
+        "supply_run",
+        "bank_run",
+        "training",
+        "admin",
+        "other"
+      ],
+      "default": "job_travel"
+    },
+    "start_address": {
+      "type": "string",
+      "description": "Starting location of the trip"
+    },
+    "end_address": {
+      "type": "string",
+      "description": "Ending location of the trip"
+    },
+    "round_trip": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, miles should represent one way — system doubles it for total"
+    },
+    "miles": {
+      "type": "number",
+      "description": "Miles driven (one way if round_trip is true, total otherwise)"
+    },
+    "total_miles": {
+      "type": "number",
+      "description": "Calculated total miles — equals miles x2 if round_trip, else miles"
+    },
+    "estimated_deduction": {
+      "type": "number",
+      "description": "Estimated IRS deduction in dollars (total_miles x current IRS rate). Stored at time of entry."
+    },
+    "irs_rate_used": {
+      "type": "number",
+      "description": "IRS standard mileage rate at time of entry (e.g. 0.67 for 2024)",
+      "default": 0.67
+    },
+    "is_reimbursable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the provider is expecting reimbursement from the business"
+    },
+    "reimbursement_status": {
+      "type": "string",
+      "enum": ["not_applicable", "pending", "paid"],
+      "default": "not_applicable"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about the trip"
+    }
+  },
+  "required": [
+    "provider_email",
+    "date",
+    "miles",
+    "trip_purpose"
+  ]
+}
