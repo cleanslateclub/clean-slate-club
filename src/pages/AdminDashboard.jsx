@@ -388,28 +388,28 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           )}
-                    {/* ══════════════════════════════════════
+       {/* ══════════════════════════════════════
               CALENDAR TAB
           ══════════════════════════════════════ */}
           {tab === 'calendar' && (
             <motion.div key="calendar" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-           <ProviderCalendar
-  bookings={bookings}
-  timeBlocks={timeBlocks}
-  onTimeBlockUpdate={handleTimeBlockUpdate}
-  onBookingClick={(id) => { setSelected(id); setTab('bookings'); }}
-  selectedWeek={selectedWeek}
-  onWeekChange={setSelectedWeek}
-  isAdmin
-  onAddBooking={(date, time) => {
-    setBookingDate(date);
-    setBookingTime(time);
-    setShowQuickBook(true);
-  }}
-/>
-
-{/* ADD this one prop ↓ so the hover card's "Complete Visit" button works: */}
-  onStartVisit={(b) => setActiveVisitBooking(b)}
+              <ProviderCalendar
+                bookings={bookings}
+                timeBlocks={timeBlocks}
+                onTimeBlockUpdate={handleTimeBlockUpdate}
+                onBookingClick={(id) => { setSelected(id); setTab('bookings'); }}
+                selectedWeek={selectedWeek}
+                onWeekChange={setSelectedWeek}
+                isAdmin
+                onAddBooking={(date, time) => {
+                  setBookingDate(date);
+                  setBookingTime(time);
+                  setShowQuickBook(true);
+                }}
+                onStartVisit={(b) => setActiveVisitBooking(b)}
+              />
+            </motion.div>
+          )}
 
           {/* ══════════════════════════════════════
               BOOKINGS TAB
@@ -456,7 +456,6 @@ export default function AdminDashboard() {
 
               {/* List + Detail */}
               <div className={`grid gap-4 ${selectedBooking ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
-                {/* Booking list */}
                 <div className="space-y-2">
                   {filtered.length === 0 ? (
                     <div className="text-center py-12 bg-warm-white rounded-2xl border border-taupe/15">
@@ -474,7 +473,6 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {/* Detail panel */}
                 {selectedBooking && (
                   <div className="lg:sticky lg:top-6 lg:self-start space-y-3">
                     <BookingDetail
@@ -487,7 +485,7 @@ export default function AdminDashboard() {
                     {!['completed', 'cancelled', 'archived'].includes(selectedBooking.status) && (
                       <button
                         onClick={() => setActiveVisitBooking(selectedBooking)}
-                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-sm font-semibold shadow-xl ring-2 ring-coral/25 hover:bg-coral/85 active:scale-[0.98] transition-all"
+                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-coral text-white font-body text-sm font-bold shadow-xl ring-2 ring-coral/25 hover:bg-coral/85 active:scale-[0.98] transition-all"
                       >
                         <CheckSquare className="w-5 h-5" /> Complete Visit
                       </button>
@@ -508,7 +506,7 @@ export default function AdminDashboard() {
           )}
 
           {/* ══════════════════════════════════════
-              PROVIDERS TAB  ← bookings prop added (fixes crash)
+              PROVIDERS TAB
           ══════════════════════════════════════ */}
           {tab === 'providers' && (
             <motion.div key="providers" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
