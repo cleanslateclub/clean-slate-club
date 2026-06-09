@@ -4,20 +4,12 @@ import { Eye, EyeOff, ShieldCheck, Briefcase } from 'lucide-react';
 
 const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
 
-// Admin username — change if needed
-const ADMIN_USERNAME = 'Masha';
-
-// SHA-256 hash of your admin password (not the password itself)
-// Generate at: emn178.github.io/online-tools/sha256.html
-const ADMIN_PASSWORD_HASH = 'd26b24812501c39790da32bf7b5e7a53fe48ad91b14c72a60783e7d759a2e94c';
-
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+const attemptAdminLogin = async (username, password) => {
+  const result = await base44.functions.invoke('adminLogin', {
+    data: { username, password }
+  });
+  return result?.data ?? result;
+};
 
 export default function StaffLogin() {
   const [mode, setMode] = useState(null);
@@ -32,17 +24,26 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      const inputHash = await hashPassword(password);
-      if (username === ADMIN_USERNAME && inputHash === ADMIN_PASSWORD_HASH) {
+      const user = username.trim();
+      const pass = password;
+
+      let payload = await attemptAdminLogin(user, pass);
+
+      // Auto-retry once on cold start (Deno drops body on first invocation)
+      if (!payload?.success && payload?.error === 'Missing credentials.') {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        payload = await attemptAdminLogin(user, pass);
+      }
+
+      if (payload?.success && payload?.token) {
         localStorage.setItem('adminSession', JSON.stringify({
-          username,
-          token: crypto.randomUUID(), // ✅ FIX: AdminDashboard checks !session.token — without this it always redirects back
+          username: user,
+          token: payload.token,
           expiresAt: Date.now() + SESSION_DURATION_MS,
         }));
-        // ✅ FIX: Full page navigation avoids React auth state race conditions
         window.location.href = '/admin';
       } else {
-        setError('Invalid credentials.');
+        setError(payload?.error || 'Invalid credentials.');
       }
     } catch {
       setError('Login failed. Please try again.');
@@ -56,23 +57,27 @@ export default function StaffLogin() {
     setLoading(true);
     setError(null);
     try {
-      const providers = await base44.entities.Provider.filter({ login_username: username });
-      if (!providers || providers.length === 0) {
+      const result = await base44.functions.invoke('verifyProviderLogin', {
+        data: {
+          username: username.trim(),
+          password: password
+        }
+      });
+
+      const payload = result?.data ?? result;
+
+      if (!payload?.success) {
         setError('Invalid username or password.');
         return;
       }
-      const provider = providers[0];
-      if (provider.login_password !== password) {
-        setError('Invalid username or password.');
-        return;
-      }
+
       localStorage.setItem('providerSession', JSON.stringify({
-        username,
-        providerId: provider.id,
-        providerEmail: provider.email,
+        username: username.trim(),
+        providerId: payload.providerId,
+        providerEmail: payload.providerEmail,
         expiresAt: Date.now() + SESSION_DURATION_MS,
       }));
-      window.location.href = '/provider'; // ✅ FIX: consistent full page nav
+      window.location.href = '/provider';
     } catch {
       setError('Login failed. Please try again.');
     } finally {
