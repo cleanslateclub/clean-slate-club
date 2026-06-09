@@ -43,7 +43,7 @@ const AuthenticatedApp = () => {
   const isAdminRoute =
     location.pathname === '/admin' ||
     location.pathname === '/admin-login' ||
-    location.pathname === '/staff-login'; // ✅ added
+    location.pathname === '/staff-login';
 
   if (!isAdminRoute && authError) {
     if (authError.type === 'user_not_registered') {
@@ -73,9 +73,6 @@ const AuthenticatedApp = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/portal" element={<ClientPortal />} />
         <Route path="/staff-login" element={<StaffLogin />} />
-        {/* Legacy redirects */}
-        <Route path="/member-login" element={<ClientPortal />} />
-        <Route path="/member-signup" element={<ClientPortal />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
