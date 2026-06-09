@@ -27,15 +27,24 @@ Deno.serve(async (req) => {
 
     const base44 = createClientFromRequest(req);
 
+    // Helper: find a booking by payment intent ID.
+    // FIX: Query by the dedicated payment_intent_id field first (fast, direct lookup).
+    // Fall back to scanning admin_notes for older bookings that predate the new field.
+    const findBookingByPaymentIntent = async (paymentIntentId) => {
+      const byField = await base44.asServiceRole.entities.Booking.filter({ payment_intent_id: paymentIntentId });
+      if (byField && byField.length > 0) return byField[0];
+
+      // Fallback for legacy bookings
+      const all = await base44.asServiceRole.entities.Booking.filter({});
+      return all.find(b => b.admin_notes?.includes(paymentIntentId)) || null;
+    };
+
     // Handle payment intent events
     if (event.type === 'payment_intent.succeeded') {
       const paymentIntent = event.data.object;
       const paymentIntentId = paymentIntent.id;
-      const clientEmail = paymentIntent.receipt_email || paymentIntent.billing_details?.email;
 
-      // Find booking by payment intent ID in admin_notes
-      const bookings = await base44.asServiceRole.entities.Booking.filter({});
-      const booking = bookings.find(b => b.admin_notes?.includes(paymentIntentId));
+      const booking = await findBookingByPaymentIntent(paymentIntentId);
 
       if (booking) {
         // Update booking status to confirmed
@@ -86,7 +95,7 @@ Deno.serve(async (req) => {
   </div>
   <div class="footer">
     <p>Questions? Reply to this email or text us at (206) 825-4061</p>
-    <p>cleanslateclubpa@gmail.com · cleanslateclubpa.com</p>
+    <p>cleanslateclubpa@gmail.com &middot; cleanslateclub.co</p>
   </div>
 </div></body></html>`;
 
@@ -96,31 +105,29 @@ Deno.serve(async (req) => {
           body: confirmationBody
         });
 
-        // Notify team
+        // FIX: Corrected domain from cleanslateclubpa.com → cleanslateclub.co
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `Payment received for ${booking.client_name} — ${displayDate}`,
-          body: `Payment confirmed!\n\nBooking: ${booking.client_name}\nAmount: $${(paymentIntent.amount / 100).toFixed(2)}\nDate: ${displayDate} at ${booking.scheduled_start_time}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+          body: `Payment confirmed!\n\nBooking: ${booking.client_name}\nAmount: $${(paymentIntent.amount / 100).toFixed(2)}\nDate: ${displayDate} at ${booking.scheduled_start_time}\n\nView in dashboard: https://cleanslateclub.co/admin`
         });
       }
     } else if (event.type === 'payment_intent.payment_failed') {
       const paymentIntent = event.data.object;
       const paymentIntentId = paymentIntent.id;
 
-      // Find booking and mark as payment failed
-      const bookings = await base44.asServiceRole.entities.Booking.filter({});
-      const booking = bookings.find(b => b.admin_notes?.includes(paymentIntentId));
+      const booking = await findBookingByPaymentIntent(paymentIntentId);
 
       if (booking) {
         await base44.asServiceRole.entities.Booking.update(booking.id, {
           admin_notes: `${booking.admin_notes || ''}\n✗ Payment failed: ${paymentIntent.last_payment_error?.message || 'Unknown error'}`
         });
 
-        // Notify team of failure
+        // FIX: Corrected domain from cleanslateclubpa.com → cleanslateclub.co
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: 'cleanslateclubpa@gmail.com',
           subject: `Payment failed for ${booking.client_name}`,
-          body: `Payment processing failed.\n\nBooking: ${booking.client_name}\nError: ${paymentIntent.last_payment_error?.message || 'Unknown'}\n\nContact client to retry: ${booking.client_email} / ${booking.client_phone}\n\nView in dashboard: https://cleanslateclubpa.com/admin`
+          body: `Payment processing failed.\n\nBooking: ${booking.client_name}\nError: ${paymentIntent.last_payment_error?.message || 'Unknown'}\n\nContact client to retry: ${booking.client_email} / ${booking.client_phone}\n\nView in dashboard: https://cleanslateclub.co/admin`
         });
       }
     }
