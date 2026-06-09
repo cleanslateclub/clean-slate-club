@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-// FIX: removed unused useAuth import
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
@@ -24,7 +23,6 @@ export default function ProviderDashboard() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // FIX: Wrapped in try/catch — corrupted session no longer causes infinite spinner
       try {
         const session = localStorage.getItem('providerSession');
         if (!session) {
@@ -35,7 +33,6 @@ export default function ProviderDashboard() {
         const parsed = JSON.parse(session);
         const providerId = parsed?.providerId;
 
-        // FIX: Validate providerId exists before using it
         if (!providerId) {
           localStorage.removeItem('providerSession');
           navigate('/staff-login');
@@ -62,16 +59,14 @@ export default function ProviderDashboard() {
   }, [navigate]);
 
   useEffect(() => {
-    // FIX: Guard entire effect — subscriptions no longer register before auth completes
     if (!providerData) return;
 
     const fetchData = async () => {
       try {
-        // FIX: Filter bookings by THIS provider's email — providers no longer see all bookings
         const [allBookings, blocks, myPayouts] = await Promise.all([
           base44.entities.Booking.filter({
             status: ALLOWED_BOOKING_STATUSES,
-            provider_email: providerData.email // FIX: scoped to this provider only
+            provider_email: providerData.email
           }),
           base44.entities.TimeBlock.list(),
           base44.entities.ProviderPayout.filter({ provider_email: providerData.email }),
@@ -88,14 +83,15 @@ export default function ProviderDashboard() {
 
     const unsubBookings = base44.entities.Booking.subscribe((event) => {
       if (event.type === 'create') {
-        // FIX: Only add booking if it belongs to this provider AND has allowed status
         const isOwn = event.data?.provider_email === providerData.email;
         const isAllowed = ALLOWED_BOOKING_STATUSES.includes(event.data?.status);
         if (isOwn && isAllowed) {
           setBookings(prev => [...prev, event.data]);
         }
       } else if (event.type === 'update') {
-        setBookings(prev => prev.map(b => b.id === event.id ? event.data : b));
+        // FIX: Spread event.data onto existing booking instead of replacing entirely.
+        // Replacing with just event.data could wipe fields missing from a partial update.
+        setBookings(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
       } else if (event.type === 'delete') {
         setBookings(prev => prev.filter(b => b.id !== event.id));
       }
@@ -105,7 +101,7 @@ export default function ProviderDashboard() {
       if (event.type === 'create') {
         setTimeBlocks(prev => [...prev, event.data]);
       } else if (event.type === 'update') {
-        setTimeBlocks(prev => prev.map(b => b.id === event.id ? event.data : b));
+        setTimeBlocks(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
       } else if (event.type === 'delete') {
         setTimeBlocks(prev => prev.filter(b => b.id !== event.id));
       }
@@ -127,7 +123,6 @@ export default function ProviderDashboard() {
   };
 
   const handleLogout = () => {
-    // FIX: no async needed — just clear session and redirect
     try {
       localStorage.removeItem('providerSession');
     } catch (err) {
@@ -137,7 +132,6 @@ export default function ProviderDashboard() {
     }
   };
 
-  // FIX: Removed duplicate loading spinner — one guard handles both cases
   if (loading || !providerData) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
@@ -167,7 +161,6 @@ export default function ProviderDashboard() {
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
             <div>
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
-              {/* FIX: providerData is guaranteed non-null here, removed unnecessary ?. */}
               <h1 className="font-heading text-4xl font-semibold text-charcoal mb-1">{providerData.full_name || 'Provider'}</h1>
               <p className="font-body text-sm text-charcoal/50">Your schedule, appointments, and earnings at a glance.</p>
             </div>
@@ -192,7 +185,6 @@ export default function ProviderDashboard() {
                     <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
                       <div>
                         <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
-                        {/* FIX: replace all underscores, not just the first one */}
                         <p className="font-body text-xs text-charcoal/40 font-light">
                           {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
                         </p>
