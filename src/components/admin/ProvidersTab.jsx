@@ -156,7 +156,8 @@ function ProviderForm({ initial, onSave, onCancel }) {
   );
 }
 
-export default function ProvidersTab({ bookings }) {
+export default function ProvidersTab({ bookings = [] }) {
+
   const [showVisibilitySettings, setShowVisibilitySettings] = useState(false);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
