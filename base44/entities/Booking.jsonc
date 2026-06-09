@@ -8,7 +8,8 @@
         "pending",
         "confirmed",
         "completed",
-        "cancelled"
+        "cancelled",
+        "archived"
       ],
       "default": "pending"
     },
@@ -31,8 +32,14 @@
         "mothers_helper",
         "errands",
         "senior_support",
-        "meal_prep"
+        "meal_prep",
+        "organization",
+        "consult"
       ]
+    },
+    "provider_email": {
+      "type": "string",
+      "description": "Email of the provider assigned to this booking"
     },
     "scheduled_date": {
       "type": "string",
@@ -71,6 +78,10 @@
     },
     "admin_notes": {
       "type": "string"
+    },
+    "payment_intent_id": {
+      "type": "string",
+      "description": "Stripe PaymentIntent ID — used to match webhook events and process refunds"
     },
     "google_calendar_event_id": {
       "type": "string",
