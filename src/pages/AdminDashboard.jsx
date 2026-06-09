@@ -498,15 +498,6 @@ export default function AdminDashboard() {
           )}
 
           {/* ══════════════════════════════════════
-              GUESTS TAB
-          ══════════════════════════════════════ */}
-          {tab === 'guests' && (
-            <motion.div key="guests" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <GuestsTab bookings={bookings} />
-            </motion.div>
-          )}
-
-          {/* ══════════════════════════════════════
               CLIENTS TAB
           ══════════════════════════════════════ */}
           {tab === 'clients' && (
