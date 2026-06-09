@@ -393,22 +393,23 @@ export default function AdminDashboard() {
           ══════════════════════════════════════ */}
           {tab === 'calendar' && (
             <motion.div key="calendar" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <ProviderCalendar
-                bookings={bookings}
-                timeBlocks={timeBlocks}
-                onTimeBlockUpdate={handleTimeBlockUpdate}
-                onBookingClick={(id) => { setSelected(id); setTab('bookings'); }}
-                selectedWeek={selectedWeek}
-                onWeekChange={setSelectedWeek}
-                isAdmin
-                onAddBooking={(date, time) => {
-                  setBookingDate(date);
-                  setBookingTime(time);
-                  setShowQuickBook(true);
-                }}
-              />
-            </motion.div>
-          )}
+           <ProviderCalendar
+  bookings={bookings}
+  timeBlocks={timeBlocks}
+  onTimeBlockUpdate={handleTimeBlockUpdate}
+  onBookingClick={(id) => { setSelected(id); setTab('bookings'); }}
+  selectedWeek={selectedWeek}
+  onWeekChange={setSelectedWeek}
+  isAdmin
+  onAddBooking={(date, time) => {
+    setBookingDate(date);
+    setBookingTime(time);
+    setShowQuickBook(true);
+  }}
+/>
+
+{/* ADD this one prop ↓ so the hover card's "Complete Visit" button works: */}
+  onStartVisit={(b) => setActiveVisitBooking(b)}
 
           {/* ══════════════════════════════════════
               BOOKINGS TAB
