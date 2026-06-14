@@ -15,9 +15,15 @@ const SERVICE_ORDER = [
   'organization',
 ];
 
-// senior_support was same color as consult (#B58A90) — give it a distinct color
+// Service cards move from lightest to darkest while keeping the price order intact.
+// Consult keeps its original color from bookingConfig.
 const COLOR_OVERRIDES = {
-  senior_support: '#D4A574', // warm amber — distinct from consult mauve
+  errands: '#CAE7B9',
+  senior_support: '#DFE3A2',
+  mothers_helper: '#F3DE8A',
+  meal_prep: '#EFB988',
+  home_reset: '#EB9486',
+  organization: '#B58A90',
 };
 
 function getRandomTaskChips(taskOptions, limit = 6) {
