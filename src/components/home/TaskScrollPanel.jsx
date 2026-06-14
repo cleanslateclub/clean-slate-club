@@ -44,6 +44,10 @@ const emojis = {
 const col1 = tasks.filter((_, i) => i % 2 === 0);
 const col2 = tasks.filter((_, i) => i % 2 === 1);
 
+function withOpacity(hex, opacity = '66') {
+  return `${hex}${opacity}`;
+}
+
 function TaskColumn({ items, direction = 1, speed = 28 }) {
   const doubled = [...items, ...items];
 
@@ -67,8 +71,8 @@ function TaskCard({ task }) {
     <div
       className="rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm border select-none whitespace-nowrap"
       style={{
-        background: task.color,
-        borderColor: '#33333322',
+        background: withOpacity(task.color),
+        borderColor: task.color,
         minWidth: '170px',
       }}
     >
