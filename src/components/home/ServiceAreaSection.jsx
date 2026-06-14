@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 const areas = [
 'Flourtown', 'Wyndmoor', 'Erdenheim', 'Chestnut Hill',
-'Lafayette Hill', 'Blue Bell', 'Plymouth Meeting', 'Ambler',
+'Lafayette Hill', 'Blue Bell', 'Plymouth Meeting', 'Conshohocken', 'Ambler',
 'Glenside', 'Oreland', 'Fort Washington'];
 
 
@@ -19,12 +19,12 @@ export default function ServiceAreaSection() {
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#D8E2DC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">WHERE WE SHOW UP</p>
+          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">MONTGOMERY COUNTY, PA</p>
           <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
             Currently Serving
           </h2>
-          <p className="font-body text-base text-charcoal/65 font-light max-w-md mx-auto">
-            Real support for real families, right here in our community.
+          <p className="font-body text-base text-charcoal/65 font-light max-w-lg mx-auto">
+            Thoughtful household support for select neighborhoods in Montgomery County and nearby Northwest Philly.
           </p>
         </AnimatedSection>
 
@@ -49,8 +49,8 @@ export default function ServiceAreaSection() {
           <div className="max-w-xl mx-auto text-center p-8 lg:p-10 rounded-3xl border" style={{ background: 'rgba(255,255,255,0.76)', borderColor: '#8B93A755' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#7E7F9A' }}>We can't wait to grow.</p>
             <p className="font-body text-sm text-charcoal/70 font-light mb-6 leading-relaxed">
-              We're a boutique service and expanding thoughtfully — neighborhood by neighborhood.<br />
-              Tell us where you'd like to see Clean Slate Club™ pop up next.
+              We're a boutique service, which means we grow with care instead of rushing everywhere at once.<br />
+              If your neighborhood isn't listed yet, tell us where you'd love to see Clean Slate Club™ show up next.
             </p>
             {submitted ?
             <p className="font-body text-sm text-charcoal/75 font-light py-2">
