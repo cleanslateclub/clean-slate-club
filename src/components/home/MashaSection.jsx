@@ -20,8 +20,9 @@ export default function MashaSection() {
                 className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10" />
               
               {/* Floating quote card */}
-              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[220px]" style={{ background: '#fdfcfb', boxShadow: '0 8px 30px #fcd5ce40' }}>
-                <p className="font-logo text-coral text-xl leading-tight">"You don't need perfect. You need backup."</p>
+              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px]" style={{ background: '#fdfcfb', boxShadow: '0 8px 30px #fcd5ce40' }}>
+                <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
+                <p className="font-body text-[11px] text-charcoal/40 font-light">— every client, first visit</p>
               </div>
             </div>
           </AnimatedSection>
@@ -47,10 +48,9 @@ export default function MashaSection() {
             </div>
 
             <div className="mt-10 p-6 rounded-2xl border" style={{ background: '#ffe5d930', borderColor: '#fcd5ce60' }}>
-              <p className="font-heading text-lg font-semibold text-charcoal mb-1">
-                "You're not failing at home."
+              <p className="font-heading text-lg font-semibold text-charcoal">
+                "You don't need perfect. You need backup."
               </p>
-              <p className="font-body text-sm text-charcoal/65 font-light">You're carrying more than any one person should. That's all this is.</p>
             </div>
           </AnimatedSection>
         </div>
