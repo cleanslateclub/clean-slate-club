@@ -40,6 +40,11 @@ const IconPot = () =>
     <path d="M13 19v4M19 19v4" />
   </svg>;
 
+const IconQuestion = () =>
+<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
+    <path d="M10 11a6 6 0 1110 4.5c-2 1.3-3 2.4-3 4.5" />
+    <path d="M16 25h.01" strokeWidth="3" />
+  </svg>;
 
 const categories = [
 {
@@ -93,14 +98,24 @@ const categories = [
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png'
 }];
 
+const customSupport = {
+  iconKey: 'question',
+  name: 'Custom Support',
+  tagline: 'Not sure what you need?',
+  desc: "Tell us what's going on and we'll build the right support for your home.",
+  color: '#EFB985',
+  bg: '#EFB98524',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/0444b42e3_generated_image.png',
+  fit: ['Mixed household tasks', 'Oddball errands', 'Overwhelmed starts']
+};
 
-const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot };
+const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot, question: IconQuestion };
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <AnimatedSection className="mb-16">
+        <AnimatedSection className="mb-14">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
             <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
@@ -139,23 +154,33 @@ export default function ServicesPreview() {
             </AnimatedSection>
           )}
 
-          {/* CTA card */}
           <AnimatedSection delay={0.5}>
-            <div className="p-7 rounded-3xl flex flex-col justify-between h-full min-h-[200px] border relative overflow-hidden hover:shadow-xl transition-all duration-500" style={{ background: '#FFFFFF', color: '#333333', borderColor: '#EFB98555', boxShadow: '0 18px 45px #EFB98514' }}>
-              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: '#EFB985' }} />
-              <div className="relative z-10">
-                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border font-logo text-2xl" style={{ color: '#EFB985', background: '#FFE5D980', borderColor: '#EFB98545' }}>?</div>
-                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#8B93A7' }}>Custom Support</p>
-                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#333333' }}>Not sure what you need?</h3>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>Tell us what's going on and we'll build the right support for your home.</p>
+            <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color + '55', boxShadow: `0 18px 45px ${customSupport.color}14` }}>
+              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
+              <div className="h-44 overflow-hidden relative">
+                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
               </div>
-              <Link
-                to="/services"
-                className="relative z-10 inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 hover:shadow-sm"
-                style={{ background: '#F3DE8A55', borderColor: '#EFB98555', color: '#333333', outlineColor: '#EFB985' }}>
-                
-                See All Services →
-              </Link>
+              <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
+                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: customSupport.color, background: '#FFFFFFB3', borderColor: customSupport.color + '45' }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
+                <p className="font-body text-xs tracking-[0.2em] uppercase mb-2 font-light" style={{ color: '#8B93A7' }}>{customSupport.name}</p>
+                <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
+                <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
+                <div className="space-y-2 mb-6">
+                  {customSupport.fit.map((item) => (
+                    <div key={item} className="flex items-center gap-2 font-body text-xs font-light" style={{ color: '#333333cc' }}>
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: customSupport.color }} />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  to="/services"
+                  className="mt-auto inline-block font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 hover:shadow-sm"
+                  style={{ background: '#FFFFFF99', borderColor: customSupport.color + '55', color: '#333333', outlineColor: customSupport.color }}>
+                  See All Services →
+                </Link>
+              </div>
             </div>
           </AnimatedSection>
         </div>
