@@ -23,36 +23,40 @@ const STATIC_TESTIMONIALS = [
   name: "Michelle R.",
   location: "Lafayette Hill",
   detail: "Burned-out professional",
-  color: '#CAE7B9'
+  color: '#B58A90'
 }];
 
-const STAR_COLORS = ['#EB9486', '#EFB988', '#CAE7B9', '#B58A90', '#97A7B3'];
-
-
 export default function TestimonialsSection() {
-  const [liveReviews, setLiveReviews] = useState([]);
+  const [googleReviews, setGoogleReviews] = useState([]);
 
   useEffect(() => {
-    base44.entities.Review.filter({ status: 'published' }, '-created_date', 6).then(results => {
-      setLiveReviews((results || []).filter(r => r.comment && r.rating >= 4));
-    });
+    loadGoogleReviews();
   }, []);
 
+  const loadGoogleReviews = async () => {
+    try {
+      const reviews = await base44.entities.GoogleReview.filter({ is_active: true }, '-review_date', 3);
+      setGoogleReviews(reviews);
+    } catch (error) {
+      console.log('No Google reviews available yet');
+    }
+  };
+
   const allTestimonials = [
-    ...liveReviews.map((r, i) => ({
-      quote: r.comment,
-      name: r.client_name || 'Happy Client',
-      location: '',
-      detail: '★'.repeat(r.rating),
-      color: STAR_COLORS[i % STAR_COLORS.length],
-      isLive: true,
+    ...googleReviews.map(r => ({
+      quote: r.text,
+      name: r.author_name,
+      location: 'Google Review',
+      detail: `${r.rating} stars`,
       rating: r.rating,
+      color: '#F3DE8A',
+      isLive: true
     })),
     ...STATIC_TESTIMONIALS,
   ].slice(0, 6);
 
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#FFE5D9' }}>
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#EEF3F5' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -88,11 +92,7 @@ export default function TestimonialsSection() {
                 <div>
                   <div className="h-px mb-5" style={{ background: t.color + '35' }} />
                   <p className="font-heading text-sm font-semibold" style={{ color: '#333333' }}>{t.name}</p>
-                  {(t.location || t.detail) && (
-                    <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#7E7F9A' }}>
-                      {[t.location, !t.isLive && t.detail].filter(Boolean).join(' · ')}
-                    </p>
-                  )}
+                  <p className="font-body text-xs font-light mt-1" style={{ color: '#33333399' }}>{t.location} • {t.detail}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -100,7 +100,5 @@ export default function TestimonialsSection() {
         </div>
       </div>
     </section>
-    );
-
-
+  );
 }
