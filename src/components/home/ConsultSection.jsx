@@ -95,7 +95,7 @@ export default function ConsultSection() {
               </div>
 
               <Link
-                to="/book"
+                to="/book?service=consult"
                 className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full hover:shadow-xl transition-all duration-500 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 mt-8 text-center self-start"
                 style={{ background: '#EB9486', borderColor: '#EB9486', color: '#FFFFFF', outlineColor: '#F3DE8A' }}>
                 Book Your Free Consult
