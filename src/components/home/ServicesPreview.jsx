@@ -98,12 +98,7 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
-      <div className="absolute bottom-0 left-0 w-[520px] h-[520px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-0 right-0 w-[380px] h-[380px] rounded-full opacity-28 pointer-events-none" style={{ background: 'radial-gradient(circle, #FFE5D9 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
-      <div className="absolute top-1/2 right-1/4 w-[260px] h-[260px] rounded-full opacity-18 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 68%)' }} />
-      <div className="absolute bottom-24 right-8 w-[220px] h-[220px] rounded-full opacity-16 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 68%)' }} />
-
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #F1F1F1 0%, #fdf5f3 100%)' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-16">
           <div className="flex items-center gap-2 mb-4">
@@ -127,7 +122,6 @@ export default function ServicesPreview() {
               className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
               style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
                 <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
-                <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-30 pointer-events-none" style={{ background: cat.glow }} />
               
                 {cat.img &&
               <div className="h-44 overflow-hidden relative">
@@ -149,8 +143,6 @@ export default function ServicesPreview() {
           <AnimatedSection delay={0.5}>
             <div className="p-7 rounded-3xl flex flex-col justify-between h-full min-h-[200px] border relative overflow-hidden hover:shadow-xl transition-all duration-500" style={{ background: '#FFFFFF', color: '#333333', borderColor: '#EFB98555', boxShadow: '0 18px 45px #EFB98514' }}>
               <div className="absolute top-0 left-0 right-0 h-1" style={{ background: '#EFB985' }} />
-              <div className="absolute -top-14 -right-10 w-36 h-36 rounded-full opacity-35" style={{ background: '#FFE5D9' }} />
-              <div className="absolute -bottom-14 -left-8 w-36 h-36 rounded-full opacity-35" style={{ background: '#CAE7B9' }} />
               <div className="relative z-10">
                 <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border font-logo text-2xl" style={{ color: '#EFB985', background: '#FFE5D980', borderColor: '#EFB98545' }}>?</div>
                 <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#8B93A7' }}>Custom Support</p>
