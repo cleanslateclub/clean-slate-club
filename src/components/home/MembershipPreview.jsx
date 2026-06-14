@@ -39,7 +39,7 @@ export default function MembershipPreview() {
                 <div className="max-w-sm mx-auto">
                   <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-5" style={{ color: '#333333' }}>MONTHLY MEMBERSHIP</p>
                   <div className="mb-5">
-                    <p className="font-heading text-7xl lg:text-8xl font-semibold leading-none" style={{ color: '#333333' }}>$49</p>
+                    <p className="font-heading text-7xl lg:text-8xl font-semibold leading-none" style={{ color: '#FFFFFF' }}>$49</p>
                     <p className="font-body text-sm font-light mt-2" style={{ color: '#333333' }}>per month</p>
                   </div>
                   <p className="font-logo text-2xl mb-5" style={{ color: '#333333' }}>Your shortcut to staying caught up.</p>
