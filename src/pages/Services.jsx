@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
@@ -19,9 +19,24 @@ const COLOR_OVERRIDES = {
   senior_support: '#D4A574', // warm amber — distinct from consult mauve
 };
 
+function getRandomTaskChips(taskOptions, limit = 6) {
+  return [...taskOptions]
+    .filter(task => task !== 'Help Me Choose' && task !== "Help Me Choose - I'm Overwhelmed")
+    .sort(() => Math.random() - 0.5)
+    .slice(0, limit);
+}
+
 export default function Services() {
   // Null guard — consult may be missing during dev or config refactor
   const consult = SERVICE_CONFIG['consult'] ?? null;
+
+  const taskChipsByService = useMemo(() => {
+    return SERVICE_ORDER.reduce((acc, key) => {
+      const taskOptions = SERVICE_CONFIG[key]?.taskOptions;
+      acc[key] = taskOptions ? getRandomTaskChips(taskOptions) : [];
+      return acc;
+    }, {});
+  }, []);
 
   return (
     <main className="min-h-screen bg-cream">
@@ -121,6 +136,7 @@ export default function Services() {
           const priceNote = priceLow > 0 ? `Range $${priceLow}–$${priceHigh}+` : null;
           const durationHrs = service.baseMinutes / 60;
           const minHrs = service.minHours || 2;
+          const taskChips = taskChipsByService[key] || [];
 
           return (
             <AnimatedSection key={key} delay={i * 0.05}>
@@ -154,22 +170,18 @@ export default function Services() {
                     {service.description}
                   </p>
 
-                  {/* Sort alphabetically so clients can scan easily */}
-                  {service.taskOptions && (
+                  {/* Randomized per page load so returning guests see fresh task ideas */}
+                  {taskChips.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {service.taskOptions
-                        .filter(task => task !== 'Help Me Choose')
-                        .sort((a, b) => a.localeCompare(b))
-                        .slice(0, 6)
-                        .map(task => (
-                          <span
-                            key={task}
-                            className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/75 border"
-                            style={{ borderColor: color + '40', background: '#ffffff80' }}
-                          >
-                            {task}
-                          </span>
-                        ))}
+                      {taskChips.map(task => (
+                        <span
+                          key={task}
+                          className="px-3 py-1 rounded-full text-xs font-body font-light text-charcoal/75 border"
+                          style={{ borderColor: color + '40', background: '#ffffff80' }}
+                        >
+                          {task}
+                        </span>
+                      ))}
                     </div>
                   )}
 
