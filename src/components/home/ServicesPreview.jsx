@@ -104,7 +104,7 @@ const customSupport = {
   desc: "Tell us what's going on and we'll build the right support for your home.",
   color: '#EFB985',
   bg: '#EFB98524',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/0444b42e3_generated_image.png',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png',
   fit: ['Mixed household tasks', 'Oddball errands', 'Overwhelmed starts']
 };
 
