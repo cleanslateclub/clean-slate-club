@@ -133,9 +133,8 @@ export default function Services() {
           if (!service) return null;
           const color = COLOR_OVERRIDES[key] || service.color;
           const bgColor = color + '15';
-          const [priceLow, priceHigh] = service.priceRange || [0, 0];
+          const [priceLow] = service.priceRange || [0, 0];
           const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
-          const priceNote = priceLow > 0 ? `Range $${priceLow}–$${priceHigh}+` : null;
           const durationHrs = service.baseMinutes / 60;
           const minHrs = service.minHours || 2;
           const taskChips = taskChipsByService[key] || [];
@@ -162,9 +161,6 @@ export default function Services() {
                       <p className="font-body text-xs text-charcoal/60 font-light">
                         {minHrs}–{Math.round(durationHrs) + 1} hrs typical
                       </p>
-                      {priceNote && (
-                        <p className="font-body text-[10px] text-charcoal/40 font-light mt-0.5">{priceNote}</p>
-                      )}
                     </div>
                   </div>
 
