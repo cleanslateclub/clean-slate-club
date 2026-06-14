@@ -11,6 +11,8 @@ const ACCENT = {
   organization:    '#7E7F9A',
 };
 
+const BRAND_COLORS = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#EFB988', '#EB9486', '#B58A90', '#7E7F9A', '#8B93A7', '#97A7B3'];
+
 const SERVICE_LABELS = {
   consult: "Not Sure Yet - Let's Talk",
   home_reset: 'Hot Mess Express',
@@ -209,10 +211,13 @@ export default function Step5Confirm({ booking, serviceKey, clientInfo, selected
       <div style={{ marginBottom: 18 }}>
         <h3 style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: '#2d2d2d' }}>Please Review Before Booking</h3>
         <p style={{ margin: '0 0 16px', fontSize: 13.5, color: '#666', lineHeight: 1.55 }}>Tap each item to confirm you understand the booking policies.</p>
-        {ACKNOWLEDGEMENTS.map((ack) => <AckCard key={ack.id} ack={ack} checked={!!checked[ack.id]} onChange={(value) => setChecked((prev) => ({ ...prev, [ack.id]: value }))} accentColor={accentColor} />)}
+        {ACKNOWLEDGEMENTS.map((ack, index) => {
+          const cardColor = BRAND_COLORS[index % BRAND_COLORS.length];
+          return <AckCard key={ack.id} ack={ack} checked={!!checked[ack.id]} onChange={(value) => setChecked((prev) => ({ ...prev, [ack.id]: value }))} accentColor={cardColor} />;
+        })}
       </div>
 
-      <div style={{ background: allChecked ? `${accentColor}15` : '#f8f6f4', border: `1.5px solid ${allChecked ? `${accentColor}55` : '#e5e0dc'}`, borderRadius: 14, padding: '14px 18px', textAlign: 'center', transition: 'all 0.2s ease' }}>
+      <div style={{ background: allChecked ? hexToRgba(accentColor, 0.15) : '#f8f6f4', border: `1.5px solid ${allChecked ? hexToRgba(accentColor, 0.55) : '#e5e0dc'}`, borderRadius: 14, padding: '14px 18px', textAlign: 'center', transition: 'all 0.2s ease' }}>
         <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: allChecked ? accentColor : '#888' }}>{allChecked ? 'You are ready to submit your request.' : `${checkedCount} of ${totalAcks} confirmed`}</p>
       </div>
     </div>
