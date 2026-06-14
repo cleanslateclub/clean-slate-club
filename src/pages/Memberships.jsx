@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
+import WaveDivider from '@/components/shared/WaveDivider';
 import { base44 } from '@/api/base44Client';
 
 const perks = [
@@ -57,9 +58,7 @@ export default function Memberships() {
 
   return (
     <div className="min-h-screen" style={{ background: '#F1F1F1' }}>
-      <section className="pt-28 pb-14 px-6 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-45" style={{ background: '#CAE7B9' }} />
-        <div className="absolute -bottom-28 -left-24 w-80 h-80 rounded-full opacity-35" style={{ background: '#EB9486' }} />
+      <section className="pt-28 pb-20 px-6 relative overflow-hidden" style={{ background: '#B58A9066' }}>
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -96,15 +95,16 @@ export default function Memberships() {
           </motion.p>
         </div>
       </section>
+      <WaveDivider fill="#F1F1F1" />
 
       <section className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
             <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#B58A9040', boxShadow: '0 18px 45px #B58A9015' }}>
-              <div className="p-9 lg:p-10 text-center" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #EFB988 55%, #F3DE8A 100%)' }}>
-                <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#FFFFFFCC' }}>Monthly Membership</p>
-                <p className="font-heading text-6xl font-semibold text-white mb-1">$49</p>
-                <p className="font-body text-sm font-light" style={{ color: '#FFFFFFCC' }}>per month · cancel anytime</p>
+              <div className="p-9 lg:p-10 text-center" style={{ background: '#EB948666' }}>
+                <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Monthly Membership</p>
+                <p className="font-heading text-6xl font-semibold mb-1" style={{ color: '#333333' }}>$49</p>
+                <p className="font-body text-sm font-light" style={{ color: '#33333399' }}>per month · cancel anytime</p>
               </div>
 
               <div className="p-8 lg:p-10">
