@@ -34,7 +34,7 @@ export default function ServiceAreaSection() {
             Montgomery County, PA
           </h2>
           <p className="font-body text-base text-charcoal/65 font-light max-w-lg mx-auto">
-            Currently serving select local neighborhoods, with a small nearby Northwest Philly overlap.
+            Thoughtful household support for local homes, busy families, and the neighborhoods we know best.
           </p>
         </AnimatedSection>
 
