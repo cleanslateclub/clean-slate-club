@@ -20,12 +20,12 @@ const ACKNOWLEDGEMENTS = [
     id: 'supplies',
     emoji: 'cleaning',
     title: 'Supplies & Materials',
-    body: 'You are responsible for providing all supplies and materials needed to complete your service. Your provider does not bring products or equipment unless arranged in advance.',
+    body: 'We bring basic cleaning supplies and small tools for standard household reset tasks. For larger equipment, like vacuums, carpet cleaners, steamers, step stools, specialty tools, or appliances, we prefer to use what you already have in your home when appropriate. Please provide any project-specific materials needed for your visit.',
     bullets: [
-      'Cleaning sprays, disinfectants, and scrub brushes',
-      'Trash bags, paper towels, sponges, and gloves',
-      'Mop, bucket, vacuum, and any specialty equipment',
-      'Surface-specific products (e.g., wood polish, stainless steel cleaner, grout cleaner)',
+      'Bins, baskets, labels, hangers, drawer organizers, or pantry containers',
+      'Meal prep containers, food storage bags, groceries, or special ingredients',
+      'Laundry products, pet supplies, specialty cleaners, or surface-specific products',
+      'If supplies are needed, you can add a store run for an additional fee so your scheduled time stays on track',
     ],
   },
   {
@@ -344,11 +344,11 @@ export default function Step5Confirm({ booking, smsOptIn, setSmsOptIn, onAllAckn
           }}
         >
           <div>
-            <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 14, color: '#333' }}>
-              Text Message Updates
+            <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 14.5, color: '#2d2d2d' }}>
+              Text Updates
             </p>
-            <p style={{ margin: 0, fontSize: 12.5, color: '#888', lineHeight: 1.5 }}>
-              Receive SMS reminders and status updates about your booking.
+            <p style={{ margin: 0, fontSize: 12.5, color: '#666', lineHeight: 1.45 }}>
+              Send me booking updates, arrival reminders, and quick questions by SMS.
             </p>
           </div>
           <Toggle checked={!!smsOptIn} onChange={setSmsOptIn} accentColor={accentColor} />
@@ -356,31 +356,12 @@ export default function Step5Confirm({ booking, smsOptIn, setSmsOptIn, onAllAckn
       )}
 
       {/* ── Acknowledgements ──────────────────────────────────────────── */}
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#2d2d2d' }}>
-            Review & Confirm
-          </h3>
-          <span
-            style={{
-              background: allChecked ? `${accentColor}22` : '#f5f5f5',
-              color:      allChecked ? accentColor : '#aaa',
-              border:     `1px solid ${allChecked ? accentColor + '55' : '#e8e8e8'}`,
-              borderRadius: 50,
-              padding: '4px 13px',
-              fontSize: 12,
-              fontWeight: 700,
-              transition: 'all 0.2s',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {checkedCount} / {totalAcks} confirmed
-          </span>
-        </div>
-
-        <p style={{ margin: '0 0 16px', fontSize: 13, color: '#888', lineHeight: 1.5 }}>
-          Please read and check each item below before submitting your booking.
-          Tap a card to confirm you understand and agree.
+      <div style={{ marginBottom: 18 }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: '#2d2d2d' }}>
+          Please Review Before Booking
+        </h3>
+        <p style={{ margin: '0 0 16px', fontSize: 13.5, color: '#666', lineHeight: 1.55 }}>
+          Tap each item to confirm you understand the booking policies.
         </p>
 
         {ACKNOWLEDGEMENTS.map((ack) => (
@@ -388,30 +369,40 @@ export default function Step5Confirm({ booking, smsOptIn, setSmsOptIn, onAllAckn
             key={ack.id}
             ack={ack}
             checked={!!checked[ack.id]}
-            onChange={(val) => handleCheck(ack.id, val)}
+            onChange={(value) => handleCheck(ack.id, value)}
             accentColor={accentColor}
           />
         ))}
+      </div>
 
-        {!allChecked && (
-          <p style={{ textAlign: 'center', fontSize: 12.5, color: '#bbb', marginTop: 10 }}>
-            All {totalAcks} items must be confirmed to proceed.
-          </p>
-        )}
+      <div
+        style={{
+          background: allChecked ? `${accentColor}15` : '#f8f6f4',
+          border: `1.5px solid ${allChecked ? `${accentColor}55` : '#e5e0dc'}`,
+          borderRadius: 14,
+          padding: '14px 18px',
+          textAlign: 'center',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: allChecked ? accentColor : '#888' }}>
+          {allChecked ? 'You are ready to submit your request.' : `${checkedCount} of ${totalAcks} confirmed`}
+        </p>
       </div>
     </div>
   );
 }
 
-// ── Style helpers ─────────────────────────────────────────────────────────────
-const labelStyle = (color) => ({
-  margin: '0 0 3px',
-  fontSize: 10,
-  fontWeight: 700,
-  letterSpacing: '0.13em',
-  textTransform: 'uppercase',
-  color,
-});
+function labelStyle(color) {
+  return {
+    margin: '0 0 4px',
+    fontSize: 10.5,
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.12em',
+    color,
+  };
+}
 
 const valueStyle = {
   margin: 0,
