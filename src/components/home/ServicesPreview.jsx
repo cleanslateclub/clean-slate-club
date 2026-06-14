@@ -65,7 +65,7 @@ const categories = [{
   color: '#EFB988',
   bg: '#EFB98824',
   glow: '#CAE7B9',
-  img: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&w=900&q=80'
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png'
 },
 {
   iconKey: 'bag',
@@ -75,7 +75,7 @@ const categories = [{
   color: '#97A7B3',
   bg: '#97A7B324',
   glow: '#F3DE8A',
-  img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80'
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png'
 },
 {
   iconKey: 'heart',
@@ -85,7 +85,7 @@ const categories = [{
   color: '#B58A90',
   bg: '#B58A9024',
   glow: '#DFE3A2',
-  img: 'https://images.unsplash.com/photo-1581579186913-45ac3e6efe93?auto=format&fit=crop&w=900&q=80'
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png'
 },
 {
   iconKey: 'pot',
@@ -136,10 +136,12 @@ export default function ServicesPreview() {
               className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
               style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
                 <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
-                <div className="h-44 overflow-hidden relative">
-                  <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 opacity-10" style={{ background: cat.color }} />
-                </div>
+                {cat.img &&
+              <div className="h-44 overflow-hidden relative">
+                    <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
+                  </div>
+              }
                 <div className="p-7 flex flex-col flex-1 relative" style={{ background: cat.bg }}>
                   <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: cat.color, background: '#FFFFFFB3', borderColor: cat.color + '35' }}>{React.createElement(iconMap[cat.iconKey])}</div>
                   <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{cat.name}</h3>
@@ -154,8 +156,8 @@ export default function ServicesPreview() {
             <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
               <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
               <div className="h-44 overflow-hidden relative">
-                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                <div className="absolute inset-0 opacity-10" style={{ background: customSupport.color }} />
+                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
               </div>
               <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
                 <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: '#333333', background: '#FFFFFFB3', borderColor: customSupport.color }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
