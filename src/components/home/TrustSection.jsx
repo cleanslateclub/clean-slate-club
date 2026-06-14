@@ -38,14 +38,14 @@ const credentials = [
 { iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#EB9486' },
 { iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#EFB988' },
 { iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#CAE7B9' },
-{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#B58A90' },
-{ iconKey: 'leaf', label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#97A7B3' }];
+{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#97A7B3' },
+{ iconKey: 'leaf', label: 'Judgment-Free Support', detail: 'Always kind, always discreet', accent: '#B58A90' }];
 
-const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
+const withOpacity = (hex, opacity = '55') => `${hex}${opacity}`;
 
 export default function TrustSection() {
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#FFFFFF' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#F1ECEF' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--popover-foreground))]">YOU'RE IN GOOD HANDS</p>
