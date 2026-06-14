@@ -35,20 +35,20 @@ export default function MembershipPreview() {
         <AnimatedSection delay={0.1}>
           <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-6 lg:gap-8 items-stretch max-w-6xl mx-auto">
             <div className="rounded-[2rem] overflow-hidden border shadow-xl relative" style={{ background: '#FFFFFF', borderColor: '#EB948640', boxShadow: '0 18px 45px #B58A9018' }}>
-              <div className="p-9 lg:p-10 h-full flex flex-col justify-between" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #EFB988 52%, #F3DE8A 100%)' }}>
-                <div>
+              <div className="p-8 lg:p-10 h-full flex flex-col justify-center text-center" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #EFB988 52%, #F3DE8A 100%)' }}>
+                <div className="max-w-sm mx-auto">
                   <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-5" style={{ color: '#333333' }}>MONTHLY MEMBERSHIP</p>
-                  <div className="flex items-end gap-3 mb-3">
-                    <p className="font-heading text-7xl lg:text-8xl font-semibold leading-none text-white">$49</p>
-                    <p className="font-body text-sm font-light pb-3" style={{ color: '#333333' }}>per month</p>
+                  <div className="mb-5">
+                    <p className="font-heading text-7xl lg:text-8xl font-semibold leading-none" style={{ color: '#333333' }}>$49</p>
+                    <p className="font-body text-sm font-light mt-2" style={{ color: '#333333' }}>per month</p>
                   </div>
-                  <p className="font-logo text-2xl mb-5" style={{ color: '#FFFFFF' }}>Your shortcut to staying caught up.</p>
-                  <p className="font-body text-sm leading-relaxed font-light max-w-sm" style={{ color: '#333333cc' }}>
+                  <p className="font-logo text-2xl mb-5" style={{ color: '#333333' }}>Your shortcut to staying caught up.</p>
+                  <p className="font-body text-sm leading-relaxed font-light mx-auto" style={{ color: '#333333cc' }}>
                     For the homes that need a little more predictability, a little more priority, and a lot less scrambling.
                   </p>
                 </div>
 
-                <div className="mt-10 rounded-3xl p-5 border" style={{ background: '#FFFFFFB3', borderColor: '#FFFFFF99' }}>
+                <div className="mt-8 rounded-3xl p-5 border max-w-sm mx-auto w-full" style={{ background: '#FFFFFFB3', borderColor: '#FFFFFF99' }}>
                   <p className="font-body text-xs tracking-[0.2em] uppercase mb-2" style={{ color: '#7E7F9A' }}>Member vibe</p>
                   <p className="font-heading text-xl font-semibold leading-tight" style={{ color: '#333333' }}>First dibs. Better windows. Less chaos.</p>
                 </div>
