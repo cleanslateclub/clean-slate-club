@@ -107,17 +107,17 @@ export const SERVICE_CONFIG = {
       "Recovery support while you rest"
     ],
     taskOptions: [
-      "Help Me Choose - I'm Overwhelmed",
-      "School Pickup", "Activity Dropoff", "Homework Supervision",
-      "Playtime Supervision", "Toddler Entertainment Support",
-      "Baby Bottle Washing", "Baby Laundry", "School Lunch Packing",
-      "Snack Preparation", "Parent Helper Support", "Recovery Support Assistance",
-      "Child Room Tidying", "Backpack & School Paper Reset",
-      "Car Seat Transfer Assistance", "Grocery Trip With Children",
-      "Waiting With Sleeping Child", "Family Calendar Assistance",
-      "Child Transportation Assistance", "School Project Assistance",
-      "Toy Rotation Assistance", "Overflow Family Support",
-      "Appointment Coverage Assistance", "Kids' Activity Prep", "Quiet Time Supervision"
+      "Childcare & Supervision",
+      "Recovery and Postpartum Support",
+      "School Pickup & Activity Transportation",
+      "Baby & Toddler Support",
+      "Lunch Packing & Snack Preparation",
+      "Children's Laundry",
+      "Child Bedroom Reset",
+      "Playroom Reset",
+      "Errands & Appointment Assistance",
+      "Grocery Shopping Assistance",
+      "Help Me Choose - I'm Overwhelmed"
     ],
     addons: [
       { id: "light_meal_prep", label: "Light Meal Prep for Kids", minutes: 30, price: 25 },
