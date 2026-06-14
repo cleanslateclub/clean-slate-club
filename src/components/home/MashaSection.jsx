@@ -43,7 +43,7 @@ export default function MashaSection() {
                 Then life shifted. As a single mom, she understood overwhelm not as a buzzword, but as a Wednesday afternoon when the laundry was piling, the kids needed dinner, and there was no one to call.
               </p>
               <p>
-                She built Clean Slate Club because she wished something like it had existed for her. Not a maid. Not a judgmental stranger. A trusted, capable woman who walks in, gets to work, and leaves your home — and your nervous system — in a better place.
+                She built Clean Slate Club because she wished something like it had existed for her. Not a maid. Not a judgmental stranger. Thoughtful, capable support that meets you where you are and helps your home feel easier to live in.
               </p>
             </div>
 
