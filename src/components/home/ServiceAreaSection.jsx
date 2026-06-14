@@ -16,7 +16,7 @@ export default function ServiceAreaSection() {
   };
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#CAE7B9' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#D8E2DC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">WHERE WE SHOW UP</p>
@@ -34,9 +34,9 @@ export default function ServiceAreaSection() {
             <span
               key={area}
               className="font-body text-sm font-light text-charcoal/70 hover:text-charcoal px-5 py-2.5 rounded-full border transition-all duration-300 cursor-default"
-              style={{ background: 'rgba(255,255,255,0.75)', borderColor: '#8B93A755' }}
+              style={{ background: 'rgba(255,255,255,0.72)', borderColor: '#8B93A755' }}
               onMouseEnter={(e) => {e.currentTarget.style.borderColor = '#8B93A7';e.currentTarget.style.background = '#FFFFFF';}}
-              onMouseLeave={(e) => {e.currentTarget.style.borderColor = '#8B93A755';e.currentTarget.style.background = 'rgba(255,255,255,0.75)';}}>
+              onMouseLeave={(e) => {e.currentTarget.style.borderColor = '#8B93A755';e.currentTarget.style.background = 'rgba(255,255,255,0.72)';}}>
               
                 {area}
               </span>
@@ -46,7 +46,7 @@ export default function ServiceAreaSection() {
 
         {/* Expand callout */}
         <AnimatedSection delay={0.2}>
-          <div className="max-w-xl mx-auto text-center p-8 lg:p-10 rounded-3xl border" style={{ background: 'rgba(255,255,255,0.78)', borderColor: '#8B93A755' }}>
+          <div className="max-w-xl mx-auto text-center p-8 lg:p-10 rounded-3xl border" style={{ background: 'rgba(255,255,255,0.76)', borderColor: '#8B93A755' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#7E7F9A' }}>We can't wait to grow.</p>
             <p className="font-body text-sm text-charcoal/70 font-light mb-6 leading-relaxed">
               We're a boutique service and expanding thoughtfully — neighborhood by neighborhood.<br />
