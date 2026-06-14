@@ -72,7 +72,7 @@ function TaskColumn({ items, direction = 1, speed = 28 }) {
   const doubled = [...items, ...items];
 
   return (
-    <div className="overflow-hidden flex-1 relative" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)' }}>
+    <div className="overflow-hidden flex-1 relative" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 7%, black 19%, black 81%, rgba(0,0,0,0.18) 93%, transparent 100%)', maskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 7%, black 19%, black 81%, rgba(0,0,0,0.18) 93%, transparent 100%)' }}>
       <motion.div
         animate={{ y: direction === 1 ? ['0%', '-50%'] : ['-50%', '0%'] }}
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
