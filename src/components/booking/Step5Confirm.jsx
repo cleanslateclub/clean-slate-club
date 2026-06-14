@@ -27,6 +27,18 @@ const EMERGENCY_SERVICES = ['mothers_helper', 'senior_support'];
 // ── Acknowledgement definitions (second-person, no personal names) ─────────────
 const ACKNOWLEDGEMENTS = [
   {
+    id: 'first_visit_presence',
+    emoji: 'house',
+    title: 'Initial Visit Access',
+    body: 'For your first visit, someone must be home to let us in, walk us through the space, and answer any important questions before we get started. After that initial visit, we can make access arrangements for future appointments when appropriate.',
+    bullets: [
+      'A guest or approved adult must be present at the start of the first visit',
+      'Please plan a few minutes for instructions, priorities, and any off-limits areas',
+      'Future visits may use a lockbox, code, key handoff, or another approved access plan',
+      'If no one is available for the initial visit, the appointment may need to be rescheduled',
+    ],
+  },
+  {
     id: 'supplies',
     emoji: 'cleaning',
     title: 'Supplies & Materials',
@@ -76,7 +88,7 @@ const ACKNOWLEDGEMENTS = [
 ];
 
 function AckIcon({ emoji }) {
-  const icons = { cleaning: '🧹', clipboard: '📋', calendar: '📅', warning: '⚠️' };
+  const icons = { house: '🏠', cleaning: '🧹', clipboard: '📋', calendar: '📅', warning: '⚠️' };
   return <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0 }}>{icons[emoji] || '✅'}</span>;
 }
 
@@ -142,6 +154,7 @@ export default function Step5Confirm({ booking, serviceKey, clientInfo, selected
   const isConsult = previewBooking?.service_category === 'consult';
   const showEmergency = EMERGENCY_SERVICES.includes(previewBooking?.service_category);
   const serviceLabel = SERVICE_LABELS[previewBooking?.service_category] || (previewBooking?.service_category || '').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  const approxDuration = !isConsult && totalDuration ? formatDuration(totalDuration) : null;
 
   const totalAcks = ACKNOWLEDGEMENTS.length;
   const checkedCount = Object.values(checked).filter(Boolean).length;
@@ -163,6 +176,7 @@ export default function Step5Confirm({ booking, serviceKey, clientInfo, selected
           <div><p style={labelStyle(accentColor)}>Name</p><p style={valueStyle}>{previewBooking?.client_name || '--'}</p></div>
           <div><p style={labelStyle(accentColor)}>Date</p><p style={valueStyle}>{formatDate(previewBooking?.scheduled_date)}</p></div>
           <div><p style={labelStyle(accentColor)}>Time</p><p style={valueStyle}>{previewBooking?.scheduled_start_time || 'TBD'}{!isConsult && previewBooking?.scheduled_end_time ? ` - ${previewBooking.scheduled_end_time}` : ''}</p></div>
+          {approxDuration && (<div><p style={labelStyle(accentColor)}>Approx. Visit Length</p><p style={valueStyle}>{approxDuration}</p></div>)}
           {!isConsult && (<div><p style={labelStyle(accentColor)}>Estimated Cost</p><p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: accentColor }}>${previewBooking?.estimated_price_low || 0} - ${previewBooking?.estimated_price_high || 0}</p></div>)}
           {previewBooking?.client_address && (<div style={{ gridColumn: '1 / -1' }}><p style={labelStyle(accentColor)}>Address</p><p style={{ margin: 0, fontSize: 13.5, color: '#555' }}>{previewBooking.client_address}</p></div>)}
         </div>
@@ -206,6 +220,14 @@ function addMinutesToTime(timeStr, minutesToAdd) {
   const displayPeriod = displayHours24 >= 12 ? 'PM' : 'AM';
   const displayHours = displayHours24 > 12 ? displayHours24 - 12 : displayHours24 === 0 ? 12 : displayHours24;
   return displayHours + ':' + displayMinutes.toString().padStart(2, '0') + ' ' + displayPeriod;
+}
+
+function formatDuration(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (!hours) return `${mins} min`;
+  if (!mins) return `${hours} hr${hours === 1 ? '' : 's'}`;
+  return `${hours} hr${hours === 1 ? '' : 's'} ${mins} min`;
 }
 
 function labelStyle(color) {
