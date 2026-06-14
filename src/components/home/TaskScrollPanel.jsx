@@ -1,24 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 const tasks = [
-  { label: 'Grocery Shopping',    color: '#EB9486', bg: '#fef0ee' },
-  { label: 'Multiple Store Run',  color: '#EFB988', bg: '#fef5ec' },
-  { label: 'Grocery Put-Away',    color: '#EB9486', bg: '#fef0ee' },
-  { label: 'Meal Prep',           color: '#CAE7B9', bg: '#eef8ea' },
-  { label: 'School Lunch Prep',   color: '#97A7B3', bg: '#eef1f4' },
-  { label: 'Snack Prep',          color: '#EFB988', bg: '#fef5ec' },
-  { label: 'Produce Prep',        color: '#CAE7B9', bg: '#eef8ea' },
-  { label: 'Pantry Restock',      color: '#B58A90', bg: '#f7edef' },
-  { label: 'Fridge Organization', color: '#97A7B3', bg: '#eef1f4' },
-  { label: 'Freezer Meals',       color: '#CAE7B9', bg: '#eef8ea' },
-  { label: 'Returns',             color: '#EFB988', bg: '#fef5ec' },
-  { label: 'Donation Dropoff',    color: '#B58A90', bg: '#f7edef' },
-  { label: 'Pharmacy Pickup',     color: '#EB9486', bg: '#fef0ee' },
-  { label: 'Dry Cleaning',        color: '#97A7B3', bg: '#eef1f4' },
-  { label: 'Post Office Runs',    color: '#EFB988', bg: '#fef5ec' },
-  { label: 'Feeding Pets',        color: '#CAE7B9', bg: '#eef8ea' },
-  { label: 'Pet Supply Run',      color: '#B58A90', bg: '#f7edef' },
+  { label: 'Grocery Shopping', color: '#EB9486', bg: '#FFE5D9' },
+  { label: 'Multiple Store Run', color: '#8B93A7', bg: '#F1F1F1' },
+  { label: 'Grocery Put-Away', color: '#EFb985', bg: '#FFE5D9' },
+  { label: 'Meal Prep', color: '#8B93A7', bg: '#CAE7B9' },
+  { label: 'School Lunch Prep', color: '#97A7B3', bg: '#F1F1F1' },
+  { label: 'Snack Prep', color: '#7E7F9A', bg: '#DFE3A2' },
+  { label: 'Produce Prep', color: '#8B93A7', bg: '#CAE7B9' },
+  { label: 'Pantry Restock', color: '#B58A90', bg: '#F1F1F1' },
+  { label: 'Fridge Organization', color: '#97A7B3', bg: '#F1F1F1' },
+  { label: 'Freezer Meals', color: '#7E7F9A', bg: '#DFE3A2' },
+  { label: 'Returns', color: '#B58A90', bg: '#FFE5D9' },
+  { label: 'Donation Dropoff', color: '#7E7F9A', bg: '#F3DE8A' },
+  { label: 'Pharmacy Pickup', color: '#B58A90', bg: '#F1F1F1' },
+  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#F1F1F1' },
+  { label: 'Post Office Runs', color: '#7E7F9A', bg: '#DFE3A2' },
+  { label: 'Feeding Pets', color: '#8B93A7', bg: '#CAE7B9' },
+  { label: 'Pet Supply Run', color: '#B58A90', bg: '#FFE5D9' },
 ];
 
 // Emoji map for a little extra personality
@@ -71,7 +71,7 @@ function TaskCard({ task }) {
       className="rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm border select-none whitespace-nowrap"
       style={{
         background: task.bg,
-        borderColor: task.color + '30',
+        borderColor: task.color + '55',
         minWidth: '170px',
       }}
     >
@@ -82,7 +82,7 @@ function TaskCard({ task }) {
       >
         ✓
       </span>
-      <span className="font-body text-sm font-light text-charcoal/75 leading-none">
+      <span className="font-body text-sm font-light leading-none" style={{ color: '#333333' }}>
         {emojis[task.label] && <span className="mr-1.5">{emojis[task.label]}</span>}
         {task.label}
       </span>
