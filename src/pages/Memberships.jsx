@@ -116,12 +116,16 @@ export default function Memberships() {
 
               <div className="p-8 lg:p-10">
                 <p className="font-heading text-xl font-semibold mb-3" style={{ color: '#333333' }}>For regular backup, not crisis-mode living.</p>
-                <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
+                <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333b3' }}>
                   Membership fee is separate from service costs. Services billed per visit.
                 </p>
+                <p className="font-body text-sm leading-relaxed font-light mb-6" style={{ color: '#333333b3' }}>
+                  Membership becomes available after your first completed service, so we can make sure the support is the right fit before you join.
+                </p>
                 <div className="rounded-3xl border p-4 mb-8" style={{ background: '#F7FAF4', borderColor: '#CAE7B970' }}>
+                  <p className="font-body text-xs tracking-[0.18em] uppercase font-light mb-2" style={{ color: '#33333399' }}>How access works</p>
                   <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>
-                    Membership becomes available after your first completed service, so we can make sure the support is the right fit before you join.
+                    After your first completed visit, eligible guests receive a private membership invitation with a link to join, log in, and manage subscription details.
                   </p>
                 </div>
 
