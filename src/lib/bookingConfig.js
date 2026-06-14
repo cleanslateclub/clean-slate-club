@@ -31,125 +31,16 @@ export const SERVICE_CONFIG = {
     ]
   },
 
-  home_reset: {
-    label: "Hot Mess Express",
-    sublabel: "Household Reset",
-    color: "#EB9486",
-    baseMinutes: 240,
-    priceRange: [180, 400],
-    hourlyRate: [75, 95],
-    minHours: 2,
-    mileage_enabled: false,
-    description: "For households that need help getting back to baseline when life gets chaotic. Real help, zero judgment.",
-    disclaimer: "Hot Mess Express focuses on household reset and functionality. This service does not include childcare, transportation, elder care, or deep cleaning.",
-    examples: [
-      "Dishes stacked, laundry everywhere, no idea where to start",
-      "House hasn't been touched in weeks - full reset needed",
-      "Company coming over and you need it presentable fast",
-      "Post-sick household - everything piled up while you recovered",
-      "ADHD paralysis reset - just need someone to come in and move"
-    ],
-    taskOptions: [
-      "Help Me Choose - I'm Overwhelmed",
-      "Laundry Washing", "Laundry Folding", "Laundry Put-Away",
-      "Dish Washing", "Dishwasher Unloading", "Kitchen Reset",
-      "Refrigerator Cleanout", "Pantry Straightening",
-      "Bed Linen Change", "Towel Refresh", "Entryway Tidying",
-      "Living Room Reset", "Bathroom Surface Refresh", "Toy Pickup",
-      "Book & Media Straightening", "Mail Sorting", "Donation Bag Prep",
-      "Light Closet Straightening", "Seasonal Decor Takedown",
-      "Plant Watering", "Pet Feeding", "Trash & Recycling Reset",
-      "Restocking Household Supplies", "Guest Room Preparation"
-    ],
-    addons: [
-      { id: "fold_rush", label: "The Fold Rush - Laundry Wash, Dry & Fold", minutes: 90, price: 95 },
-      { id: "extra_load", label: "Extra Laundry Load (+1)", minutes: 60, price: 45 },
-      { id: "fridge_refresh", label: "Fridge Refresh - Cleanout & Reorganize", minutes: 30, price: 95 },
-      { id: "pantry_party", label: "Pantry Party - Straighten & Zone", minutes: 45, price: 95 },
-      { id: "bed_reset", label: "Bed Reset - All Rooms", minutes: 20, price: 45 },
-      { id: "pet_check", label: "Pet Check - Feeding, Water, Litter", minutes: 20, price: 30 },
-      { id: "stocked_up", label: "Stocked Up - Household Supply Restock", minutes: 30, price: 30 },
-      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 30 },
-      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Sort", minutes: 30, price: 50 },
-      { id: "toy_story", label: "Toy Story - Toy Pickup & Room Reset", minutes: 45, price: 75 },
-      { id: "closet_comeback", label: "Closet Comeback - Light Reset & Fold", minutes: 60, price: 100 }
-    ],
-    intakeQuestions: [
-      { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
-      { id: "num_bathrooms", label: "Number of bathrooms", type: "select", options: ["1", "2", "3", "4+"] },
-      { id: "num_adults", label: "Number of adults in household", type: "select", options: ["1", "2", "3+"] },
-      { id: "num_children", label: "Number of children", type: "select", options: ["None", "1", "2", "3", "4+"] },
-      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes - dog", "Yes - cat", "Yes - multiple pets"] },
-      { id: "stairs", label: "Stairs in home?", type: "select", options: ["No", "Yes - one level", "Yes - multi-level"] },
-      { id: "parking", label: "Parking situation", type: "select", options: ["Driveway available", "Street parking", "Garage only", "Difficult / limited"] },
-      { id: "clutter_level", label: "Current home condition (be honest - zero judgment!)", type: "select", options: ["Mostly maintained", "Slightly behind", "Very overwhelmed", "Major reset needed"] },
-      { id: "priority_areas", label: "Priority areas (select all that apply)", type: "multiselect", options: ["Kitchen", "Living Room", "Primary Bedroom", "Kids Rooms", "Bathrooms", "Mudroom/Entry", "Home Office", "Basement"] },
-      { id: "allergies", label: "Any sensitivities or allergies to products?", type: "text", placeholder: "e.g. fragrance-free only, no bleach..." }
-    ]
-  },
-
-  mothers_helper: {
-    label: "Chaos Coordinator",
-    sublabel: "Family Support",
-    color: "#EFB988",
-    baseMinutes: 180,
-    priceRange: [120, 250],
-    hourlyRate: [75, 95],
-    minHours: 2,
-    mileage_enabled: true,
-    description: "Extra hands for busy family life, school logistics, recovery seasons, and keeping routines moving.",
-    disclaimer: "Clean Slate Club provides support-based household and family assistance. This is not a licensed nanny agency or medical childcare provider.",
-    examples: [
-      "School pickup + snack + homework supervision",
-      "Toddler entertainment while you work from home",
-      "Postpartum support - baby and household",
-      "Sick day when you can't be in two places",
-      "Recovery support while you rest"
-    ],
-    taskOptions: [
-      "Childcare & Supervision",
-      "Recovery and Postpartum Support",
-      "School Pickup & Activity Transportation",
-      "Baby & Toddler Support",
-      "Lunch Packing & Snack Preparation",
-      "Children's Laundry",
-      "Child Bedroom Reset",
-      "Playroom Reset",
-      "Errands & Appointment Assistance",
-      "Grocery Shopping Assistance",
-      "Help Me Choose - I'm Overwhelmed"
-    ],
-    addons: [
-      { id: "light_meal_prep", label: "Light Meal Prep for Kids", minutes: 30, price: 25 },
-      { id: "school_pickup", label: "School Pickup & Dropoff", minutes: 45, price: 35 },
-      { id: "bath_routine", label: "Bath & Bedtime Routine Support", minutes: 45, price: 35 },
-      { id: "pediatric_errand", label: "Pharmacy/Pediatric Supply Run", minutes: 30, price: 30 },
-      { id: "nursery_reset", label: "Nursery/Playroom Reset", minutes: 30, price: 25 },
-      { id: "laundry_kids", label: "Kids Laundry Wash & Fold", minutes: 30, price: 25 },
-      { id: "toy_story", label: "Toy Story - Toy Rotation & Reset", minutes: 45, price: 75 },
-      { id: "postpartum_support", label: "Post-Partum Meal & Recovery Support", minutes: 60, price: 55 }
-    ],
-    intakeQuestions: [
-      { id: "num_children", label: "How many children?", type: "select", options: ["1", "2", "3", "4+"] },
-      { id: "ages", label: "Ages of children", type: "text", placeholder: "e.g. 6 months, 3 years, 7 years" },
-      { id: "special_needs", label: "Special needs, allergies, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
-      { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes - friendly dog", "Yes - cat", "Yes - will be secured/separated"] },
-      { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No - full solo support needed"] },
-      { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, bedtime rituals..." },
-      { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes - school pickup/dropoff", "Yes - activity transport"] },
-      { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
-    ]
-  },
-
   errands: {
     label: "The Runaround",
     sublabel: "Errands & Concierge",
     color: "#CAE7B9",
-    baseMinutes: 120,
-    priceRange: [80, 160],
-    hourlyRate: [75, 95],
+    baseMinutes: 60,
+    priceRange: [75, 75],
+    priceLabel: "Starting at $75",
+    hourlyRate: [65, 75],
     mileage_enabled: true,
-    minHours: 2,
+    minHours: 1,
     description: "For the endless little tasks, pickups, dropoffs, and running around that eats up your whole day.",
     disclaimer: null,
     examples: [
@@ -208,10 +99,11 @@ export const SERVICE_CONFIG = {
     label: "The Check-In",
     sublabel: "Senior & Companion Support",
     color: "#B58A90",
-    baseMinutes: 120,
-    priceRange: [100, 200],
-    hourlyRate: [75, 95],
-    minHours: 2,
+    baseMinutes: 60,
+    priceRange: [75, 75],
+    priceLabel: "Starting at $75",
+    hourlyRate: [65, 75],
+    minHours: 1,
     mileage_enabled: true,
     description: "Companion-style support and practical help for seniors and aging loved ones. The kind of help you'd ask a trusted friend for.",
     disclaimer: "Clean Slate Club provides non-medical companion-style support. We do not provide medical care, medication administration, bathing, lifting/transfers, wound care, or skilled nursing services.",
@@ -254,17 +146,180 @@ export const SERVICE_CONFIG = {
       { id: "emergency_contact", label: "Emergency contact name & phone", type: "text", placeholder: "Name, relationship, phone number" }
     ]
   },
+    mothers_helper: {
+    label: "Chaos Coordinator",
+    sublabel: "Family Support",
+    color: "#EFB988",
+    baseMinutes: 120,
+    priceRange: [150, 150],
+    priceLabel: "Starting at $150",
+    hourlyRate: [65, 75],
+    minHours: 2,
+    mileage_enabled: true,
+    description: "Extra hands for busy family life, school logistics, recovery seasons, and keeping routines moving.",
+    disclaimer: "Clean Slate Club provides support-based household and family assistance. This is not a licensed nanny agency or medical childcare provider.",
+    examples: [
+      "School pickup + snack + homework supervision",
+      "Toddler entertainment while you work from home",
+      "Postpartum support - baby and household",
+      "Sick day when you can't be in two places",
+      "Recovery support while you rest"
+    ],
+    taskOptions: [
+      "Childcare & Supervision",
+      "Recovery and Postpartum Support",
+      "School Pickup & Activity Transportation",
+      "Baby & Toddler Support",
+      "Lunch Packing & Snack Preparation",
+      "Children's Laundry",
+      "Child Bedroom Reset",
+      "Playroom Reset",
+      "Errands & Appointment Assistance",
+      "Grocery Shopping Assistance",
+      "Help Me Choose - I'm Overwhelmed"
+    ],
+    addons: [
+      { id: "light_meal_prep", label: "Light Meal Prep for Kids", minutes: 30, price: 25 },
+      { id: "school_pickup", label: "School Pickup & Dropoff", minutes: 45, price: 35 },
+      { id: "bath_routine", label: "Bath & Bedtime Routine Support", minutes: 45, price: 35 },
+      { id: "pediatric_errand", label: "Pharmacy/Pediatric Supply Run", minutes: 30, price: 30 },
+      { id: "nursery_reset", label: "Nursery/Playroom Reset", minutes: 30, price: 25 },
+      { id: "laundry_kids", label: "Kids Laundry Wash & Fold", minutes: 30, price: 25 },
+      { id: "toy_story", label: "Toy Story - Toy Rotation & Reset", minutes: 45, price: 75 },
+      { id: "postpartum_support", label: "Post-Partum Meal & Recovery Support", minutes: 60, price: 55 }
+    ],
+    intakeQuestions: [
+      { id: "num_children", label: "How many children?", type: "select", options: ["1", "2", "3", "4+"] },
+      { id: "ages", label: "Ages of children", type: "text", placeholder: "e.g. 6 months, 3 years, 7 years" },
+      { id: "special_needs", label: "Special needs, allergies, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
+      { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes - friendly dog", "Yes - cat", "Yes - will be secured/separated"] },
+      { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No - full solo support needed"] },
+      { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, bedtime rituals..." },
+      { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes - school pickup/dropoff", "Yes - activity transport"] },
+      { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
+    ]
+  },
+
+  organization: {
+    label: "Room Service",
+    sublabel: "Organization & Decluttering",
+    color: "#7E7F9A",
+    baseMinutes: 120,
+    priceRange: [150, 150],
+    priceLabel: "Starting at $150",
+    hourlyRate: [65, 75],
+    minHours: 2,
+    mileage_enabled: false,
+    description: "For spaces that need a reset, not perfection. Calm, methodical, judgment-free decluttering and organization support.",
+    disclaimer: "Room Service focuses on organization, sorting, and decluttering support. This service does not include deep cleaning.",
+    examples: [
+      "Pantry overhaul - bins, zones, labels",
+      "Closet seasonal swap + donation prep",
+      "Playroom or toy rotation reset",
+      "Office or paper clutter purge",
+      "Post-move setup and unpacking help"
+    ],
+    taskOptions: [
+      "Help Me Choose - I'm Overwhelmed",
+      "Pantry Organization", "Closet Reset", "Linen Closet Organization",
+      "Bathroom Cabinet Organization", "Under Sink Organization",
+      "Entryway Reset", "Mudroom Organization", "Toy Organization",
+      "Playroom Reset", "Kitchen Drawer Organization", "Refrigerator Organization",
+      "Paper Sorting", "Mail Organization", "Donation Sorting",
+      "Seasonal Clothing Swap", "Storage Bin Labeling", "School Project Organization",
+      "Office Reset", "Craft Supply Organization", "Laundry Room Reset",
+      "Garage Zone Straightening", "Guest Room Refresh",
+      "Overflow Clutter Assistance", "Household Systems Setup"
+    ],
+    addons: [
+      { id: "closet_comeback", label: "Closet Comeback - Full Seasonal Reset", minutes: 90, price: 175 },
+      { id: "pantry_party", label: "Pantry Party - Deep Zone & Label", minutes: 60, price: 95 },
+      { id: "toy_story", label: "Toy Story - Sort, Rotate & Reset", minutes: 60, price: 75 },
+      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Purge", minutes: 45, price: 65 },
+      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 45 },
+      { id: "reset_run", label: "Reset Run - Org Supplies Shopping", minutes: 60, price: 75 },
+      { id: "stocked_up", label: "Stocked Up - Household Restock", minutes: 30, price: 65 },
+      { id: "bed_reset", label: "Bed Reset - Fresh Linens & Styling", minutes: 20, price: 45 }
+    ],
+    intakeQuestions: [
+      { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
+      { id: "clutter_level", label: "Current condition of target space", type: "select", options: ["Mostly fine - just needs a refresh", "Somewhat cluttered", "Very overwhelmed", "Major overhaul needed"] },
+      { id: "priority_spaces", label: "Which spaces need the most help? (select all)", type: "multiselect", options: ["Kitchen", "Pantry", "Closets", "Bedroom", "Kids Rooms", "Playroom", "Bathroom", "Office", "Basement/Garage", "Laundry Room"] },
+      { id: "supplies_available", label: "Do you have organizing supplies?", type: "select", options: ["Yes - bins, labels, baskets ready", "Some - but I might need more", "No - please add Reset Run add-on"] },
+      { id: "donation_ready", label: "Are there items to donate or remove?", type: "select", options: ["Yes - bags already packed", "Probably - we'll sort during visit", "No donation items"] },
+      { id: "style_pref", label: "Organization style preference", type: "select", options: ["Minimal & clean", "Practical & functional", "Aesthetic & curated", "Just get it under control!"] },
+      { id: "special_notes", label: "Any areas to avoid or special instructions?", type: "text", placeholder: "e.g. don't touch the hobby room, partner's side of closet, kids' sentimental items..." }
+    ]
+  },
+    home_reset: {
+    label: "Hot Mess Express",
+    sublabel: "Household Reset",
+    color: "#EB9486",
+    baseMinutes: 180,
+    priceRange: [195, 195],
+    priceLabel: "Starting at $195",
+    hourlyRate: [65, 75],
+    minHours: 3,
+    mileage_enabled: false,
+    description: "For households that need help getting back to baseline when life gets chaotic. Real help, zero judgment.",
+    disclaimer: "Hot Mess Express focuses on household reset and functionality. This service does not include childcare, transportation, elder care, or deep cleaning.",
+    examples: [
+      "Dishes stacked, laundry everywhere, no idea where to start",
+      "House hasn't been touched in weeks - full reset needed",
+      "Company coming over and you need it presentable fast",
+      "Post-sick household - everything piled up while you recovered",
+      "ADHD paralysis reset - just need someone to come in and move"
+    ],
+    taskOptions: [
+      "Help Me Choose - I'm Overwhelmed",
+      "Laundry Washing", "Laundry Folding", "Laundry Put-Away",
+      "Dish Washing", "Dishwasher Unloading", "Kitchen Reset",
+      "Refrigerator Cleanout", "Pantry Straightening",
+      "Bed Linen Change", "Towel Refresh", "Entryway Tidying",
+      "Living Room Reset", "Bathroom Surface Refresh", "Toy Pickup",
+      "Book & Media Straightening", "Mail Sorting", "Donation Bag Prep",
+      "Light Closet Straightening", "Seasonal Decor Takedown",
+      "Plant Watering", "Pet Feeding", "Trash & Recycling Reset",
+      "Restocking Household Supplies", "Guest Room Preparation"
+    ],
+    addons: [
+      { id: "fold_rush", label: "The Fold Rush - Laundry Wash, Dry & Fold", minutes: 90, price: 95 },
+      { id: "extra_load", label: "Extra Laundry Load (+1)", minutes: 60, price: 45 },
+      { id: "fridge_refresh", label: "Fridge Refresh - Cleanout & Reorganize", minutes: 30, price: 95 },
+      { id: "pantry_party", label: "Pantry Party - Straighten & Zone", minutes: 45, price: 95 },
+      { id: "bed_reset", label: "Bed Reset - All Rooms", minutes: 20, price: 45 },
+      { id: "pet_check", label: "Pet Check - Feeding, Water, Litter", minutes: 20, price: 30 },
+      { id: "stocked_up", label: "Stocked Up - Household Supply Restock", minutes: 30, price: 30 },
+      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 30 },
+      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Sort", minutes: 30, price: 50 },
+      { id: "toy_story", label: "Toy Story - Toy Pickup & Room Reset", minutes: 45, price: 75 },
+      { id: "closet_comeback", label: "Closet Comeback - Light Reset & Fold", minutes: 60, price: 100 }
+    ],
+    intakeQuestions: [
+      { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
+      { id: "num_bathrooms", label: "Number of bathrooms", type: "select", options: ["1", "2", "3", "4+"] },
+      { id: "num_adults", label: "Number of adults in household", type: "select", options: ["1", "2", "3+"] },
+      { id: "num_children", label: "Number of children", type: "select", options: ["None", "1", "2", "3", "4+"] },
+      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes - dog", "Yes - cat", "Yes - multiple pets"] },
+      { id: "stairs", label: "Stairs in home?", type: "select", options: ["No", "Yes - one level", "Yes - multi-level"] },
+      { id: "parking", label: "Parking situation", type: "select", options: ["Driveway available", "Street parking", "Garage only", "Difficult / limited"] },
+      { id: "clutter_level", label: "Current home condition (be honest - zero judgment!)", type: "select", options: ["Mostly maintained", "Slightly behind", "Very overwhelmed", "Major reset needed"] },
+      { id: "priority_areas", label: "Priority areas (select all that apply)", type: "multiselect", options: ["Kitchen", "Living Room", "Primary Bedroom", "Kids Rooms", "Bathrooms", "Mudroom/Entry", "Home Office", "Basement"] },
+      { id: "allergies", label: "Any sensitivities or allergies to products?", type: "text", placeholder: "e.g. fragrance-free only, no bleach..." }
+    ]
+  },
 
   meal_prep: {
     label: "Clean Plate Club",
     sublabel: "Meal Prep & Kitchen Support",
     color: "#F3DE8A",
     baseMinutes: 180,
-    priceRange: [120, 240],
-    hourlyRate: [75, 95],
+    priceRange: [195, 195],
+    priceLabel: "Starting at $195",
+    hourlyRate: [65, 75],
     mileage_enabled: false,
     groceries: true,
-    minHours: 2,
+    minHours: 3,
     description: "Nourishment support for busy households. Simple, real food - prepped and ready to go.",
     disclaimer: "Grocery costs are separate from service time. Clean Slate Club does not advance personal funds for groceries.",
     examples: [
@@ -308,60 +363,8 @@ export const SERVICE_CONFIG = {
       { id: "groceries_provided", label: "Will groceries be ready?", type: "select", options: ["Yes - all ingredients provided", "Mostly - a few things missing", "No - please add grocery run add-on"] },
       { id: "kitchen_access", label: "Kitchen setup notes", type: "text", placeholder: "e.g. pantry layout, storage preferences, labels used..." }
     ]
-  },
-
-  organization: {
-    label: "Room Service",
-    sublabel: "Organization & Decluttering",
-    color: "#7E7F9A",
-    baseMinutes: 240,
-    priceRange: [140, 280],
-    hourlyRate: [75, 95],
-    minHours: 2,
-    mileage_enabled: false,
-    description: "For spaces that need a reset, not perfection. Calm, methodical, judgment-free decluttering and organization support.",
-    disclaimer: "Room Service focuses on organization, sorting, and decluttering support. This service does not include deep cleaning.",
-    examples: [
-      "Pantry overhaul - bins, zones, labels",
-      "Closet seasonal swap + donation prep",
-      "Playroom or toy rotation reset",
-      "Office or paper clutter purge",
-      "Post-move setup and unpacking help"
-    ],
-    taskOptions: [
-      "Help Me Choose - I'm Overwhelmed",
-      "Pantry Organization", "Closet Reset", "Linen Closet Organization",
-      "Bathroom Cabinet Organization", "Under Sink Organization",
-      "Entryway Reset", "Mudroom Organization", "Toy Organization",
-      "Playroom Reset", "Kitchen Drawer Organization", "Refrigerator Organization",
-      "Paper Sorting", "Mail Organization", "Donation Sorting",
-      "Seasonal Clothing Swap", "Storage Bin Labeling", "School Project Organization",
-      "Office Reset", "Craft Supply Organization", "Laundry Room Reset",
-      "Garage Zone Straightening", "Guest Room Refresh",
-      "Overflow Clutter Assistance", "Household Systems Setup"
-    ],
-    addons: [
-      { id: "closet_comeback", label: "Closet Comeback - Full Seasonal Reset", minutes: 90, price: 175 },
-      { id: "pantry_party", label: "Pantry Party - Deep Zone & Label", minutes: 60, price: 95 },
-      { id: "toy_story", label: "Toy Story - Sort, Rotate & Reset", minutes: 60, price: 75 },
-      { id: "paper_trail", label: "The Paper Trail - Mail & Paper Purge", minutes: 45, price: 65 },
-      { id: "donation_station", label: "Donation Station - Bag & Drop Off", minutes: 30, price: 45 },
-      { id: "reset_run", label: "Reset Run - Org Supplies Shopping", minutes: 60, price: 75 },
-      { id: "stocked_up", label: "Stocked Up - Household Restock", minutes: 30, price: 65 },
-      { id: "bed_reset", label: "Bed Reset - Fresh Linens & Styling", minutes: 20, price: 45 }
-    ],
-    intakeQuestions: [
-      { id: "home_size", label: "Home size", type: "select", options: ["Studio/1BR", "2BR", "3BR", "4BR", "5BR+"] },
-      { id: "clutter_level", label: "Current condition of target space", type: "select", options: ["Mostly fine - just needs a refresh", "Somewhat cluttered", "Very overwhelmed", "Major overhaul needed"] },
-      { id: "priority_spaces", label: "Which spaces need the most help? (select all)", type: "multiselect", options: ["Kitchen", "Pantry", "Closets", "Bedroom", "Kids Rooms", "Playroom", "Bathroom", "Office", "Basement/Garage", "Laundry Room"] },
-      { id: "supplies_available", label: "Do you have organizing supplies?", type: "select", options: ["Yes - bins, labels, baskets ready", "Some - but I might need more", "No - please add Reset Run add-on"] },
-      { id: "donation_ready", label: "Are there items to donate or remove?", type: "select", options: ["Yes - bags already packed", "Probably - we'll sort during visit", "No donation items"] },
-      { id: "style_pref", label: "Organization style preference", type: "select", options: ["Minimal & clean", "Practical & functional", "Aesthetic & curated", "Just get it under control!"] },
-      { id: "special_notes", label: "Any areas to avoid or special instructions?", type: "text", placeholder: "e.g. don't touch the hobby room, partner's side of closet, kids' sentimental items..." }
-    ]
   }
 };
-
 export const ADDON_CATALOG = [
   { name: 'The Fold Rush', price: '$95-145', desc: 'Laundry overflow - wash, dry, fold, basket sort.' },
   { name: 'Load & Behold', price: '$150-250', desc: 'Full household laundry reset: linens, towels, overflow folding.' },
@@ -379,7 +382,7 @@ export const ADDON_CATALOG = [
   { name: 'Reset Run', price: '$75-175', desc: 'Shopping for org supplies: bins, labels, baskets, containers. Travel time counts toward service.' }
 ];
 
-export function getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddonIds) {
+export function getDynamicEstimate(serviceKey, intakeAnswers = {}, selectedTasks = [], selectedAddonIds = []) {
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return { low: 0, high: 0, durationMinutes: 0, flags: [] };
 
@@ -387,71 +390,193 @@ export function getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, sel
   const flags = [];
   const taskCount = (selectedTasks || []).length;
 
-  if (taskCount >= 4 && taskCount <= 6) { extraMinutes += 30; flags.push('4-6 focus areas selected - extra time built in'); }
-  if (taskCount > 6) { extraMinutes += 75; flags.push('7+ focus areas - we recommend additional service time'); }
+  if (taskCount >= 4 && taskCount <= 6) {
+    extraMinutes += 60;
+    flags.push('4-6 focus areas selected - additional service time built in');
+  }
+
+  if (taskCount > 6) {
+    extraMinutes += 120;
+    flags.push('7+ focus areas selected - may require a larger visit or second appointment');
+  }
 
   if (serviceKey === 'home_reset') {
-    if (intakeAnswers.clutter_level === 'Very overwhelmed') { extraMinutes += 30; flags.push('Heavy clutter - extra time added'); }
-    if (intakeAnswers.clutter_level === 'Major reset needed') { extraMinutes += 60; flags.push('Major reset - substantial time added'); }
-    if (intakeAnswers.home_size === '4BR' || intakeAnswers.home_size === '5BR+') { extraMinutes += 30; flags.push('Large home - extra time added'); }
-    if (intakeAnswers.has_pets && intakeAnswers.has_pets !== 'No') { extraMinutes += 10; }
-    if (intakeAnswers.stairs === 'Yes - multi-level') { extraMinutes += 15; }
-    if (intakeAnswers.num_children === '4+') { extraMinutes += 15; flags.push('4+ children - extra time added'); }
+    if (intakeAnswers.clutter_level === 'Very overwhelmed') {
+      extraMinutes += 60;
+      flags.push('Very overwhelmed home condition - extra reset time added');
+    }
+
+    if (intakeAnswers.clutter_level === 'Major reset needed') {
+      extraMinutes += 120;
+      flags.push('Major reset needed - larger visit or second appointment may be recommended');
+    }
+
+    if (intakeAnswers.home_size === '4BR') {
+      extraMinutes += 30;
+      flags.push('4BR home - extra time added');
+    }
+
+    if (intakeAnswers.home_size === '5BR+') {
+      extraMinutes += 60;
+      flags.push('5BR+ home - extra time added');
+    }
+
+    if (intakeAnswers.has_pets && intakeAnswers.has_pets !== 'No') {
+      extraMinutes += 15;
+    }
+
+    if (intakeAnswers.stairs === 'Yes - multi-level') {
+      extraMinutes += 15;
+    }
+
+    if (intakeAnswers.num_children === '4+') {
+      extraMinutes += 30;
+      flags.push('4+ children - extra household reset time added');
+    }
   }
 
   if (serviceKey === 'mothers_helper') {
-    if (intakeAnswers.num_children === '3' || intakeAnswers.num_children === '4+') { extraMinutes += 30; flags.push('3+ children - extra time added'); }
-    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== 'No') { extraMinutes += 45; flags.push('Transportation included - travel time added'); }
+    if (intakeAnswers.num_children === '3' || intakeAnswers.num_children === '4+') {
+      extraMinutes += 60;
+      flags.push('3+ children - additional support time added');
+    }
+
+    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== 'No') {
+      extraMinutes += 60;
+      flags.push('Transportation included - travel and transition time added');
+    }
+
+    if (intakeAnswers.parent_present === 'Yes, resting/recovering') {
+      extraMinutes += 45;
+      flags.push('Recovery support - additional care time added');
+    }
   }
 
   if (serviceKey === 'errands') {
-    if (intakeAnswers.num_stops === '3-4') { extraMinutes += 20; }
-    if (intakeAnswers.num_stops === '5+') { extraMinutes += 45; flags.push('5+ stops - significant travel time added'); }
-    if (intakeAnswers.household_size === '5-6 people' || intakeAnswers.household_size === '7+ people') { extraMinutes += 20; flags.push('Large household - bigger shop estimated'); }
-    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) { extraMinutes += 15; flags.push('Special diet - extra sourcing time added'); }
+    if (intakeAnswers.num_stops === '3-4') {
+      extraMinutes += 45;
+      flags.push('3-4 stops - additional errand time added');
+    }
+
+    if (intakeAnswers.num_stops === '5+') {
+      extraMinutes += 90;
+      flags.push('5+ stops - larger errand block recommended');
+    }
+
+    if (intakeAnswers.household_size === '5-6 people' || intakeAnswers.household_size === '7+ people') {
+      extraMinutes += 30;
+      flags.push('Large household - bigger shop estimated');
+    }
+
+    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) {
+      extraMinutes += 30;
+      flags.push('Special diet - extra sourcing time added');
+    }
+
+    if ((selectedTasks || []).some(task => task.includes('Airport'))) {
+      extraMinutes += 120;
+      flags.push('Airport transportation may require manual review');
+    }
+
+    if ((selectedTasks || []).some(task => task.includes('Appointment Transportation'))) {
+      extraMinutes += 60;
+      flags.push('Appointment transportation - additional travel time added');
+    }
   }
 
   if (serviceKey === 'senior_support') {
-    if (intakeAnswers.mobility_level === 'Uses wheelchair' || intakeAnswers.mobility_level === 'Primarily bed/chair-bound') { extraMinutes += 20; flags.push('Mobility assistance - extra care time added'); }
-    if (intakeAnswers.surgery_recovery && intakeAnswers.surgery_recovery !== 'No') { extraMinutes += 20; flags.push('Recovery support - extra time added'); }
-    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== 'No') { extraMinutes += 45; flags.push('Transportation included - travel time added'); }
+    if (intakeAnswers.mobility_level === 'Uses wheelchair' || intakeAnswers.mobility_level === 'Primarily bed/chair-bound') {
+      extraMinutes += 45;
+      flags.push('Mobility considerations - extra support time added');
+    }
+
+    if (intakeAnswers.surgery_recovery && intakeAnswers.surgery_recovery !== 'No') {
+      extraMinutes += 45;
+      flags.push('Recovery support - extra time added');
+    }
+
+    if (intakeAnswers.transportation_needed && intakeAnswers.transportation_needed !== 'No') {
+      extraMinutes += 60;
+      flags.push('Transportation included - travel and transition time added');
+    }
+
+    if (intakeAnswers.cognitive_notes === 'Significant - please call ahead') {
+      flags.push('Significant cognitive considerations - manual review recommended');
+    }
   }
 
   if (serviceKey === 'meal_prep') {
-    if (intakeAnswers.num_people === '5-6 people' || intakeAnswers.num_people === '7+ people') { extraMinutes += 30; flags.push('Large household - more prep time added'); }
-    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) { extraMinutes += 20; flags.push('Special diet - extra planning/sourcing time'); }
-    if (intakeAnswers.groceries_provided === 'No - please add grocery run add-on') { extraMinutes += 45; flags.push('Grocery run needed - travel time added'); }
+    if (intakeAnswers.num_people === '5-6 people') {
+      extraMinutes += 60;
+      flags.push('Large household - more prep time added');
+    }
+
+    if (intakeAnswers.num_people === '7+ people') {
+      extraMinutes += 90;
+      flags.push('7+ people - larger meal prep block recommended');
+    }
+
+    if (intakeAnswers.dietary_restrictions && intakeAnswers.dietary_restrictions.trim().length > 5) {
+      extraMinutes += 45;
+      flags.push('Special diet - extra planning/sourcing time');
+    }
+
+    if (intakeAnswers.groceries_provided === 'No - please add grocery run add-on') {
+      extraMinutes += 60;
+      flags.push('Grocery run needed - travel time added');
+    }
   }
 
   if (serviceKey === 'organization') {
-    if (intakeAnswers.clutter_level === 'Very overwhelmed' || intakeAnswers.clutter_level === 'Major overhaul needed') { extraMinutes += 45; flags.push('Heavy clutter - substantial time added'); }
-    if (intakeAnswers.home_size === '4BR' || intakeAnswers.home_size === '5BR+') { extraMinutes += 30; flags.push('Large home - extra time added'); }
-    if (intakeAnswers.supplies_available === 'No - please add Reset Run add-on') { extraMinutes += 30; flags.push('Supply shopping needed - travel time added'); }
+    if (intakeAnswers.clutter_level === 'Very overwhelmed') {
+      extraMinutes += 90;
+      flags.push('Very overwhelmed space - substantial time added');
+    }
+
+    if (intakeAnswers.clutter_level === 'Major overhaul needed') {
+      extraMinutes += 150;
+      flags.push('Major overhaul - larger visit or second appointment may be recommended');
+    }
+
+    if (intakeAnswers.home_size === '4BR' || intakeAnswers.home_size === '5BR+') {
+      extraMinutes += 60;
+      flags.push('Large home/multiple spaces - extra time added');
+    }
+
+    if (intakeAnswers.supplies_available === 'No - please add Reset Run add-on') {
+      extraMinutes += 60;
+      flags.push('Supply shopping needed - travel time added');
+    }
   }
 
+  const addons = Array.isArray(config.addons) ? config.addons : [];
+
   const addonMinutes = (selectedAddonIds || []).reduce((sum, id) => {
-    const addon = config.addons.find(a => a.id === id);
+    const addon = addons.find(a => a.id === id);
     return sum + (addon ? addon.minutes : 0);
   }, 0);
+
   const addonPrice = (selectedAddonIds || []).reduce((sum, id) => {
-    const addon = config.addons.find(a => a.id === id);
+    const addon = addons.find(a => a.id === id);
     return sum + (addon ? addon.price : 0);
   }, 0);
 
-  const hourlyLow = config.hourlyRate ? config.hourlyRate[0] : 75;
-  const hourlyHigh = config.hourlyRate ? config.hourlyRate[1] : 95;
+  const hourlyLow = config.hourlyRate ? config.hourlyRate[0] : 65;
+  const hourlyHigh = config.hourlyRate ? config.hourlyRate[1] : 75;
+  const minimumMinutes = config.minHours ? config.minHours * 60 : config.baseMinutes;
 
-  // Hourly rate applies to BASE service time only.
-  // Add-ons are flat-rate and are NOT charged at the hourly rate.
-  // totalDuration includes addon minutes for scheduling purposes only.
-  const baseDuration = BUFFER_PREP + config.baseMinutes + extraMinutes + BUFFER_WRAP;
-  const totalDuration = baseDuration + addonMinutes;
-  const baseHours = baseDuration / 60;
+  // Guests are quoted for service time only: minimum/base time plus scope-based extra time.
+  // Prep, wrap, add-on minutes, and travel buffer protect scheduling without being double-billed hourly.
+  const billableServiceMinutes = Math.max(config.baseMinutes || 0, minimumMinutes) + extraMinutes;
+  const totalDuration = BUFFER_PREP + billableServiceMinutes + addonMinutes + BUFFER_WRAP;
+  const baseHours = billableServiceMinutes / 60;
 
-  // No cap - quote can go as high as needed based on selections.
-  // priceRange in service config is only for the service card display.
   const low = Math.round(baseHours * hourlyLow) + addonPrice;
   const high = Math.round(baseHours * hourlyHigh) + addonPrice;
+
+  if (billableServiceMinutes >= 360) {
+    flags.push('Large scope selected - this may require a full-day reset or second visit');
+  }
 
   return { low, high, durationMinutes: totalDuration, flags };
 }
@@ -468,8 +593,10 @@ export const MEMBER_HOURS = ['9:00 AM', '9:30 AM', ...AVAILABLE_HOURS];
 export function timeToMinutes(timeStr) {
   const [time, period] = timeStr.split(' ');
   let [hours, minutes] = time.split(':').map(Number);
+
   if (period === 'PM' && hours !== 12) hours += 12;
   if (period === 'AM' && hours === 12) hours = 0;
+
   return hours * 60 + minutes;
 }
 
@@ -478,28 +605,39 @@ export function minutesToTime(totalMinutes) {
   const minutes = totalMinutes % 60;
   const period = hours >= 12 ? 'PM' : 'AM';
   const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+
   return displayHours + ':' + minutes.toString().padStart(2, '0') + ' ' + period;
 }
 
-export function calculateTotalDuration(serviceKey, selectedAddonIds) {
+export function calculateTotalDuration(serviceKey, selectedAddonIds = []) {
   const config = SERVICE_CONFIG[serviceKey];
+
   if (!config) return 0;
-  const addonMinutes = selectedAddonIds.reduce((sum, id) => {
-    const addon = config.addons.find(a => a.id === id);
+
+  const addons = Array.isArray(config.addons) ? config.addons : [];
+  const minimumMinutes = config.minHours ? config.minHours * 60 : config.baseMinutes;
+  const baseMinutes = Math.max(config.baseMinutes || 0, minimumMinutes || 0);
+
+  const addonMinutes = (selectedAddonIds || []).reduce((sum, id) => {
+    const addon = addons.find(a => a.id === id);
     return sum + (addon ? addon.minutes : 0);
   }, 0);
-  return BUFFER_PREP + config.baseMinutes + addonMinutes + BUFFER_WRAP;
+
+  return BUFFER_PREP + baseMinutes + addonMinutes + BUFFER_WRAP;
 }
 
 export function isSlotAvailable(date, startTimeStr, durationMinutes, existingBlocks) {
   const startMins = timeToMinutes(startTimeStr);
   const endMins = startMins + durationMinutes + TRAVEL_BUFFER;
   const dateBlocks = existingBlocks.filter(b => b.date === date);
+
   for (const block of dateBlocks) {
     const blockStart = timeToMinutes(block.start_time);
     const blockEnd = timeToMinutes(block.end_time);
+
     if (startMins < blockEnd && endMins > blockStart) return false;
   }
+
   const dayEnd = timeToMinutes('6:00 PM');
   return endMins <= dayEnd;
 }
