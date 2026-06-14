@@ -62,7 +62,7 @@ function PaymentForm({ onSuccess, onCancel, submitting }) {
           disabled={!stripe || paying || submitting}
           className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
         >
-          {paying || submitting ? 'Processing...' : 'Pay $50 Deposit & Book →'}
+          {paying || submitting ? 'Processing...' : 'Pay $50 Card Deposit & Book →'}
         </button>
       </div>
     </form>
@@ -93,7 +93,7 @@ export default function Step6Payment({ clientName, clientEmail, serviceLabel, on
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4">
         <div className="w-8 h-8 border-4 border-taupe border-t-coral rounded-full animate-spin" />
-        <p className="font-body text-sm text-charcoal/40 font-light">Setting up secure payment...</p>
+        <p className="font-body text-sm text-charcoal/40 font-light">Setting up secure card payment...</p>
       </div>
     );
   }
@@ -106,13 +106,14 @@ export default function Step6Payment({ clientName, clientEmail, serviceLabel, on
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Secure Your Spot</h2>
       <p className="font-body text-sm text-charcoal/45 font-light mb-8">
-        A <strong>$50 deposit</strong> holds your booking. It's applied to your total balance — no surprise charges, ever.
+        A <strong>$50 card deposit</strong> holds your booking and is applied to your final balance. Your card also helps keep your appointment secure and makes checkout easier after your visit. No surprise charges, ever.
       </p>
 
       <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-6" style={{ borderLeft: '3px solid #EB9486' }}>
         <p className="font-body text-xs text-charcoal/40 font-light mb-1">You're reserving</p>
         <p className="font-heading text-base font-semibold text-charcoal">{serviceLabel}</p>
         <p className="font-body text-sm text-charcoal/50 font-light mt-1">Deposit: <strong className="text-coral">$50.00</strong> — applied to your balance</p>
+        <p className="font-body text-xs text-charcoal/35 font-light mt-3">Deposit payments are card-only. Flexible payment options may be available later on your final checkout link.</p>
       </div>
 
       {clientSecret && stripe && (
