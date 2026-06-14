@@ -47,8 +47,9 @@ const categories = [
   name: 'Home Resets',
   tagline: 'Your home, caught up.',
   desc: 'Full home resets for when things have piled up — clutter, surfaces, kitchens, bathrooms. We bring your space back to baseline so you can breathe.',
-  color: '#c0796b',
-  bg: '#ffd7ba55',
+  color: '#EB9486',
+  bg: '#EB94861F',
+  glow: '#FFE5D9',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png'
 },
 {
@@ -56,8 +57,9 @@ const categories = [
   name: "Mother's Helper Support",
   tagline: 'An extra pair of trusted hands.',
   desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
-  color: '#b06e61',
-  bg: '#fce4df55',
+  color: '#EFB985',
+  bg: '#EFB98524',
+  glow: '#F3DE8A',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/a7a6109ac_generated_image.png'
 },
 {
@@ -65,8 +67,9 @@ const categories = [
   name: 'Errands & Life Logistics',
   tagline: 'Outsource the running around.',
   desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
-  color: '#4a7a62',
-  bg: '#cae8d855',
+  color: '#8B93A7',
+  bg: '#8B93A71F',
+  glow: '#CAE7B9',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/ebc467ce8_generated_image.png'
 },
 {
@@ -74,8 +77,9 @@ const categories = [
   name: 'Senior Support',
   tagline: 'Gentle, dignified home help.',
   desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
-  color: '#8c6068',
-  bg: '#e8d8d855',
+  color: '#B58A90',
+  bg: '#B58A9024',
+  glow: '#DFE3A2',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png'
 },
 {
@@ -83,8 +87,9 @@ const categories = [
   name: 'Meal Prep & Kitchen Support',
   tagline: 'Nourishment made easier.',
   desc: "Simple meal prep, kitchen resets, grocery organization — so dinnertime isn't another source of stress.",
-  color: '#a07830',
-  bg: '#fec89a48',
+  color: '#7E7F9A',
+  bg: '#7E7F9A1F',
+  glow: '#F3DE8A',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png'
 }];
 
@@ -93,17 +98,24 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf3f0' }}>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #cae8d8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
+      <div className="absolute bottom-0 left-0 w-[520px] h-[520px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-0 right-0 w-[380px] h-[380px] rounded-full opacity-28 pointer-events-none" style={{ background: 'radial-gradient(circle, #FFE5D9 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
+      <div className="absolute top-1/2 right-1/4 w-[260px] h-[260px] rounded-full opacity-18 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 68%)' }} />
+      <div className="absolute bottom-24 right-8 w-[220px] h-[220px] rounded-full opacity-16 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 68%)' }} />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-16">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-[hsl(var(--foreground))] text-lg">WHAT WE OFFER</p>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHAT WE OFFER</p>
+          </div>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             This isn't a cleaning menu.
           </h2>
-          <p className="font-body text-base text-charcoal/65 max-w-lg leading-relaxed font-light">
+          <p className="font-body text-base max-w-lg leading-relaxed font-light" style={{ color: '#333333b3' }}>
             It's household support — organized around your life, your family, and what actually needs to happen.
           </p>
         </AnimatedSection>
@@ -112,19 +124,22 @@ export default function ServicesPreview() {
           {categories.map((cat, i) =>
           <AnimatedSection key={cat.name} delay={i * 0.1}>
               <div
-              className="group rounded-3xl border overflow-hidden hover:shadow-lg transition-all duration-500 h-full flex flex-col"
-              style={{ background: '#fdfcfb', borderColor: '#f0ebe8' }}>
+              className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
+              style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
+                <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
+                <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-30 pointer-events-none" style={{ background: cat.glow }} />
               
                 {cat.img &&
-              <div className="h-44 overflow-hidden">
+              <div className="h-44 overflow-hidden relative">
                     <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
                   </div>
               }
-                <div className="p-7 flex flex-col flex-1" style={{ background: cat.bg }}>
-                  <div className="mb-3" style={{ color: cat.color }}>{React.createElement(iconMap[cat.iconKey])}</div>
-                  <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#3a3330' }}>{cat.name}</h3>
-                  <p className="font-body text-sm font-light mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
-                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#4a3e38' }}>{cat.desc}</p>
+                <div className="p-7 flex flex-col flex-1 relative" style={{ background: cat.bg }}>
+                  <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: cat.color, background: '#FFFFFFB3', borderColor: cat.color + '35' }}>{React.createElement(iconMap[cat.iconKey])}</div>
+                  <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{cat.name}</h3>
+                  <p className="font-body text-sm font-medium mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
+                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#333333cc' }}>{cat.desc}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -132,16 +147,18 @@ export default function ServicesPreview() {
 
           {/* CTA card */}
           <AnimatedSection delay={0.5}>
-            <div className="p-7 rounded-3xl text-white flex flex-col justify-between h-full min-h-[200px]" style={{ background: 'linear-gradient(135deg, #fec5bb 0%, #fcd5ce 50%, #ece4db 100%)', color: '#3a3330' }}>
-              <div>
-                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#9a7060' }}>Custom Support</p>
-                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#3a3330' }}>Not sure what you need?</h3>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#5a4040' }}>Tell us what's going on and we'll build the right support for your home.</p>
+            <div className="p-7 rounded-3xl flex flex-col justify-between h-full min-h-[200px] border relative overflow-hidden" style={{ background: '#333333', color: '#FFFFFF', borderColor: '#333333' }}>
+              <div className="absolute -top-12 -right-10 w-36 h-36 rounded-full opacity-60" style={{ background: '#EB9486' }} />
+              <div className="absolute -bottom-14 -left-8 w-36 h-36 rounded-full opacity-55" style={{ background: '#CAE7B9' }} />
+              <div className="relative z-10">
+                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#F3DE8A' }}>Custom Support</p>
+                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#FFFFFF' }}>Not sure what you need?</h3>
+                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#FFFFFFCC' }}>Tell us what's going on and we'll build the right support for your home.</p>
               </div>
               <Link
                 to="/services"
-                className="inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border"
-                style={{ background: 'rgba(255,255,255,0.6)', borderColor: '#fcd5ce', color: '#9a5f55' }}>
+                className="relative z-10 inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                style={{ background: '#FFFFFF', borderColor: '#FFFFFF', color: '#333333', outlineColor: '#F3DE8A' }}>
                 
                 See All Services →
               </Link>
