@@ -2,52 +2,49 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const tasks = [
-  { label: 'Grocery Shopping', color: '#EB9486', bg: '#FFE5D9' },
-  { label: 'Multiple Store Run', color: '#8B93A7', bg: '#F1F1F1' },
-  { label: 'Grocery Put-Away', color: '#EFb985', bg: '#FFE5D9' },
-  { label: 'Meal Prep', color: '#8B93A7', bg: '#CAE7B9' },
-  { label: 'School Lunch Prep', color: '#97A7B3', bg: '#F1F1F1' },
-  { label: 'Snack Prep', color: '#7E7F9A', bg: '#DFE3A2' },
-  { label: 'Produce Prep', color: '#8B93A7', bg: '#CAE7B9' },
-  { label: 'Pantry Restock', color: '#B58A90', bg: '#F1F1F1' },
-  { label: 'Fridge Organization', color: '#97A7B3', bg: '#F1F1F1' },
-  { label: 'Freezer Meals', color: '#7E7F9A', bg: '#DFE3A2' },
-  { label: 'Returns', color: '#B58A90', bg: '#FFE5D9' },
-  { label: 'Donation Dropoff', color: '#7E7F9A', bg: '#F3DE8A' },
-  { label: 'Pharmacy Pickup', color: '#B58A90', bg: '#F1F1F1' },
-  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#F1F1F1' },
-  { label: 'Post Office Runs', color: '#7E7F9A', bg: '#DFE3A2' },
-  { label: 'Feeding Pets', color: '#8B93A7', bg: '#CAE7B9' },
-  { label: 'Pet Supply Run', color: '#B58A90', bg: '#FFE5D9' },
+  { label: 'Grocery Shopping', color: '#EB9486' },
+  { label: 'Multiple Store Run', color: '#8B93A7' },
+  { label: 'Grocery Put-Away', color: '#EFB985' },
+  { label: 'Meal Prep', color: '#CAE7B9' },
+  { label: 'School Lunch Prep', color: '#97A7B3' },
+  { label: 'Snack Prep', color: '#DFE3A2' },
+  { label: 'Produce Prep', color: '#CAE7B9' },
+  { label: 'Pantry Restock', color: '#B58A90' },
+  { label: 'Fridge Organization', color: '#97A7B3' },
+  { label: 'Freezer Meals', color: '#DFE3A2' },
+  { label: 'Returns', color: '#B58A90' },
+  { label: 'Donation Dropoff', color: '#F3DE8A' },
+  { label: 'Pharmacy Pickup', color: '#B58A90' },
+  { label: 'Dry Cleaning', color: '#97A7B3' },
+  { label: 'Post Office Runs', color: '#DFE3A2' },
+  { label: 'Feeding Pets', color: '#CAE7B9' },
+  { label: 'Pet Supply Run', color: '#FFE5D9' },
 ];
 
-// Emoji map for a little extra personality
 const emojis = {
-  'Grocery Shopping':    '🛒',
-  'Multiple Store Run':  '🗺️',
-  'Grocery Put-Away':    '🥫',
-  'Meal Prep':           '🍳',
-  'School Lunch Prep':   '🥪',
-  'Snack Prep':          '🍎',
-  'Produce Prep':        '🥦',
-  'Pantry Restock':      '🧺',
+  'Grocery Shopping': '🛒',
+  'Multiple Store Run': '🗺️',
+  'Grocery Put-Away': '🥫',
+  'Meal Prep': '🍳',
+  'School Lunch Prep': '🥪',
+  'Snack Prep': '🍎',
+  'Produce Prep': '🥦',
+  'Pantry Restock': '🧺',
   'Fridge Organization': '❄️',
-  'Freezer Meals':       '🫙',
-  'Returns':             '📦',
-  'Donation Dropoff':    '💛',
-  'Pharmacy Pickup':     '💊',
-  'Dry Cleaning':        '👗',
-  'Post Office Runs':    '✉️',
-  'Feeding Pets':        '🐾',
-  'Pet Supply Run':      '🦴',
+  'Freezer Meals': '🫙',
+  'Returns': '📦',
+  'Donation Dropoff': '💛',
+  'Pharmacy Pickup': '💊',
+  'Dry Cleaning': '👗',
+  'Post Office Runs': '✉️',
+  'Feeding Pets': '🐾',
+  'Pet Supply Run': '🦴',
 };
 
-// Split into two columns with offset
 const col1 = tasks.filter((_, i) => i % 2 === 0);
 const col2 = tasks.filter((_, i) => i % 2 === 1);
 
 function TaskColumn({ items, direction = 1, speed = 28 }) {
-  // Duplicate for seamless loop
   const doubled = [...items, ...items];
 
   return (
@@ -70,19 +67,18 @@ function TaskCard({ task }) {
     <div
       className="rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm border select-none whitespace-nowrap"
       style={{
-        background: task.bg,
-        borderColor: task.color + '55',
+        background: task.color,
+        borderColor: '#33333322',
         minWidth: '170px',
       }}
     >
-      {/* Checkbox */}
       <span
-        className="w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 text-white text-[10px] font-bold"
-        style={{ borderColor: task.color, background: task.color }}
+        className="w-5 h-5 rounded-md border flex items-center justify-center shrink-0 text-[10px] font-bold"
+        style={{ borderColor: '#33333355', background: '#333333', color: '#FFFFFF' }}
       >
         ✓
       </span>
-      <span className="font-body text-sm font-light leading-none" style={{ color: '#333333' }}>
+      <span className="font-body text-sm font-medium leading-none" style={{ color: '#333333' }}>
         {emojis[task.label] && <span className="mr-1.5">{emojis[task.label]}</span>}
         {task.label}
       </span>
