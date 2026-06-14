@@ -2,7 +2,7 @@ import React from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
-    <section id="about" className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
+    <section id="about" className="py-16 lg:py-24 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#fdf5f3' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Image */}
@@ -28,39 +28,25 @@ export default function MashaSection() {
               <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-              <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>THE WOMAN BEHIND THE BRAND</p>
+              <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>MEET MASHA</p>
             </div>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2 leading-tight">
-              Meet Masha.
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-6 leading-tight">
+              The calm in your household chaos.
             </h2>
-            <p className="font-logo text-2xl mb-8" style={{ color: '#EB9486' }}>She gets it.</p>
-
-            <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
+            <div className="space-y-4 font-body text-base leading-relaxed font-light" style={{ color: '#333333b3' }}>
               <p>
-                For years, Masha was the woman holding everything together — the home, the kids, the routines, the invisible mental load that never clocked out. She was a stay-at-home mom who knew the weight of running a household like a full-time job that nobody notices.
+                Clean Slate Club was built around the kind of support people actually need but rarely ask for — the laundry that became a mountain, the errands that keep getting moved to tomorrow, the meals that never quite happen, the aging parent who needs a little extra care.
               </p>
               <p>
-                Then life shifted. As a single mom, she understood overwhelm not as a buzzword, but as a Wednesday afternoon when the laundry was piling, the kids needed dinner, and there was no one to call.
+                Masha brings a warm, grounded presence to every home she supports. She is background checked, CPR certified, ServeSafe trained, and deeply comfortable stepping into the real-life mess without judgment.
               </p>
               <p>
-                She built Clean Slate Club because she wished something like it had existed for her. Not a maid. Not a judgmental stranger. A trusted, capable woman who walks in, gets to work, and leaves your home — and your nervous system — in a better place.
-              </p>
-            </div>
-
-            <div className="mt-10 p-6 rounded-2xl border relative overflow-hidden" style={{ background: '#F1F1F1', borderColor: '#7E7F9A35' }}>
-              <div className="absolute inset-y-0 left-0 w-2" style={{ background: '#EB9486' }} />
-              <div className="absolute top-4 right-4 flex gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ background: '#B58A90' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: '#97A7B3' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: '#F3DE8A' }} />
-              </div>
-              <p className="font-heading text-lg font-semibold text-charcoal pl-4 pr-14">
-                You don't need perfect. You need backup.
+                This is not about perfection. It is about creating breathing room, restoring order, and making everyday life feel a little more manageable.
               </p>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 }
