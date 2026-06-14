@@ -85,11 +85,6 @@ export default function ConsultSection() {
                   src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/0444b42e3_generated_image.png"
                   alt="Folded laundry in warm sunlight"
                   className="w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #33333375 0%, transparent 45%)' }} />
-                <div className="absolute left-6 bottom-6 right-6 p-5 rounded-2xl border backdrop-blur-sm" style={{ background: '#FFFFFFD9', borderColor: '#FFFFFF80' }}>
-                  <p className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>No guessing required.</p>
-                  <p className="font-body text-sm font-light leading-relaxed" style={{ color: '#333333b3' }}>Tell us what is going on. We turn it into a clear, bookable plan.</p>
-                </div>
               </div>
             </div>
 
