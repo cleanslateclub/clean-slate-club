@@ -1,23 +1,26 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const tasks = [
+const col1 = [
   { label: 'Home Reset', color: '#EB9486', icon: 'home' },
-  { label: 'Laundry Catch-Up', color: '#CAE7B9', icon: 'sparkle' },
-  { label: 'Kitchen Reset', color: '#EFB988', icon: 'kitchen' },
-  { label: 'Errand Run', color: '#8B93A7', icon: 'bag' },
-  { label: 'Grocery Pickup', color: '#DFE3A2', icon: 'bag' },
-  { label: 'Meal Prep Help', color: '#7E7F9A', icon: 'kitchen' },
   { label: 'Fridge Refresh', color: '#D8E2DC', icon: 'sparkle' },
-  { label: 'Pantry Tidy', color: '#F3DE8A', icon: 'kitchen' },
   { label: 'Donation Drop-Off', color: '#B58A90', icon: 'bag' },
-  { label: 'School-Day Support', color: '#97A7B3', icon: 'calendar' },
+  { label: 'Grocery Pickup', color: '#DFE3A2', icon: 'bag' },
   { label: 'Appointment Help', color: '#8B93A7', icon: 'calendar' },
-  { label: 'Senior Check-In', color: '#B58A90', icon: 'heart' },
   { label: 'Pet & Plant Care', color: '#CAE7B9', icon: 'heart' },
-  { label: 'Room Reset', color: '#FFE5D9', icon: 'home' },
   { label: 'Inbox of Life', color: '#F3DE8A', icon: 'sparkle' },
+  { label: 'Meal Prep Help', color: '#7E7F9A', icon: 'kitchen' },
+];
+
+const col2 = [
+  { label: 'Laundry Catch-Up', color: '#CAE7B9', icon: 'sparkle' },
+  { label: 'Errand Run', color: '#8B93A7', icon: 'bag' },
+  { label: 'Kitchen Reset', color: '#EFB988', icon: 'kitchen' },
+  { label: 'Senior Check-In', color: '#B58A90', icon: 'heart' },
+  { label: 'Pantry Tidy', color: '#F3DE8A', icon: 'kitchen' },
+  { label: 'School-Day Support', color: '#97A7B3', icon: 'calendar' },
   { label: 'Return Runs', color: '#EFB988', icon: 'bag' },
+  { label: 'Room Reset', color: '#FFE5D9', icon: 'home' },
 ];
 
 const icons = {
@@ -60,9 +63,6 @@ const icons = {
     </svg>
   ),
 };
-
-const col1 = tasks.filter((_, i) => i % 2 === 0);
-const col2 = tasks.filter((_, i) => i % 2 === 1);
 
 function withOpacity(hex, opacity = '66') {
   return `${hex}${opacity}`;
