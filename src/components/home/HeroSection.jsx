@@ -73,14 +73,14 @@ export default function HeroSection() {
             <p className="font-body text-xs md:text-sm tracking-[0.34em] uppercase font-semibold mb-4" style={{ color: '#7E7F9A' }}>
               Household support for modern life
             </p>
-            <h1 className="mb-5 leading-none" aria-label="Busy homes handled">
-              <span className="block font-body text-[3.25rem] md:text-[5rem] lg:text-[6.75rem] uppercase tracking-[0.04em] font-light" style={{ color: '#333333' }}>
+            <h1 className="mb-7 leading-none" aria-label="Busy homes handled">
+              <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98]" style={{ color: '#333333' }}>
                 BUSY
               </span>
-              <span className="block font-body text-[3.25rem] md:text-[5rem] lg:text-[6.75rem] uppercase tracking-[0.04em] font-light -mt-2" style={{ color: '#333333' }}>
+              <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98] mt-1" style={{ color: '#333333' }}>
                 HOMES
               </span>
-              <span className="block font-logo text-[3.75rem] md:text-[5.75rem] lg:text-[7.5rem] leading-[0.95] font-normal -mt-1" style={{ color: '#EB9486' }}>
+              <span className="block font-logo text-[4rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4" style={{ color: '#EB9486' }}>
                 handled
               </span>
             </h1>
