@@ -47,14 +47,13 @@ export default function MashaSection() {
               </p>
             </div>
 
-            <div className="mt-10 p-6 rounded-2xl border relative overflow-hidden" style={{ background: '#F1F1F1', borderColor: '#7E7F9A35' }}>
-              <div className="absolute inset-y-0 left-0 w-2" style={{ background: '#EB9486' }} />
-              <div className="absolute top-4 right-4 flex gap-1.5">
+            <div className="mt-10 mx-auto max-w-sm rounded-full border px-8 py-5 text-center relative overflow-hidden" style={{ background: '#F1F1F1', borderColor: '#7E7F9A35', boxShadow: '0 10px 30px #B58A9018' }}>
+              <div className="flex justify-center gap-1.5 mb-3">
                 <span className="w-2 h-2 rounded-full" style={{ background: '#B58A90' }} />
                 <span className="w-2 h-2 rounded-full" style={{ background: '#97A7B3' }} />
                 <span className="w-2 h-2 rounded-full" style={{ background: '#F3DE8A' }} />
               </div>
-              <p className="font-heading text-lg font-semibold text-charcoal pl-4 pr-14">
+              <p className="font-heading text-lg font-semibold text-charcoal leading-snug">
                 You don't need perfect. You need backup.
               </p>
             </div>
