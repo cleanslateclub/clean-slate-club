@@ -44,9 +44,7 @@ const credentials = [
 
 export default function TrustSection() {
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f2ddd6' }}>
-      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--popover-foreground))]">YOU'RE IN GOOD HANDS</p>
