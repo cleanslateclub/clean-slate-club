@@ -29,7 +29,7 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-10 md:pt-24 md:pb-12 lg:pt-28 lg:pb-20 w-full">
-        <div className="max-w-xl lg:text-left text-center mx-auto lg:mx-0">
+        <div className="max-w-xl text-center mx-auto lg:mx-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,11 +80,16 @@ export default function HeroSection() {
               <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98] mt-1" style={{ color: '#333333' }}>
                 HOMES,
               </span>
-              <span className="block font-logo text-[4rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4" style={{ color: '#EB9486' }}>
+              <motion.span
+                className="block font-logo text-[4rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4"
+                style={{ color: '#EB9486' }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.85, delay: 2.2, ease: [0.22, 1, 0.36, 1] }}>
                 handled
-              </span>
+              </motion.span>
             </h1>
-            <p className="font-heading font-light text-xl md:text-2xl lg:text-3xl leading-[1.25] mb-8 max-w-lg" style={{ color: '#333333' }}>
+            <p className="font-heading font-light text-xl md:text-2xl lg:text-3xl leading-[1.25] mb-8 max-w-lg mx-auto" style={{ color: '#333333' }}>
               Because no one is actually all caught up.
             </p>
           </motion.div>
@@ -93,7 +98,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-lg md:text-xl leading-relaxed mb-10 max-w-md font-light"
+            className="font-body text-lg md:text-xl leading-relaxed mb-10 max-w-md font-light mx-auto"
             style={{ color: '#333333' }}>
             A helping hand for home resets, errands, meal prep, laundry piles, mental load, and all the everyday tasks taking up too much space.
           </motion.p>
@@ -102,7 +107,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-center lg:items-start gap-4 justify-center lg:justify-start">
+            className="flex flex-col sm:flex-row items-center gap-4 justify-center">
             <Link
               to="/book"
               className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-500 shadow-sm hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -121,7 +126,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start">
+            className="mt-10 flex flex-wrap gap-4 justify-center">
             {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge, index) => {
               const badgeColors = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#B58A90'];
               return (
