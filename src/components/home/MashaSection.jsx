@@ -38,13 +38,19 @@ export default function MashaSection() {
 
             <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
               <p>
-                For years, Masha was the woman holding everything together — the home, the kids, the routines, the invisible mental load that never clocked out. She was a stay-at-home mom who knew the weight of running a household like a full-time job that nobody notices.
+                Masha built Clean Slate Club around a simple truth: most people do not need perfect homes. They need relief.
               </p>
               <p>
-                Then life shifted. As a single mom, she understood overwhelm not as a buzzword, but as a Wednesday afternoon when the laundry was piling, the kids needed dinner, and there was no one to call.
+                She knows what it feels like to be the one holding the calendar, the meals, the laundry, the errands, the details, and the emotional weight of making sure nothing falls apart. She has lived the kind of overwhelm that does not always look dramatic from the outside, but quietly takes up every inch of your day.
               </p>
               <p>
-                She built Clean Slate Club because she wished something like it had existed for her. Not a maid. Not a judgmental stranger. Thoughtful, capable support that meets you where you are and helps your home feel easier to live in.
+                As a stay-at-home mom and later a single mom, Masha understood how much invisible labor goes into keeping a household moving. She also understood how hard it can be to ask for help when the thing you need help with is everything.
+              </p>
+              <p>
+                Clean Slate Club exists for that exact place. The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.
+              </p>
+              <p>
+                What started with Masha's own understanding is becoming a new kind of household support: warm, practical, capable, and never judgmental.
               </p>
             </div>
 
