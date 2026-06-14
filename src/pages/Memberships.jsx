@@ -49,7 +49,7 @@ export default function Memberships() {
 
       const completedBookings = await base44.entities.Booking.filter({ client_email: email, status: 'completed' }, '-scheduled_date', 1);
       if (!completedBookings || completedBookings.length === 0) {
-        setError('Membership becomes available after your first completed service. Once your first visit is complete, you’ll receive a private invitation to join.');
+        setError('Membership opens after your first completed service. Once you’re eligible, you’ll receive a private invitation to join.');
         return;
       }
 
@@ -130,16 +130,13 @@ export default function Memberships() {
 
               <div className="p-8 lg:p-10">
                 <p className="font-heading text-xl font-semibold mb-3" style={{ color: '#333333' }}>For regular backup, not crisis-mode living.</p>
-                <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333b3' }}>
+                <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
                   Membership fee is separate from service costs. Services billed per visit.
-                </p>
-                <p className="font-body text-sm leading-relaxed font-light mb-6" style={{ color: '#333333b3' }}>
-                  Membership becomes available after your first completed service, so we can make sure the support is the right fit before you join.
                 </p>
                 <div className="rounded-3xl border p-4 mb-8" style={{ background: '#F7FAF4', borderColor: '#CAE7B970' }}>
                   <p className="font-body text-xs tracking-[0.18em] uppercase font-light mb-2" style={{ color: '#33333399' }}>How access works</p>
                   <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>
-                    After your first completed visit, eligible guests receive a private membership invitation with a link to join, log in, and manage subscription details.
+                    Membership becomes available after your first completed service. Once you’re eligible, you’ll receive a private invitation to join and manage everything from your dashboard.
                   </p>
                 </div>
 
@@ -152,13 +149,9 @@ export default function Memberships() {
                 </button>
                 {error && <p className="text-center font-body text-xs text-red-500 mt-3">{error}</p>}
 
-                <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center text-center">
-                  <Link to="/member-login" className="font-body text-sm font-light underline underline-offset-4" style={{ color: '#333333' }}>
-                    Member login
-                  </Link>
-                  <span className="hidden sm:inline font-body text-sm" style={{ color: '#33333355' }}>•</span>
+                <div className="mt-5 text-center">
                   <Link to="/dashboard" className="font-body text-sm font-light underline underline-offset-4" style={{ color: '#333333' }}>
-                    Manage your subscription
+                    Go to your dashboard
                   </Link>
                 </div>
               </div>
