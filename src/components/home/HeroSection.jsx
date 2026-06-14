@@ -15,16 +15,11 @@ const mobileTasks = [
   { label: 'Dry Cleaning', color: '#FFE5D9', emoji: '👗' },
 ];
 
+const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
+
 export default function HeroSection() {
   return (
     <section className="relative flex items-start overflow-hidden" style={{ background: '#F1F1F1' }}>
-      {/* Organic background blobs */}
-      <div className="absolute top-8 right-0 w-[720px] h-[720px] rounded-full opacity-35 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(22%, -14%)' }} />
-      <div className="absolute bottom-0 left-0 w-[560px] h-[560px] rounded-full opacity-40 pointer-events-none" style={{ background: 'radial-gradient(circle, #FFE5D9 0%, transparent 66%)', transform: 'translate(-22%, 22%)' }} />
-      <div className="absolute top-1/2 right-1/4 w-[360px] h-[360px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 65%)' }} />
-      <div className="absolute top-1/3 left-1/3 w-[240px] h-[240px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 65%)' }} />
-      <div className="absolute bottom-24 right-1/3 w-[220px] h-[220px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #B58A90 0%, transparent 66%)' }} />
-
       {/* Task scroll panel — desktop right column */}
       <div className="absolute right-0 top-0 bottom-0 w-[46%] hidden lg:flex flex-col justify-center overflow-hidden">
         {/* Soft left fade so it bleeds into the content */}
@@ -43,7 +38,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border hidden"
-            style={{ background: '#FFE5D9', borderColor: '#B58A9040' }}
+            style={{ background: '#FFE5D966', borderColor: '#B58A9066' }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7E7F9A' }} />
             <span className="font-body text-xs tracking-[0.2em] uppercase font-light" style={{ color: '#333333' }}>Practical Support For Busy Homes</span>
@@ -66,7 +61,7 @@ export default function HeroSection() {
                 <span
                   key={`m-top-${t.label}-${i}`}
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-medium shrink-0"
-                  style={{ background: t.color, borderColor: '#33333322', color: '#333333' }}
+                  style={{ background: withOpacity(t.color), borderColor: t.color, color: '#333333' }}
                 >
                   <span
                     className="w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold shrink-0"
@@ -147,7 +142,7 @@ export default function HeroSection() {
               const badgeColors = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#B58A90'];
               return (
                 <span key={badge} className="font-body text-[11px] tracking-wide font-light flex items-center gap-1.5" style={{ color: '#333333' }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: badgeColors[index] }} />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: withOpacity(badgeColors[index]) }} />
                   {badge}
                 </span>
               );
