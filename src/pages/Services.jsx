@@ -26,6 +26,12 @@ const COLOR_OVERRIDES = {
   organization: '#B58A90',
 };
 
+const SUBLABEL_COLOR_OVERRIDES = {
+  errands: '#5F7654',
+  senior_support: '#6F733E',
+  mothers_helper: '#8A6A2A',
+};
+
 function getRandomTaskChips(taskOptions, limit = 6) {
   return [...taskOptions]
     .filter(task => task !== 'Help Me Choose' && task !== "Help Me Choose - I'm Overwhelmed")
@@ -138,6 +144,7 @@ export default function Services() {
           const service = SERVICE_CONFIG[key];
           if (!service) return null;
           const color = COLOR_OVERRIDES[key] || service.color;
+          const sublabelColor = SUBLABEL_COLOR_OVERRIDES[key] || color;
           const bgColor = color + '15';
           const [priceLow] = service.priceRange || [0, 0];
           const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
@@ -159,7 +166,7 @@ export default function Services() {
                         <h2 className="font-heading text-2xl font-semibold text-charcoal">{service.label}</h2>
                       </div>
                       {service.sublabel && (
-                        <p className="font-logo text-base ml-6" style={{ color }}>{service.sublabel}</p>
+                        <p className="font-logo text-base ml-6" style={{ color: sublabelColor }}>{service.sublabel}</p>
                       )}
                     </div>
                     <div className="text-right shrink-0">
