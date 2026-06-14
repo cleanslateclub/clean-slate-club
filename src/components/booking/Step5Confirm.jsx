@@ -35,7 +35,7 @@ const ACKNOWLEDGEMENTS = [
       'A guest or approved adult must be present at the start of the first visit',
       'Please plan a few minutes for instructions, priorities, and any off-limits areas',
       'Future visits may use a lockbox, code, key handoff, or another approved access plan',
-      'If no one is available for the initial visit, the appointment may need to be rescheduled',
+      'If we arrive and cannot access the home, the appointment may be treated as a no-show and your deposit may be forfeited',
     ],
   },
   {
