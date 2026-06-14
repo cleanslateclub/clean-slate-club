@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
-    <section id="about" className="py-16 lg:py-24 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#fdf5f3' }}>
+    <section id="about" className="py-16 lg:py-24 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#F8E8E2' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Image */}
