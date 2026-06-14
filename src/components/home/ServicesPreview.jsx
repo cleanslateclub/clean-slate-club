@@ -147,18 +147,20 @@ export default function ServicesPreview() {
 
           {/* CTA card */}
           <AnimatedSection delay={0.5}>
-            <div className="p-7 rounded-3xl flex flex-col justify-between h-full min-h-[200px] border relative overflow-hidden" style={{ background: '#333333', color: '#FFFFFF', borderColor: '#333333' }}>
-              <div className="absolute -top-12 -right-10 w-36 h-36 rounded-full opacity-60" style={{ background: '#EB9486' }} />
-              <div className="absolute -bottom-14 -left-8 w-36 h-36 rounded-full opacity-55" style={{ background: '#CAE7B9' }} />
+            <div className="p-7 rounded-3xl flex flex-col justify-between h-full min-h-[200px] border relative overflow-hidden hover:shadow-xl transition-all duration-500" style={{ background: '#FFFFFF', color: '#333333', borderColor: '#EFB98555', boxShadow: '0 18px 45px #EFB98514' }}>
+              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: '#EFB985' }} />
+              <div className="absolute -top-14 -right-10 w-36 h-36 rounded-full opacity-35" style={{ background: '#FFE5D9' }} />
+              <div className="absolute -bottom-14 -left-8 w-36 h-36 rounded-full opacity-35" style={{ background: '#CAE7B9' }} />
               <div className="relative z-10">
-                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#F3DE8A' }}>Custom Support</p>
-                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#FFFFFF' }}>Not sure what you need?</h3>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#FFFFFFCC' }}>Tell us what's going on and we'll build the right support for your home.</p>
+                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border font-logo text-2xl" style={{ color: '#EFB985', background: '#FFE5D980', borderColor: '#EFB98545' }}>?</div>
+                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#8B93A7' }}>Custom Support</p>
+                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#333333' }}>Not sure what you need?</h3>
+                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>Tell us what's going on and we'll build the right support for your home.</p>
               </div>
               <Link
                 to="/services"
-                className="relative z-10 inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
-                style={{ background: '#FFFFFF', borderColor: '#FFFFFF', color: '#333333', outlineColor: '#F3DE8A' }}>
+                className="relative z-10 inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 hover:shadow-sm"
+                style={{ background: '#F3DE8A55', borderColor: '#EFB98555', color: '#333333', outlineColor: '#EFB985' }}>
                 
                 See All Services →
               </Link>
