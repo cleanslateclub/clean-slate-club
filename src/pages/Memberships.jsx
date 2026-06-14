@@ -25,11 +25,11 @@ const STRIPE_CHECKOUT_ORIGIN = 'https://checkout.stripe.com';
 
 export default function Memberships() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [eligibilityMessage, setEligibilityMessage] = useState(null);
 
   const handleJoin = async () => {
     setLoading(true);
-    setError(null);
+    setEligibilityMessage(null);
     try {
       let email = '';
       let name = '';
@@ -38,18 +38,18 @@ export default function Memberships() {
         email = user?.email || '';
         name = user?.full_name || '';
       } catch (_) {
-        setError('Please log in before joining. Membership opens after your first completed service.');
+        setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
         return;
       }
 
       if (!email) {
-        setError('Please log in before joining. Membership opens after your first completed service.');
+        setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
         return;
       }
 
       const completedBookings = await base44.entities.Booking.filter({ client_email: email, status: 'completed' }, '-scheduled_date', 1);
       if (!completedBookings || completedBookings.length === 0) {
-        setError('Membership opens after your first completed service. Once you’re eligible, you’ll receive a private invitation to join.');
+        setEligibilityMessage('Membership opens after your first completed service. Once you’re eligible, you’ll receive a private invitation to join.');
         return;
       }
 
@@ -64,14 +64,11 @@ export default function Memberships() {
 
       if (checkoutUrl && checkoutUrl.startsWith(STRIPE_CHECKOUT_ORIGIN)) {
         window.location.href = checkoutUrl;
-      } else if (checkoutUrl) {
-        console.error('Unexpected checkout URL origin:', checkoutUrl);
-        setError('Unable to start checkout. Please try again.');
       } else {
-        setError('Unable to start checkout. Please try again.');
+        console.error('Unable to start checkout:', checkoutUrl || 'Missing checkout URL');
       }
     } catch (e) {
-      setError('Something went wrong. Please try again or contact us.');
+      console.error('Membership eligibility or checkout error:', e);
     } finally {
       setLoading(false);
     }
@@ -145,9 +142,9 @@ export default function Memberships() {
                   disabled={loading}
                   className="block w-full text-center font-body text-sm tracking-wide px-8 py-4 rounded-full disabled:opacity-60 transition-all duration-300 hover:shadow-xl"
                   style={{ background: '#333333', color: '#FFFFFF' }}>
-                  {loading ? 'Checking eligibility...' : 'Join The Catch-Up Club™ →'}
+                  {loading ? 'Checking eligibility...' : 'Check Eligibility'}
                 </button>
-                {error && <p className="text-center font-body text-xs text-red-500 mt-3">{error}</p>}
+                {eligibilityMessage && <p className="text-center font-body text-xs text-red-500 mt-3">{eligibilityMessage}</p>}
 
                 <div className="mt-5 text-center">
                   <Link to="/dashboard" className="font-body text-sm font-light underline underline-offset-4" style={{ color: '#333333' }}>
