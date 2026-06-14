@@ -56,7 +56,7 @@ export default function Services() {
       {/* Hero */}
       <div
         className="pt-28 pb-20 px-6"
-        style={{ background: '#CAE7B966' }}
+        style={{ background: '#F3DE8A66' }}
       >
         <div className="max-w-3xl mx-auto text-center">
           <motion.p
@@ -96,7 +96,7 @@ export default function Services() {
           </motion.div>
         </div>
       </div>
-      <WaveDivider fill="#F7FAF4" />
+      <WaveDivider fill="#F7FAF4" className="-mt-12" />
 
       {/* Free Consult Banner — only renders if consult config exists */}
       {consult && (
