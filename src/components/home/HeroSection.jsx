@@ -73,12 +73,12 @@ export default function HeroSection() {
             <p className="font-body text-xs md:text-sm tracking-[0.34em] uppercase font-semibold mb-4" style={{ color: '#7E7F9A' }}>
               Household support for modern life
             </p>
-            <h1 className="mb-7 leading-none" aria-label="Busy homes handled">
+            <h1 className="mb-7 leading-none" aria-label="Busy homes, handled">
               <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98]" style={{ color: '#333333' }}>
                 BUSY
               </span>
               <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98] mt-1" style={{ color: '#333333' }}>
-                HOMES
+                HOMES,
               </span>
               <span className="block font-logo text-[4rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4" style={{ color: '#EB9486' }}>
                 handled
