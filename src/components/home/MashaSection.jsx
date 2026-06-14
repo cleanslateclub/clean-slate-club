@@ -15,7 +15,7 @@ export default function MashaSection() {
                 style={{ borderColor: '#B58A9028' }} />
               
               {/* Floating quote card */}
-              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px] border" style={{ background: '#FFE5D9', borderColor: '#EB948640', boxShadow: '0 8px 30px #B58A9030' }}>
+              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px] border" style={{ background: '#FFFFFF', borderColor: '#EB948640', boxShadow: '0 8px 30px #B58A9030' }}>
                 <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
                 <p className="font-body text-[11px] font-light" style={{ color: '#33333399' }}>— every client, first visit</p>
               </div>
