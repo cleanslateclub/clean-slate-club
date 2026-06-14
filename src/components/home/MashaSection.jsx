@@ -2,12 +2,12 @@ import React from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
-    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #fdf5f3 0%, #ffe5d9 42%, #f1f1f1 100%)' }}>
+    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
       {/* Background accent */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #EB9486 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-1/2 left-1/2 w-[260px] h-[260px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 68%)', transform: 'translate(-40%, -20%)' }} />
-      <div className="absolute bottom-20 right-24 w-[220px] h-[220px] rounded-full opacity-18 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 68%)' }} />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #EB9486 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-1/2 left-1/2 w-[260px] h-[260px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 68%)', transform: 'translate(-40%, -20%)' }} />
+      <div className="absolute bottom-20 right-24 w-[220px] h-[220px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 68%)' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -15,8 +15,8 @@ export default function MashaSection() {
           <AnimatedSection>
             <div className="relative">
               {/* Blob behind image */}
-              <div className="absolute -top-8 -left-8 w-[110%] h-[110%] rounded-full opacity-35 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, #FFE5D9 42%, transparent 75%)' }} />
-              <div className="absolute -bottom-5 -right-5 w-32 h-32 rounded-full opacity-45 pointer-events-none" style={{ background: '#CAE7B9' }} />
+              <div className="absolute -top-8 -left-8 w-[110%] h-[110%] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, #FFE5D9 42%, transparent 75%)' }} />
+              <div className="absolute -bottom-5 -right-5 w-32 h-32 rounded-full opacity-40 pointer-events-none" style={{ background: '#CAE7B9' }} />
               <img
                 src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png"
                 alt="Masha helping naturally in a warm home"
@@ -57,7 +57,7 @@ export default function MashaSection() {
             </div>
 
             <div className="mt-10 p-6 rounded-2xl border relative overflow-hidden" style={{ background: '#F1F1F1', borderColor: '#7E7F9A35' }}>
-              <div className="absolute inset-y-0 left-0 w-2" style={{ background: 'linear-gradient(to bottom, #CAE7B9, #DFE3A2, #EB9486)' }} />
+              <div className="absolute inset-y-0 left-0 w-2" style={{ background: '#EB9486' }} />
               <div className="absolute top-4 right-4 flex gap-1.5">
                 <span className="w-2 h-2 rounded-full" style={{ background: '#B58A90' }} />
                 <span className="w-2 h-2 rounded-full" style={{ background: '#97A7B3' }} />
