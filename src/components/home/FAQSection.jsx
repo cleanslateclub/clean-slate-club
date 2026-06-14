@@ -54,7 +54,7 @@ function FAQItem({ faq, color }) {
       style={{
         background: 'rgba(255,255,255,0.90)',
         border: `1px solid ${open ? color + '55' : '#fcd5ce30'}`,
-        borderLeft: `3px solid ${color}`,
+        borderLeft: `7px solid ${color}`,
         boxShadow: open ? `0 2px 16px ${color}18` : 'none'
       }}>
       
