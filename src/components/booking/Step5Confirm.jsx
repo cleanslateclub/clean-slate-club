@@ -87,6 +87,14 @@ const ACKNOWLEDGEMENTS = [
   },
 ];
 
+function hexToRgba(hex, opacity = 0.4) {
+  const cleanHex = hex.replace('#', '');
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 function AckIcon({ emoji }) {
   const icons = { house: '🏠', cleaning: '🧹', clipboard: '📋', calendar: '📅', warning: '⚠️' };
   return <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0 }}>{icons[emoji] || '✅'}</span>;
@@ -105,8 +113,10 @@ function CheckBox({ checked, accentColor }) {
 }
 
 function AckCard({ ack, checked, onChange, accentColor }) {
+  const checkedBg = hexToRgba(accentColor, 0.4);
+
   return (
-    <div onClick={() => onChange(!checked)} style={{ border: `1.5px solid ${checked ? accentColor : '#e5e0dc'}`, borderRadius: 14, padding: '18px 20px', marginBottom: 12, background: checked ? `${accentColor}11` : '#fff', cursor: 'pointer', transition: 'all 0.2s ease', userSelect: 'none' }}>
+    <div onClick={() => onChange(!checked)} style={{ border: `1.5px solid ${checked ? accentColor : '#e5e0dc'}`, borderRadius: 14, padding: '18px 20px', marginBottom: 12, background: checked ? checkedBg : '#fff', cursor: 'pointer', transition: 'all 0.2s ease', userSelect: 'none' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
         <div style={{ paddingTop: 1 }}><CheckBox checked={checked} accentColor={accentColor} /></div>
         <div style={{ flex: 1 }}>
