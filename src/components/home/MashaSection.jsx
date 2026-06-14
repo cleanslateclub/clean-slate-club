@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
@@ -47,16 +48,17 @@ export default function MashaSection() {
               </p>
             </div>
 
-            <div className="mt-10 mx-auto max-w-sm rounded-full border px-8 py-5 text-center relative overflow-hidden" style={{ background: '#F1F1F1', borderColor: '#7E7F9A35', boxShadow: '0 10px 30px #B58A9018' }}>
-              <div className="flex justify-center gap-1.5 mb-3">
-                <span className="w-2 h-2 rounded-full" style={{ background: '#B58A90' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: '#97A7B3' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: '#F3DE8A' }} />
-              </div>
+            <motion.div
+              className="mt-10 mx-auto max-w-sm rounded-full border px-8 py-5 text-center relative overflow-hidden"
+              style={{ background: '#F1F1F1', borderColor: '#7E7F9A35', boxShadow: '0 10px 30px #B58A9018' }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.45 }}
+              transition={{ duration: 0.9, delay: 0.15 }}>
               <p className="font-heading text-lg font-semibold text-charcoal leading-snug">
                 You don't need perfect. You need backup.
               </p>
-            </div>
+            </motion.div>
           </AnimatedSection>
         </div>
       </div>
