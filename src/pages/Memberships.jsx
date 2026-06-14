@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
-import WaveDivider from '@/components/shared/WaveDivider';
+import PageHero from '@/components/shared/PageHero';
 import { base44 } from '@/api/base44Client';
 
 const perks = [
@@ -76,44 +75,15 @@ export default function Memberships() {
 
   return (
     <div className="min-h-screen" style={{ background: '#F1F1F1' }}>
-      <section className="pt-28 pb-20 px-6 relative overflow-hidden" style={{ background: '#CAE7B966' }}>
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center gap-2 mb-5">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#7E7F9A' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#EFB988' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-            <p className="font-body text-xs md:text-sm tracking-[0.28em] uppercase font-light ml-2" style={{ color: '#333333' }}>Membership</p>
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="font-heading text-4xl md:text-6xl font-semibold mb-3 leading-tight"
-            style={{ color: '#333333' }}>
-            Catch-Up Club™
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="font-logo text-3xl md:text-4xl mb-5"
-            style={{ color: '#7E7F9A' }}>
-            Recurring support for homes that deserve to stay ahead.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="font-body text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto"
-            style={{ color: '#333333b3' }}>
-            Priority booking, member pricing, and seasonal perks — for the home that’s ready to stop playing catch-up.
-          </motion.p>
-        </div>
-      </section>
-      <WaveDivider fill="#F1F1F1" />
+      <PageHero
+        eyebrow="Membership"
+        title="Catch-Up Club™"
+        script="Recurring support for homes that deserve to stay ahead."
+        description="Priority booking, member pricing, and seasonal perks — for the home that’s ready to stop playing catch-up."
+        background="#F3DE8A66"
+        waveFill="#F1F1F1"
+        scriptColor="#7E7F9A"
+      />
 
       <section className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 items-start">
