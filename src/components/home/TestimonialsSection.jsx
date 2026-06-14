@@ -52,23 +52,25 @@ export default function TestimonialsSection() {
   ].slice(0, 6);
 
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#e3d0c3' }}>
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translateY(-50%) translateX(-40%)' }} />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
-
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#FFE5D9' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-[hsl(var(--foreground))] text-lg">KIND WORDS</p>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+          </div>
+          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg" style={{ color: '#333333' }}>KIND WORDS</p>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2">
             "I can breathe again."
           </h2>
-          <p className="font-logo text-xl text-coral">Real houses. Real relief.</p>
+          <p className="font-logo text-xl" style={{ color: '#EB9486' }}>Real houses. Real relief.</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {allTestimonials.map((t, i) =>
             <AnimatedSection key={i} delay={i * 0.12}>
-              <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-sm transition-all duration-500 border" style={{ background: 'rgba(255,255,255,0.75)', borderColor: 'rgba(255,255,255,0.5)' }}>
+              <div className="p-8 rounded-3xl h-full flex flex-col hover:shadow-sm transition-all duration-500 border" style={{ background: '#FFFFFFCC', borderColor: t.color + '45', boxShadow: `0 18px 45px ${t.color}14` }}>
                 <div className="flex-1">
                   {t.isLive ? (
                     <div className="flex gap-0.5 mb-4">
@@ -79,15 +81,15 @@ export default function TestimonialsSection() {
                   ) : (
                     <span className="font-logo text-5xl leading-none mb-4 block" style={{ color: t.color }}>"</span>
                   )}
-                  <p className="font-body text-base leading-relaxed font-light -mt-2 mb-8" style={{ color: '#3a3330' }}>
+                  <p className="font-body text-base leading-relaxed font-light -mt-2 mb-8" style={{ color: '#333333' }}>
                     {t.isLive ? `"${t.quote}"` : t.quote}
                   </p>
                 </div>
                 <div>
-                  <div className="h-px bg-taupe/25 mb-5" />
-                  <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{t.name}</p>
+                  <div className="h-px mb-5" style={{ background: t.color + '35' }} />
+                  <p className="font-heading text-sm font-semibold" style={{ color: '#333333' }}>{t.name}</p>
                   {(t.location || t.detail) && (
-                    <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#6b5248' }}>
+                    <p className="font-body text-xs mt-0.5 font-light" style={{ color: '#7E7F9A' }}>
                       {[t.location, !t.isLive && t.detail].filter(Boolean).join(' · ')}
                     </p>
                   )}
