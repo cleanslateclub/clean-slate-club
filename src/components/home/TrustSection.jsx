@@ -35,12 +35,13 @@ const IconLeaf = () =>
 const trustIconMap = { shield: IconShield, heart: IconHeart, check: IconCheck, clipboard: IconClipboard, leaf: IconLeaf };
 
 const credentials = [
-{ iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#eb9486' },
-{ iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#eb9486' },
-{ iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#6aaa88' },
-{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#b58a90' },
-{ iconKey: 'leaf', label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#6aaa88' }];
+{ iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#EB9486' },
+{ iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#EFB988' },
+{ iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#CAE7B9' },
+{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#B58A90' },
+{ iconKey: 'leaf', label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#97A7B3' }];
 
+const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
 export default function TrustSection() {
   return (
@@ -59,11 +60,11 @@ export default function TrustSection() {
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
             {credentials.map((c, i) =>
-            <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: 'rgba(255,255,255,0.85)', borderColor: '#f0c8c060' }}>
-                <span style={{ color: c.accent }}>{React.createElement(trustIconMap[c.iconKey])}</span>
+            <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: withOpacity(c.accent), borderColor: c.accent }}>
+                <span style={{ color: '#333333' }}>{React.createElement(trustIconMap[c.iconKey])}</span>
                 <div>
-                  <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{c.label}</p>
-                  <p className="font-body text-xs font-light" style={{ color: '#6b5248' }}>{c.detail}</p>
+                  <p className="font-heading text-sm font-semibold" style={{ color: '#333333' }}>{c.label}</p>
+                  <p className="font-body text-xs font-light" style={{ color: '#333333cc' }}>{c.detail}</p>
                 </div>
               </div>
             )}
