@@ -28,7 +28,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-10 md:pt-24 md:pb-12 lg:pt-28 lg:pb-20 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-16 md:pt-24 md:pb-20 lg:pt-28 lg:pb-20 w-full">
         <div className="max-w-xl text-center mx-auto lg:mx-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -126,12 +126,12 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-4 justify-center">
+            className="mt-10 flex flex-wrap gap-x-4 gap-y-3 justify-center max-w-lg mx-auto pb-2">
             {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge, index) => {
               const badgeColors = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#B58A90'];
               return (
-                <span key={badge} className="font-body text-[11px] tracking-wide font-light flex items-center gap-1.5" style={{ color: '#333333' }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: withOpacity(badgeColors[index]) }} />
+                <span key={badge} className="font-body text-[11px] tracking-wide font-light flex items-center gap-1.5 whitespace-nowrap" style={{ color: '#333333' }}>
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: withOpacity(badgeColors[index]) }} />
                   {badge}
                 </span>
               );
