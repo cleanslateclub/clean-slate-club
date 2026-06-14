@@ -98,7 +98,7 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #F1F1F1 0%, #fdf5f3 100%)' }}>
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-16">
           <div className="flex items-center gap-2 mb-4">
