@@ -102,8 +102,8 @@ const customSupport = {
   iconKey: 'question',
   tagline: 'Not sure what you need?',
   desc: "Tell us what's going on and we'll build the right support for your home.",
-  color: '#EFB985',
-  bg: '#EFB98524',
+  color: '#CAE7B9',
+  bg: '#CAE7B940',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png',
   fit: ['Mixed household tasks', 'Oddball errands', 'Overwhelmed starts']
 };
@@ -154,14 +154,14 @@ export default function ServicesPreview() {
           )}
 
           <AnimatedSection delay={0.5}>
-            <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color + '55', boxShadow: `0 18px 45px ${customSupport.color}14` }}>
+            <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
               <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
               <div className="h-44 overflow-hidden relative">
                 <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
               </div>
               <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
-                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: customSupport.color, background: '#FFFFFFB3', borderColor: customSupport.color + '45' }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
+                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: '#333333', background: '#FFFFFFB3', borderColor: customSupport.color }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
                 <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
                 <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
                 <div className="space-y-2 mb-6">
@@ -175,7 +175,7 @@ export default function ServicesPreview() {
                 <Link
                   to="/services"
                   className="mt-auto inline-block font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 hover:shadow-sm"
-                  style={{ background: '#FFFFFF99', borderColor: customSupport.color + '55', color: '#333333', outlineColor: customSupport.color }}>
+                  style={{ background: '#FFFFFF99', borderColor: customSupport.color, color: '#333333', outlineColor: customSupport.color }}>
                   See All Services →
                 </Link>
               </div>
