@@ -7,7 +7,7 @@ const perks = [
   { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#EB9486', number: '02' },
   { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#EFB988', number: '03' },
   { label: 'Recurring scheduling', detail: 'Hold recurring time slots on a consistent schedule', dot: '#B58A90', number: '04' },
-  { label: 'Monthly check-ins', detail: 'Wellness check-in text from Masha every month', dot: '#97A7B3', number: '05' },
+  { label: 'Monthly check-ins', detail: 'A quick monthly touchpoint to plan what support would help most', dot: '#97A7B3', number: '05' },
   { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#F3DE8A', number: '06' }
 ];
 
