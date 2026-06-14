@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function WaveDivider({ fill = '#F7F4F0', flip = false, className = '' }) {
   return (
-    <div className={`w-full overflow-hidden leading-none ${className}`} aria-hidden="true">
+    <div className={`relative z-20 -mb-px -mt-16 h-16 w-full overflow-hidden leading-none ${className}`} aria-hidden="true">
       <svg
         viewBox="0 0 1440 72"
         xmlns="http://www.w3.org/2000/svg"
