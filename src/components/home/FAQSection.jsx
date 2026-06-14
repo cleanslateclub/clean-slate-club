@@ -25,63 +25,50 @@ const faqs = [
   a: "We serve Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Plymouth Meeting, Ambler, Glenside, Oreland, and Fort Washington — proudly local to Montgomery County."
 },
 {
-  q: "Do you bring your own supplies?",
-  a: "We arrive prepared — but we actually love using your preferred products when possible. If you have specific cleaners, sensitivities, or brands you trust in your home, just let us know and we'll use what you have. We encourage it! If you'd rather we bring everything, we've got that covered too."
+  q: "Can you help with kids or aging parents?",
+  a: "Yes, within our scope. We provide household support, companion-style help, errands, light meal prep, organization, and day-to-day assistance. We do not provide medical care, bathing, or hands-on clinical support."
 },
 {
-  q: "Can you help with senior family members or caregiving situations?",
-  a: "Yes. We offer gentle, dignified household support for seniors and families navigating health transitions, new babies, recovery, or simply the chaos of a full house. All support is customized, patient, and handled with deep respect and care. Every family's situation is different — we meet you where you are."
+  q: "Do I need to provide supplies?",
+  a: "Yes. We use your household's preferred supplies, tools, containers, grocery funds, and instructions. If shopping is part of your service, funds must be provided before the errand begins."
 },
 {
-  q: "What is the Catch-Up Club™ membership?",
-  a: "The Catch-Up Club™ is our monthly membership for $49/month. Members get priority scheduling, early access booking hours (starting 9 AM vs. 10 AM standard), reduced overtime rates ($65/hr vs. $85/hr), preferred recurring time slots, and 2 free reschedules per month (non-members get 1). After your free reschedules, adjustments are $25, charged to your card on file. Membership renews monthly and can be cancelled anytime."
+  q: "How does payment work?",
+  a: "Bookings require a card on file and a $50 deposit for service time. Shopping funds are separate and must be provided directly. Memberships, add-ons, and final balances are handled through the booking system."
 },
 {
-  q: "What's your cancellation and rescheduling policy?",
-  a: "All bookings (except free consults) require a $50 deposit to hold your time. Cancellations or reschedules made with less than 24 hours notice will forfeit the deposit — no exceptions. We hold time specifically for you, and last-minute changes affect our whole day. Non-members receive 1 free reschedule; Catch-Up Club™ members receive 2 per month. After that, a $25 fee applies and is collected from your card on file."
+  q: "What if I need more time than I booked?",
+  a: "If your provider has availability, extra time may be added at the hourly rate. If not, we will prioritize the most important tasks and help you choose what to book next."
 },
 {
-  q: "What if my situation doesn't fit neatly into your services?",
-  a: "That happens more than you'd think — and it's totally okay. Life is complicated, and sometimes what you need doesn't fit a tidy category. The best thing to do is book a free consultation call and just tell us what's going on. We'll figure out together whether we can help, how, and what it would look like. No pressure, no commitment."
+  q: "Can I book without a consult?",
+  a: "Yes. If you already know what you need, you can book directly. The consult is there for anyone who wants help choosing the right support or explaining a more layered household situation."
 }];
-
 
 function FAQItem({ faq, color }) {
   const [open, setOpen] = useState(false);
+
   return (
-    <div
-      className="rounded-2xl px-6 transition-all duration-300 overflow-hidden"
-      style={{
-        background: 'rgba(255,255,255,0.90)',
-        border: `1px solid ${open ? color + '55' : '#fcd5ce30'}`,
-        borderLeft: `7px solid ${color}`,
-        boxShadow: open ? `0 2px 16px ${color}18` : 'none'
-      }}>
-      
+    <div className="border rounded-3xl overflow-hidden transition-all duration-300" style={{ background: '#FFFFFF', borderColor: '#33333312', borderLeft: `7px solid ${color}` }}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 py-5 text-left">
-        
-        <span className="font-heading text-base font-semibold" style={{ color: '#333333' }}>{faq.q}</span>
-        <span
-          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300"
-          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', background: color + '20', color }}>
-          
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ width: 12, height: 12 }}>
-            <line x1="8" y1="2" x2="8" y2="14" /><line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
-        </span>
+        className="w-full text-left px-6 py-5 flex items-center justify-between gap-5"
+      >
+        <span className="font-body text-base font-medium" style={{ color: '#333333' }}>{faq.q}</span>
+        <span className="shrink-0 font-logo text-2xl leading-none transition-transform duration-300" style={{ color, transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
       </button>
-      {open &&
-      <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#333' }}>{faq.a}</p>
-      }
-    </div>);
-
+      {open && (
+        <div className="px-6 pb-6 pt-0">
+          <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>{faq.a}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
+    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#F1F1F1' }}>
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">FAQ</p>
