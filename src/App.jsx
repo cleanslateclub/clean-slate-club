@@ -23,6 +23,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ClientPortal from './pages/ClientPortal';
 import StaffLogin from './pages/StaffLogin';
+import StaffOAuthCallback from './pages/StaffOAuthCallback';
 
 
 const AuthenticatedApp = () => {
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/portal" element={<ClientPortal />} />
         <Route path="/staff-login" element={<StaffLogin />} />
+        <Route path="/staff-auth" element={<StaffOAuthCallback />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

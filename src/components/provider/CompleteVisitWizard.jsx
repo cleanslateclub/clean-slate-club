@@ -4,8 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
 import {
-  Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon,
-  Archive, LogOut, Settings, AlertTriangle, DollarSign, UserPlus,
+  Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon, LogOut, Settings, AlertTriangle, DollarSign, UserPlus,
   Briefcase, LayoutDashboard, CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

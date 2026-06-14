@@ -5,30 +5,21 @@ import ServicesPreview from '../components/home/ServicesPreview';
 import TrustSection from '../components/home/TrustSection';
 import ConsultSection from '../components/home/ConsultSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
-import MembershipPreview from '../components/home/MembershipPreview';
+import MembershipPreview from '../components/home/MembershipPreview'; // FIX: removed .jsx extension to match all other imports
 import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import FAQSection from '../components/home/FAQSection';
-import WaveDivider from '../components/shared/WaveDivider';
 
 export default function Home() {
   return (
-    <main>
+    <main> {/* FIX: <main> instead of <div> for accessibility + SEO */}
       <HeroSection />
-      <WaveDivider fill="#F7FAF4" />
-      <ServicesPreview />
-      <WaveDivider fill="#FDF5E6" flip />
-      <ConsultSection />
-      <WaveDivider fill="#F8E8E2" />
       <MashaSection />
-      <WaveDivider fill="#F1ECEF" flip />
+      <ServicesPreview />
       <TrustSection />
-      <WaveDivider fill="#EEF3F5" />
+      <ConsultSection />
       <TestimonialsSection />
-      <WaveDivider fill="#EAF1EC" flip />
-      <ServiceAreaSection />
-      <WaveDivider fill="#F5E6E9" />
       <MembershipPreview />
-      <WaveDivider fill="#F1F1F1" flip />
+      <ServiceAreaSection />
       <FAQSection />
     </main>
   );

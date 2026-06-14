@@ -20,7 +20,7 @@ export default function ClientPortal() {
         if (authed) {
           navigate('/dashboard');
         } else {
-          base44.auth.redirectToLogin('/dashboard');
+          base44.auth.loginWithProvider('google', '/dashboard');
         }
       })
       .catch((err) => {
@@ -35,7 +35,7 @@ export default function ClientPortal() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+      <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
         <div className="text-center max-w-sm">
           <p className="font-heading text-lg font-semibold text-charcoal mb-2">Something went wrong</p>
           <p className="font-body text-sm text-charcoal/40 font-light mb-6">
@@ -56,7 +56,7 @@ export default function ClientPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
       <div className="text-center">
         <div className="w-8 h-8 border-4 border-taupe border-t-coral rounded-full animate-spin mx-auto mb-4" />
         <p className="font-body text-sm text-charcoal/40 font-light">Redirecting to your account...</p>

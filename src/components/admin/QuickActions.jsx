@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { ExternalLink, DollarSign, CalendarPlus, Users, FileText, Zap } from 'lucide-react';
+import { DollarSign, CalendarPlus, Users, FileText, Zap } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 const CHECKOUT_SERVICES = Object.entries(SERVICE_CONFIG)

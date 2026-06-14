@@ -3,18 +3,6 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { base44 } from '@/api/base44Client';
 import OutOfAreaModal from '@/components/booking/OutOfAreaModal';
 
-const HELP_ME_CHOOSE = "Help Me Choose - I'm Overwhelmed";
-
-const sortTaskOptions = (options = []) => {
-  const safeOptions = Array.isArray(options) ? options : [];
-  const helpOption = safeOptions.find(option => option === HELP_ME_CHOOSE);
-  const sortedOptions = safeOptions
-    .filter(option => option !== HELP_ME_CHOOSE)
-    .sort((a, b) => a.localeCompare(b));
-
-  return helpOption ? [helpOption, ...sortedOptions] : sortedOptions;
-};
-
 export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [], smsOptIn, onSmsOptInChange }) {
   const [uploading, setUploading] = useState(false);
   const [territories, setTerritories] = useState([]);
@@ -62,7 +50,6 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   if (!config) return null;
 
   const isConsult = serviceKey === 'consult';
-  const sortedTaskOptions = sortTaskOptions(config.taskOptions);
 
   const handleAnswer = (id, value) => onChange({ ...answers, [id]: value });
 
@@ -159,7 +146,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       </div>
 
       {/* Task checkboxes */}
-      {sortedTaskOptions.length > 0 && (
+      {config.taskOptions && (
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #CAE7B9' }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#CAE7B9' }} />
@@ -167,7 +154,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           </div>
           <p className="font-body text-xs text-charcoal font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
           <div className="flex flex-wrap gap-2">
-            {sortedTaskOptions.map(task => {
+            {config.taskOptions.map(task => {
               const isSelected = selectedTasks.includes(task);
               return (
                 <button
@@ -283,43 +270,70 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Universal closing question */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
-          <label className="font-body text-xs font-light text-charcoal block mb-2">
-            What would feel like a win by the end of this visit?
-          </label>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EFB988' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EFB988' }} />
+            <label className="font-body text-sm font-semibold text-charcoal block">
+              What would make this feel most helpful?
+            </label>
+          </div>
+          <p className="font-body text-xs text-charcoal font-light mb-3">
+            This is the most important question. Tell us what success looks like for you — emotionally, practically, anything.
+          </p>
           <textarea
-            value={answers.win_goal || ''}
-            onChange={e => handleAnswer('win_goal', e.target.value)}
-            placeholder="Tell us what would make you exhale..."
+            value={answers.most_helpful || ''}
+            onChange={e => handleAnswer('most_helpful', e.target.value)}
+            placeholder="e.g. I just want to walk in and breathe. I need the kitchen functional. I haven't had help in months and I'm exhausted..."
             rows={3}
             className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
           />
         </div>
       )}
 
-      {/* Photo Upload - hidden for consult */}
+      {/* Photo upload */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6" style={{ borderLeft: '3px solid #8B93A7' }}>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#8B93A7' }} />
-            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos are welcome</h3>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#B58A90' }} />
+            <p className="font-heading text-sm font-semibold text-charcoal">Got photos? (optional)</p>
           </div>
-          <p className="font-body text-xs text-charcoal font-light mb-4">
-            Upload photos if it helps explain the space. Totally optional, always judgment-free.
+          <p className="font-body text-xs text-charcoal font-light mb-3">
+            Share photos of the spaces that need help — it helps us prepare and give you the most accurate estimate.
           </p>
-          <label className="block border-2 border-dashed border-taupe/20 rounded-2xl p-6 text-center cursor-pointer hover:border-coral/30 transition-colors bg-cream">
-            <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-            <p className="font-body text-sm text-charcoal/60 font-light">
-              {uploading ? 'Uploading...' : 'Click to upload photos'}
-            </p>
+          <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/55 hover:border-coral/30 transition-colors">
+            <span>📷</span>
+            {uploading ? 'Uploading...' : 'Upload photos'}
+            <input type="file" multiple accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
           </label>
           {uploadedPhotos.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {uploadedPhotos.map((url, i) => (
-                <img key={i} src={url} alt={`Upload ${i + 1}`} className="w-16 h-16 object-cover rounded-lg" />
-              ))}
-            </div>
+            <p className="mt-2 font-body text-xs text-sage font-light">{uploadedPhotos.length} photo{uploadedPhotos.length > 1 ? 's' : ''} attached ✓</p>
           )}
+        </div>
+      )}
+
+      {/* Referral code */}
+      {!isConsult && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5 mb-5">
+          <label className="font-body text-xs font-light text-charcoal block mb-1.5">
+            Referral code <span className="text-charcoal/35">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={answers.referral_code || ''}
+            onChange={e => handleAnswer('referral_code', e.target.value.toUpperCase())}
+            placeholder="e.g. MASHA25"
+            className="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors uppercase tracking-widest"
+          />
+          <p className="font-body text-[11px] text-charcoal/35 font-light mt-1.5">
+            Have a friend's referral code? Enter it here — you'll both get $25 off.
+          </p>
+        </div>
+      )}
+
+      {/* Service disclaimer */}
+      {config.disclaimer && (
+        <div className="px-5 py-4 rounded-2xl text-xs font-body font-light leading-relaxed text-charcoal" style={{ background: '#fdf6f3', borderLeft: '3px solid #fcd5ce' }}>
+          <span className="font-semibold text-charcoal">Please note: </span>{config.disclaimer}
         </div>
       )}
     </div>

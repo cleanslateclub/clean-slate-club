@@ -35,17 +35,18 @@ const IconLeaf = () =>
 const trustIconMap = { shield: IconShield, heart: IconHeart, check: IconCheck, clipboard: IconClipboard, leaf: IconLeaf };
 
 const credentials = [
-{ iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#EB9486' },
-{ iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#EFB988' },
-{ iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#CAE7B9' },
-{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#97A7B3' },
-{ iconKey: 'leaf', label: 'Judgment-Free Support', detail: 'Always kind, always discreet', accent: '#B58A90' }];
+{ iconKey: 'shield', label: 'Licensed & Insured', detail: 'Full business coverage', accent: '#eb9486' },
+{ iconKey: 'heart', label: 'CPR Certified', detail: 'Safety trained', accent: '#eb9486' },
+{ iconKey: 'check', label: 'Background Checked', detail: 'Every time, no exception', accent: '#6aaa88' },
+{ iconKey: 'clipboard', label: 'Clearances Available', detail: 'Upon request', accent: '#b58a90' },
+{ iconKey: 'leaf', label: 'ServSafe Certified', detail: 'Food safety trained', accent: '#6aaa88' }];
 
-const withOpacity = (hex, opacity = '55') => `${hex}${opacity}`;
 
 export default function TrustSection() {
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#F1ECEF' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#f2ddd6' }}>
+      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #f7b8ac 0%, transparent 65%)', transform: 'translate(30%, -50%)' }} />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--popover-foreground))]">YOU'RE IN GOOD HANDS</p>
@@ -60,11 +61,11 @@ export default function TrustSection() {
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
             {credentials.map((c, i) =>
-            <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: withOpacity(c.accent), borderColor: c.accent }}>
-                <span style={{ color: '#333333' }}>{React.createElement(trustIconMap[c.iconKey])}</span>
+            <div key={i} className="flex items-center gap-3 rounded-2xl px-6 py-4 border transition-all duration-300 hover:shadow-sm" style={{ background: 'rgba(255,255,255,0.85)', borderColor: '#f0c8c060' }}>
+                <span style={{ color: c.accent }}>{React.createElement(trustIconMap[c.iconKey])}</span>
                 <div>
-                  <p className="font-heading text-sm font-semibold" style={{ color: '#333333' }}>{c.label}</p>
-                  <p className="font-body text-xs font-light" style={{ color: '#333333cc' }}>{c.detail}</p>
+                  <p className="font-heading text-sm font-semibold" style={{ color: '#3a3330' }}>{c.label}</p>
+                  <p className="font-body text-xs font-light" style={{ color: '#6b5248' }}>{c.detail}</p>
                 </div>
               </div>
             )}

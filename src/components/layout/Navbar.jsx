@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AccountMenu from './AccountMenu';
 
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: 22, height: 22 }}>
-    <line x1="3" y1="6" x2="21" y2="6" />
-    <line x1="3" y1="12" x2="21" y2="12" />
-    <line x1="3" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 );
 
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: 22, height: 22 }}>
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const navLinks = [
   { label: 'Services', path: '/services' },
   { label: 'Memberships', path: '/memberships' },
-  { label: 'FAQ', path: '/', hash: 'faq' },
-  { label: 'About', path: '/', hash: 'about' },
+  { label: 'FAQ', path: '/#faq' },
+  { label: 'About', path: '/#about' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -37,26 +33,6 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => { setMobileOpen(false); }, [location]);
-
-  const scrollToSection = (hash) => {
-    const section = document.getElementById(hash);
-    if (!section) return;
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const handleSectionNav = (e, link) => {
-    if (!link.hash) return;
-    e.preventDefault();
-    setMobileOpen(false);
-
-    if (location.pathname !== '/') {
-      navigate('/#' + link.hash);
-      setTimeout(() => scrollToSection(link.hash), 150);
-    } else {
-      window.history.pushState(null, '', '/#' + link.hash);
-      scrollToSection(link.hash);
-    }
-  };
 
   return (
     <nav
@@ -79,14 +55,14 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
-                key={link.label}
-                href={link.hash ? '/#' + link.hash : link.path}
-                onClick={(e) => handleSectionNav(e, link)}
+                key={link.path}
+                href={link.path}
                 className="font-body text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 hover:text-coral"
-                style={{ color: location.pathname === link.path && !link.hash ? '#EB9486' : '#333333' }}
+                style={{ color: location.pathname === link.path ? '#EB9486' : '#333333' }}
               >
                 {link.label}
               </a>
@@ -107,6 +83,7 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile menu */}
       {mobileOpen && (
         <div
           className="md:hidden border-t"
@@ -116,9 +93,8 @@ export default function Navbar() {
             <Link to="/" className="block font-heading text-xl font-semibold text-charcoal/70">Home</Link>
             {navLinks.map((link) => (
               <a
-                key={link.label}
-                href={link.hash ? '/#' + link.hash : link.path}
-                onClick={(e) => handleSectionNav(e, link)}
+                key={link.path}
+                href={link.path}
                 className="block font-heading text-xl font-semibold text-charcoal/70"
               >
                 {link.label}
@@ -131,8 +107,9 @@ export default function Navbar() {
             >
               Book Now
             </Link>
+            {/* Mobile account link */}
             <div className="pt-2 border-t border-taupe/10">
-              <Link to="/portal" className="flex items-center gap-2 font-body text-sm text-charcoal/50 font-light hover:text-coral transition-colors">
+              <Link to="/dashboard" className="flex items-center gap-2 font-body text-sm text-charcoal/50 font-light hover:text-coral transition-colors">
                 <span>👤</span> My Account
               </Link>
             </div>

@@ -40,51 +40,42 @@ const IconPot = () =>
     <path d="M13 19v4M19 19v4" />
   </svg>;
 
-const IconQuestion = () =>
-<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
-    <circle cx="16" cy="16" r="11" />
-    <path d="M13 12a3 3 0 116 0c0 3-3 3-3 6" />
-    <path d="M16 23h.01" strokeWidth="2" />
-  </svg>;
 
-const categories = [{
+const categories = [
+{
   iconKey: 'home',
-  name: 'Home Reset',
-  tagline: 'For the house that got away from you.',
-  desc: 'Laundry, dishes, toy pickup, clutter clearing, beds, surfaces — the reset that helps you breathe again.',
-  color: '#EB9486',
-  bg: '#EB94861F',
-  glow: '#EFB988',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/2762f03af_generated_image.png'
+  name: 'Home Resets',
+  tagline: 'Your home, caught up.',
+  desc: 'Full home resets for when things have piled up — clutter, surfaces, kitchens, bathrooms. We bring your space back to baseline so you can breathe.',
+  color: '#c0796b',
+  bg: '#ffd7ba55',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png'
 },
 {
   iconKey: 'family',
-  name: 'Family Logistics',
-  tagline: 'The invisible load, handled.',
-  desc: 'School prep, activity bags, household planning, organizing the chaos behind the calendar.',
-  color: '#EFB988',
-  bg: '#EFB98824',
-  glow: '#CAE7B9',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png'
+  name: "Mother's Helper Support",
+  tagline: 'An extra pair of trusted hands.',
+  desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
+  color: '#b06e61',
+  bg: '#fce4df55',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/a7a6109ac_generated_image.png'
 },
 {
   iconKey: 'bag',
-  name: 'Errands & Appointments',
-  tagline: 'For all the things you keep putting off.',
-  desc: 'Returns, pickups, drop-offs, grocery runs, pharmacy stops, appointments, and little life logistics.',
-  color: '#97A7B3',
-  bg: '#97A7B324',
-  glow: '#F3DE8A',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png'
+  name: 'Errands & Life Logistics',
+  tagline: 'Outsource the running around.',
+  desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
+  color: '#4a7a62',
+  bg: '#cae8d855',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/ebc467ce8_generated_image.png'
 },
 {
   iconKey: 'heart',
   name: 'Senior Support',
   tagline: 'Gentle, dignified home help.',
   desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
-  color: '#B58A90',
-  bg: '#B58A9024',
-  glow: '#DFE3A2',
+  color: '#8c6068',
+  bg: '#e8d8d855',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png'
 },
 {
@@ -92,39 +83,27 @@ const categories = [{
   name: 'Meal Prep & Kitchen Support',
   tagline: 'Nourishment made easier.',
   desc: "Simple meal prep, kitchen resets, grocery organization — so dinnertime isn't another source of stress.",
-  color: '#7E7F9A',
-  bg: '#7E7F9A1F',
-  glow: '#F3DE8A',
+  color: '#a07830',
+  bg: '#fec89a48',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png'
 }];
 
-const customSupport = {
-  iconKey: 'question',
-  tagline: 'Not sure what you need?',
-  desc: "Tell us what's going on and we'll build the right support for your home.",
-  color: '#CAE7B9',
-  bg: '#CAE7B940',
-  img: '/images/laundry-mountain-reset.png',
-  fit: ['Mixed household tasks', 'Oddball errands', 'Overwhelmed starts']
-};
 
-const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot, question: IconQuestion };
+const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot };
 
 export default function ServicesPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F7FAF4' }}>
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <AnimatedSection className="mb-14">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHAT WE OFFER</p>
-          </div>
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf3f0' }}>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #cae8d8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
+      <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -20%)' }} />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <AnimatedSection className="mb-16">
+          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-[hsl(var(--foreground))] text-lg">WHAT WE OFFER</p>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             This isn't a cleaning menu.
           </h2>
-          <p className="font-body text-base max-w-lg leading-relaxed font-light" style={{ color: '#333333b3' }}>
+          <p className="font-body text-base text-charcoal/65 max-w-lg leading-relaxed font-light">
             It's household support — organized around your life, your family, and what actually needs to happen.
           </p>
         </AnimatedSection>
@@ -133,52 +112,44 @@ export default function ServicesPreview() {
           {categories.map((cat, i) =>
           <AnimatedSection key={cat.name} delay={i * 0.1}>
               <div
-              className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
-              style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
-                <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
+              className="group rounded-3xl border overflow-hidden hover:shadow-lg transition-all duration-500 h-full flex flex-col"
+              style={{ background: '#fdfcfb', borderColor: '#f0ebe8' }}>
+              
                 {cat.img &&
-              <div className="h-44 overflow-hidden relative">
+              <div className="h-44 overflow-hidden">
                     <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
                   </div>
               }
-                <div className="p-7 flex flex-col flex-1 relative" style={{ background: cat.bg }}>
-                  <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: cat.color, background: '#FFFFFFB3', borderColor: cat.color + '35' }}>{React.createElement(iconMap[cat.iconKey])}</div>
-                  <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{cat.name}</h3>
-                  <p className="font-body text-sm font-medium mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
-                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#333333cc' }}>{cat.desc}</p>
+                <div className="p-7 flex flex-col flex-1" style={{ background: cat.bg }}>
+                  <div className="mb-3" style={{ color: cat.color }}>{React.createElement(iconMap[cat.iconKey])}</div>
+                  <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#3a3330' }}>{cat.name}</h3>
+                  <p className="font-body text-sm font-light mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
+                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#4a3e38' }}>{cat.desc}</p>
                 </div>
               </div>
             </AnimatedSection>
           )}
 
+          {/* CTA card */}
           <AnimatedSection delay={0.5}>
-            <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
-              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
-              <div className="h-44 overflow-hidden relative">
-                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
+            <div className="p-7 rounded-3xl text-white flex flex-col justify-between h-full min-h-[200px]" style={{ background: 'linear-gradient(135deg, #fec5bb 0%, #fcd5ce 50%, #ece4db 100%)', color: '#3a3330' }}>
+              <div>
+                <p className="font-body text-xs tracking-[0.2em] uppercase mb-3 font-light" style={{ color: '#9a7060' }}>Custom Support</p>
+                <h3 className="font-heading text-xl font-semibold mb-3" style={{ color: '#3a3330' }}>Not sure what you need?</h3>
+                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#5a4040' }}>Tell us what's going on and we'll build the right support for your home.</p>
               </div>
-              <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
-                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: '#333333', background: '#FFFFFFB3', borderColor: customSupport.color }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
-                <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
-                <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
-                <div className="space-y-2 mb-6">
-                  {customSupport.fit.map((item) => (
-                    <div key={item} className="flex items-center gap-2 font-body text-xs font-light" style={{ color: '#333333cc' }}>
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: customSupport.color }} />
-                      {item}
-                    </div>
-                  ))}
-                </div>
-                <Link to="/services" className="font-body text-sm font-medium inline-flex items-center gap-2 mt-auto" style={{ color: '#333333' }}>
-                  Explore options <span>→</span>
-                </Link>
-              </div>
+              <Link
+                to="/services"
+                className="inline-block mt-6 font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border"
+                style={{ background: 'rgba(255,255,255,0.6)', borderColor: '#fcd5ce', color: '#9a5f55' }}>
+                
+                See All Services →
+              </Link>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>);
+    </section>
+    );
 
 }

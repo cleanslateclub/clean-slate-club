@@ -19,6 +19,11 @@ export default function StaffLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const handleStaffOAuth = (provider) => {
+    setError(null);
+    base44.auth.loginWithProvider(provider, '/staff-auth');
+  };
+
   const handleAdminLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -93,15 +98,15 @@ export default function StaffLogin() {
   };
 
   return (
-    <main className="min-h-screen bg-cream flex items-center justify-center px-6">
+    <main className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
       <div className="w-full max-w-md">
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <div className="flex items-baseline gap-1.5 justify-center mb-4">
             <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-charcoal/50">Clean Slate</span>
             <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
           </div>
-          <h1 className="font-heading text-2xl font-semibold text-charcoal mb-1">Team Portal</h1>
+          <h1 className="font-logo text-4xl text-coral mb-2">Team Portal</h1>
           <p className="font-body text-sm text-charcoal/40 font-light">Select your role to continue.</p>
         </div>
 
@@ -144,6 +149,28 @@ export default function StaffLogin() {
                 <ShieldCheck className="w-4 h-4 text-coral" />
                 <p className="font-heading text-sm font-semibold text-charcoal">Admin Sign In</p>
               </div>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => handleStaffOAuth('google')}
+                  className="w-full flex items-center justify-center gap-3 rounded-full border border-taupe/20 bg-white py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream transition-all duration-300"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
+                    G
+                  </span>
+                  Continue with Google
+                </button>
+
+                <p className="font-body text-xs text-charcoal/40 font-light text-center">
+                  Approved admin accounts only.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-taupe/20" />
+                <span className="font-body text-[10px] uppercase tracking-[0.2em] text-charcoal/30">password fallback</span>
+                <div className="h-px flex-1 bg-taupe/20" />
+              </div>
               {error && (
                 <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-100">
                   <p className="font-body text-sm text-red-600 font-light">{error}</p>
@@ -180,7 +207,7 @@ export default function StaffLogin() {
               </div>
               <button type="submit" disabled={loading || !username || !password}
                 className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all">
-                {loading ? 'Signing in...' : 'Sign In as Admin'}
+                {loading ? 'Signing in...' : 'Use Admin Password'}
               </button>
             </form>
             <button onClick={resetForm}
@@ -196,6 +223,28 @@ export default function StaffLogin() {
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase className="w-4 h-4 text-charcoal/50" />
                 <p className="font-heading text-sm font-semibold text-charcoal">Provider Sign In</p>
+              </div>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => handleStaffOAuth('google')}
+                  className="w-full flex items-center justify-center gap-3 rounded-full border border-taupe/20 bg-white py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream transition-all duration-300"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
+                    G
+                  </span>
+                  Continue with Google
+                </button>
+
+                <p className="font-body text-xs text-charcoal/40 font-light text-center">
+                  Use the email connected to your provider profile.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-taupe/20" />
+                <span className="font-body text-[10px] uppercase tracking-[0.2em] text-charcoal/30">password fallback</span>
+                <div className="h-px flex-1 bg-taupe/20" />
               </div>
               {error && (
                 <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-100">
@@ -233,7 +282,7 @@ export default function StaffLogin() {
               </div>
               <button type="submit" disabled={loading || !username || !password}
                 className="w-full bg-charcoal text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-charcoal/90 disabled:opacity-50 transition-all">
-                {loading ? 'Signing in...' : 'Sign In as Provider'}
+                {loading ? 'Signing in...' : 'Use Provider Password'}
               </button>
             </form>
             <button onClick={resetForm}

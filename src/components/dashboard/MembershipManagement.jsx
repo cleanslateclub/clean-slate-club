@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Star, PauseCircle, XCircle, CheckCircle2, AlertCircle, CreditCard } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export default function MembershipManagement({ userEmail, userName }) {
   const [membership, setMembership] = useState(null);

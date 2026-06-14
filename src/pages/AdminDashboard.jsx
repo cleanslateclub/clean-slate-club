@@ -4,8 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { useAuth } from '@/lib/AuthContext';
 import {
-  Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon,
-  Archive, LogOut, Settings, AlertTriangle, DollarSign, UserPlus,
+  Search, RefreshCw, BarChart2, Users, Calendar as CalendarIcon, LogOut, Settings, AlertTriangle, DollarSign, UserPlus,
   Briefcase, LayoutDashboard, CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +18,6 @@ import QuickActions from '@/components/admin/QuickActions';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import QuickBookingModal from '@/components/admin/QuickBookingModal';
 import SettingsTab from '@/components/admin/SettingsTab';
-import GuestsTab from '@/components/admin/GuestsTab';
 import IncidentsTab from '@/components/admin/IncidentsTab';
 import PayoutsTab from '@/components/admin/PayoutsTab';
 import { isAdmin } from '@/lib/roles';

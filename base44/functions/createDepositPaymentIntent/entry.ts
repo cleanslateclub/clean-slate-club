@@ -13,14 +13,10 @@ Deno.serve(async (req) => {
       currency: 'usd',
       receipt_email: clientEmail,
       description: `$50 deposit — ${serviceLabel} booking for ${clientName}`,
-      payment_method_types: ['card'],
-      setup_future_usage: 'off_session',
       metadata: {
         client_name: clientName,
         client_email: clientEmail,
         service: serviceLabel,
-        payment_stage: 'deposit',
-        deposit_card_only: 'true',
       },
     });
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Plus, X, Archive, Phone, Mail, Edit2, Check } from 'lucide-react';
+import { Plus, Archive, Check } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import ProviderDetailPanel from '@/components/admin/ProviderDetailPanel';
 import { motion, AnimatePresence } from 'framer-motion';
