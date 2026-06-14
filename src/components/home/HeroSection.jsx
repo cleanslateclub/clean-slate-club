@@ -4,15 +4,15 @@ import { motion } from 'framer-motion';
 import TaskScrollPanel from './TaskScrollPanel';
 
 const mobileTasks = [
-  { label: 'Grocery Shopping', color: '#EB9486', bg: '#FFE5D9', emoji: '🛒' },
-  { label: 'Meal Prep', color: '#8B93A7', bg: '#F1F1F1', emoji: '🍳' },
-  { label: 'Pharmacy Pickup', color: '#B58A90', bg: '#F1F1F1', emoji: '💊' },
-  { label: 'Pantry Restock', color: '#7E7F9A', bg: '#F1F1F1', emoji: '🧺' },
-  { label: 'Pet Supply Run', color: '#97A7B3', bg: '#F1F1F1', emoji: '🦴' },
-  { label: 'Freezer Meals', color: '#8B93A7', bg: '#CAE7B9', emoji: '🫙' },
-  { label: 'Donation Dropoff', color: '#B58A90', bg: '#F3DE8A', emoji: '💛' },
-  { label: 'Returns', color: '#7E7F9A', bg: '#DFE3A2', emoji: '📦' },
-  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#F1F1F1', emoji: '👗' },
+  { label: 'Grocery Shopping', color: '#EB9486', emoji: '🛒' },
+  { label: 'Meal Prep', color: '#CAE7B9', emoji: '🍳' },
+  { label: 'Pharmacy Pickup', color: '#B58A90', emoji: '💊' },
+  { label: 'Pantry Restock', color: '#7E7F9A', emoji: '🧺' },
+  { label: 'Pet Supply Run', color: '#97A7B3', emoji: '🦴' },
+  { label: 'Freezer Meals', color: '#DFE3A2', emoji: '🫙' },
+  { label: 'Donation Dropoff', color: '#F3DE8A', emoji: '💛' },
+  { label: 'Returns', color: '#EFB985', emoji: '📦' },
+  { label: 'Dry Cleaning', color: '#FFE5D9', emoji: '👗' },
 ];
 
 export default function HeroSection() {
@@ -65,12 +65,12 @@ export default function HeroSection() {
               {[...Array(2)].flatMap(() => mobileTasks).map((t, i) => (
                 <span
                   key={`m-top-${t.label}-${i}`}
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light shrink-0"
-                  style={{ background: t.bg, borderColor: t.color + '55', color: '#333333' }}
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-medium shrink-0"
+                  style={{ background: t.color, borderColor: '#33333322', color: '#333333' }}
                 >
                   <span
-                    className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-                    style={{ background: t.color }}
+                    className="w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold shrink-0"
+                    style={{ background: '#333333', color: '#FFFFFF' }}
                   >
                     ✓
                   </span>
