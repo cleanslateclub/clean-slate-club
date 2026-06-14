@@ -90,9 +90,9 @@ export default function Services() {
               ['Build your visit', 'Select focus areas and add-ons so the quote reflects real life, not a generic package.'],
               ['Get breathing room', 'You’ll know the estimated time, starting price, and next step before you book.'],
             ].map(([title, copy]) => (
-              <div key={title} className="rounded-3xl border p-5" style={{ background: '#FFFFFFCC', borderColor: '#DDE8D5' }}>
+              <div key={title} className="rounded-3xl border p-5" style={{ background: '#FFFFFF', borderColor: '#DDE8D5' }}>
                 <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>{title}</p>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>{copy}</p>
+                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333' }}>{copy}</p>
               </div>
             ))}
           </div>
@@ -105,7 +105,7 @@ export default function Services() {
           <AnimatedSection>
             <div
               className="rounded-[2rem] border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm"
-              style={{ borderColor: consult.color + '35', background: '#FFFFFFE6' }}
+              style={{ borderColor: consult.color + '35', background: '#FFFFFF' }}
             >
               <div className="flex-1">
                 <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Not sure where to begin?</p>
@@ -116,16 +116,16 @@ export default function Services() {
                 <p className="font-logo text-xl ml-6 mb-3" style={{ color: consult.color }}>
                   A free 15-minute call to figure it out together.
                 </p>
-                <p className="font-body text-base text-charcoal/75 font-light leading-relaxed">{consult.description}</p>
+                <p className="font-body text-base text-charcoal font-light leading-relaxed">{consult.description}</p>
                 {consult.scheduleNote && (
-                  <p className="font-body text-sm text-charcoal/60 font-light mt-3 italic">
+                  <p className="font-body text-sm text-charcoal/70 font-light mt-3 italic">
                     ⏰ {consult.scheduleNote}
                   </p>
                 )}
               </div>
               <div className="shrink-0 text-center sm:text-right">
                 <p className="font-heading text-3xl font-semibold text-charcoal mb-1">Free</p>
-                <p className="font-body text-sm text-charcoal/60 font-light mb-4">15 min call</p>
+                <p className="font-body text-sm text-charcoal/70 font-light mb-4">15 min call</p>
                 <Link
                   to="/book?service=consult"
                   className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90"
@@ -156,7 +156,7 @@ export default function Services() {
             <AnimatedSection key={key} delay={i * 0.05}>
               <div
                 className="rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
-                style={{ borderColor: accentColor + '35', background: '#FFFFFFE6' }}
+                style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
               >
                 <div className="h-3" style={{ background: color }} />
                 <div className="p-7 sm:p-9">
@@ -172,13 +172,13 @@ export default function Services() {
                     </div>
                     <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3" style={{ background: color + '55' }}>
                       <p className="font-heading text-xl font-semibold text-charcoal">{priceDisplay}</p>
-                      <p className="font-body text-sm text-charcoal/70 font-light">
+                      <p className="font-body text-sm text-charcoal/75 font-light">
                         {minHrs}–{Math.round(durationHrs) + 1} hrs typical
                       </p>
                     </div>
                   </div>
 
-                  <p className="font-body text-base text-charcoal/80 font-light leading-relaxed mb-6 max-w-3xl">
+                  <p className="font-body text-base text-charcoal font-light leading-relaxed mb-6 max-w-3xl">
                     {service.description}
                   </p>
 
@@ -187,7 +187,7 @@ export default function Services() {
                       {taskChips.map(task => (
                         <span
                           key={task}
-                          className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal/75 border"
+                          className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
                           style={{ borderColor: accentColor + '30', background: color + '30' }}
                         >
                           {task}
@@ -197,7 +197,7 @@ export default function Services() {
                   )}
 
                   {service.disclaimer && (
-                    <p className="font-body text-sm text-charcoal/55 font-light italic mb-5 leading-relaxed">
+                    <p className="font-body text-sm text-charcoal/70 font-light italic mb-5 leading-relaxed">
                       {service.disclaimer}
                     </p>
                   )}
@@ -220,9 +220,9 @@ export default function Services() {
         <div className="max-w-5xl mx-auto px-6 pb-16">
           <div
             className="rounded-[2rem] p-6 text-center border"
-            style={{ background: '#FFFFFFCC', borderColor: '#DDE8D5' }}
+            style={{ background: '#FFFFFF', borderColor: '#DDE8D5' }}
           >
-            <p className="font-body text-base text-charcoal/75 font-light leading-relaxed">
+            <p className="font-body text-base text-charcoal font-light leading-relaxed">
               <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
               <span className="mx-3 text-charcoal/20">·</span>
               Monday – Saturday
