@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 
 const BRAND_COLORS = ['#EB9486', '#CAE7B9', '#F3DE8A', '#EFB988', '#B58A90', '#EB9486', '#97A7B3', '#CAE7B9', '#EFB988', '#B58A90'];
+const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
+const softOpacity = (hex, opacity = '33') => `${hex}${opacity}`;
 
 const faqs = [
 {
@@ -52,8 +54,8 @@ function FAQItem({ faq, color }) {
     <div
       className="rounded-2xl px-6 transition-all duration-300 overflow-hidden"
       style={{
-        background: 'rgba(255,255,255,0.90)',
-        border: `1px solid ${open ? color + '40' : '#fcd5ce30'}`,
+        background: open ? withOpacity(color) : softOpacity(color),
+        border: `1px solid ${color}`,
         borderLeft: `3px solid ${color}`,
         boxShadow: open ? `0 2px 16px ${color}18` : 'none'
       }}>
@@ -65,7 +67,7 @@ function FAQItem({ faq, color }) {
         <span className="font-heading text-base font-semibold" style={{ color: '#333333' }}>{faq.q}</span>
         <span
           className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300"
-          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', background: color + '20', color }}>
+          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)', background: '#FFFFFF99', color: '#333333' }}>
           
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ width: 12, height: 12 }}>
             <line x1="8" y1="2" x2="8" y2="14" /><line x1="2" y1="8" x2="14" y2="8" />
@@ -73,7 +75,7 @@ function FAQItem({ faq, color }) {
         </span>
       </button>
       {open &&
-      <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#333' }}>{faq.a}</p>
+      <p className="font-body text-sm leading-relaxed pb-6 font-light" style={{ color: '#333333' }}>{faq.a}</p>
       }
     </div>);
 
