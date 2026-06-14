@@ -26,7 +26,7 @@ export default function ServiceAreaSection() {
   };
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#D8E2DC' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#EAF1EC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">SERVICE AREA</p>
