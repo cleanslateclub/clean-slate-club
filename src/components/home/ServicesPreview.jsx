@@ -42,40 +42,40 @@ const IconPot = () =>
 
 const IconQuestion = () =>
 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
-    <path d="M10 11a6 6 0 1110 4.5c-2 1.3-3 2.4-3 4.5" />
-    <path d="M16 25h.01" strokeWidth="3" />
+    <circle cx="16" cy="16" r="11" />
+    <path d="M13 12a3 3 0 116 0c0 3-3 3-3 6" />
+    <path d="M16 23h.01" strokeWidth="2" />
   </svg>;
 
-const categories = [
-{
+const categories = [{
   iconKey: 'home',
-  name: 'Home Resets',
-  tagline: 'Your home, caught up.',
-  desc: 'Full home resets for when things have piled up — clutter, surfaces, kitchens, bathrooms. We bring your space back to baseline so you can breathe.',
+  name: 'Home Reset',
+  tagline: 'For the house that got away from you.',
+  desc: 'Laundry, dishes, toy pickup, clutter clearing, beds, surfaces — the reset that helps you breathe again.',
   color: '#EB9486',
   bg: '#EB94861F',
-  glow: '#FFE5D9',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/da8d3ccb1_generated_image.png'
+  glow: '#EFB988',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/2762f03af_generated_image.png'
 },
 {
   iconKey: 'family',
-  name: "Mother's Helper Support",
-  tagline: 'An extra pair of trusted hands.',
-  desc: 'Postpartum support, newborn household help, school-age routines. For the season when you need backup.',
-  color: '#EFB985',
-  bg: '#EFB98524',
-  glow: '#F3DE8A',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/a7a6109ac_generated_image.png'
+  name: 'Family Logistics',
+  tagline: 'The invisible load, handled.',
+  desc: 'School prep, activity bags, household planning, organizing the chaos behind the calendar.',
+  color: '#EFB988',
+  bg: '#EFB98824',
+  glow: '#CAE7B9',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png'
 },
 {
   iconKey: 'bag',
-  name: 'Errands & Life Logistics',
-  tagline: 'Outsource the running around.',
-  desc: 'Groceries, pharmacy pickups, returns, drop-offs — the errand list that eats your day, handled.',
-  color: '#8B93A7',
-  bg: '#8B93A71F',
-  glow: '#CAE7B9',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/ebc467ce8_generated_image.png'
+  name: 'Errands & Appointments',
+  tagline: 'For all the things you keep putting off.',
+  desc: 'Returns, pickups, drop-offs, grocery runs, pharmacy stops, appointments, and little life logistics.',
+  color: '#97A7B3',
+  bg: '#97A7B324',
+  glow: '#F3DE8A',
+  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png'
 },
 {
   iconKey: 'heart',
@@ -112,7 +112,7 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F1F1F1' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F7FAF4' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-14">
           <div className="flex items-center gap-2 mb-4">
@@ -172,18 +172,14 @@ export default function ServicesPreview() {
                     </div>
                   ))}
                 </div>
-                <Link
-                  to="/services"
-                  className="mt-auto inline-block font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 text-center border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 hover:shadow-sm"
-                  style={{ background: '#FFFFFF99', borderColor: customSupport.color, color: '#333333', outlineColor: customSupport.color }}>
-                  See All Services →
+                <Link to="/services" className="font-body text-sm font-medium inline-flex items-center gap-2 mt-auto" style={{ color: '#333333' }}>
+                  Explore options <span>→</span>
                 </Link>
               </div>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>
-    );
+    </section>);
 
 }
