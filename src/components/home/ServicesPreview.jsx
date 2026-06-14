@@ -110,6 +110,41 @@ const customSupport = {
 
 const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconHeart, pot: IconPot, question: IconQuestion };
 
+const ImageFallback = ({ color, iconKey, label }) => {
+  const Icon = iconMap[iconKey] || IconQuestion;
+  return (
+    <div className="h-44 relative overflow-hidden flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${color}30, #FFFFFF 55%, ${color}22)` }}>
+      <div className="absolute -top-10 -right-8 w-36 h-36 rounded-full" style={{ background: `${color}35` }} />
+      <div className="absolute -bottom-12 -left-8 w-40 h-40 rounded-full" style={{ background: `${color}25` }} />
+      <div className="relative z-10 w-20 h-20 rounded-[2rem] flex items-center justify-center border" style={{ color, background: '#FFFFFFD9', borderColor: `${color}45` }}>
+        {React.createElement(Icon)}
+      </div>
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+};
+
+const OfferImage = ({ src, color, iconKey, alt }) => {
+  const [hasError, setHasError] = React.useState(!src);
+
+  if (hasError) {
+    return <ImageFallback color={color} iconKey={iconKey} label={alt} />;
+  }
+
+  return (
+    <div className="h-44 overflow-hidden relative">
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        loading="lazy"
+        onError={() => setHasError(true)}
+      />
+      <div className="absolute inset-0 opacity-10" style={{ background: color }} />
+    </div>
+  );
+};
+
 export default function ServicesPreview() {
   return (
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F7FAF4' }}>
@@ -136,13 +171,7 @@ export default function ServicesPreview() {
               className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
               style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
                 <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
-              
-                {cat.img &&
-              <div className="h-44 overflow-hidden relative">
-                    <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
-                  </div>
-              }
+                <OfferImage src={cat.img} color={cat.color} iconKey={cat.iconKey} alt={cat.name} />
                 <div className="p-7 flex flex-col flex-1 relative" style={{ background: cat.bg }}>
                   <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: cat.color, background: '#FFFFFFB3', borderColor: cat.color + '35' }}>{React.createElement(iconMap[cat.iconKey])}</div>
                   <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{cat.name}</h3>
@@ -156,10 +185,7 @@ export default function ServicesPreview() {
           <AnimatedSection delay={0.5}>
             <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
               <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
-              <div className="h-44 overflow-hidden relative">
-                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
-              </div>
+              <OfferImage src={customSupport.img} color={customSupport.color} iconKey={customSupport.iconKey} alt="Custom household support" />
               <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
                 <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: '#333333', background: '#FFFFFFB3', borderColor: customSupport.color }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
                 <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
