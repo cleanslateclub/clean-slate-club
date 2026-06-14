@@ -14,6 +14,13 @@ const perks = [
   { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#F3DE8A', number: '06' },
 ];
 
+const comparisonRows = [
+  { feature: 'Booking window opens', member: 'Priority 48hr early', standard: 'Same as public' },
+  { feature: 'Start time', member: 'From 9:00 AM', standard: 'From 10:00 AM' },
+  { feature: 'Overtime rate', member: '$65/hr', standard: '$85/hr' },
+  { feature: 'Recurring slot hold', member: 'Up to 3 sessions', standard: 'Not available' },
+];
+
 const STRIPE_CHECKOUT_ORIGIN = 'https://checkout.stripe.com';
 
 export default function Memberships() {
@@ -156,19 +163,40 @@ export default function Memberships() {
         </div>
 
         <AnimatedSection delay={0.15}>
-          <div className="mt-10 rounded-[2rem] p-7 lg:p-8 border" style={{ background: '#EAF1EC', borderColor: '#8B93A755' }}>
-            <p className="font-heading text-lg font-semibold mb-5 text-center" style={{ color: '#333333' }}>Members vs. Standard</p>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {[
-                ['Booking window opens', 'Priority 48hr early', 'Same as public'],
-                ['Start time', 'From 9:00 AM', 'From 10:00 AM'],
-                ['Overtime rate', '$65/hr', '$85/hr'],
-                ['Recurring slot hold', 'Up to 3 sessions', 'Not available'],
-              ].map(([feature, member, standard]) => (
-                <div key={feature} className="rounded-3xl border p-5" style={{ background: '#FFFFFFB8', borderColor: '#CAE7B970' }}>
-                  <p className="font-body text-xs font-light mb-3" style={{ color: '#33333399' }}>{feature}</p>
-                  <p className="font-heading text-sm font-semibold mb-1" style={{ color: '#7E7F9A' }}>{member}</p>
-                  <p className="font-body text-xs font-light" style={{ color: '#33333380' }}>{standard}</p>
+          <div className="mt-10 rounded-[2rem] p-6 lg:p-8 border overflow-hidden" style={{ background: '#FFFFFFB8', borderColor: '#8B93A755' }}>
+            <p className="font-heading text-lg font-semibold mb-2 text-center" style={{ color: '#333333' }}>Members vs. Standard</p>
+            <p className="font-body text-sm font-light text-center mb-6" style={{ color: '#33333399' }}>
+              A quick look at what changes when you join.
+            </p>
+            <div className="hidden md:block overflow-hidden rounded-3xl border" style={{ borderColor: '#CAE7B970' }}>
+              <div className="grid grid-cols-[1.15fr_1fr_1fr] font-body text-xs tracking-[0.18em] uppercase" style={{ background: '#CAE7B966', color: '#333333' }}>
+                <div className="px-5 py-4 font-light">Feature</div>
+                <div className="px-5 py-4 font-semibold border-l" style={{ borderColor: '#8B93A733' }}>Member</div>
+                <div className="px-5 py-4 font-light border-l" style={{ borderColor: '#8B93A733' }}>Standard</div>
+              </div>
+              {comparisonRows.map((row, index) => (
+                <div key={row.feature} className="grid grid-cols-[1.15fr_1fr_1fr] border-t" style={{ borderColor: '#8B93A733', background: index % 2 === 0 ? '#FFFFFFCC' : '#F7FAF4' }}>
+                  <div className="px-5 py-4 font-heading text-sm font-semibold" style={{ color: '#333333' }}>{row.feature}</div>
+                  <div className="px-5 py-4 font-body text-sm font-semibold border-l" style={{ color: '#7E7F9A', borderColor: '#8B93A733' }}>{row.member}</div>
+                  <div className="px-5 py-4 font-body text-sm font-light border-l" style={{ color: '#33333399', borderColor: '#8B93A733' }}>{row.standard}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="md:hidden space-y-3">
+              {comparisonRows.map((row) => (
+                <div key={row.feature} className="rounded-3xl border p-5" style={{ background: '#FFFFFFCC', borderColor: '#CAE7B970' }}>
+                  <p className="font-heading text-sm font-semibold mb-4" style={{ color: '#333333' }}>{row.feature}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl p-3" style={{ background: '#CAE7B966' }}>
+                      <p className="font-body text-[10px] tracking-[0.18em] uppercase font-light mb-1" style={{ color: '#33333399' }}>Member</p>
+                      <p className="font-body text-sm font-semibold" style={{ color: '#7E7F9A' }}>{row.member}</p>
+                    </div>
+                    <div className="rounded-2xl p-3" style={{ background: '#F1F1F1' }}>
+                      <p className="font-body text-[10px] tracking-[0.18em] uppercase font-light mb-1" style={{ color: '#33333399' }}>Standard</p>
+                      <p className="font-body text-sm font-light" style={{ color: '#33333399' }}>{row.standard}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
