@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import AnimatedSection from '../shared/AnimatedSection';
 const areas = [
-'Flourtown', 'Wyndmoor', 'Erdenheim', 'Chestnut Hill',
-'Lafayette Hill', 'Blue Bell', 'Plymouth Meeting', 'Conshohocken', 'Ambler',
-'Glenside', 'Oreland', 'Fort Washington'];
+  'Ambler',
+  'Blue Bell',
+  'Chestnut Hill',
+  'Conshohocken',
+  'Erdenheim',
+  'Flourtown',
+  'Fort Washington',
+  'Glenside',
+  'Lafayette Hill',
+  'Oreland',
+  'Plymouth Meeting',
+  'Wyndmoor'
+];
 
 
 export default function ServiceAreaSection() {
@@ -19,12 +29,12 @@ export default function ServiceAreaSection() {
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#D8E2DC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">MONTGOMERY COUNTY, PA</p>
+          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">SERVICE AREA</p>
           <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
-            Currently Serving
+            Montgomery County, PA
           </h2>
           <p className="font-body text-base text-charcoal/65 font-light max-w-lg mx-auto">
-            Thoughtful household support for select neighborhoods in Montgomery County and nearby Northwest Philly.
+            Currently serving select local neighborhoods, with a small nearby Northwest Philly overlap.
           </p>
         </AnimatedSection>
 
@@ -47,10 +57,10 @@ export default function ServiceAreaSection() {
         {/* Expand callout */}
         <AnimatedSection delay={0.2}>
           <div className="max-w-xl mx-auto text-center p-8 lg:p-10 rounded-3xl border" style={{ background: 'rgba(255,255,255,0.76)', borderColor: '#8B93A755' }}>
-            <p className="font-logo text-2xl mb-2" style={{ color: '#7E7F9A' }}>We can't wait to grow.</p>
+            <p className="font-logo text-2xl mb-2" style={{ color: '#7E7F9A' }}>Want us in your neighborhood?</p>
             <p className="font-body text-sm text-charcoal/70 font-light mb-6 leading-relaxed">
-              We're a boutique service, which means we grow with care instead of rushing everywhere at once.<br />
-              If your neighborhood isn't listed yet, tell us where you'd love to see Clean Slate Club™ show up next.
+              If you're nearby but don't see your town listed, send it our way.<br />
+              We're adding new Montgomery County neighborhoods as availability allows.
             </p>
             {submitted ?
             <p className="font-body text-sm text-charcoal/75 font-light py-2">
