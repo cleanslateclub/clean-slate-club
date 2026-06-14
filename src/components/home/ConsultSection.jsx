@@ -47,7 +47,7 @@ const steps = [
 
 export default function ConsultSection() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #fdf5ec 0%, #F1F1F1 100%)' }}>
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5ec' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-14 lg:gap-20 items-center">
           <AnimatedSection>
