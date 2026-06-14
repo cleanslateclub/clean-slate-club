@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
-import WaveDivider from '@/components/shared/WaveDivider';
+import PageHero from '@/components/shared/PageHero';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 // Display order for services page (excludes consult — shown separately as hero CTA)
@@ -53,50 +52,22 @@ export default function Services() {
 
   return (
     <main className="min-h-screen bg-cream">
-      {/* Hero */}
-      <div
-        className="pt-28 pb-20 px-6"
-        style={{ background: '#F3DE8A66' }}
+      <PageHero
+        eyebrow="What We Do"
+        title="Services Built Around Your Life"
+        script="Practical support, without the pressure."
+        description="Hands-on household support for the errands, resets, routines, and real-life details that keep piling up."
+        background="#F3DE8A66"
+        waveFill="#F7FAF4"
+        scriptColor="#7E7F9A"
       >
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-body text-xs tracking-[0.25em] uppercase text-coral/60 font-light mb-3"
-          >
-            What We Do
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="font-heading text-4xl md:text-5xl font-semibold text-charcoal mb-4"
-          >
-            Services Built Around Your Life
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="font-body text-lg text-charcoal/70 font-light leading-relaxed max-w-xl mx-auto mb-8"
-          >
-            Practical, hands-on household support — no judgment, no pressure.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Link
-              to="/book"
-              className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300"
-            >
-              Book Now →
-            </Link>
-          </motion.div>
-        </div>
-      </div>
-      <WaveDivider fill="#F7FAF4" className="-mt-12" />
+        <Link
+          to="/book"
+          className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300"
+        >
+          Book Now →
+        </Link>
+      </PageHero>
 
       {/* Free Consult Banner — only renders if consult config exists */}
       {consult && (
