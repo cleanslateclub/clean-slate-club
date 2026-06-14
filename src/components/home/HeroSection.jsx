@@ -95,7 +95,7 @@ export default function HeroSection() {
               <span className="block font-body text-[3.25rem] md:text-[5rem] lg:text-[6.75rem] uppercase tracking-[-0.06em] font-black -mt-2" style={{ color: '#333333' }}>
                 HOMES,
               </span>
-              <span className="block font-logo text-[3.75rem] md:text-[5.75rem] lg:text-[7.5rem] leading-[0.95] font-normal -mt-1" style={{ color: '#7E7F9A' }}>
+              <span className="block font-logo text-[3.75rem] md:text-[5.75rem] lg:text-[7.5rem] leading-[0.95] font-normal -mt-1" style={{ color: '#EB9486' }}>
                 handled
               </span>
             </h1>
