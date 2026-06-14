@@ -3,6 +3,17 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { base44 } from '@/api/base44Client';
 import OutOfAreaModal from '@/components/booking/OutOfAreaModal';
 
+const HELP_ME_CHOOSE = "Help Me Choose - I'm Overwhelmed";
+
+const sortTaskOptions = (options = []) => {
+  const helpOption = options.find(option => option === HELP_ME_CHOOSE);
+  const sortedOptions = options
+    .filter(option => option !== HELP_ME_CHOOSE)
+    .sort((a, b) => a.localeCompare(b));
+
+  return helpOption ? [helpOption, ...sortedOptions] : sortedOptions;
+};
+
 export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [], smsOptIn, onSmsOptInChange }) {
   const [uploading, setUploading] = useState(false);
   const [territories, setTerritories] = useState([]);
@@ -50,6 +61,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   if (!config) return null;
 
   const isConsult = serviceKey === 'consult';
+  const sortedTaskOptions = sortTaskOptions(config.taskOptions);
 
   const handleAnswer = (id, value) => onChange({ ...answers, [id]: value });
 
@@ -154,7 +166,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           </div>
           <p className="font-body text-xs text-charcoal font-light mb-4">Select all that apply — this helps us estimate your visit time and pricing.</p>
           <div className="flex flex-wrap gap-2">
-            {config.taskOptions.map(task => {
+            {sortedTaskOptions.map(task => {
               const isSelected = selectedTasks.includes(task);
               return (
                 <button
@@ -277,63 +289,35 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
               What would make this feel most helpful?
             </label>
           </div>
-          <p className="font-body text-xs text-charcoal font-light mb-3">
-            This is the most important question. Tell us what success looks like for you — emotionally, practically, anything.
-          </p>
+          <p className="font-body text-xs text-charcoal/60 font-light mb-3">Tell us what would make you feel relieved when we leave.</p>
           <textarea
-            value={answers.most_helpful || ''}
-            onChange={e => handleAnswer('most_helpful', e.target.value)}
-            placeholder="e.g. I just want to walk in and breathe. I need the kitchen functional. I haven't had help in months and I'm exhausted..."
-            rows={3}
+            value={answers.relief_goal || ''}
+            onChange={e => handleAnswer('relief_goal', e.target.value)}
+            placeholder="e.g. I want the kitchen functional again, laundry caught up, errands off my list..."
+            rows={2}
             className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
           />
         </div>
       )}
 
-      {/* Photo upload */}
+      {/* Photo Upload */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6" style={{ borderLeft: '3px solid #7E7F9A' }}>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#B58A90' }} />
-            <p className="font-heading text-sm font-semibold text-charcoal">Got photos? (optional)</p>
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#7E7F9A' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos help us help you</h3>
           </div>
-          <p className="font-body text-xs text-charcoal font-light mb-3">
-            Share photos of the spaces that need help — it helps us prepare and give you the most accurate estimate.
-          </p>
-          <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body font-light text-charcoal/55 hover:border-coral/30 transition-colors">
-            <span>📷</span>
-            {uploading ? 'Uploading...' : 'Upload photos'}
-            <input type="file" multiple accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
+          <p className="font-body text-xs text-charcoal font-light mb-4">Optional but helpful — upload photos of the areas you want support with.</p>
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-taupe/20 rounded-2xl p-8 cursor-pointer hover:border-coral/40 transition-colors" style={{ background: '#fdfcfb' }}>
+            <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+            <span className="font-logo text-3xl text-coral mb-2">+</span>
+            <span className="font-body text-sm text-charcoal font-light">{uploading ? 'Uploading...' : 'Click to upload photos'}</span>
           </label>
           {uploadedPhotos.length > 0 && (
-            <p className="mt-2 font-body text-xs text-sage font-light">{uploadedPhotos.length} photo{uploadedPhotos.length > 1 ? 's' : ''} attached ✓</p>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {uploadedPhotos.map((url, i) => <img key={i} src={url} alt={`Upload ${i + 1}`} className="w-full h-24 object-cover rounded-xl" />)}
+            </div>
           )}
-        </div>
-      )}
-
-      {/* Referral code */}
-      {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-5 mb-5">
-          <label className="font-body text-xs font-light text-charcoal block mb-1.5">
-            Referral code <span className="text-charcoal/35">(optional)</span>
-          </label>
-          <input
-            type="text"
-            value={answers.referral_code || ''}
-            onChange={e => handleAnswer('referral_code', e.target.value.toUpperCase())}
-            placeholder="e.g. MASHA25"
-            className="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors uppercase tracking-widest"
-          />
-          <p className="font-body text-[11px] text-charcoal/35 font-light mt-1.5">
-            Have a friend's referral code? Enter it here — you'll both get $25 off.
-          </p>
-        </div>
-      )}
-
-      {/* Service disclaimer */}
-      {config.disclaimer && (
-        <div className="px-5 py-4 rounded-2xl text-xs font-body font-light leading-relaxed text-charcoal" style={{ background: '#fdf6f3', borderLeft: '3px solid #fcd5ce' }}>
-          <span className="font-semibold text-charcoal">Please note: </span>{config.disclaimer}
         </div>
       )}
     </div>
