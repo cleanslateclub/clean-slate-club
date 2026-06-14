@@ -29,7 +29,7 @@ export default function PageHero({
               <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EFB988' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-              <p className="font-body text-xs md:text-sm tracking-[0.28em] uppercase font-light ml-2" style={{ color: '#333333' }}>
+              <p className="font-body text-xs md:text-sm tracking-[0.32em] uppercase font-light ml-2" style={{ color: '#333333' }}>
                 {eyebrow}
               </p>
             </motion.div>
@@ -39,7 +39,7 @@ export default function PageHero({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-heading text-4xl md:text-6xl font-semibold mb-3 leading-tight"
+            className="font-body text-3xl md:text-5xl font-light tracking-[0.08em] uppercase mb-4 leading-tight"
             style={{ color: '#333333' }}
           >
             {title}
@@ -63,7 +63,7 @@ export default function PageHero({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="font-body text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto"
-              style={{ color: '#333333b3' }}
+              style={{ color: '#333333cc' }}
             >
               {description}
             </motion.p>
