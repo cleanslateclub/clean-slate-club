@@ -6,8 +6,9 @@ import OutOfAreaModal from '@/components/booking/OutOfAreaModal';
 const HELP_ME_CHOOSE = "Help Me Choose - I'm Overwhelmed";
 
 const sortTaskOptions = (options = []) => {
-  const helpOption = options.find(option => option === HELP_ME_CHOOSE);
-  const sortedOptions = options
+  const safeOptions = Array.isArray(options) ? options : [];
+  const helpOption = safeOptions.find(option => option === HELP_ME_CHOOSE);
+  const sortedOptions = safeOptions
     .filter(option => option !== HELP_ME_CHOOSE)
     .sort((a, b) => a.localeCompare(b));
 
@@ -158,7 +159,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       </div>
 
       {/* Task checkboxes */}
-      {config.taskOptions && (
+      {sortedTaskOptions.length > 0 && (
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #CAE7B9' }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#CAE7B9' }} />
@@ -282,40 +283,41 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Universal closing question */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EFB988' }}>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EFB988' }} />
-            <label className="font-body text-sm font-semibold text-charcoal block">
-              What would make this feel most helpful?
-            </label>
-          </div>
-          <p className="font-body text-xs text-charcoal/60 font-light mb-3">Tell us what would make you feel relieved when we leave.</p>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
+          <label className="font-body text-xs font-light text-charcoal block mb-2">
+            What would feel like a win by the end of this visit?
+          </label>
           <textarea
-            value={answers.relief_goal || ''}
-            onChange={e => handleAnswer('relief_goal', e.target.value)}
-            placeholder="e.g. I want the kitchen functional again, laundry caught up, errands off my list..."
-            rows={2}
+            value={answers.win_goal || ''}
+            onChange={e => handleAnswer('win_goal', e.target.value)}
+            placeholder="Tell us what would make you exhale..."
+            rows={3}
             className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
           />
         </div>
       )}
 
-      {/* Photo Upload */}
+      {/* Photo Upload - hidden for consult */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6" style={{ borderLeft: '3px solid #7E7F9A' }}>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#7E7F9A' }} />
-            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos help us help you</h3>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6" style={{ borderLeft: '3px solid #8B93A7' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#8B93A7' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos are welcome</h3>
           </div>
-          <p className="font-body text-xs text-charcoal font-light mb-4">Optional but helpful — upload photos of the areas you want support with.</p>
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-taupe/20 rounded-2xl p-8 cursor-pointer hover:border-coral/40 transition-colors" style={{ background: '#fdfcfb' }}>
+          <p className="font-body text-xs text-charcoal font-light mb-4">
+            Upload photos if it helps explain the space. Totally optional, always judgment-free.
+          </p>
+          <label className="block border-2 border-dashed border-taupe/20 rounded-2xl p-6 text-center cursor-pointer hover:border-coral/30 transition-colors bg-cream">
             <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-            <span className="font-logo text-3xl text-coral mb-2">+</span>
-            <span className="font-body text-sm text-charcoal font-light">{uploading ? 'Uploading...' : 'Click to upload photos'}</span>
+            <p className="font-body text-sm text-charcoal/60 font-light">
+              {uploading ? 'Uploading...' : 'Click to upload photos'}
+            </p>
           </label>
           {uploadedPhotos.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              {uploadedPhotos.map((url, i) => <img key={i} src={url} alt={`Upload ${i + 1}`} className="w-full h-24 object-cover rounded-xl" />)}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {uploadedPhotos.map((url, i) => (
+                <img key={i} src={url} alt={`Upload ${i + 1}`} className="w-16 h-16 object-cover rounded-lg" />
+              ))}
             </div>
           )}
         </div>
