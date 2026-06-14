@@ -16,7 +16,7 @@ export default function Home() {
       <HeroSection />
       <WaveDivider fill="#fdf5f3" />
       <MashaSection />
-      <WaveDivider fill="#fdf5ec" flip />
+      <WaveDivider fill="#FCECE6" flip />
       <ConsultSection />
       <WaveDivider fill="#F1F1F1" />
       <ServicesPreview />
