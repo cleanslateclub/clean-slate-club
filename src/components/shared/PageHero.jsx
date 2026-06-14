@@ -16,7 +16,7 @@ export default function PageHero({
   return (
     <>
       <section
-        className={`pt-28 pb-20 px-6 relative overflow-hidden ${className}`}
+        className={`pt-28 pb-24 px-6 relative overflow-hidden ${className}`}
         style={{ background }}
       >
         <div className="relative z-10 max-w-3xl mx-auto text-center">
@@ -81,7 +81,7 @@ export default function PageHero({
           )}
         </div>
       </section>
-      <WaveDivider fill={waveFill} className="-mt-12" />
+      <WaveDivider fill={waveFill} className="-mt-16" />
     </>
   );
 }
