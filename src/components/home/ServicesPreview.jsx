@@ -100,7 +100,6 @@ const categories = [
 
 const customSupport = {
   iconKey: 'question',
-  name: 'Custom Support',
   tagline: 'Not sure what you need?',
   desc: "Tell us what's going on and we'll build the right support for your home.",
   color: '#EFB985',
@@ -163,7 +162,6 @@ export default function ServicesPreview() {
               </div>
               <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
                 <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: customSupport.color, background: '#FFFFFFB3', borderColor: customSupport.color + '45' }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
-                <p className="font-body text-xs tracking-[0.2em] uppercase mb-2 font-light" style={{ color: '#8B93A7' }}>{customSupport.name}</p>
                 <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
                 <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
                 <div className="space-y-2 mb-6">
