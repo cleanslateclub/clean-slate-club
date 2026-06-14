@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
+import WaveDivider from '@/components/shared/WaveDivider';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 // Display order for services page (excludes consult — shown separately as hero CTA)
@@ -42,8 +43,8 @@ export default function Services() {
     <main className="min-h-screen bg-cream">
       {/* Hero */}
       <div
-        className="pt-28 pb-16 px-6"
-        style={{ background: 'linear-gradient(135deg, #fdfcfb 0%, #fef0ee 50%, #eef8ea 100%)' }}
+        className="pt-28 pb-20 px-6"
+        style={{ background: '#CAE7B966' }}
       >
         <div className="max-w-3xl mx-auto text-center">
           <motion.p
@@ -83,6 +84,7 @@ export default function Services() {
           </motion.div>
         </div>
       </div>
+      <WaveDivider fill="#F7FAF4" />
 
       {/* Free Consult Banner — only renders if consult config exists */}
       {consult && (
