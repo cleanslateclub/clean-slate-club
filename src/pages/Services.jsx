@@ -7,11 +7,11 @@ import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 // Display order for services page (excludes consult — shown separately as hero CTA)
 const SERVICE_ORDER = [
-  'home_reset',
-  'mothers_helper',
-  'senior_support',
   'errands',
+  'senior_support',
+  'mothers_helper',
   'meal_prep',
+  'home_reset',
   'organization',
 ];
 
