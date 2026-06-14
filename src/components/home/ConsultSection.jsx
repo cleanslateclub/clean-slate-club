@@ -52,7 +52,7 @@ const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
 export default function ConsultSection() {
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#FCECE6' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FCECE6' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
           <div className="flex items-center justify-center gap-2 mb-5">
