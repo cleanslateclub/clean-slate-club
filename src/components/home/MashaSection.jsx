@@ -49,7 +49,7 @@ export default function MashaSection() {
 
             <div className="mt-10 p-6 rounded-2xl border" style={{ background: '#ffe5d930', borderColor: '#fcd5ce60' }}>
               <p className="font-heading text-lg font-semibold text-charcoal">
-                "You don't need perfect. You need backup."
+                You don't need perfect. You need backup.
               </p>
             </div>
           </AnimatedSection>
