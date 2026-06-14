@@ -58,15 +58,15 @@ export default function Memberships() {
 
   return (
     <div className="min-h-screen" style={{ background: '#F1F1F1' }}>
-      <section className="pt-28 pb-20 px-6 relative overflow-hidden" style={{ background: '#B58A9066' }}>
+      <section className="pt-28 pb-20 px-6 relative overflow-hidden" style={{ background: '#CAE7B966' }}>
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-center gap-2 mb-5">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#7E7F9A' }} />
             <span className="w-2 h-2 rounded-full" style={{ background: '#EFB988' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#B58A90' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
             <p className="font-body text-xs md:text-sm tracking-[0.28em] uppercase font-light ml-2" style={{ color: '#333333' }}>Membership</p>
           </motion.div>
           <motion.h1
@@ -82,7 +82,7 @@ export default function Memberships() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
             className="font-logo text-3xl md:text-4xl mb-5"
-            style={{ color: '#EB9486' }}>
+            style={{ color: '#7E7F9A' }}>
             Recurring support for homes that deserve to stay ahead.
           </motion.p>
           <motion.p
@@ -100,8 +100,8 @@ export default function Memberships() {
       <section className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
-            <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#B58A9040', boxShadow: '0 18px 45px #B58A9015' }}>
-              <div className="p-9 lg:p-10 text-center" style={{ background: '#EB948666' }}>
+            <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
+              <div className="p-9 lg:p-10 text-center" style={{ background: '#DFE3A266' }}>
                 <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Monthly Membership</p>
                 <p className="font-heading text-6xl font-semibold mb-1" style={{ color: '#333333' }}>$49</p>
                 <p className="font-body text-sm font-light" style={{ color: '#33333399' }}>per month · cancel anytime</p>
@@ -167,7 +167,7 @@ export default function Memberships() {
               ].map(([feature, member, standard]) => (
                 <div key={feature} className="rounded-3xl border p-5" style={{ background: '#FFFFFFB8', borderColor: '#CAE7B970' }}>
                   <p className="font-body text-xs font-light mb-3" style={{ color: '#33333399' }}>{feature}</p>
-                  <p className="font-heading text-sm font-semibold mb-1" style={{ color: '#EB9486' }}>{member}</p>
+                  <p className="font-heading text-sm font-semibold mb-1" style={{ color: '#7E7F9A' }}>{member}</p>
                   <p className="font-body text-xs font-light" style={{ color: '#33333380' }}>{standard}</p>
                 </div>
               ))}
