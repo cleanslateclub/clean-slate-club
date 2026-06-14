@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
@@ -53,15 +52,6 @@ export default function MashaSection() {
                 "You're not failing at home."
               </p>
               <p className="font-body text-sm text-charcoal/65 font-light">You're carrying more than any one person should. That's all this is.</p>
-            </div>
-
-            <div className="mt-8">
-              <Link
-                to="/book"
-                className="inline-block font-body text-sm tracking-wide text-coral border-b border-coral/30 pb-1 hover:border-coral transition-colors duration-300 font-light">
-                
-                Book your consult with Masha →
-              </Link>
             </div>
           </AnimatedSection>
         </div>
