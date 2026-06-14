@@ -95,7 +95,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.65 }}
             className="font-body text-lg md:text-xl leading-relaxed mb-10 max-w-md font-light"
             style={{ color: '#333333' }}>
-            Support for busy households, mental overload, family logistics, and the never-ending little things that keep life moving.
+            A helping hand for home resets, errands, meal prep, laundry piles, mental load, and all the everyday tasks taking up too much space.
           </motion.p>
 
           <motion.div
