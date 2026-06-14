@@ -47,11 +47,7 @@ const steps = [
 
 export default function ConsultSection() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5ec' }}>
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #FFE5D9 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
-      <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-1/2 left-1/3 w-[260px] h-[260px] rounded-full opacity-18 pointer-events-none" style={{ background: 'radial-gradient(circle, #F3DE8A 0%, transparent 68%)' }} />
-
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #fdf5ec 0%, #F1F1F1 100%)' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-14 lg:gap-20 items-center">
           <AnimatedSection>
@@ -78,8 +74,6 @@ export default function ConsultSection() {
 
           <AnimatedSection delay={0.15}>
             <div className="relative mb-8">
-              <div className="absolute -top-6 -left-6 w-40 h-40 rounded-full opacity-45 pointer-events-none" style={{ background: '#DFE3A2' }} />
-              <div className="absolute -bottom-6 -right-6 w-36 h-36 rounded-full opacity-45 pointer-events-none" style={{ background: '#FFE5D9' }} />
               <div className="relative rounded-[2rem] overflow-hidden h-[320px] lg:h-[420px] shadow-2xl border" style={{ borderColor: '#EFB98545' }}>
                 <img
                   src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/0444b42e3_generated_image.png"
