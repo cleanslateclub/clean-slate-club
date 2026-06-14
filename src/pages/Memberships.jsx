@@ -37,7 +37,21 @@ export default function Memberships() {
         const user = await base44.auth.me();
         email = user?.email || '';
         name = user?.full_name || '';
-      } catch (_) {}
+      } catch (_) {
+        setError('Please log in before joining. Membership opens after your first completed service.');
+        return;
+      }
+
+      if (!email) {
+        setError('Please log in before joining. Membership opens after your first completed service.');
+        return;
+      }
+
+      const completedBookings = await base44.entities.Booking.filter({ client_email: email, status: 'completed' }, '-scheduled_date', 1);
+      if (!completedBookings || completedBookings.length === 0) {
+        setError('Membership becomes available after your first completed service. Once your first visit is complete, you’ll receive a private invitation to join.');
+        return;
+      }
 
       const res = await base44.functions.invoke('createMembershipCheckout', {
         customerEmail: email,
@@ -134,7 +148,7 @@ export default function Memberships() {
                   disabled={loading}
                   className="block w-full text-center font-body text-sm tracking-wide px-8 py-4 rounded-full disabled:opacity-60 transition-all duration-300 hover:shadow-xl"
                   style={{ background: '#333333', color: '#FFFFFF' }}>
-                  {loading ? 'Redirecting to checkout...' : 'Join The Catch-Up Club™ →'}
+                  {loading ? 'Checking eligibility...' : 'Join The Catch-Up Club™ →'}
                 </button>
                 {error && <p className="text-center font-body text-xs text-red-500 mt-3">{error}</p>}
 
