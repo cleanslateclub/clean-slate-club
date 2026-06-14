@@ -3,20 +3,33 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TaskScrollPanel from './TaskScrollPanel';
 
+const mobileTasks = [
+  { label: 'Grocery Shopping', color: '#EB9486', bg: '#FFE5D9', emoji: '🛒' },
+  { label: 'Meal Prep', color: '#8B93A7', bg: '#F1F1F1', emoji: '🍳' },
+  { label: 'Pharmacy Pickup', color: '#B58A90', bg: '#F1F1F1', emoji: '💊' },
+  { label: 'Pantry Restock', color: '#7E7F9A', bg: '#F1F1F1', emoji: '🧺' },
+  { label: 'Pet Supply Run', color: '#97A7B3', bg: '#F1F1F1', emoji: '🦴' },
+  { label: 'Freezer Meals', color: '#8B93A7', bg: '#CAE7B9', emoji: '🫙' },
+  { label: 'Donation Dropoff', color: '#B58A90', bg: '#F3DE8A', emoji: '💛' },
+  { label: 'Returns', color: '#7E7F9A', bg: '#DFE3A2', emoji: '📦' },
+  { label: 'Dry Cleaning', color: '#97A7B3', bg: '#F1F1F1', emoji: '👗' },
+];
+
 export default function HeroSection() {
   return (
-    <section className="relative flex items-start overflow-hidden" style={{ background: '#fdfcfb' }}>
+    <section className="relative flex items-start overflow-hidden" style={{ background: '#F1F1F1' }}>
       {/* Organic background blobs */}
-      <div className="absolute top-10 right-0 w-[700px] h-[700px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffd7ba 0%, transparent 65%)', transform: 'translate(20%, -10%)' }} />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #d8e2dc 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-      <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffe5d9 0%, transparent 65%)' }} />
-      <div className="absolute top-1/3 left-1/3 w-[200px] h-[200px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, #e8e8e4 0%, transparent 65%)' }} />
+      <div className="absolute top-8 right-0 w-[720px] h-[720px] rounded-full opacity-35 pointer-events-none" style={{ background: 'radial-gradient(circle, #CAE7B9 0%, transparent 65%)', transform: 'translate(22%, -14%)' }} />
+      <div className="absolute bottom-0 left-0 w-[560px] h-[560px] rounded-full opacity-40 pointer-events-none" style={{ background: 'radial-gradient(circle, #FFE5D9 0%, transparent 66%)', transform: 'translate(-22%, 22%)' }} />
+      <div className="absolute top-1/2 right-1/4 w-[360px] h-[360px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #DFE3A2 0%, transparent 65%)' }} />
+      <div className="absolute top-1/3 left-1/3 w-[240px] h-[240px] rounded-full opacity-25 pointer-events-none" style={{ background: 'radial-gradient(circle, #97A7B3 0%, transparent 65%)' }} />
+      <div className="absolute bottom-24 right-1/3 w-[220px] h-[220px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #B58A90 0%, transparent 66%)' }} />
 
       {/* Task scroll panel — desktop right column */}
       <div className="absolute right-0 top-0 bottom-0 w-[46%] hidden lg:flex flex-col justify-center overflow-hidden">
         {/* Soft left fade so it bleeds into the content */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #fdfcfb 0%, transparent 100%)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #fdfcfb 0%, transparent 100%)' }} />
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #F1F1F1 0%, transparent 100%)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #F1F1F1 0%, transparent 100%)' }} />
         <div className="h-full py-20">
           <TaskScrollPanel />
         </div>
@@ -29,10 +42,11 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border hidden" style={{ background: '#ffe5d940', borderColor: '#fcd5ce80' }}>
-            
-            <span className="w-1.5 h-1.5 rounded-full bg-coral animate-pulse" />
-            <span className="font-body text-xs tracking-[0.2em] uppercase text-charcoal/60 font-light">Practical Support For Busy Homes</span>
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border hidden"
+            style={{ background: '#FFE5D9', borderColor: '#B58A9040' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7E7F9A' }} />
+            <span className="font-body text-xs tracking-[0.2em] uppercase font-light" style={{ color: '#333333' }}>Practical Support For Busy Homes</span>
           </motion.div>
 
           {/* Mobile task scroll strip — above heading for visual impact */}
@@ -41,62 +55,62 @@ export default function HeroSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="mb-8 lg:hidden overflow-hidden"
-            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
-            
+            style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}
+          >
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
               transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
-              className="flex gap-2.5 w-max">
-              
-              {[...Array(2)].flatMap(() =>
-              [
-              { label: 'Grocery Shopping', color: '#EB9486', bg: '#fef0ee', emoji: '🛒' },
-              { label: 'Meal Prep', color: '#CAE7B9', bg: '#eef8ea', emoji: '🍳' },
-              { label: 'Pharmacy Pickup', color: '#EB9486', bg: '#fef0ee', emoji: '💊' },
-              { label: 'Pantry Restock', color: '#B58A90', bg: '#f7edef', emoji: '🧺' },
-              { label: 'Pet Supply Run', color: '#97A7B3', bg: '#eef1f4', emoji: '🦴' },
-              { label: 'Freezer Meals', color: '#CAE7B9', bg: '#eef8ea', emoji: '🫙' },
-              { label: 'Donation Dropoff', color: '#EFB988', bg: '#fef5ec', emoji: '💛' },
-              { label: 'Returns', color: '#EFB988', bg: '#fef5ec', emoji: '📦' },
-              { label: 'Dry Cleaning', color: '#97A7B3', bg: '#eef1f4', emoji: '👗' }].
-              map((t, i) =>
-              <span
-                key={`m-top-${t.label}-${i}`}
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light text-charcoal/70 shrink-0"
-                style={{ background: t.bg, borderColor: t.color + '35' }}>
-                    <span
-                  className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-                  style={{ background: t.color }}>
-                  ✓</span>
-                    {t.emoji} {t.label}
+              className="flex gap-2.5 w-max"
+            >
+              {[...Array(2)].flatMap(() => mobileTasks).map((t, i) => (
+                <span
+                  key={`m-top-${t.label}-${i}`}
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-light shrink-0"
+                  style={{ background: t.bg, borderColor: t.color + '55', color: '#333333' }}
+                >
+                  <span
+                    className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold shrink-0"
+                    style={{ background: t.color }}
+                  >
+                    ✓
                   </span>
-              )
-              )}
+                  {t.emoji} {t.label}
+                </span>
+              ))}
             </motion.div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.35 }}>
-            
-            <h1 className="font-body font-light md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-2 uppercase tracking-widest text-sm text-[hsl(var(--foreground))]">PRACTICAL SUPPORT
-
+            transition={{ duration: 1, delay: 0.35 }}
+          >
+            <p className="font-body text-xs md:text-sm tracking-[0.34em] uppercase font-semibold mb-4" style={{ color: '#7E7F9A' }}>
+              Household support for modern life
+            </p>
+            <h1 className="mb-5 leading-none" aria-label="Busy homes, handled">
+              <span className="block font-body text-[3.25rem] md:text-[5rem] lg:text-[6.75rem] uppercase tracking-[-0.06em] font-black" style={{ color: '#333333' }}>
+                BUSY
+              </span>
+              <span className="block font-body text-[3.25rem] md:text-[5rem] lg:text-[6.75rem] uppercase tracking-[-0.06em] font-black -mt-2" style={{ color: '#333333' }}>
+                HOMES,
+              </span>
+              <span className="block font-logo text-[3.75rem] md:text-[5.75rem] lg:text-[7.5rem] leading-[0.95] font-normal -mt-1" style={{ color: '#7E7F9A' }}>
+                handled
+              </span>
             </h1>
-            <h1 className="font-logo md:text-6xl lg:text-7xl text-coral leading-[1.1] mb-2 text-4xl">for busy homes
-
-            </h1>
-            <h1 className="font-heading font-light text-2xl md:text-3xl lg:text-4xl leading-[1.2] mb-8 text-[hsl(var(--primary))] normal-case">Because no one is actually all caught up.
-
-            </h1>
+            <p className="font-heading font-light text-xl md:text-2xl lg:text-3xl leading-[1.25] mb-8 max-w-lg" style={{ color: '#333333' }}>
+              Because no one is actually all caught up.
+            </p>
           </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-xl leading-relaxed mb-10 max-w-md font-light" style={{ color: '#222222' }}>
-            
+            className="font-body text-lg md:text-xl leading-relaxed mb-10 max-w-md font-light"
+            style={{ color: '#333333' }}
+          >
             Support for busy households, mental overload, family logistics, and the never-ending little things that keep life moving.
           </motion.p>
 
@@ -104,19 +118,21 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-center lg:items-start gap-4 justify-center lg:justify-start">
-            
+            className="flex flex-col sm:flex-row items-center lg:items-start gap-4 justify-center lg:justify-start"
+          >
             <Link
               to="/book"
-              className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 hover:shadow-xl hover:shadow-coral/25 transition-all duration-500">
-              
+              className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-500 shadow-sm hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              style={{ background: '#333333', color: '#FFFFFF', outlineColor: '#7E7F9A' }}
+            >
               Start Your Reset
             </Link>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 font-body text-sm font-light text-charcoal/65 py-4 hover:text-coral transition-colors duration-300">
-              
-              See what we do <span className="text-coral">→</span>
+              className="inline-flex items-center gap-2 font-body text-sm font-light py-4 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 rounded-full px-2"
+              style={{ color: '#333333', outlineColor: '#7E7F9A' }}
+            >
+              See what we do <span style={{ color: '#7E7F9A' }}>→</span>
             </Link>
           </motion.div>
 
@@ -125,14 +141,17 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start">
-            
-            {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge) =>
-            <span key={badge} className="font-body text-[11px] tracking-wide text-charcoal/60 font-light flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-sage" />
-                {badge}
-              </span>
-            )}
+            className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start"
+          >
+            {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge, index) => {
+              const badgeColors = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#B58A90'];
+              return (
+                <span key={badge} className="font-body text-[11px] tracking-wide font-light flex items-center gap-1.5" style={{ color: '#333333' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: badgeColors[index] }} />
+                  {badge}
+                </span>
+              );
+            })}
           </motion.div>
         </div>
       </div>
@@ -142,11 +161,11 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        
-        <div className="w-px h-10 bg-gradient-to-b from-charcoal/20 to-transparent" />
-        <p className="font-body text-[9px] tracking-[0.3em] uppercase text-charcoal/25 font-light">Scroll</p>
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      >
+        <div className="w-px h-10" style={{ background: 'linear-gradient(to bottom, #33333340, transparent)' }} />
+        <p className="font-body text-[9px] tracking-[0.3em] uppercase font-light" style={{ color: '#33333380' }}>Scroll</p>
       </motion.div>
-    </section>);
-
+    </section>
+  );
 }
