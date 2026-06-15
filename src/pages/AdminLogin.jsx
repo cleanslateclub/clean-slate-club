@@ -9,11 +9,6 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleAdminOAuth = (provider) => {
-    setError(null);
-    base44.auth.loginWithProvider(provider, '/staff-auth');
-  };
-
   const attemptLogin = async (user, pass) => {
     const result = await base44.functions.invoke('adminLogin', {
       data: { username: user, password: pass }
@@ -61,30 +56,13 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-10">
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/50 mb-2">Clean Slate Club™</p>
           <h1 className="font-logo text-3xl text-coral mb-1">Admin Login</h1>
           <p className="font-body text-sm text-charcoal/40 font-light">Access your admin dashboard.</p>
-        </div>
-
-        <div className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-3 mb-5">
-          <button
-            type="button"
-            onClick={() => handleAdminOAuth('google')}
-            className="w-full flex items-center justify-center gap-3 rounded-full border border-taupe/20 bg-white py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream transition-all duration-300"
-          >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
-              G
-            </span>
-            Continue with Google
-          </button>
-
-          <p className="font-body text-xs text-charcoal/40 font-light text-center">
-            Admin access is granted only to approved staff accounts.
-          </p>
         </div>
 
         {/* Form */}
@@ -135,7 +113,7 @@ export default function AdminLogin() {
             disabled={loading || !username || !password}
             className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
-            {loading ? 'Signing in...' : 'Use Admin Password'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { TrendingUp, Clock, DollarSign, AlertCircle } from 'lucide-react';
+import { TrendingUp, Calendar, Clock, DollarSign, Users, AlertCircle } from 'lucide-react';
 
 function StatCard({ label, value, sub, accent, onClick, active }) {
   return (

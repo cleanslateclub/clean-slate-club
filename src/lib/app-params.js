@@ -1,8 +1,6 @@
 const isNode = typeof window === 'undefined';
 const windowObj = isNode ? { localStorage: new Map() } : window;
 const storage = windowObj.localStorage;
-const DEFAULT_BASE44_APP_ID = '6a128bd55db6131a3e057ca8';
-const DEFAULT_BASE44_SERVER_URL = 'https://base44.app';
 
 const toSnakeCase = (str) => {
   return str.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -28,31 +26,23 @@ const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl =
   const storageKey = `base44_${toSnakeCase(paramName)}`;
   const urlParams = new URLSearchParams(window.location.search);
   const searchParam = urlParams.get(paramName);
-  const isUsableValue = (value) =>
-    value !== null &&
-    value !== undefined &&
-    value !== '' &&
-    value !== 'null' &&
-    value !== 'undefined';
-
   if (removeFromUrl) {
     urlParams.delete(paramName);
     const newUrl = `${window.location.pathname}${urlParams.toString() ? `?${urlParams.toString()}` : ''}${window.location.hash}`;
     window.history.replaceState({}, document.title, newUrl);
   }
-  if (isUsableValue(searchParam)) {
+  if (searchParam) {
     storage.setItem(storageKey, searchParam);
     return searchParam;
   }
-  if (isUsableValue(defaultValue)) {
+  if (defaultValue) {
     storage.setItem(storageKey, defaultValue);
     return defaultValue;
   }
   const storedValue = storage.getItem(storageKey);
-  if (isUsableValue(storedValue)) {
+  if (storedValue) {
     return storedValue;
   }
-  storage.removeItem(storageKey);
   return null;
 }
 
@@ -67,11 +57,11 @@ const getAppParams = () => {
   const safeFromUrl = isSafeRedirectUrl(rawFromUrl) ? rawFromUrl : '/';
 
   return {
-    appId: getAppParamValue('app_id', { defaultValue: import.meta.env.VITE_BASE44_APP_ID || DEFAULT_BASE44_APP_ID }),
+    appId: getAppParamValue('app_id', { defaultValue: import.meta.env.VITE_BASE44_APP_ID }),
     token: getAppParamValue('access_token', { removeFromUrl: true }),
     fromUrl: safeFromUrl, // FIX: only safe, validated URLs
     functionsVersion: getAppParamValue('functions_version', { defaultValue: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION }),
-    appBaseUrl: getAppParamValue('app_base_url', { defaultValue: import.meta.env.VITE_BASE44_APP_BASE_URL || DEFAULT_BASE44_SERVER_URL }),
+    appBaseUrl: getAppParamValue('app_base_url', { defaultValue: import.meta.env.VITE_BASE44_APP_BASE_URL }),
   };
 }
 

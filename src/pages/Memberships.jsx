@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import AnimatedSection from '@/components/shared/AnimatedSection';
+import PageHero from '@/components/shared/PageHero';
 import { base44 } from '@/api/base44Client';
 
 const perks = [
-  { label: 'Priority scheduling',   detail: 'Book 48hrs before the calendar opens to the public',                          dot: '#CAE7B9' },
-  { label: 'Early access hours',    detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)',                     dot: '#EB9486' },
-  { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard',                                     dot: '#EFB988' },
-  { label: 'Preferred scheduling',  detail: 'Hold recurring time slots on a consistent schedule — up to 3 sessions in a row', dot: '#B58A90' },
-  { label: 'Monthly check-ins',     detail: 'Wellness check-in text from Masha every month',                               dot: '#CAE7B9' },
-  { label: 'Flexible reschedules',  detail: 'Easy reschedules with no penalty for members',                                dot: '#97A7B3' },
+  { label: 'Priority scheduling', detail: 'Book 48hrs before the calendar opens to the public', dot: '#CAE7B9', number: '01' },
+  { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#EB9486', number: '02' },
+  { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#EFB988', number: '03' },
+  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule — up to 3 sessions in a row', dot: '#B58A90', number: '04' },
+  { label: 'Monthly check-ins', detail: 'Wellness check-in text from Masha every month', dot: '#97A7B3', number: '05' },
+  { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#F3DE8A', number: '06' },
+];
+
+const comparisonRows = [
+  { feature: 'Booking window opens', member: 'Priority 48hr early', standard: 'Same as public' },
+  { feature: 'Start time', member: 'From 9:00 AM', standard: 'From 10:00 AM' },
+  { feature: 'Overtime rate', member: '$65/hr', standard: '$85/hr' },
+  { feature: 'Recurring slot hold', member: 'Up to 3 sessions', standard: 'Not available' },
 ];
 
 const STRIPE_CHECKOUT_ORIGIN = 'https://checkout.stripe.com';
 
 export default function Memberships() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [eligibilityMessage, setEligibilityMessage] = useState(null);
 
   const handleJoin = async () => {
     setLoading(true);
-    setError(null);
+    setEligibilityMessage(null);
     try {
       let email = '';
       let name = '';
@@ -28,7 +36,21 @@ export default function Memberships() {
         const user = await base44.auth.me();
         email = user?.email || '';
         name = user?.full_name || '';
-      } catch (_) {}
+      } catch (_) {
+        setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
+        return;
+      }
+
+      if (!email) {
+        setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
+        return;
+      }
+
+      const completedBookings = await base44.entities.Booking.filter({ client_email: email, status: 'completed' }, '-scheduled_date', 1);
+      if (!completedBookings || completedBookings.length === 0) {
+        setEligibilityMessage('Membership opens after your first completed service. Once you’re eligible, you’ll receive a private invitation to join.');
+        return;
+      }
 
       const res = await base44.functions.invoke('createMembershipCheckout', {
         customerEmail: email,
@@ -39,125 +61,137 @@ export default function Memberships() {
 
       const checkoutUrl = res.data?.url;
 
-      // FIX: Validate URL comes from Stripe before redirecting
       if (checkoutUrl && checkoutUrl.startsWith(STRIPE_CHECKOUT_ORIGIN)) {
         window.location.href = checkoutUrl;
-      } else if (checkoutUrl) {
-        console.error('Unexpected checkout URL origin:', checkoutUrl);
-        setError('Unable to start checkout. Please try again.');
       } else {
-        setError('Unable to start checkout. Please try again.');
+        console.error('Unable to start checkout:', checkoutUrl || 'Missing checkout URL');
       }
     } catch (e) {
-      setError('Something went wrong. Please try again or contact us.');
+      console.error('Membership eligibility or checkout error:', e);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Hero */}
-      <div className="pt-28 pb-16 px-6" style={{ background: 'linear-gradient(135deg, #fdfcfb 0%, #eef8ea 50%, #fef0ee 100%)' }}>
-        <div className="max-w-2xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-body text-xs tracking-[0.25em] uppercase text-coral/60 font-light mb-3">
-            Membership
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="font-logo text-5xl md:text-6xl text-coral mb-2">
-            Catch-Up Club™
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="font-heading text-xl md:text-2xl font-semibold text-charcoal mb-5">
-            Recurring support for homes that deserve to stay ahead.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="font-body text-lg text-charcoal/70 font-light leading-relaxed">
-            Priority booking, member pricing, and seasonal perks — for the home that’s ready to stop playing catch-up.
-          </motion.p>
-        </div>
-      </div>
+    <div className="min-h-screen" style={{ background: '#F1F1F1' }}>
+      <PageHero
+        eyebrow="Membership"
+        title="Catch-Up Club™"
+        script="Recurring support for homes that deserve to stay ahead."
+        description="Priority booking, member pricing, and seasonal perks — for the home that’s ready to stop playing catch-up."
+        background="#F3DE8A66"
+        waveFill="#F1F1F1"
+        scriptColor="#7E7F9A"
+      />
 
-      {/* Membership card */}
-      <div className="max-w-xl mx-auto px-6 py-16">
-        <AnimatedSection>
-          <div className="rounded-3xl overflow-hidden border border-coral/20 shadow-xl shadow-coral/5">
-            {/* Card header */}
-            <div className="p-10 text-center" style={{ background: 'linear-gradient(135deg, #EB9486 0%, #fcd5ce 60%, #ece4db 100%)' }}>
-              <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2 text-white/80">MONTHLY MEMBERSHIP</p>
-              <p className="font-heading text-6xl font-semibold text-white mb-1">$49</p>
-              <p className="font-body text-sm font-light text-white/70">per month · cancel anytime</p>
+      <section className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 items-start">
+          <AnimatedSection>
+            <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
+              <div className="p-9 lg:p-10 text-center" style={{ background: '#DFE3A266' }}>
+                <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Monthly Membership</p>
+                <p className="font-heading text-6xl font-semibold mb-1" style={{ color: '#333333' }}>$49</p>
+                <p className="font-body text-sm font-light" style={{ color: '#33333399' }}>per month · cancel anytime</p>
+              </div>
+
+              <div className="p-8 lg:p-10">
+                <p className="font-heading text-xl font-semibold mb-3" style={{ color: '#333333' }}>For regular backup, not crisis-mode living.</p>
+                <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
+                  Membership fee is separate from service costs. Services billed per visit.
+                </p>
+                <div className="rounded-3xl border p-4 mb-8" style={{ background: '#F7FAF4', borderColor: '#CAE7B970' }}>
+                  <p className="font-body text-xs tracking-[0.18em] uppercase font-light mb-2" style={{ color: '#33333399' }}>How access works</p>
+                  <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>
+                    Membership becomes available after your first completed service. Once you’re eligible, you’ll receive a private invitation to join and manage everything from your dashboard.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleJoin}
+                  disabled={loading}
+                  className="block w-full text-center font-body text-sm tracking-wide px-8 py-4 rounded-full disabled:opacity-60 transition-all duration-300 hover:shadow-xl"
+                  style={{ background: '#333333', color: '#FFFFFF' }}>
+                  {loading ? 'Checking eligibility...' : 'Check Eligibility'}
+                </button>
+                {eligibilityMessage && <p className="text-center font-body text-xs text-red-500 mt-3">{eligibilityMessage}</p>}
+
+                <div className="mt-5 text-center">
+                  <Link to="/dashboard" className="font-body text-sm font-light underline underline-offset-4" style={{ color: '#333333' }}>
+                    Go to your dashboard
+                  </Link>
+                </div>
+              </div>
             </div>
+          </AnimatedSection>
 
-            {/* Perks */}
-            <div className="p-8 lg:p-10" style={{ background: 'rgba(255,255,255,0.9)' }}>
-              <p className="font-heading text-sm font-semibold text-charcoal mb-6">What’s included</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                {perks.map((perk) => ( // FIX: use perk.label as key instead of array index
-                  <div key={perk.label} className="flex items-start gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-2" style={{ background: perk.dot }} />
-                    <div>
-                      <p className="font-body text-sm text-charcoal font-light">{perk.label}</p>
-                      <p className="font-body text-xs text-[#6b5248] font-light">{perk.detail}</p>
+          <AnimatedSection delay={0.1}>
+            <div className="rounded-[2rem] border p-7 lg:p-9" style={{ background: '#FFFFFFB8', borderColor: '#8B93A740' }}>
+              <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-5" style={{ color: '#33333399' }}>What’s included</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {perks.map((perk) => (
+                  <div key={perk.label} className="rounded-3xl border p-5" style={{ background: `${perk.dot}38`, borderColor: `${perk.dot}70` }}>
+                    <div className="flex items-start gap-4">
+                      <span className="font-logo text-3xl leading-none" style={{ color: '#33333380' }}>{perk.number}</span>
+                      <div>
+                        <p className="font-heading text-base font-semibold mb-1" style={{ color: '#333333' }}>{perk.label}</p>
+                        <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333b3' }}>{perk.detail}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-
-              <button
-                onClick={handleJoin}
-                disabled={loading}
-                className="block w-full text-center bg-coral text-white font-body text-sm tracking-wide px-8 py-4 rounded-full hover:bg-coral/90 disabled:opacity-60 transition-all duration-300">
-                {loading ? 'Redirecting to checkout...' : 'Join The Catch-Up Club™ →'}
-              </button>
-              {error && <p className="text-center font-body text-xs text-red-500 mt-2">{error}</p>}
-              <p className="text-center font-body text-xs font-light mt-3 text-[#7a5e50]">
-                Membership fee is separate from service costs. Services billed per visit.
-              </p>
             </div>
-          </div>
-        </AnimatedSection>
+          </AnimatedSection>
+        </div>
 
-        {/* Comparison note */}
-        <AnimatedSection delay={0.1}>
-          <div className="mt-8 rounded-2xl p-6" style={{ background: '#fdf6f3', border: '1px solid #fcd5ce40' }}>
-            <p className="font-heading text-sm font-semibold text-charcoal mb-3">Members vs. Standard</p>
-            <div className="space-y-2">
-              {[
-                ['Booking window opens', 'Priority (48hr early)', 'Same as public'],
-                ['Start time',           'From 9:00 AM',          'From 10:00 AM'],
-                ['Overtime rate',        '$65/hr',                '$85/hr'],
-                ['Recurring slot hold',  '✓ Up to 3 sessions',    'Not available'],
-              ].map(([feature, member, standard]) => (
-                <div key={feature} className="grid grid-cols-3 gap-2 text-xs font-body">
-                  <span className="text-charcoal/70 font-light">{feature}</span>
-                  <span className="text-coral font-semibold">{member}</span>
-                  <span className="text-charcoal/50 font-light">{standard}</span>
+        <AnimatedSection delay={0.15}>
+          <div className="mt-10 rounded-[2rem] p-6 lg:p-8 border overflow-hidden" style={{ background: '#FFFFFFB8', borderColor: '#8B93A755' }}>
+            <p className="font-heading text-lg font-semibold mb-2 text-center" style={{ color: '#333333' }}>Members vs. Standard</p>
+            <p className="font-body text-sm font-light text-center mb-6" style={{ color: '#33333399' }}>
+              A quick look at what changes when you join.
+            </p>
+            <div className="hidden md:block overflow-hidden rounded-3xl border" style={{ borderColor: '#CAE7B970' }}>
+              <div className="grid grid-cols-[1.15fr_1fr_1fr] font-body text-xs tracking-[0.18em] uppercase" style={{ background: '#CAE7B966', color: '#333333' }}>
+                <div className="px-5 py-4 font-light">Feature</div>
+                <div className="px-5 py-4 font-semibold border-l" style={{ borderColor: '#8B93A733' }}>Member</div>
+                <div className="px-5 py-4 font-light border-l" style={{ borderColor: '#8B93A733' }}>Standard</div>
+              </div>
+              {comparisonRows.map((row, index) => (
+                <div key={row.feature} className="grid grid-cols-[1.15fr_1fr_1fr] border-t" style={{ borderColor: '#8B93A733', background: index % 2 === 0 ? '#FFFFFFCC' : '#F7FAF4' }}>
+                  <div className="px-5 py-4 font-heading text-sm font-semibold" style={{ color: '#333333' }}>{row.feature}</div>
+                  <div className="px-5 py-4 font-body text-sm font-semibold border-l" style={{ color: '#7E7F9A', borderColor: '#8B93A733' }}>{row.member}</div>
+                  <div className="px-5 py-4 font-body text-sm font-light border-l" style={{ color: '#33333399', borderColor: '#8B93A733' }}>{row.standard}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="md:hidden space-y-3">
+              {comparisonRows.map((row) => (
+                <div key={row.feature} className="rounded-3xl border p-5" style={{ background: '#FFFFFFCC', borderColor: '#CAE7B970' }}>
+                  <p className="font-heading text-sm font-semibold mb-4" style={{ color: '#333333' }}>{row.feature}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl p-3" style={{ background: '#CAE7B966' }}>
+                      <p className="font-body text-[10px] tracking-[0.18em] uppercase font-light mb-1" style={{ color: '#33333399' }}>Member</p>
+                      <p className="font-body text-sm font-semibold" style={{ color: '#7E7F9A' }}>{row.member}</p>
+                    </div>
+                    <div className="rounded-2xl p-3" style={{ background: '#F1F1F1' }}>
+                      <p className="font-body text-[10px] tracking-[0.18em] uppercase font-light mb-1" style={{ color: '#33333399' }}>Standard</p>
+                      <p className="font-body text-sm font-light" style={{ color: '#33333399' }}>{row.standard}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </AnimatedSection>
 
-        {/* FIX: Correct phone number and email */}
-        <AnimatedSection delay={0.15}>
-          <p className="text-center font-body text-xs font-light mt-8 text-charcoal/40">
+        <AnimatedSection delay={0.2}>
+          <p className="text-center font-body text-xs font-light mt-8" style={{ color: '#33333380' }}>
             Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
           </p>
         </AnimatedSection>
-      </div>
+      </section>
     </div>
   );
 }

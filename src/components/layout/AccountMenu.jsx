@@ -27,7 +27,7 @@ export default function AccountMenu() {
   };
 
   const handleLogin = () => {
-    base44.auth.loginWithProvider('google', '/dashboard');
+    base44.auth.redirectToLogin('/dashboard');
   };
 
   if (!user) {

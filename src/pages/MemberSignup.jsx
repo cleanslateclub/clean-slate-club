@@ -12,13 +12,8 @@ export default function MemberSignup() {
     base44.auth.redirectToLogin('/dashboard');
   };
 
-  const handleGoogleSignup = () => {
-    setLoading(true);
-    base44.auth.loginWithProvider('google', '/dashboard');
-  };
-
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/50 mb-2">Clean Slate Club™</p>
@@ -34,23 +29,11 @@ export default function MemberSignup() {
           </div>
 
           <button
-            onClick={handleGoogleSignup}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-3 rounded-full bg-white border border-taupe/20 py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream disabled:opacity-50 transition-all duration-300"
-          >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
-              G
-            </span>
-            {loading ? 'Redirecting...' : 'Create Account with Google'}
-          </button>
-
-          <button
             onClick={handleSignup}
             disabled={loading}
-            className="w-full text-white font-body text-sm tracking-wide py-3 rounded-full disabled:opacity-50 transition-all duration-300"
-            style={{ background: '#B58A90' }}
+            className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
-            {loading ? 'Redirecting...' : 'Use Email Instead'}
+            {loading ? 'Redirecting...' : 'Create Account →'}
           </button>
 
           <p className="font-body text-xs text-charcoal/40 font-light">

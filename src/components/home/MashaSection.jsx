@@ -1,68 +1,70 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
   return (
-    <section id="about" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: '#fdf5f3' }}>
-      {/* Background accent */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffc8a0 0%, transparent 65%)', transform: 'translate(30%, -20%)' }} />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #b8d8c8 0%, transparent 65%)', transform: 'translate(-20%, 20%)' }} />
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+    <section id="about" className="py-16 lg:py-24 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#F8E8E2' }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          {/* Image with blob */}
+          {/* Image */}
           <AnimatedSection>
             <div className="relative">
-              {/* Blob behind image */}
-              <div className="absolute -top-8 -left-8 w-[110%] h-[110%] rounded-full opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle, #ffe5d9 30%, transparent 75%)' }} />
               <img
                 src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png"
                 alt="Masha helping naturally in a warm home"
-                className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10" />
+                className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10 border"
+                style={{ borderColor: '#B58A9028' }} />
               
               {/* Floating quote card */}
-              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px]" style={{ background: '#fdfcfb', boxShadow: '0 8px 30px #fcd5ce40' }}>
+              <div className="absolute -bottom-6 -right-4 lg:-right-8 p-5 rounded-2xl shadow-xl max-w-[200px] border" style={{ background: '#FFFFFF', borderColor: '#EB948640', boxShadow: '0 8px 30px #B58A9030' }}>
                 <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
-                <p className="font-body text-[11px] text-charcoal/40 font-light">— every client, first visit</p>
+                <p className="font-body text-[11px] font-light" style={{ color: '#33333399' }}>— every client, first visit</p>
               </div>
             </div>
           </AnimatedSection>
 
           {/* Story copy */}
           <AnimatedSection delay={0.2}>
-            <p className="font-body tracking-[0.25em] uppercase mb-5 font-light text-[hsl(var(--card-foreground))] text-lg">THE WOMAN BEHIND THE BRAND</p>
+            <div className="flex items-center gap-2 mb-5">
+              <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+              <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>THE WOMAN BEHIND THE BRAND</p>
+            </div>
             <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2 leading-tight">
               Meet Masha.
             </h2>
-            <p className="font-logo text-2xl text-coral mb-8">She gets it.</p>
+            <p className="font-logo text-2xl mb-8" style={{ color: '#EB9486' }}>She gets it.</p>
 
-            <div className="space-y-5 font-body text-base text-charcoal/70 leading-relaxed font-light">
+            <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
               <p>
-                For years, Masha was the woman holding everything together — the home, the kids, the routines, the invisible mental load that never clocked out. She was a stay-at-home mom who knew the weight of running a household like a full-time job that nobody notices.
+                Masha built Clean Slate Club around a simple truth: most people do not need perfect homes. They need relief.
               </p>
               <p>
-                Then life shifted. As a single mom, she understood overwhelm not as a buzzword, but as a Wednesday afternoon when the laundry was piling, the kids needed dinner, and there was no one to call.
+                She knows what it feels like to be the one holding the calendar, the meals, the laundry, the errands, the details, and the emotional weight of making sure nothing falls apart. She has lived the kind of overwhelm that does not always look dramatic from the outside, but quietly takes up every inch of your day.
               </p>
               <p>
-                She built Clean Slate Club because she wished something like it had existed for her. Not a maid. Not a judgmental stranger. A trusted, capable woman who walks in, gets to work, and leaves your home — and your nervous system — in a better place.
+                As a stay-at-home mom and later a single mom, Masha understood how much invisible labor goes into keeping a household moving. She also understood how hard it can be to ask for help when the thing you need help with is "everything."
+              </p>
+              <p>
+                Clean Slate Club exists for that exact place. The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.
+              </p>
+              <p>
+                What started with Masha's own understanding is becoming a new kind of household support: warm, practical, capable, and never judgmental.
               </p>
             </div>
 
-            <div className="mt-10 p-6 rounded-2xl border" style={{ background: '#ffe5d930', borderColor: '#fcd5ce60' }}>
-              <p className="font-heading text-lg font-semibold text-charcoal mb-1">
-                "You're not failing at home."
+            <motion.div
+              className="mt-10 mx-auto max-w-sm rounded-full border px-8 py-5 text-center relative overflow-hidden"
+              style={{ background: '#F1F1F1', borderColor: '#7E7F9A35', boxShadow: '0 10px 30px #B58A9018' }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.45 }}
+              transition={{ duration: 0.9, delay: 0.15 }}>
+              <p className="font-heading text-lg font-semibold text-charcoal leading-snug">
+                You don't need perfect. You need backup.
               </p>
-              <p className="font-body text-sm text-charcoal/65 font-light">You're carrying more than any one person should. That's all this is.</p>
-            </div>
-
-            <div className="mt-8">
-              <Link
-                to="/book"
-                className="inline-block font-body text-sm tracking-wide text-coral border-b border-coral/30 pb-1 hover:border-coral transition-colors duration-300 font-light">
-                
-                Book your consult with Masha →
-              </Link>
-            </div>
+            </motion.div>
           </AnimatedSection>
         </div>
       </div>

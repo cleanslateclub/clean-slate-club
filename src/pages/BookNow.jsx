@@ -41,26 +41,6 @@ export default function BookNow() {
     if (params.get('skip_deposit') === 'true') setSkipDeposit(true);
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    base44.auth.me()
-      .then(user => {
-        if (!user || cancelled) return;
-        setClientInfo(prev => ({
-          name: prev.name || user.full_name || '',
-          email: prev.email || user.email || '',
-          phone: prev.phone || user.phone || user.phone_number || '',
-          address: prev.address || user.address || user.home_address || '',
-        }));
-      })
-      .catch(() => {});
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const isConsult = serviceKey === 'consult';
 
   useEffect(() => {

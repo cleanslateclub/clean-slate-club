@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { AVAILABLE_HOURS, timeToMinutes, minutesToTime, isSlotAvailable } from '@/lib/bookingConfig';
+import { AVAILABLE_HOURS, timeToMinutes, minutesToTime, isSlotAvailable, TRAVEL_BUFFER } from '@/lib/bookingConfig';
 
 const DAYS_AHEAD = 30;
 const MIN_NOTICE_HOURS = 24;

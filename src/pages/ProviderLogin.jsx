@@ -11,11 +11,6 @@ export default function ProviderLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleProviderOAuth = (provider) => {
-    setError(null);
-    base44.auth.loginWithProvider(provider, '/staff-auth');
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -39,7 +34,7 @@ export default function ProviderLogin() {
       const { providerId, providerEmail } = result.data;
 
       // Log in with base44 auth
-      await base44.auth.loginViaEmailPassword(providerEmail, password);
+      await base44.auth.loginWithPassword(providerEmail, password);
       const user = await base44.auth.me();
 
       if (user?.role !== 'provider' && user?.role !== 'assistant') {
@@ -67,30 +62,13 @@ export default function ProviderLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-10">
           <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/50 mb-2">Clean Slate Club™</p>
           <h1 className="font-logo text-3xl text-coral mb-1">Provider Login</h1>
           <p className="font-body text-sm text-charcoal/40 font-light">Access your dashboard to manage visits.</p>
-        </div>
-
-        <div className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-3 mb-5">
-          <button
-            type="button"
-            onClick={() => handleProviderOAuth('google')}
-            className="w-full flex items-center justify-center gap-3 rounded-full border border-taupe/20 bg-white py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream transition-all duration-300"
-          >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
-              G
-            </span>
-            Continue with Google
-          </button>
-
-          <p className="font-body text-xs text-charcoal/40 font-light text-center">
-            Use the email connected to your provider profile.
-          </p>
         </div>
 
         {/* Form */}
@@ -142,7 +120,7 @@ export default function ProviderLogin() {
             disabled={loading || !username || !password}
             className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
-            {loading ? 'Signing in...' : 'Use Provider Password'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 

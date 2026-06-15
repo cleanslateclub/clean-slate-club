@@ -11,18 +11,13 @@ export default function MemberLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleGoogleLogin = () => {
-    setError(null);
-    base44.auth.loginWithProvider('google', '/dashboard');
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      await base44.auth.loginViaEmailPassword(email.trim(), password); // FIX: trim email
+      await base44.auth.loginWithPassword(email.trim(), password); // FIX: trim email
       const user = await base44.auth.me();
 
       // FIX: Explicitly check user exists before trusting role
@@ -56,7 +51,7 @@ export default function MemberLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6 pt-28 pb-12">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-10">
@@ -66,29 +61,8 @@ export default function MemberLogin() {
           <p className="font-body text-sm text-charcoal/40 font-light">Sign in to view your bookings and preferences.</p>
         </div>
 
-        <div className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-3 mb-5">
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 rounded-full border border-taupe/20 bg-white py-3 font-body text-sm font-semibold text-charcoal hover:border-coral/30 hover:bg-cream transition-all duration-300"
-          >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-heading text-sm font-bold" style={{ color: '#EB9486' }}>
-              G
-            </span>
-            Continue with Google
-          </button>
-
-          <p className="font-body text-xs text-charcoal/40 font-light text-center">
-            Fastest option. We'll use your account profile to speed up booking.
-          </p>
-        </div>
-
         {/* Form */}
         <form onSubmit={handleLogin} className="bg-warm-white rounded-3xl border border-taupe/15 p-8 space-y-5">
-          <p className="font-body text-[10px] uppercase tracking-[0.2em] text-charcoal/30 text-center">
-            email password fallback
-          </p>
-
           {error && (
             <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-100">
               <p className="font-body text-sm text-red-600 font-light">{error}</p>
@@ -114,7 +88,7 @@ export default function MemberLogin() {
               {/* FIX: Added forgot password link */}
               <button
                 type="button"
-                onClick={() => base44.auth.resetPasswordRequest?.(email.trim())}
+                onClick={() => base44.auth.sendPasswordResetEmail?.(email.trim())}
                 className="font-body text-xs text-coral/70 font-light hover:text-coral hover:underline transition-colors"
               >
                 Forgot password?
@@ -144,32 +118,14 @@ export default function MemberLogin() {
           <button
             type="submit"
             disabled={loading || !email || !password}
-            className="w-full text-white font-body text-sm tracking-wide py-3 rounded-full disabled:opacity-50 transition-all duration-300"
-            style={{ background: '#B58A90' }}
+            className="w-full bg-coral text-white font-body text-sm tracking-wide py-3 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
-
         </form>
 
-        <div className="mt-5 rounded-2xl border border-taupe/15 bg-warm-white p-5 text-center">
-          <p className="mb-3 font-body text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: '#7E7F9A' }}>
-            New here?
-          </p>
-          <Link
-            to="/member-signup"
-            className="block w-full rounded-full border px-6 py-3 font-body text-sm font-bold tracking-wide transition-all hover:bg-cream"
-            style={{ borderColor: '#CAE7B9', color: '#333333' }}
-          >
-            Create Account
-          </Link>
-          <p className="mt-3 font-body text-xs text-charcoal/40 font-light">
-            Google sign-in can create your account and pull in your basic profile info.
-          </p>
-        </div>
-
         <div className="text-center mt-6 space-y-2">
-          <p className="hidden">
+          <p className="font-body text-xs text-charcoal/40 font-light">
             Don't have an account yet?{' '}
             {/* FIX: <Link> instead of navigate() — proper anchor, right-click works */}
             <Link to="/member-signup" className="text-coral hover:underline font-light">

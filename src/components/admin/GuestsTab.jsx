@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Search, User, Home, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, User, Home, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function GuestsTab({ bookings = [] }) {
   const [profiles, setProfiles] = useState([]);

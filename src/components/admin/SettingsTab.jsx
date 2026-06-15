@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Save, ToggleRight, MapPin, Bell, Clock, CreditCard, Globe } from 'lucide-react';
+import { Save, ToggleLeft, ToggleRight, RefreshCw, MapPin, Bell, Clock, CreditCard, Globe } from 'lucide-react';
 import { useAppSettings } from '@/hooks/useAppSettings';
 
 const DEFAULT_SETTINGS = [
