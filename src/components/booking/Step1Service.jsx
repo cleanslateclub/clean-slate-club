@@ -5,7 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Consult first, then the rest
 const SERVICE_ORDER = ['consult', 'home_reset', 'mothers_helper', 'errands', 'senior_support', 'meal_prep', 'organization'];
 
-export default function Step1Service({ selected, onSelect, onContinue }) {
+export default function Step1Service({ selected, serviceKey, onSelect, setServiceKey, onContinue, onNext }) {
+  const selectedService = selected ?? serviceKey;
+  const handleSelect = onSelect || setServiceKey || (() => {});
+  const handleContinue = onContinue || onNext || (() => {});
+
   return (
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">What kind of support do you need?</h2>
@@ -15,14 +19,14 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
         {SERVICE_ORDER.map(key => {
           const config = SERVICE_CONFIG[key];
           if (!config) return null;
-          const isSelected = selected === key;
+          const isSelected = selectedService === key;
           const isConsult = key === 'consult';
 
           return (
             <div key={key}>
               <button
                 type="button"
-                onClick={() => onSelect(key)}
+                onClick={() => handleSelect(key)}
                 className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 ${
                   isSelected
                     ? 'shadow-sm'
@@ -92,7 +96,7 @@ export default function Step1Service({ selected, onSelect, onContinue }) {
                   >
                     <button
                       type="button"
-                      onClick={onContinue}
+                      onClick={handleContinue}
                       className="w-full py-3.5 rounded-2xl font-body text-sm tracking-wide text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg"
                       style={{ background: config.color }}
                     >
