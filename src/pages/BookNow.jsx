@@ -50,11 +50,11 @@ export default function BookNow() {
         setSelectedDate(res.data.date);
         setSelectedTime(res.data.time);
       } else {
-        setError('Could not auto-schedule your consult slot. Please call us at (206) 825-4061.');
+        setError('Could not auto-schedule your consult slot. Please call us at (215) 500-3758.');
       }
     }).catch(err => {
       console.error('scheduleConsultSlot failed:', err);
-      setError('Could not auto-schedule your consult slot. Please call us at (206) 825-4061.');
+      setError('Could not auto-schedule your consult slot. Please call us at (215) 500-3758.');
     });
   }, [isConsult]);
 
@@ -193,7 +193,7 @@ export default function BookNow() {
   </div>
   <div class="body">${innerHtml}</div>
   <div class="footer">
-    <p>Questions? Reply to this email or text us at (206) 825-4061</p>
+    <p>Questions? Reply to this email or text us at (215) 500-3758</p>
     <p>cleanslateclubpa@gmail.com &middot; cleanslateclub.co</p>
   </div>
 </div></body></html>`;
@@ -233,243 +233,166 @@ export default function BookNow() {
           }
         }).catch(err => console.error('Calendar sync failed (non-blocking):', err));
 
-      } else {
-        const addonSection = addonLabels.length > 0
-          ? `<div class="card"><p class="card-label">Add-ons Included</p>${addonLabels.map(a => `<p class="card-value">+ ${a}</p>`).join('')}</div>`
-          : '';
-        const tasksSection = selectedTasks.length > 0
-          ? `<div class="card"><p class="card-label">Tasks Requested</p><p class="card-value light">${selectedTasks.join(' - ')}</p></div>`
-          : '';
-        const clientBody = emailWrapper(`
-          <p class="greeting">You're booked, ${clientInfo.name}!</p>
-          <p>Consider it handled. Here's everything you need to know about your upcoming visit.</p>
-          <div class="card">
-            <p class="card-label">Service</p>
-            <p class="card-value">${config?.label}</p>
-            <p class="card-value light">${displayDate} - ${selectedTime} to ${endTime}</p>
-            <p class="card-value light">${clientInfo.address}</p>
-          </div>
-          <div class="card">
-            <p class="card-label">Your Visit Timeline</p>
-            <div class="timeline-item"><span class="dot" style="background:#CAE7B9"></span><span class="timeline-text"><strong>${selectedTime}</strong> - Meet &amp; greet (15 min)</span></div>
-            <div class="timeline-item"><span class="dot" style="background:#EB9486"></span><span class="timeline-text">Service begins - all tasks + add-ons</span></div>
-            <div class="timeline-item"><span class="dot" style="background:#EFB988"></span><span class="timeline-text">Wrap-up &amp; supply collection (15 min)</span></div>
-            <div class="timeline-item"><span class="dot" style="background:#ddd"></span><span class="timeline-text"><strong>${endTime}</strong> - Estimated end</span></div>
-          </div>
-          ${addonSection}${tasksSection}
-          <div class="price-card">
-            <p class="card-label">Quoted Cost</p>
-            <p class="price-amount">$${estimateLow}-$${estimateHigh}</p>
-            <p class="price-note">Final pricing confirmed before any work begins. No surprises, ever.</p>
-          </div>
-          <p style="font-size:14px;color:#888;font-weight:300;">Questions? Just reply to this email - we're always happy to help.</p>
-          <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">The Clean Slate Club Team</strong></p>
-        `);
-        Promise.all([
-          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: `Your Clean Slate Club booking is confirmed - ${displayDate}`, body: clientBody }),
-          base44.integrations.Core.SendEmail({
-            to: 'cleanslateclubpa@gmail.com',
-            subject: `New Booking: ${config?.label} - ${clientInfo.name} on ${displayDate}`,
-            body: `New booking submitted!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} to ${endTime}\nTotal duration: ${(totalDuration / 60).toFixed(1)} hrs\n${addonLabels.length > 0 ? `Add-ons: ${addonLabels.join(', ')}\n` : ''}\nEstimated: $${estimateLow}-$${estimateHigh}\n\nIntake Notes:\n${JSON.stringify(intakeAnswers, null, 2)}\n\nView in dashboard: https://cleanslateclub.co/admin`
-          })
-        ]).catch(err => console.error('Booking email send failed (non-blocking):', err));
-
-        base44.functions.invoke('addBookingToCalendar', {
-          data: {
-            clientName: clientInfo.name, clientEmail: clientInfo.email, clientPhone: clientInfo.phone,
-            clientAddress: clientInfo.address, serviceLabel: config?.label, addonLabels,
-            selectedDate, startTime: selectedTime, endTime, totalDuration,
-            estimateLow, estimateHigh,
-            specialNotes: intakeAnswers.situation || intakeAnswers.special_notes || '',
-            tasks: selectedTasks, sendInviteToClient: true, isConsult: false
-          }
-        }).catch(err => console.error('Calendar sync failed (non-blocking):', err));
+        await base44.functions.invoke('sendClientSmsConfirmation', { data: { bookingId: booking.id } }).catch(err => console.error('Client SMS failed:', err));
+        await base44.functions.invoke('notifyTeamNewBooking', { data: { bookingId: booking.id } }).catch(err => console.error('Team notification failed:', err));
+        setSubmitted(true);
+        return;
       }
 
-      if (smsOptIn && clientInfo.phone) {
-        base44.functions.invoke('sendClientSmsConfirmation', {
-          data: {
-            clientName: clientInfo.name, clientPhone: clientInfo.phone,
-            serviceLabel: isConsult ? 'Free Consult Call' : (config?.label || ''),
-            scheduledDate: displayDate, scheduledTime: selectedTime || 'TBD',
-            isConsult, bookingId: booking.id
-          }
-        }).catch(err => console.error('SMS confirmation failed (non-blocking):', err));
-      }
+      // Normal booking emails
+      const clientBody = emailWrapper(`
+        <p class="greeting">Thank you, ${clientInfo.name}!</p>
+        <p>Your Clean Slate Club request has been received. We'll review the details and confirm availability shortly.</p>
+        <div class="card">
+          <p class="card-label">Requested Service</p>
+          <p class="card-value"><strong>${config?.label}</strong></p>
+          <p class="card-value light">${displayDate} from ${selectedTime || 'TBD'} to ${endTime}</p>
+          ${addonLabels.length ? `<p class="card-value light">Add-ons: ${addonLabels.join(', ')}</p>` : ''}
+        </div>
+        <div class="price-card">
+          <p class="card-label">Estimated Range</p>
+          <p class="price-amount">$${estimateLow} - $${estimateHigh}</p>
+          <p class="price-note">Final amount is based on actual time and approved add-ons. Your deposit will be applied.</p>
+        </div>
+        <p>Next, we'll review your request, confirm details, and reach out if anything needs clarification.</p>
+      `);
+      const adminBody = `New booking request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} - ${endTime}\nDuration: ${totalDuration} minutes\nEstimate: $${estimateLow} - $${estimateHigh}\n\nTasks: ${selectedTasks.join(', ') || 'None selected'}\nAdd-ons: ${addonLabels.join(', ') || 'None'}\n\nSpecial notes: ${intakeAnswers.special_notes || intakeAnswers.situation || 'N/A'}\n\nSMS opt-in: ${smsOptIn ? 'Yes' : 'No'}\nStripe Payment Intent: ${stripePaymentIntentId || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`;
+      Promise.all([
+        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: 'We got your request - Clean Slate Club', body: clientBody }),
+        base44.integrations.Core.SendEmail({ to: 'cleanslateclubpa@gmail.com', subject: `New Booking Request - ${clientInfo.name}`, body: adminBody }),
+      ]).catch(err => console.error('Email send failed (non-blocking):', err));
+
+      base44.functions.invoke('addBookingToCalendar', {
+        data: {
+          clientName: clientInfo.name, clientEmail: clientInfo.email, clientPhone: clientInfo.phone,
+          clientAddress: clientInfo.address, serviceLabel: config?.label, addonLabels,
+          selectedDate, startTime: selectedTime, endTime, totalDuration,
+          estimateLow, estimateHigh, specialNotes: intakeAnswers.special_notes || intakeAnswers.situation || '',
+          tasks: selectedTasks, sendInviteToClient: true, isConsult: false
+        }
+      }).catch(err => console.error('Calendar sync failed (non-blocking):', err));
+
+      await base44.functions.invoke('sendClientSmsConfirmation', { data: { bookingId: booking.id } }).catch(err => console.error('Client SMS failed:', err));
+      await base44.functions.invoke('notifyTeamNewBooking', { data: { bookingId: booking.id } }).catch(err => console.error('Team notification failed:', err));
 
       setSubmitted(true);
-    } catch (e) {
-      console.error('Booking submission error:', e);
-      setError(`Something went wrong: ${e?.message || 'Unknown error'}. Please try again or call us at (206) 825-4061.`);
+    } catch (err) {
+      console.error('Booking submit failed:', err);
+      setError('Something went wrong. Please try again or contact us directly.');
     } finally {
       setSubmitting(false);
     }
-  }, [clientInfo, intakeAnswers, selectedAddons, selectedDate, selectedTime,
-    uploadedPhotos, smsOptIn, isConsult, serviceKey, config,
-    dynamicEstimate, totalDuration, selectedTasks]);
-
-  useEffect(() => {
-    if (skipDeposit && step === 6) handleSubmit();
-  }, [skipDeposit, step, handleSubmit]);
-
-  if (!settingsLoading && !getBool('booking_enabled')) {
-    return (
-      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
-        <div className="max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-cream-linen flex items-center justify-center mx-auto mb-6 text-2xl">&#9208;</div>
-          <h1 className="font-heading text-2xl font-semibold text-charcoal mb-3">Online booking is temporarily paused</h1>
-          <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-6">We're taking a short break from online bookings. Please reach out directly and we'll get you scheduled right away.</p>
-          <a href="tel:2068254061" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all">Call (206) 825-4061</a>
-          <p className="mt-4 font-body text-xs text-charcoal/30 font-light">or email cleanslateclubpa@gmail.com</p>
-        </div>
-      </div>
-    );
-  }
+  }, [clientInfo, selectedDate, selectedTime, totalDuration, config, dynamicEstimate, selectedAddons, intakeAnswers, uploadedPhotos, smsOptIn, isConsult, skipDeposit]);
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-sage/40 flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
-          {isConsult ? (
-            <>
-              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're on the calendar!</h1>
-              <p className="font-logo text-xl text-coral mb-4">Your consult is booked.</p>
-              <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
-                Your free 15-minute call is confirmed. A confirmation has been sent to <strong>{clientInfo.email}</strong>. We'll call you at <strong>{clientInfo.phone}</strong> at the scheduled time.
-              </p>
-            </>
-          ) : (
-            <>
-              <h1 className="font-heading text-3xl font-semibold text-charcoal mb-3">You're booked!</h1>
-              <p className="font-logo text-xl text-coral mb-4">Consider it handled.</p>
-              <p className="font-body text-sm text-charcoal/50 font-light leading-relaxed mb-8">
-                A confirmation email is on its way to <strong>{clientInfo.email}</strong>. We'll see you on {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
-              </p>
-            </>
-          )}
-          <a href="/" className="inline-block bg-coral text-white font-body text-sm tracking-wide px-10 py-4 rounded-full hover:bg-coral/90 transition-all duration-300">Back to home</a>
+      <div className="min-h-screen bg-cream pt-28 pb-20 flex items-center justify-center px-6">
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="max-w-md text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-sage flex items-center justify-center">
+            <span className="text-3xl">✓</span>
+          </div>
+          <h1 className="font-logo text-4xl text-coral mb-4">You're on our list</h1>
+          <p className="font-body text-charcoal/60 font-light leading-relaxed mb-8">
+            We've received your request and will be in touch soon to confirm details.
+          </p>
+          <button onClick={() => window.location.href = '/'} className="bg-coral text-white px-8 py-3 rounded-full font-body text-sm tracking-wide">
+            Back Home
+          </button>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream">
-      <div className="pt-24 pb-16 px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-3 text-[hsl(var(--foreground))]">LET'S GET STARTED</p>
-            <h1 className="font-heading text-3xl font-semibold text-charcoal mb-1">Book Your Visit</h1>
-            <p className="font-logo text-xl text-coral">Personalized support, built around you.</p>
-          </div>
-
-          <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
-
-          <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-sm p-7 sm:p-10">
-            <AnimatePresence mode="wait">
-              <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
-                {step === 1 && (
-                  <Step1Service
-                    selected={serviceKey}
-                    onSelect={k => { setServiceKey(k); setSelectedAddons([]); setIntakeAnswers({}); setAllAcknowledged(false); }}
-                    onContinue={() => setStep(2)}
-                  />
-                )}
-                {step === 2 && (
-                  <Step2Intake
-                    serviceKey={serviceKey}
-                    answers={intakeAnswers}
-                    onChange={setIntakeAnswers}
-                    clientInfo={clientInfo}
-                    onClientChange={setClientInfo}
-                    onPhotoUpload={setUploadedPhotos}
-                    uploadedPhotos={uploadedPhotos}
-                    smsOptIn={smsOptIn}
-                    onSmsOptInChange={setSmsOptIn}
-                  />
-                )}
-                {!isConsult && step === 3 && (
-                  <Step3Addons
-                    serviceKey={serviceKey}
-                    selectedAddons={selectedAddons}
-                    onToggle={toggleAddon}
-                    dynamicEstimate={dynamicEstimate}
-                    selectedTasks={selectedTasks}
-                  />
-                )}
-                {!isConsult && step === 4 && (
-                  <Step4Schedule
-                    totalDuration={totalDuration}
-                    selectedDate={selectedDate}
-                    selectedTime={selectedTime}
-                    onSelect={(d, t) => { setSelectedDate(d); setSelectedTime(t); }}
-                  />
-                )}
-                {((!isConsult && step === 5) || (isConsult && step === 3)) && (
-                  <Step5Confirm
-                    serviceKey={serviceKey}
-                    clientInfo={clientInfo}
-                    intakeAnswers={intakeAnswers}
-                    selectedAddons={selectedAddons}
-                    selectedDate={selectedDate}
-                    selectedTime={selectedTime}
-                    totalDuration={totalDuration}
-                    uploadedPhotos={uploadedPhotos}
-                    dynamicEstimate={dynamicEstimate}
-                    smsOptIn={smsOptIn}
-                    onExtraTimeChange={val => setIntakeAnswers(prev => ({ ...prev, _extra_time_auth: val }))}
-                    onAllAcknowledged={setAllAcknowledged}
-                  />
-                )}
-                {!isConsult && step === 6 && !skipDeposit && (
-                  <Step6Payment
-                    clientName={clientInfo.name}
-                    clientEmail={clientInfo.email}
-                    serviceLabel={config?.label || ''}
-                    onSuccess={paymentIntentId => handleSubmit(paymentIntentId)}
-                    onCancel={() => setStep(5)}
-                    submitting={submitting}
-                  />
-                )}
-              </motion.div>
-            </AnimatePresence>
-
-            {error && <p className="mt-4 text-sm text-red-500 font-body text-center">{error}</p>}
-
-            {step !== 6 && (
-              <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
-                {step > 1
-                  ? <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
-                  : <div />}
-
-                {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
-                  <button
-                    onClick={() => setStep(s => s + 1)}
-                    disabled={!canProceed()}
-                    className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
-                  >
-                    Continue →
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setStep(6))}
-                    disabled={submitting || !canProceed() || !allAcknowledged}
-                    className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
-                  >
-                    {submitting
-                      ? (isConsult ? 'Sending...' : 'Booking...')
-                      : (isConsult ? 'Request My Free Consult →' : (skipDeposit ? 'Complete Booking →' : 'Review & Book →'))}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
-            Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
+    <div className="min-h-screen bg-cream pt-28 pb-20">
+      <div className="max-w-4xl mx-auto px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
+          <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/60 mb-3 font-light">Book Your Visit</p>
+          <h1 className="font-logo text-5xl lg:text-6xl text-coral mb-4">Let's clear some space</h1>
+          <p className="font-body text-charcoal/50 font-light max-w-xl mx-auto leading-relaxed">
+            Tell us what you need. We'll help you choose the right support and get you on the calendar.
           </p>
-        </div>
+        </motion.div>
+
+        {settingsLoading ? (
+          <div className="text-center py-16 text-charcoal/40 font-body font-light">Loading booking settings...</div>
+        ) : !getBool('booking_enabled') ? (
+          <div className="max-w-xl mx-auto bg-warm-white rounded-3xl border border-taupe/15 p-10 text-center">
+            <h2 className="font-logo text-4xl text-coral mb-4">Booking is temporarily paused</h2>
+            <p className="font-body text-charcoal/60 font-light leading-relaxed">We're making a few updates behind the scenes. Please check back soon or email us directly at cleanslateclubpa@gmail.com.</p>
+          </div>
+        ) : (
+          <div>
+            <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
+
+            <div className="bg-warm-white rounded-[2rem] border border-taupe/15 p-6 md:p-10 shadow-sm">
+              <AnimatePresence mode="wait">
+                <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
+                  {step === 1 && <Step1Service serviceKey={serviceKey} setServiceKey={setServiceKey} onNext={() => setStep(2)} />}
+                  {step === 2 && <Step2Intake serviceKey={serviceKey} clientInfo={clientInfo} setClientInfo={setClientInfo} intakeAnswers={intakeAnswers} setIntakeAnswers={setIntakeAnswers} uploadedPhotos={uploadedPhotos} setUploadedPhotos={setUploadedPhotos} />}
+                  {step === 3 && !isConsult && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} toggleAddon={toggleAddon} dynamicEstimate={dynamicEstimate} />}
+                  {step === 4 && !isConsult && <Step4Schedule serviceKey={serviceKey} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedTime={selectedTime} setSelectedTime={setSelectedTime} totalDuration={totalDuration} />}
+                  {step === 5 && !isConsult && (
+                    <Step5Confirm
+                      serviceKey={serviceKey}
+                      clientInfo={clientInfo}
+                      selectedDate={selectedDate}
+                      selectedTime={selectedTime}
+                      totalDuration={totalDuration}
+                      dynamicEstimate={dynamicEstimate}
+                      smsOptIn={smsOptIn}
+                      setSmsOptIn={setSmsOptIn}
+                      onAllAcknowledged={setAllAcknowledged}
+                    />
+                  )}
+                  {step === 6 && !isConsult && !skipDeposit && (
+                    <Step6Payment
+                      amount={50}
+                      bookingData={{ clientInfo, serviceKey, selectedDate, selectedTime, totalDuration }}
+                      onSuccess={paymentIntentId => handleSubmit(paymentIntentId)}
+                      onCancel={() => setStep(5)}
+                      submitting={submitting}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              {error && <p className="mt-4 text-sm text-red-500 font-body text-center">{error}</p>}
+
+              {step !== 6 && (
+                <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
+                  {step > 1
+                    ? <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
+                    : <div />}
+
+                  {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
+                    <button
+                      onClick={() => setStep(s => s + 1)}
+                      disabled={!canProceed()}
+                      className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                    >
+                      Continue →
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setStep(6))}
+                      disabled={submitting || !canProceed() || !allAcknowledged}
+                      className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
+                    >
+                      {submitting
+                        ? (isConsult ? 'Sending...' : 'Booking...')
+                        : (isConsult ? 'Request My Free Consult →' : (skipDeposit ? 'Complete Booking →' : 'Review & Book →'))}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <p className="text-center font-body text-xs text-charcoal/25 font-light mt-6">
+              Questions? Text us at (215) 500-3758 or email cleanslateclubpa@gmail.com
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
