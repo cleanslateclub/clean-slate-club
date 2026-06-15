@@ -328,7 +328,11 @@ export default function BookNow() {
             <div className="bg-warm-white rounded-[2rem] border border-taupe/15 p-6 md:p-10 shadow-sm">
               <AnimatePresence mode="wait">
                 <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
-                  {step === 1 && <Step1Service serviceKey={serviceKey} setServiceKey={setServiceKey} onNext={() => setStep(2)} />}
+                  {step === 1 && <Step1Service
+  selected={serviceKey}
+  onSelect={setServiceKey}
+  onContinue={() => setStep(2)}
+/>
                   {step === 2 && <Step2Intake serviceKey={serviceKey} clientInfo={clientInfo} setClientInfo={setClientInfo} intakeAnswers={intakeAnswers} setIntakeAnswers={setIntakeAnswers} uploadedPhotos={uploadedPhotos} setUploadedPhotos={setUploadedPhotos} />}
                   {step === 3 && !isConsult && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} toggleAddon={toggleAddon} dynamicEstimate={dynamicEstimate} />}
                   {step === 4 && !isConsult && <Step4Schedule serviceKey={serviceKey} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedTime={selectedTime} setSelectedTime={setSelectedTime} totalDuration={totalDuration} />}
