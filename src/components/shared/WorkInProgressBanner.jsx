@@ -61,10 +61,10 @@ export default function WorkInProgressBanner() {
               Online payments are still being connected. For now, call to schedule a free consultation.
             </p>
             <a
-              href="tel:2068254061"
+              href="tel:2155003758"
               className="mt-4 inline-flex w-full items-center justify-center rounded-full px-5 py-3 font-body text-sm tracking-wide transition-all hover:shadow-md"
               style={{ background: '#333333', color: '#FFFFFF' }}>
-              Call (206) 825-4061
+              Call (215) 500-3758
             </a>
           </div>
 
