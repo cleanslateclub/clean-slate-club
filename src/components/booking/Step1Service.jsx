@@ -10,6 +10,11 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
   const handleSelect = onSelect || setServiceKey || (() => {});
   const handleContinue = onContinue || onNext || (() => {});
 
+  const continueWithService = (key) => {
+    handleSelect(key);
+    handleContinue(key);
+  };
+
   return (
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">What kind of support do you need?</h2>
@@ -96,7 +101,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                   >
                     <button
                       type="button"
-                      onClick={handleContinue}
+                      onClick={() => continueWithService(key)}
                       className="w-full py-3.5 rounded-2xl font-body text-sm tracking-wide text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg"
                       style={{ background: config.color }}
                     >
