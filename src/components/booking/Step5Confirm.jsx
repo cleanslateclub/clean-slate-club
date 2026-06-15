@@ -196,15 +196,15 @@ export default function Step5Confirm({ booking, serviceKey, clientInfo, selected
 
       {showEmergency && (
         <div style={{ background: `${accentColor}12`, border: `1.5px solid ${accentColor}55`, borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <div><p style={{ margin: '0 0 2px', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentColor }}>Emergency Contact</p><p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#2d2d2d' }}>Clean Slate Club</p><p style={{ margin: '2px 0 0', fontSize: 13, color: '#666' }}>(206) 825-4061</p></div>
-          <a href="tel:+12068254061" style={{ display: 'flex', alignItems: 'center', gap: 8, background: accentColor, color: '#fff', borderRadius: 50, padding: '11px 20px', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}><Phone size={15} />Call Now</a>
+          <div><p style={{ margin: '0 0 2px', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentColor }}>Emergency Contact</p><p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#2d2d2d' }}>Clean Slate Club</p><p style={{ margin: '2px 0 0', fontSize: 13, color: '#666' }}>(215) 500-3758</p></div>
+          <a href="tel:+12155003758" style={{ display: 'flex', alignItems: 'center', gap: 8, background: accentColor, color: '#fff', borderRadius: 50, padding: '11px 20px', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}><Phone size={15} />Call Now</a>
         </div>
       )}
 
       {setSmsOptIn && (
         <div style={{ background: '#fff', border: '1.5px solid #f0e8e4', borderRadius: 14, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-          <div><p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 14.5, color: '#2d2d2d' }}>Text Updates</p><p style={{ margin: 0, fontSize: 12.5, color: '#666', lineHeight: 1.45 }}>Send me booking updates, arrival reminders, and quick questions by SMS.</p></div>
-          <Toggle checked={!!smsOptIn} onChange={setSmsOptIn} accentColor={accentColor} />
+          <div><p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 14.5, color: '#2d2d2d' }}>Text Updates</p><p style={{ margin: 0, fontSize: 12.5, color: '#777', lineHeight: 1.45 }}>Send appointment updates and reminders by text. Message/data rates may apply.</p></div>
+          <Toggle checked={smsOptIn} onChange={setSmsOptIn} accentColor={accentColor} />
         </div>
       )}
 
