@@ -33,15 +33,6 @@ const ACCENT_COLOR_OVERRIDES = {
   organization: '#B58A90',
 };
 
-const SERVICE_IMAGES = {
-  errands: '/images/errands2.jpg',
-  senior_support: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png',
-  mothers_helper: '/images/errands.jpg',
-  meal_prep: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png',
-  home_reset: '/images/home-reset-dishes.png.png',
-  organization: '/images/laundry-mountain-reset.png',
-};
-
 const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
 const CTA_STYLE = { background: '#333333' };
 const HERO_CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-xl';
@@ -141,7 +132,6 @@ export default function Services() {
           if (!service) return null;
           const color = COLOR_OVERRIDES[key] || service.color;
           const accentColor = ACCENT_COLOR_OVERRIDES[key] || service.color;
-          const serviceImage = SERVICE_IMAGES[key];
           const [priceLow] = service.priceRange || [0, 0];
           const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
           const durationHrs = service.baseMinutes / 60;
@@ -155,17 +145,6 @@ export default function Services() {
                 style={{ borderColor: accentColor + '30', background: '#FFFFFF' }}
               >
                 <div className="h-3" style={{ background: color }} />
-                {serviceImage && (
-                  <div className="h-56 sm:h-64 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${color}99, ${accentColor}22)` }}>
-                    <img
-                      src={serviceImage}
-                      alt={`${service.label} service preview`}
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                    />
-                    <div className="absolute inset-0 opacity-20" style={{ background: accentColor }} />
-                  </div>
-                )}
                 <div className="p-7 sm:p-9" style={{ background: color + '55' }}>
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                     <div>
