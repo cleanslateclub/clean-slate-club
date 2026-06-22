@@ -37,7 +37,7 @@ const ACCENT_COLOR_OVERRIDES = {
 const SERVICE_IMAGES = {
   errands: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=80',
   mothers_helper: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1400&q=80',
-  home_reset: 'https://source.unsplash.com/1400x900/?dirty-dishes,kitchen-sink,messy-kitchen',
+  home_reset: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1400&q=80',
 };
 
 function getRandomTaskChips(taskOptions, limit = 6) {
