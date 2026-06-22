@@ -14,23 +14,23 @@ const SERVICE_ORDER = [
   'meal_prep',
 ];
 
-// Clean Slate Club core brand palette from tailwind.config.js.
+// Service card colors move lightest to darkest down the page.
 const COLOR_OVERRIDES = {
-  errands: '#CAE7B9',
-  senior_support: '#DFE3A2',
-  mothers_helper: '#EFB988',
-  organization: '#7E7F9A',
+  errands: '#DFE3A2',
+  senior_support: '#CAE7B9',
+  mothers_helper: '#F3DE8A',
+  organization: '#EFB988',
   home_reset: '#EB9486',
-  meal_prep: '#F3DE8A',
+  meal_prep: '#B58A90',
 };
 
 const ACCENT_COLOR_OVERRIDES = {
-  errands: '#7E7F9A',
-  senior_support: '#8B93A7',
+  errands: '#8B93A7',
+  senior_support: '#7E7F9A',
   mothers_helper: '#B58A90',
-  organization: '#7E7F9A',
-  home_reset: '#EB9486',
-  meal_prep: '#B58A90',
+  organization: '#B58A90',
+  home_reset: '#7E7F9A',
+  meal_prep: '#7E7F9A',
 };
 
 const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
@@ -71,31 +71,22 @@ export default function Services() {
       {consult && (
         <div className="max-w-5xl mx-auto px-6 pt-10 pb-4">
           <AnimatedSection>
-            <div
-              className="rounded-[2rem] border p-7 sm:p-9 flex flex-col gap-6 shadow-sm"
-              style={{ borderColor: '#B58A9035', background: '#FFFFFF' }}
-            >
-              <div className="flex-1">
-                <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Not sure where to begin?</p>
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="w-3 h-3 rounded-full shrink-0" style={{ background: '#B58A90' }} />
-                  <h2 className="font-heading text-2xl font-semibold text-charcoal">{consult.label}</h2>
-                </div>
-                <p className="font-logo text-xl ml-6 mb-3" style={{ color: '#EB9486' }}>
-                  A free 15-minute call to figure it out together.
+            <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
+              <div className="p-7 sm:p-9 text-center" style={{ background: '#F1F1F1' }}>
+                <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Not sure where to begin?</p>
+                <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-charcoal mb-2">{consult.label}</h2>
+                <p className="font-logo text-xl" style={{ color: '#7E7F9A' }}>
+                  A quick call to figure it out together.
                 </p>
-                <p className="font-body text-base text-charcoal font-light leading-relaxed">{consult.description}</p>
+              </div>
+
+              <div className="p-7 sm:p-9">
+                <p className="font-body text-base text-charcoal font-light leading-relaxed mb-5">{consult.description}</p>
                 {consult.scheduleNote && (
-                  <p className="font-body text-sm text-charcoal/70 font-light mt-3 italic">
+                  <p className="font-body text-sm text-charcoal/70 font-light mb-7 italic">
                     ⏰ {consult.scheduleNote}
                   </p>
                 )}
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="rounded-2xl px-4 py-3 border" style={{ background: '#B58A9014', borderColor: '#B58A9035' }}>
-                  <p className="font-heading text-xl font-semibold text-charcoal">Free</p>
-                  <p className="font-body text-sm text-charcoal/75 font-light">15 min call</p>
-                </div>
                 <Link
                   to="/book?service=consult"
                   className={CTA_CLASS}
