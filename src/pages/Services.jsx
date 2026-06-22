@@ -35,7 +35,6 @@ const ACCENT_COLOR_OVERRIDES = {
 
 const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
 const CTA_STYLE = { background: '#333333' };
-const HERO_CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-xl';
 
 function getRandomTaskChips(taskOptions, limit = 6) {
   return [...taskOptions]
@@ -66,31 +65,14 @@ export default function Services() {
         background="#FAE1DD"
         waveFill="#F8EDEB"
         scriptColor="#B58A90"
-      >
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            to="/book"
-            className={HERO_CTA_CLASS}
-            style={CTA_STYLE}
-          >
-            Start Your Quote →
-          </Link>
-          <Link
-            to="/book?service=consult"
-            className={HERO_CTA_CLASS}
-            style={CTA_STYLE}
-          >
-            Book Free Consult
-          </Link>
-        </div>
-      </PageHero>
+      />
 
       {/* Free Consult Banner — only renders if consult config exists */}
       {consult && (
         <div className="max-w-5xl mx-auto px-6 pt-10 pb-4">
           <AnimatedSection>
             <div
-              className="rounded-[2rem] border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm"
+              className="rounded-[2rem] border p-7 sm:p-9 flex flex-col gap-6 shadow-sm"
               style={{ borderColor: '#FEC5BB', background: '#FFFFFF' }}
             >
               <div className="flex-1">
@@ -109,9 +91,11 @@ export default function Services() {
                   </p>
                 )}
               </div>
-              <div className="shrink-0 text-center sm:text-right">
-                <p className="font-heading text-3xl font-semibold text-charcoal mb-1">Free</p>
-                <p className="font-body text-sm text-charcoal/70 font-light mb-4">15 min call</p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="rounded-2xl px-4 py-3 border" style={{ background: '#F8EDEB', borderColor: '#FEC5BB' }}>
+                  <p className="font-heading text-xl font-semibold text-charcoal">Free</p>
+                  <p className="font-body text-sm text-charcoal/75 font-light">15 min call</p>
+                </div>
                 <Link
                   to="/book?service=consult"
                   className={CTA_CLASS}
