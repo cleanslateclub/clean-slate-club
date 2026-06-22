@@ -34,9 +34,17 @@ const ACCENT_COLOR_OVERRIDES = {
 };
 
 const SERVICE_IMAGES = {
+  errands: '/images/errands2.jpg',
+  senior_support: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png',
   mothers_helper: '/images/errands.jpg',
+  meal_prep: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png',
   home_reset: '/images/home-reset-dishes.png.png',
+  organization: '/images/laundry-mountain-reset.png',
 };
+
+const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
+const CTA_STYLE = { background: '#333333' };
+const HERO_CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-xl';
 
 function getRandomTaskChips(taskOptions, limit = 6) {
   return [...taskOptions]
@@ -71,15 +79,15 @@ export default function Services() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/book"
-            className="inline-block text-white font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-300 hover:shadow-xl"
-            style={{ background: '#333333' }}
+            className={HERO_CTA_CLASS}
+            style={CTA_STYLE}
           >
             Start Your Quote →
           </Link>
           <Link
             to="/book?service=consult"
-            className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full border transition-all duration-300 hover:bg-white/60"
-            style={{ color: '#333333', borderColor: '#33333333' }}
+            className={HERO_CTA_CLASS}
+            style={CTA_STYLE}
           >
             Book Free Consult
           </Link>
@@ -115,8 +123,8 @@ export default function Services() {
                 <p className="font-body text-sm text-charcoal/70 font-light mb-4">15 min call</p>
                 <Link
                   to="/book?service=consult"
-                  className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90"
-                  style={{ background: '#B58A90' }}
+                  className={CTA_CLASS}
+                  style={CTA_STYLE}
                 >
                   Book Free Consult →
                 </Link>
@@ -203,8 +211,8 @@ export default function Services() {
 
                   <Link
                     to={`/book?service=${key}`}
-                    className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90"
-                    style={{ background: accentColor }}
+                    className={CTA_CLASS}
+                    style={CTA_STYLE}
                   >
                     Build a quote for {service.label} →
                   </Link>
