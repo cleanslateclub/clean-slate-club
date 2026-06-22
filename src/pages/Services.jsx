@@ -35,7 +35,6 @@ const ACCENT_COLOR_OVERRIDES = {
 };
 
 const SERVICE_IMAGES = {
-  errands: '/images/errands2.jpg',
   mothers_helper: '/images/errands.jpg',
   home_reset: '/images/home-reset-dishes.png.png',
 };
@@ -62,10 +61,10 @@ export default function Services() {
   return (
     <main className="min-h-screen" style={{ background: '#F7FAF4' }}>
       <PageHero
-        eyebrow="Household Support Services"
-        title="Services Built Around Your Life"
-        script="Start with the thing that feels heaviest."
-        description="Pick the kind of support you need, answer a few simple questions, and get a custom visit estimate before anything is finalized. No judgment, no pressure, just practical backup."
+        eyebrow="Services"
+        title="Pick Your Backup."
+        script="Start where it feels heaviest."
+        description="Choose the support you need, build a visit around real life, and get an estimate before anything is finalized."
         background="#F8E8E2"
         waveFill="#F7FAF4"
         scriptColor="#8F6870"
@@ -76,7 +75,7 @@ export default function Services() {
             className="inline-block text-white font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-300 hover:shadow-xl"
             style={{ background: '#333333' }}
           >
-            Start Your Custom Quote →
+            Start Your Quote →
           </Link>
           <Link
             to="/book?service=consult"
@@ -88,26 +87,9 @@ export default function Services() {
         </div>
       </PageHero>
 
-      <section className="max-w-5xl mx-auto px-6 pt-10 pb-2">
-        <AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              ['Choose your support', 'Start with errands, resets, meals, family help, companion support, or organizing.'],
-              ['Build your visit', 'Select focus areas and add-ons so the quote reflects real life, not a generic package.'],
-              ['Get breathing room', 'You’ll know the estimated time, starting price, and next step before you book.'],
-            ].map(([title, copy]) => (
-              <div key={title} className="rounded-3xl border p-5" style={{ background: '#FFFFFF', borderColor: '#DDE8D5' }}>
-                <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>{title}</p>
-                <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333' }}>{copy}</p>
-              </div>
-            ))}
-          </div>
-        </AnimatedSection>
-      </section>
-
       {/* Free Consult Banner — only renders if consult config exists */}
       {consult && (
-        <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
+        <div className="max-w-5xl mx-auto px-6 pt-10 pb-4">
           <AnimatedSection>
             <div
               className="rounded-[2rem] border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm"
