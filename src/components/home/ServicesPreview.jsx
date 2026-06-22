@@ -55,7 +55,7 @@ const categories = [{
   color: '#EB9486',
   bg: '#EB94861F',
   glow: '#EFB988',
-  img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80'
+  img: '/images/home-reset-dishes.png'
 },
 {
   iconKey: 'family',
