@@ -55,7 +55,7 @@ const categories = [{
   color: '#EB9486',
   bg: '#EB94861F',
   glow: '#EFB988',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/2762f03af_generated_image.png'
+  img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80'
 },
 {
   iconKey: 'family',
@@ -65,7 +65,7 @@ const categories = [{
   color: '#EFB988',
   bg: '#EFB98824',
   glow: '#CAE7B9',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png'
+  img: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=80'
 },
 {
   iconKey: 'bag',
@@ -75,7 +75,7 @@ const categories = [{
   color: '#97A7B3',
   bg: '#97A7B324',
   glow: '#F3DE8A',
-  img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png'
+  img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80'
 },
 {
   iconKey: 'heart',
@@ -137,8 +137,13 @@ export default function ServicesPreview() {
               style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
                 <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
                 {cat.img &&
-              <div className="h-44 overflow-hidden relative">
-                    <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="h-44 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${cat.color}66, ${cat.glow}33)` }}>
+                    <img
+                      src={cat.img}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                    />
                     <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
                   </div>
               }
@@ -156,7 +161,7 @@ export default function ServicesPreview() {
             <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
               <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
               <div className="h-44 overflow-hidden relative">
-                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
                 <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
               </div>
               <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
