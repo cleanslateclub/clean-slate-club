@@ -35,9 +35,9 @@ const ACCENT_COLOR_OVERRIDES = {
 };
 
 const SERVICE_IMAGES = {
-  errands: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png',
-  mothers_helper: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png',
-  home_reset: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/2762f03af_generated_image.png',
+  errands: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=80',
+  mothers_helper: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1400&q=80',
+  home_reset: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1400&q=80',
 };
 
 function getRandomTaskChips(taskOptions, limit = 6) {
@@ -167,11 +167,12 @@ export default function Services() {
               >
                 <div className="h-3" style={{ background: color }} />
                 {serviceImage && (
-                  <div className="h-56 sm:h-64 overflow-hidden relative">
+                  <div className="h-56 sm:h-64 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${color}66, ${accentColor}33)` }}>
                     <img
                       src={serviceImage}
                       alt={`${service.label} service preview`}
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
                     />
                     <div className="absolute inset-0 opacity-20" style={{ background: accentColor }} />
                   </div>
