@@ -34,6 +34,12 @@ const ACCENT_COLOR_OVERRIDES = {
   organization: '#8F6870',
 };
 
+const SERVICE_IMAGES = {
+  errands: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/09af7c6c2_generated_image.png',
+  mothers_helper: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/9f1d70691_generated_image.png',
+  home_reset: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/2762f03af_generated_image.png',
+};
+
 function getRandomTaskChips(taskOptions, limit = 6) {
   return [...taskOptions]
     .filter(task => task !== 'Help Me Choose' && task !== "Help Me Choose - I'm Overwhelmed")
@@ -146,6 +152,7 @@ export default function Services() {
           if (!service) return null;
           const color = COLOR_OVERRIDES[key] || service.color;
           const accentColor = ACCENT_COLOR_OVERRIDES[key] || service.color;
+          const serviceImage = SERVICE_IMAGES[key];
           const [priceLow] = service.priceRange || [0, 0];
           const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
           const durationHrs = service.baseMinutes / 60;
@@ -159,6 +166,16 @@ export default function Services() {
                 style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
               >
                 <div className="h-3" style={{ background: color }} />
+                {serviceImage && (
+                  <div className="h-56 sm:h-64 overflow-hidden relative">
+                    <img
+                      src={serviceImage}
+                      alt={`${service.label} service preview`}
+                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                    <div className="absolute inset-0 opacity-20" style={{ background: accentColor }} />
+                  </div>
+                )}
                 <div className="p-7 sm:p-9">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                     <div>
