@@ -14,24 +14,23 @@ const SERVICE_ORDER = [
   'organization',
 ];
 
-// Color story moves from light to deeper warmth while keeping services ordered by starting price.
-// Consult keeps its original color from bookingConfig.
+// Clean Slate Club brand palette: soft sage, linen, blush, peach, and coral.
 const COLOR_OVERRIDES = {
-  errands: '#DDE8D5',
-  senior_support: '#E8E3C2',
-  mothers_helper: '#F1D4B5',
-  meal_prep: '#EFB988',
-  home_reset: '#EB9486',
-  organization: '#B58A90',
+  errands: '#D8E2DC',
+  senior_support: '#ECE4DB',
+  mothers_helper: '#FFE5D9',
+  meal_prep: '#FFD7BA',
+  home_reset: '#FEC5BB',
+  organization: '#FCD5CE',
 };
 
 const ACCENT_COLOR_OVERRIDES = {
-  errands: '#6F8065',
-  senior_support: '#7E7A55',
-  mothers_helper: '#9A6F45',
-  meal_prep: '#B9784B',
+  errands: '#7F8F86',
+  senior_support: '#9A877A',
+  mothers_helper: '#C9896A',
+  meal_prep: '#C77F5D',
   home_reset: '#B9655D',
-  organization: '#8F6870',
+  organization: '#B58A90',
 };
 
 const SERVICE_IMAGES = {
@@ -59,15 +58,15 @@ export default function Services() {
   }, []);
 
   return (
-    <main className="min-h-screen" style={{ background: '#F7FAF4' }}>
+    <main className="min-h-screen" style={{ background: '#F8EDEB' }}>
       <PageHero
         eyebrow="Services"
         title="Pick Your Backup."
         script="Start where it feels heaviest."
         description="Choose the support you need, build a visit around real life, and get an estimate before anything is finalized."
-        background="#F8E8E2"
-        waveFill="#F7FAF4"
-        scriptColor="#8F6870"
+        background="#FAE1DD"
+        waveFill="#F8EDEB"
+        scriptColor="#B58A90"
       >
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
@@ -93,15 +92,15 @@ export default function Services() {
           <AnimatedSection>
             <div
               className="rounded-[2rem] border p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm"
-              style={{ borderColor: consult.color + '35', background: '#FFFFFF' }}
+              style={{ borderColor: '#FEC5BB', background: '#FFFFFF' }}
             >
               <div className="flex-1">
                 <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Not sure where to begin?</p>
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="w-3 h-3 rounded-full shrink-0" style={{ background: consult.color }} />
+                  <span className="w-3 h-3 rounded-full shrink-0" style={{ background: '#B58A90' }} />
                   <h2 className="font-heading text-2xl font-semibold text-charcoal">{consult.label}</h2>
                 </div>
-                <p className="font-logo text-xl ml-6 mb-3" style={{ color: consult.color }}>
+                <p className="font-logo text-xl ml-6 mb-3" style={{ color: '#B58A90' }}>
                   A free 15-minute call to figure it out together.
                 </p>
                 <p className="font-body text-base text-charcoal font-light leading-relaxed">{consult.description}</p>
@@ -117,7 +116,7 @@ export default function Services() {
                 <Link
                   to="/book?service=consult"
                   className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90"
-                  style={{ background: consult.color }}
+                  style={{ background: '#B58A90' }}
                 >
                   Book Free Consult →
                 </Link>
@@ -145,11 +144,11 @@ export default function Services() {
             <AnimatedSection key={key} delay={i * 0.05}>
               <div
                 className="rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
-                style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
+                style={{ borderColor: accentColor + '30', background: '#FFFFFF' }}
               >
                 <div className="h-3" style={{ background: color }} />
                 {serviceImage && (
-                  <div className="h-56 sm:h-64 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${color}66, ${accentColor}33)` }}>
+                  <div className="h-56 sm:h-64 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${color}99, ${accentColor}22)` }}>
                     <img
                       src={serviceImage}
                       alt={`${service.label} service preview`}
@@ -159,7 +158,7 @@ export default function Services() {
                     <div className="absolute inset-0 opacity-20" style={{ background: accentColor }} />
                   </div>
                 )}
-                <div className="p-7 sm:p-9">
+                <div className="p-7 sm:p-9" style={{ background: color + '55' }}>
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                     <div>
                       <div className="flex items-center gap-3 mb-1">
@@ -170,7 +169,7 @@ export default function Services() {
                         <p className="font-logo text-xl ml-6" style={{ color: accentColor }}>{service.sublabel}</p>
                       )}
                     </div>
-                    <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3" style={{ background: color + '55' }}>
+                    <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFF99', borderColor: accentColor + '22' }}>
                       <p className="font-heading text-xl font-semibold text-charcoal">{priceDisplay}</p>
                       <p className="font-body text-sm text-charcoal/75 font-light">
                         {minHrs}–{Math.round(durationHrs) + 1} hrs typical
@@ -188,7 +187,7 @@ export default function Services() {
                         <span
                           key={task}
                           className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
-                          style={{ borderColor: accentColor + '30', background: color + '30' }}
+                          style={{ borderColor: accentColor + '30', background: '#FFFFFF99' }}
                         >
                           {task}
                         </span>
@@ -220,7 +219,7 @@ export default function Services() {
         <div className="max-w-5xl mx-auto px-6 pb-16">
           <div
             className="rounded-[2rem] p-6 text-center border"
-            style={{ background: '#FFFFFF', borderColor: '#DDE8D5' }}
+            style={{ background: '#FFFFFF', borderColor: '#FEC5BB' }}
           >
             <p className="font-body text-base text-charcoal font-light leading-relaxed">
               <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
