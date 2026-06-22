@@ -10,8 +10,8 @@ export default function MashaSection() {
           <AnimatedSection>
             <div className="relative">
               <img
-                src="https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/f14ea1641_generated_image.png"
-                alt="Masha helping naturally in a warm home"
+                src="/images/mashaheadshot.jpg"
+                alt="Masha, founder of Clean Slate Club"
                 className="relative w-full rounded-[2.5rem] object-cover aspect-[3/4] shadow-2xl shadow-mauve/10 border"
                 style={{ borderColor: '#B58A9028' }} />
               
