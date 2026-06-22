@@ -4,33 +4,33 @@ import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-// Display order for services page (excludes consult — shown separately as hero CTA)
+// Display order: least expensive services to most expensive.
 const SERVICE_ORDER = [
   'errands',
   'senior_support',
   'mothers_helper',
-  'meal_prep',
-  'home_reset',
   'organization',
+  'home_reset',
+  'meal_prep',
 ];
 
-// Clean Slate Club brand palette: soft sage, linen, blush, peach, and coral.
+// Clean Slate Club core brand palette from tailwind.config.js.
 const COLOR_OVERRIDES = {
-  errands: '#D8E2DC',
-  senior_support: '#ECE4DB',
-  mothers_helper: '#FFE5D9',
-  meal_prep: '#FFD7BA',
-  home_reset: '#FEC5BB',
-  organization: '#FCD5CE',
+  errands: '#CAE7B9',
+  senior_support: '#DFE3A2',
+  mothers_helper: '#EFB988',
+  organization: '#7E7F9A',
+  home_reset: '#EB9486',
+  meal_prep: '#F3DE8A',
 };
 
 const ACCENT_COLOR_OVERRIDES = {
-  errands: '#7F8F86',
-  senior_support: '#9A877A',
-  mothers_helper: '#C9896A',
-  meal_prep: '#C77F5D',
-  home_reset: '#B9655D',
-  organization: '#B58A90',
+  errands: '#7E7F9A',
+  senior_support: '#8B93A7',
+  mothers_helper: '#B58A90',
+  organization: '#7E7F9A',
+  home_reset: '#EB9486',
+  meal_prep: '#B58A90',
 };
 
 const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
@@ -56,15 +56,15 @@ export default function Services() {
   }, []);
 
   return (
-    <main className="min-h-screen" style={{ background: '#F8EDEB' }}>
+    <main className="min-h-screen" style={{ background: '#FDFCFB' }}>
       <PageHero
         eyebrow="Services"
         title="Pick Your Backup."
         script="Start where it feels heaviest."
         description="Choose the support you need, build a visit around real life, and get an estimate before anything is finalized."
-        background="#FAE1DD"
-        waveFill="#F8EDEB"
-        scriptColor="#B58A90"
+        background="#F5EAE8"
+        waveFill="#FDFCFB"
+        scriptColor="#EB9486"
       />
 
       {/* Free Consult Banner — only renders if consult config exists */}
@@ -73,7 +73,7 @@ export default function Services() {
           <AnimatedSection>
             <div
               className="rounded-[2rem] border p-7 sm:p-9 flex flex-col gap-6 shadow-sm"
-              style={{ borderColor: '#FEC5BB', background: '#FFFFFF' }}
+              style={{ borderColor: '#B58A9035', background: '#FFFFFF' }}
             >
               <div className="flex-1">
                 <p className="font-body text-xs tracking-[0.22em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Not sure where to begin?</p>
@@ -81,7 +81,7 @@ export default function Services() {
                   <span className="w-3 h-3 rounded-full shrink-0" style={{ background: '#B58A90' }} />
                   <h2 className="font-heading text-2xl font-semibold text-charcoal">{consult.label}</h2>
                 </div>
-                <p className="font-logo text-xl ml-6 mb-3" style={{ color: '#B58A90' }}>
+                <p className="font-logo text-xl ml-6 mb-3" style={{ color: '#EB9486' }}>
                   A free 15-minute call to figure it out together.
                 </p>
                 <p className="font-body text-base text-charcoal font-light leading-relaxed">{consult.description}</p>
@@ -92,7 +92,7 @@ export default function Services() {
                 )}
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="rounded-2xl px-4 py-3 border" style={{ background: '#F8EDEB', borderColor: '#FEC5BB' }}>
+                <div className="rounded-2xl px-4 py-3 border" style={{ background: '#B58A9014', borderColor: '#B58A9035' }}>
                   <p className="font-heading text-xl font-semibold text-charcoal">Free</p>
                   <p className="font-body text-sm text-charcoal/75 font-light">15 min call</p>
                 </div>
@@ -126,21 +126,21 @@ export default function Services() {
             <AnimatedSection key={key} delay={i * 0.05}>
               <div
                 className="rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
-                style={{ borderColor: accentColor + '30', background: '#FFFFFF' }}
+                style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
               >
                 <div className="h-3" style={{ background: color }} />
-                <div className="p-7 sm:p-9" style={{ background: color + '55' }}>
+                <div className="p-7 sm:p-9" style={{ background: color + '24' }}>
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <span className="w-3 h-3 rounded-full shrink-0" style={{ background: accentColor }} />
+                        <span className="w-3 h-3 rounded-full shrink-0" style={{ background: color }} />
                         <h2 className="font-heading text-2xl md:text-3xl font-semibold text-charcoal">{service.label}</h2>
                       </div>
                       {service.sublabel && (
                         <p className="font-logo text-xl ml-6" style={{ color: accentColor }}>{service.sublabel}</p>
                       )}
                     </div>
-                    <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFF99', borderColor: accentColor + '22' }}>
+                    <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFFCC', borderColor: accentColor + '24' }}>
                       <p className="font-heading text-xl font-semibold text-charcoal">{priceDisplay}</p>
                       <p className="font-body text-sm text-charcoal/75 font-light">
                         {minHrs}–{Math.round(durationHrs) + 1} hrs typical
@@ -158,7 +158,7 @@ export default function Services() {
                         <span
                           key={task}
                           className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
-                          style={{ borderColor: accentColor + '30', background: '#FFFFFF99' }}
+                          style={{ borderColor: accentColor + '30', background: '#FFFFFFCC' }}
                         >
                           {task}
                         </span>
@@ -190,7 +190,7 @@ export default function Services() {
         <div className="max-w-5xl mx-auto px-6 pb-16">
           <div
             className="rounded-[2rem] p-6 text-center border"
-            style={{ background: '#FFFFFF', borderColor: '#FEC5BB' }}
+            style={{ background: '#FFFFFF', borderColor: '#B58A9035' }}
           >
             <p className="font-body text-base text-charcoal font-light leading-relaxed">
               <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
