@@ -82,11 +82,9 @@ export default function Services() {
 
               <div className="p-7 sm:p-9">
                 <p className="font-body text-base text-charcoal font-light leading-relaxed mb-5">{consult.description}</p>
-                {consult.scheduleNote && (
-                  <p className="font-body text-sm text-charcoal/70 font-light mb-7 italic">
-                    ⏰ {consult.scheduleNote}
-                  </p>
-                )}
+                <p className="font-body text-sm text-charcoal/70 font-light mb-7 italic">
+                  Bring the messy version. We’ll talk through what feels heaviest, what your home actually needs, and whether a standard service or custom visit makes the most sense.
+                </p>
                 <Link
                   to="/book?service=consult"
                   className={CTA_CLASS}
