@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { HeartHandshake, Home, ShieldCheck, Sparkles } from 'lucide-react';
+import { HeartHandshake, Home, ShieldCheck } from 'lucide-react';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
 import WaveDivider from '@/components/shared/WaveDivider';
@@ -25,19 +25,19 @@ const STORY_BEATS = [
   {
     icon: Home,
     title: 'Built from real life',
-    text: 'Clean Slate Club did not come from a fantasy version of home where everything is folded, labeled, stocked, and handled before anyone asks.',
+    text: 'Clean Slate Club did not come from a fantasy version of home where everything is labeled, folded, stocked, and handled before anyone asks.',
     color: '#CAE7B9',
   },
   {
     icon: HeartHandshake,
     title: 'Made for invisible labor',
-    text: 'It was built for the person holding the calendar, the meals, the laundry, the errands, the small details, and the emotional weight of keeping a household moving.',
+    text: 'For the calendar keeper, snack manager, laundry tracker, errand runner, emotional support system, and backup plan for everyone else.',
     color: '#F3DE8A',
   },
   {
     icon: ShieldCheck,
-    title: 'Warm, but boundaried',
-    text: 'The work is personal because home is personal. That is why support has to be practical, respectful, safe, and honest about what can happen in one visit.',
+    title: 'Designed for the pileup',
+    text: 'The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.',
     color: '#EB9486',
   },
 ];
@@ -74,9 +74,9 @@ export default function About() {
     <main className="min-h-screen" style={{ background: ABOUT_BG }}>
       <PageHero
         eyebrow="About Clean Slate Club"
-        title="The human side of household support."
-        script="Meet Masha."
-        description="A modern support service for the homes carrying too much, built with warmth, boundaries, and a deep respect for real life."
+        title="For the homes carrying too much."
+        script="And the people holding it all."
+        description="Practical support for real homes, real routines, and the seasons when keeping up starts to feel like too much."
         waveFill={ABOUT_BG}
         scriptColor="#EB9486"
       />
@@ -85,8 +85,6 @@ export default function About() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-18 items-center">
           <AnimatedSection>
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              <div className="absolute -left-5 -top-5 h-28 w-28 rounded-full" style={{ background: '#F3DE8A55' }} />
-              <div className="absolute -right-5 bottom-10 h-36 w-36 rounded-full" style={{ background: '#CAE7B955' }} />
               <div className="relative rounded-[2.25rem] border bg-white p-3 shadow-2xl" style={{ borderColor: '#B58A9028', boxShadow: '0 24px 70px #8B93A725' }}>
                 <img
                   src="/images/mashaheadshot.jpg"
@@ -102,7 +100,7 @@ export default function About() {
                 viewport={{ once: true }}
               >
                 <p className="font-logo text-2xl leading-tight" style={{ color: '#EB9486' }}>You do not need perfect.</p>
-                <p className="font-heading text-lg font-semibold text-charcoal leading-snug">You need backup that understands the pileup.</p>
+                <p className="font-heading text-lg font-semibold text-charcoal leading-snug">You need backup.</p>
               </motion.div>
             </div>
           </AnimatedSection>
@@ -112,17 +110,23 @@ export default function About() {
               <Dots className="mb-5" />
               <p className="font-body text-[11px] uppercase tracking-[0.24em] text-charcoal/45 font-light mb-3">The woman behind the brand</p>
               <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3 leading-tight">Meet Masha.</h2>
-              <p className="font-logo text-2xl md:text-3xl leading-tight mb-7" style={{ color: '#EB9486' }}>She understands the pileup because she has lived it.</p>
+              <p className="font-logo text-2xl md:text-3xl leading-tight mb-7" style={{ color: '#EB9486' }}>She gets it.</p>
 
               <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
                 <p>
-                  Clean Slate Club grew from the kind of overwhelm that can look ordinary from the outside. A home that is not falling apart, but never feels fully caught up. A list that keeps regenerating. A nervous system that cannot relax because the next thing is always waiting.
+                  Masha built Clean Slate Club around a simple truth: most people do not need perfect homes. They need relief.
                 </p>
                 <p>
-                  As a stay-at-home mom and later a single mom, Masha understood how much invisible labor goes into keeping a household moving. She also understood how vulnerable it can feel to say, “I need help,” when what you really mean is, “I do not know where to begin.”
+                  She knows what it feels like to be the one holding the calendar, the meals, the laundry, the errands, the details, and the emotional weight of making sure nothing falls apart. She has lived the kind of overwhelm that does not always look dramatic from the outside, but quietly takes up every inch of your day.
                 </p>
                 <p>
-                  This service exists to meet people there with practical help, clear priorities, and no performance required.
+                  As a stay-at-home mom and later a single mom, Masha understood how much invisible labor goes into keeping a household moving. She also understood how hard it can be to ask for help when the thing you need help with is "everything."
+                </p>
+                <p>
+                  Clean Slate Club exists for that exact place. The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.
+                </p>
+                <p>
+                  What started with Masha's own understanding is becoming a new kind of household support: warm, practical, capable, and never judgmental.
                 </p>
               </div>
             </div>
@@ -130,13 +134,15 @@ export default function About() {
         </div>
       </section>
 
-      <section className="px-5 sm:px-6 lg:px-12 py-14 lg:py-20" style={{ background: STORY_BG }}>
+      <WaveDivider fill={STORY_BG} />
+
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: STORY_BG }}>
         <div className="max-w-7xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10 lg:mb-14">
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>Why it feels different</p>
             <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">It is not just help. It is relief with a plan.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
-              Clean Slate Club is not trying to make homes look perfect. It is designed to make real homes feel more manageable.
+              The point is not perfection. It is helping the home feel more manageable, one useful visit at a time.
             </p>
           </AnimatedSection>
 
@@ -158,13 +164,13 @@ export default function About() {
 
       <WaveDivider fill={STANDARD_BG} />
 
-      <section className="px-5 sm:px-6 lg:px-12 py-12 lg:py-18" style={{ background: STANDARD_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-12 lg:pt-12 lg:pb-18" style={{ background: STANDARD_BG }}>
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10">
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The standard</p>
             <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">Warm help still needs clear boundaries.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
-              The work is personal because home is personal. That is why Clean Slate Club is designed around trust, communication, safety, and realistic expectations from the beginning.
+              Because this work happens inside real homes, the experience is built around trust, communication, safety, and realistic expectations from the beginning.
             </p>
           </AnimatedSection>
 
@@ -178,17 +184,17 @@ export default function About() {
 
       <WaveDivider fill={STORY_BG} flip />
 
-      <section className="px-5 sm:px-6 lg:px-12 py-14 lg:py-20" style={{ background: STORY_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: STORY_BG }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
             <div className="rounded-[2rem] border bg-white p-7 lg:p-10 lg:sticky lg:top-28" style={{ borderColor: '#33333318', boxShadow: '0 18px 45px #8B93A712' }}>
               <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The approach</p>
               <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-5">Not a one-size-fits-all checklist.</h2>
               <p className="font-body text-sm font-light leading-relaxed mb-6" style={{ color: '#333333b3' }}>
-                The right support depends on the home, the people in it, the time available, the supplies on hand, and what would make the biggest difference that day.
+                Every visit starts with the same question: what would make the biggest difference today?
               </p>
               <p className="font-body text-sm font-light leading-relaxed" style={{ color: '#333333b3' }}>
-                That is why Clean Slate Club works best when the service is practical, flexible, and honest about what can realistically happen in one visit.
+                From there, the plan stays flexible. Time, supplies, energy, priorities, and household rules all shape what gets handled first.
               </p>
             </div>
           </AnimatedSection>
@@ -211,7 +217,7 @@ export default function About() {
       <section className="px-5 sm:px-6 lg:px-12 py-14 lg:py-20" style={{ background: GROWTH_BG }}>
         <div className="max-w-5xl mx-auto text-center">
           <AnimatedSection>
-            <Sparkles className="mx-auto mb-5 h-8 w-8" style={{ color: '#B58A90' }} />
+            <Dots className="justify-center mb-5" />
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>What comes next</p>
             <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-5">Built personally. Designed to grow carefully.</h2>
             <p className="font-body text-base font-light leading-relaxed max-w-3xl mx-auto mb-8" style={{ color: '#333333b3' }}>
