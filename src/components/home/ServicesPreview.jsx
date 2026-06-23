@@ -47,13 +47,16 @@ const IconQuestion = () =>
     <path d="M16 23h.01" strokeWidth="2" />
   </svg>;
 
+const CARD_TINT = '1F';
+const SECTION_BACKGROUND = '#CAE7B91F';
+
 const categories = [{
   iconKey: 'home',
   name: 'Home Reset',
   tagline: 'For the house that got away from you.',
   desc: 'Laundry, dishes, toy pickup, clutter clearing, beds, surfaces — the reset that helps you breathe again.',
   color: '#EB9486',
-  bg: '#EB94861F',
+  bg: `#EB9486${CARD_TINT}`,
   glow: '#EFB988',
   img: '/images/home-reset-dishes.png.png'
 },
@@ -63,7 +66,7 @@ const categories = [{
   tagline: 'The invisible load, handled.',
   desc: 'School prep, activity bags, household planning, organizing the chaos behind the calendar.',
   color: '#EFB988',
-  bg: '#EFB98824',
+  bg: `#EFB988${CARD_TINT}`,
   glow: '#CAE7B9',
   img: '/images/errands.jpg'
 },
@@ -73,7 +76,7 @@ const categories = [{
   tagline: 'For all the things you keep putting off.',
   desc: 'Returns, pickups, drop-offs, grocery runs, pharmacy stops, appointments, and little life logistics.',
   color: '#97A7B3',
-  bg: '#97A7B324',
+  bg: `#97A7B3${CARD_TINT}`,
   glow: '#F3DE8A',
   img: '/images/errands2.jpg'
 },
@@ -83,7 +86,7 @@ const categories = [{
   tagline: 'Gentle, dignified home help.',
   desc: 'Caring household support for aging parents and seniors who want independence with a little backup.',
   color: '#B58A90',
-  bg: '#B58A9024',
+  bg: `#B58A90${CARD_TINT}`,
   glow: '#DFE3A2',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/11517496b_generated_image.png'
 },
@@ -93,7 +96,7 @@ const categories = [{
   tagline: 'Nourishment made easier.',
   desc: "Simple meal prep, kitchen resets, grocery organization — so dinnertime isn't another source of stress.",
   color: '#7E7F9A',
-  bg: '#7E7F9A1F',
+  bg: `#7E7F9A${CARD_TINT}`,
   glow: '#F3DE8A',
   img: 'https://media.base44.com/images/public/6a128bd55db6131a3e057ca8/40bbd83f8_generated_image.png'
 }];
@@ -103,7 +106,7 @@ const customSupport = {
   tagline: 'Not sure what you need?',
   desc: "Tell us what's going on and we'll build the right support for your home.",
   color: '#CAE7B9',
-  bg: '#CAE7B940',
+  bg: `#CAE7B9${CARD_TINT}`,
   img: '/images/laundry-mountain-reset.png',
   fit: ['Mixed household tasks', 'Oddball errands', 'Overwhelmed starts']
 };
@@ -112,7 +115,7 @@ const iconMap = { home: IconHome, family: IconFamily, bag: IconBag, heart: IconH
 
 export default function ServicesPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F7FAF4' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: SECTION_BACKGROUND }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-14">
           <div className="flex items-center gap-2 mb-4">
