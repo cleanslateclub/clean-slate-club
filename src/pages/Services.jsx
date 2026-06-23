@@ -102,7 +102,7 @@ export default function Services() {
   const consult = SERVICE_CONFIG['consult'] ?? null;
 
   return (
-    <main className="min-h-screen overflow-hidden" style={{ background: '#FDFCFB' }}>
+    <main className="min-h-screen overflow-hidden" style={{ background: SOFT_GREEN_TINT }}>
       <PageHero
         eyebrow="Services"
         title="Pick Your Backup."
@@ -146,10 +146,10 @@ export default function Services() {
         )}
       </section>
 
-      <WaveDivider fill="#FDFCFB" flip />
+      <WaveDivider fill={SOFT_GREEN_TINT} flip />
 
       {/* Service Cards */}
-      <section style={{ background: '#FDFCFB' }}>
+      <section style={{ background: SOFT_GREEN_TINT }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-8 space-y-6">
           {SERVICE_ORDER.map((key, i) => {
             const service = SERVICE_CONFIG[key];
