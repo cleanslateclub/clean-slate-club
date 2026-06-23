@@ -3,7 +3,7 @@ import HeroSection from '../components/home/HeroSection';
 import MashaSection from '../components/home/MashaSection';
 import ServicesPreview from '../components/home/ServicesPreview';
 import TrustSection from '../components/home/TrustSection';
-import ConsultSection from '../components/home/ConsultSection';
+import ConsultSection, { HeavyManifestoSection, HeavySituationsSection } from '../components/home/ConsultSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
 import MembershipPreview from '../components/home/MembershipPreview';
 import ServiceAreaSection from '../components/home/ServiceAreaSection';
@@ -19,15 +19,19 @@ export default function Home() {
       <WaveDivider fill="#FDF5E6" flip />
       <ConsultSection />
       <WaveDivider fill="#F8E8E2" />
-      <MashaSection />
-      <WaveDivider fill="#F1ECEF" flip />
+      <HeavyManifestoSection />
+      <WaveDivider fill="#F5E6E9" flip />
+      <HeavySituationsSection />
+      <WaveDivider fill="#F1ECEF" />
       <TrustSection />
-      <WaveDivider fill="#EEF3F5" />
-      <TestimonialsSection />
-      <WaveDivider fill="#EAF1EC" flip />
-      <ServiceAreaSection />
-      <WaveDivider fill="#F5E6E9" />
+      <WaveDivider fill="#EEF3F5" flip />
+      <MashaSection />
+      <WaveDivider fill="#EAF1EC" />
       <MembershipPreview />
+      <WaveDivider fill="#E8EEE9" flip />
+      <ServiceAreaSection />
+      <WaveDivider fill="#E4EBEF" />
+      <TestimonialsSection />
       <WaveDivider fill="#F1F1F1" flip />
       <FAQSection />
     </main>
