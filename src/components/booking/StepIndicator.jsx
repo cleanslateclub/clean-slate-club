@@ -1,16 +1,16 @@
 import React from 'react';
 
 const ALL_STEPS = ['Service', 'Details', 'Add-Ons', 'Schedule', 'Confirm'];
-const CONSULT_STEPS = ['Service', 'Details', 'Confirm'];
+const CONSULT_STEPS = ['Service', 'Details'];
 
-// Chart colors 1–5 mapped to each step
-const STEP_COLORS = ['#EB9486', '#CAE7B9', '#F3DE8A', '#EFB988', '#B58A90'];
+// Lightest to darkest brand flow.
+const STEP_COLORS = ['#DFE3A2', '#CAE7B9', '#F3DE8A', '#EFB988', '#EB9486'];
 
 export default function StepIndicator({ currentStep, totalSteps = 5 }) {
-  const steps = totalSteps === 3 ? CONSULT_STEPS : ALL_STEPS;
+  const steps = totalSteps === 2 ? CONSULT_STEPS : ALL_STEPS;
 
   return (
-    <div className="flex items-center justify-center gap-0 mb-10">
+    <div className="flex items-center justify-center gap-0 mb-0">
       {steps.map((label, i) => {
         const stepNum = i + 1;
         const done = currentStep > stepNum;
@@ -23,17 +23,17 @@ export default function StepIndicator({ currentStep, totalSteps = 5 }) {
                 className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-heading font-semibold transition-all duration-300"
                 style={
                   done
-                    ? { background: color, color: '#fff' }
+                    ? { background: color, color: '#333333' }
                     : active
-                    ? { background: color, color: '#fff', boxShadow: `0 0 0 4px ${color}30` }
-                    : { background: '#e8e8e4', color: '#33333355' }
+                    ? { background: color, color: '#333333', boxShadow: `0 0 0 4px ${color}35` }
+                    : { background: '#f1f1f1', color: '#33333355' }
                 }
               >
                 {done ? '✓' : stepNum}
               </div>
               <span
                 className="text-[10px] mt-1 font-body font-light whitespace-nowrap"
-                style={{ color: active ? color : '#333333aa' }}
+                style={{ color: active ? '#333333' : '#333333aa' }}
               >
                 {label}
               </span>
