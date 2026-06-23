@@ -100,7 +100,7 @@ const sections = [
     body: 'For questions about this Privacy Policy or how your data is handled, contact us at:',
     list: [
       'Email: cleanslateclubpa@gmail.com',
-      'Phone/Text: (206) 825-4061',
+      'Phone/Text: (215) 500-3758',
       'Service area: Montgomery County, PA'
     ]
   }
