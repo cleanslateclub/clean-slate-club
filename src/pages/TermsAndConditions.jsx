@@ -101,7 +101,7 @@ const sections = [
     body: 'Questions about these terms? Reach us at:',
     list: [
       'Email: cleanslateclubpa@gmail.com',
-      'Phone/Text: (206) 825-4061',
+      'Phone/Text: (215) 500-3758',
       'Service area: Montgomery County, PA'
     ]
   }
