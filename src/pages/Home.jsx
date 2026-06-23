@@ -10,15 +10,15 @@ import FAQSection from '../components/home/FAQSection';
 import WaveDivider from '../components/shared/WaveDivider';
 
 const SECTION_BACKGROUNDS = {
-  services: '#F9FCF7',
-  consult: '#FDF5E6',
-  manifesto: '#F8E8E2',
-  situations: '#F5E6E9',
-  trust: '#F1ECEF',
-  membership: '#F9FCF7',
-  serviceArea: '#F1F2F4',
+  services: '#FDFCFB',
+  consult: '#F7F9F3',
+  manifesto: '#F8F6EA',
+  situations: '#F6EEE9',
+  trust: '#F2E8EA',
+  membership: '#EEE7EA',
+  serviceArea: '#EAECEF',
   testimonials: '#E4EBEF',
-  faq: '#F1F1F1',
+  faq: '#DDE5EA',
 };
 
 export default function Home() {
