@@ -2,25 +2,74 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 
-const IconTabs = () => (
+const IconMentalTabs = () => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-    <path d="M8 7h16v18H8z" />
-    <path d="M12 12h8M12 16h8M12 20h5" />
-    <path d="M22 7l2 3M10 7l-2 3" />
+    <path d="M8 7h12l4 4v14H8z" />
+    <path d="M20 7v5h5" />
+    <path d="M12 14h8M12 18h8M12 22h4" />
+    <path d="M6 11H4M6 17H4M6 23H4" />
   </svg>
 );
 
-const IconHome = () => (
+const IconADHD = () => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-    <path d="M5 14L16 5l11 9v13H5V14z" />
-    <path d="M11 21h10M11 25h7" />
+    <path d="M9 20c-2-1.5-3-3.7-3-6.2A7.8 7.8 0 0 1 14 6h4a7.8 7.8 0 0 1 8 7.8c0 2.5-1 4.7-3 6.2" />
+    <path d="M12 21h8" />
+    <path d="M13 25h6" />
+    <path d="M12 12l3 3-3 3M20 12l-3 3 3 3" />
   </svg>
 );
 
-const IconCare = () => (
+const IconRecovery = () => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
     <path d="M16 27s-9-5.5-9-13a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 7.5-9 13-9 13z" />
-    <path d="M12 16h8" />
+    <path d="M16 12v7M12.5 15.5h7" />
+  </svg>
+);
+
+const IconCaregiving = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <circle cx="12" cy="10" r="3" />
+    <circle cx="21" cy="12" r="3" />
+    <path d="M6 25c.8-4 3-7 6-7s5.2 3 6 7" />
+    <path d="M17 25c.5-3 2-5 4-5 2.3 0 4.2 2.4 5 5" />
+    <path d="M15 17l3 3" />
+  </svg>
+);
+
+const IconBaby = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <path d="M8 15a8 8 0 0 1 16 0v4a8 8 0 0 1-16 0z" />
+    <path d="M12 15h.01M20 15h.01" />
+    <path d="M13 21c2 1.4 4 1.4 6 0" />
+    <path d="M16 7c0-2 1-3 3-3" />
+  </svg>
+);
+
+const IconErrands = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <path d="M9 9h14v17H9z" />
+    <path d="M12 9a4 4 0 0 1 8 0" />
+    <path d="M13 15h6M13 19h5" />
+    <path d="M6 17l3-3M6 17l3 3" />
+  </svg>
+);
+
+const IconRoom = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <path d="M6 26V8h20v18" />
+    <path d="M10 26v-7h12v7" />
+    <path d="M10 12h12" />
+    <path d="M12 16h4M19 16h1" />
+  </svg>
+);
+
+const IconMeals = () => (
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <path d="M9 5v10M13 5v10M11 15v12" />
+    <path d="M23 5v22" />
+    <path d="M20 5c0 5 6 5 6 0" />
+    <path d="M7 22h8" />
   </svg>
 );
 
@@ -39,7 +88,7 @@ const painPoints = [
     prompt: 'Click if your brain is carrying the household tabs.',
     intro: 'The appointments, lunches, returns, laundry, groceries, medications, school notes, pet food, and tiny invisible tasks no one else seems to track.',
     color: '#DFE3A2',
-    icon: IconTabs,
+    icon: IconMentalTabs,
     helps: ['Create a priority list for the visit', 'Move laundry, dishes, counters, and visible reset tasks forward', 'Handle pickup orders, returns, errands, and small household loose ends', 'Turn the mental pile into a practical plan for the day'],
   },
   {
@@ -47,7 +96,7 @@ const painPoints = [
     prompt: 'Click if the task is simple, but starting is not.',
     intro: 'The room you keep avoiding because every pile requires a decision. The reset you want, but cannot start because your brain is already over capacity.',
     color: '#CAE7B9',
-    icon: IconHome,
+    icon: IconADHD,
     helps: ['Break the space into small, doable zones', 'Sort obvious categories without overcomplicating the project', 'Reset the highest-impact areas first', 'Help choose what to keep moving now and what can wait'],
   },
   {
@@ -55,7 +104,7 @@ const painPoints = [
     prompt: 'Click if life is taking more than usual right now.',
     intro: 'New baby, surgery, burnout, divorce, loss, work stress, or a stretch of life where basic household support would change the whole day.',
     color: '#F3DE8A',
-    icon: IconCare,
+    icon: IconRecovery,
     helps: ['Keep dishes, laundry, and kitchen basics from piling up', 'Prepare simple food support or reset the fridge/pantry', 'Run errands or pick up essentials', 'Lighten the home load while your energy is needed elsewhere'],
   },
   {
@@ -63,7 +112,7 @@ const painPoints = [
     prompt: 'Click if you are supporting another household too.',
     intro: 'When your own home needs care, but so does a parent, grandparent, neighbor, or loved one who needs check-ins, errands, meals, or practical help.',
     color: '#EFB988',
-    icon: IconCare,
+    icon: IconCaregiving,
     helps: ['Companion-style check-ins within non-medical scope', 'Errands, grocery pickup, appointment support, and household resets', 'Light meal prep and kitchen support', 'Help with the practical tasks that make caregiving feel less scattered'],
   },
   {
@@ -71,7 +120,7 @@ const painPoints = [
     prompt: 'Click if the house did not pause when the baby arrived.',
     intro: 'Bottles, laundry, snacks, dishes, older kids, recovery, sleep deprivation, and the strange pressure to keep the home moving while you are still healing.',
     color: '#EB9486',
-    icon: IconHome,
+    icon: IconBaby,
     helps: ['Baby and toddler support within scope', 'Children’s laundry, lunch packing, and playroom resets', 'Kitchen reset, snack prep, and simple meal support', 'Recovery-focused household help without judgment'],
   },
   {
@@ -79,7 +128,7 @@ const painPoints = [
     prompt: 'Click if the running-around is eating the whole week.',
     intro: 'The returns, pickups, drop-offs, grocery order, post office, pharmacy, school item, and appointment logistics that seem small until they own your day.',
     color: '#B58A90',
-    icon: IconTabs,
+    icon: IconErrands,
     helps: ['Pickup orders and returns', 'Grocery support and supply runs with provided funds', 'Appointment and activity transportation when approved', 'A cleaner plan for what has to happen first'],
   },
   {
@@ -87,7 +136,7 @@ const painPoints = [
     prompt: 'Click if one space is quietly stressing you out.',
     intro: 'The bedroom corner, playroom, laundry area, kitchen counter, closet floor, or spare room that has become a holding zone for everything unfinished.',
     color: '#97A7B3',
-    icon: IconHome,
+    icon: IconRoom,
     helps: ['Room reset and light organizing', 'Sort obvious piles into simple categories', 'Clear surfaces and make the space usable again', 'Identify what needs bins, labels, hangers, or a future deeper project'],
   },
   {
@@ -95,33 +144,30 @@ const painPoints = [
     prompt: 'Click if food decisions are draining you.',
     intro: 'The lunch packing, snacks, fridge chaos, dinner ingredients, grocery list, and kitchen reset that decide whether the rest of the day feels manageable.',
     color: '#8B93A7',
-    icon: IconCare,
+    icon: IconMeals,
     helps: ['Lunch packing and snack prep', 'Simple meal prep and ingredient organization', 'Fridge refresh and kitchen reset', 'Grocery pickup or ingredient run with provided funds'],
   },
 ];
 
-function PainPointCard({ point, open, onToggle, index }) {
+function PainPointCard({ point, open, onToggle }) {
   const PointIcon = point.icon;
   return (
     <div
       className="rounded-[1.75rem] border overflow-hidden transition-all duration-500 hover:-translate-y-1"
       style={{
-        background: open ? '#FFFFFF' : `linear-gradient(135deg, #FFFFFF 0%, ${point.color}33 100%)`,
+        background: open ? '#FFFFFF' : `${point.color}2E`,
         borderColor: open ? `${point.color}AA` : '#33333314',
         boxShadow: open ? '0 18px 45px #8B93A71A' : '0 8px 24px #8B93A70D',
       }}
     >
       <button type="button" onClick={onToggle} className="w-full text-left p-5 flex gap-4 items-start">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border" style={{ background: `${point.color}45`, borderColor: `${point.color}BB`, color: '#333333' }}>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border" style={{ background: '#FFFFFFB8', borderColor: `${point.color}BB`, color: '#333333' }}>
           <PointIcon />
         </div>
         <div className="flex-1">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-logo text-2xl leading-none" style={{ color: '#33333366' }}>{String(index + 1).padStart(2, '0')}</span>
-                <h3 className="font-heading text-lg font-semibold" style={{ color: '#333333' }}>{point.title}</h3>
-              </div>
+              <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{point.title}</h3>
               <p className="font-body text-xs font-light" style={{ color: '#33333399' }}>{point.prompt}</p>
             </div>
             <span className="font-logo text-3xl leading-none transition-transform duration-300" style={{ color: '#33333399', transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
@@ -153,10 +199,7 @@ export default function ConsultSection() {
   const [openIndex, setOpenIndex] = useState(-1);
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FDF5E6 0%, #FDFCFB 48%, #F1F1F1 100%)' }}>
-      <div className="absolute -top-24 -left-20 w-72 h-72 rounded-full blur-3xl opacity-40" style={{ background: '#CAE7B9' }} />
-      <div className="absolute top-80 -right-24 w-80 h-80 rounded-full blur-3xl opacity-35" style={{ background: '#EB9486' }} />
-
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center justify-center gap-2 mb-5 rounded-full border px-5 py-2 bg-white/70" style={{ borderColor: '#33333312', boxShadow: '0 8px 24px #8B93A70D' }}>
@@ -172,8 +215,7 @@ export default function ConsultSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white/95 p-7 md:p-10 lg:p-14 text-center relative overflow-hidden" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 12% 16%, #CAE7B933 0, transparent 30%), radial-gradient(circle at 88% 78%, #EB948626 0, transparent 34%)' }} />
+          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white p-7 md:p-10 lg:p-14 text-center relative overflow-hidden" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
             <div className="relative">
               <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
                 <LogoText /> was built for the households carrying more than a to-do list.
@@ -202,7 +244,6 @@ export default function ConsultSection() {
                 <AnimatedSection key={point.title} delay={0.03 * index}>
                   <PainPointCard
                     point={point}
-                    index={index}
                     open={openIndex === index}
                     onToggle={() => setOpenIndex(openIndex === index ? -1 : index)}
                   />
