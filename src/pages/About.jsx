@@ -25,7 +25,7 @@ const STORY_BEATS = [
   {
     icon: Home,
     title: 'Built from real life',
-    text: 'Clean Slate Club did not come from a fantasy version of home where everything is labeled, folded, stocked, and handled before anyone asks.',
+    text: 'Clean Slate Club did not come from a picture-perfect version of home where everything is labeled, folded, stocked, and magically handled.',
     color: '#CAE7B9',
   },
   {
