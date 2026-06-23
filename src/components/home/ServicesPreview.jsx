@@ -121,10 +121,10 @@ export default function ServicesPreview() {
             <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
             <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHAT WE OFFER</p>
           </div>
-          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
+          <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             This isn't a cleaning menu.
           </h2>
-          <p className="font-body text-base max-w-lg leading-relaxed font-light" style={{ color: '#333333b3' }}>
+          <p className="font-logo text-2xl md:text-3xl max-w-xl leading-tight" style={{ color: '#EB9486' }}>
             It's household support — organized around your life, your family, and what actually needs to happen.
           </p>
         </AnimatedSection>
