@@ -168,7 +168,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10">
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The standard</p>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">Warm help still needs clear boundaries.</h2>
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">Thoughtful support needs a steady standard.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
               Because this work happens inside real homes, the experience is built around trust, communication, safety, and realistic expectations from the beginning.
             </p>
