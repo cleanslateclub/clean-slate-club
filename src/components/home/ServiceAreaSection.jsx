@@ -38,7 +38,7 @@ export default function ServiceAreaSection() {
           <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             Montgomery County, PA
           </h2>
-          <p className="font-logo text-2xl md:text-3xl max-w-xl mx-auto leading-tight" style={{ color: '#EB9486' }}>
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>
             Thoughtful household support for local homes, busy families, and the neighborhoods we know best.
           </p>
         </AnimatedSection>
