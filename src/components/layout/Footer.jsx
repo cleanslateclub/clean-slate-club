@@ -8,11 +8,11 @@ const serviceAreas = [
   'Glenside', 'Oreland', 'Fort Washington'
 ];
 
-function TeamLoginLink() {
+function TeamLoginLink({ compact = false }) {
   return (
     <Link
       to="/staff-login"
-      className="mt-6 inline-flex items-center gap-3 rounded-full border px-4 py-3 font-body text-sm tracking-wide text-white/85 transition-all duration-300 hover:border-coral/70 hover:bg-white/5 hover:text-white"
+      className={`${compact ? 'mt-5' : 'mt-6'} inline-flex items-center gap-3 rounded-full border px-4 py-3 font-body text-sm tracking-wide text-white/85 transition-all duration-300 hover:border-coral/70 hover:bg-white/5 hover:text-white`}
       style={{ borderColor: 'rgba(255,255,255,0.22)' }}
     >
       <span className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: '#EB9486', color: '#FFFFFF' }}>
@@ -32,9 +32,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-charcoal text-cream relative overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28">
-        {/* CTA */}
-        <div className="text-center mb-20 pb-20 border-b border-white/10">
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-20 lg:py-28">
+        {/* CTA - desktop/tablet only */}
+        <div className="hidden md:block text-center mb-20 pb-20 border-b border-white/10">
           <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/70 mb-4 font-light">Ready when you are</p>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-white/90 mb-3 leading-tight">
             Ready to breathe again?
@@ -48,7 +48,22 @@ export default function Footer() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        {/* Mobile footer: compact essentials only */}
+        <div className="md:hidden text-center border-b border-white/10 pb-8 mb-8">
+          <div className="mb-4 flex items-baseline justify-center gap-1.5">
+            <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
+            <span className="font-logo text-xl text-coral" style={{ lineHeight: 1 }}>Club</span>
+          </div>
+          <p className="mx-auto max-w-xs font-body text-white/60 text-sm leading-relaxed font-light">
+            Household support, home resets, errands, meal prep, and family logistics for busy homes in Montgomery County, PA.
+          </p>
+          <div className="flex justify-center">
+            <TeamLoginLink compact />
+          </div>
+        </div>
+
+        {/* Desktop/tablet footer columns */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="mb-5 flex items-baseline gap-1.5">
               <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
@@ -106,18 +121,23 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-0 md:pt-8 md:border-t md:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="md:hidden text-center mb-1">
+            <p className="font-body text-xs text-white/45 font-light leading-relaxed">
+              Serving Flourtown, Wyndmoor, Chestnut Hill, Lafayette Hill, Plymouth Meeting, Ambler, Glenside, and nearby Montgomery County homes.
+            </p>
+          </div>
           <p className="font-body text-xs text-white/50 font-light">
             © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
           </p>
-          <div className="flex items-center gap-4 flex-wrap justify-center">
-            <Link to="/terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Terms & Conditions</Link>
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+            <Link to="/terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Terms</Link>
             <span className="text-white/20 text-xs">·</span>
-            <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Privacy Policy</Link>
+            <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Privacy</Link>
             <span className="text-white/20 text-xs">·</span>
             <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
-            <span className="text-white/20 text-xs">·</span>
-            <a href="https://cleanslateclub.co" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">cleanslateclubpa@gmail.com · (215) 500-3758 · cleanslateclub.co</a>
+            <span className="hidden sm:inline text-white/20 text-xs">·</span>
+            <a href="https://cleanslateclub.co" className="hidden sm:inline font-body text-xs text-white/40 hover:text-coral transition-colors font-light">cleanslateclubpa@gmail.com · (215) 500-3758 · cleanslateclub.co</a>
           </div>
         </div>
       </div>
