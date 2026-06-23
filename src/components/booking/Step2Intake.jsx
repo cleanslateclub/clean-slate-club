@@ -75,14 +75,14 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   };
 
   const toggleTask = (task) => {
-    const current = answers._tasks || [];
+    const current = (answers || {})._tasks || [];
     const updated = current.includes(task)
       ? current.filter(t => t !== task)
       : [...current, task];
     handleAnswer('_tasks', updated);
   };
 
-  const selectedTasks = answers._tasks || [];
+  const selectedTasks = (answers || {})._tasks || [];
 
   return (
     <div>
