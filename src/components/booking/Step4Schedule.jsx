@@ -35,7 +35,8 @@ function formatDisplayDate(date) {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-export default function Step4Schedule({ totalDuration, selectedDate, selectedTime, onSelect }) {
+export default function Step4Schedule({ totalDuration, selectedDate, selectedTime, setSelectedDate, setSelectedTime, onSelect }) {
+  const handleSelect = onSelect || ((date, time) => { if (date !== undefined) setSelectedDate(date); if (time !== undefined) setSelectedTime(time); });
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [blackoutDates, setBlackoutDates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +108,7 @@ export default function Step4Schedule({ totalDuration, selectedDate, selectedTim
               <button
                 key={dateStr}
                 disabled={!available}
-                onClick={() => onSelect(dateStr, null)}
+                onClick={() => handleSelect(dateStr, null)}
                 className={`flex flex-col items-center py-2.5 px-1 rounded-xl border text-center transition-all duration-200 ${
                   isSelected
                     ? 'bg-coral border-coral text-white'
@@ -139,7 +140,7 @@ export default function Step4Schedule({ totalDuration, selectedDate, selectedTim
               return (
                 <button
                   key={time}
-                  onClick={() => onSelect(selectedDate, time)}
+                  onClick={() => handleSelect(selectedDate, time)}
                   className={`px-4 py-2 rounded-full border text-xs font-body font-light transition-all duration-200 ${
                     selectedTime === time
                       ? 'bg-coral border-coral text-white'
