@@ -54,7 +54,7 @@ function FAQItem({ faq, color }) {
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#F1F1F1' }}>
+    <section id="faq" className="py-24 lg:py-32 relative overflow-hidden scroll-mt-24 lg:scroll-mt-28" style={{ background: '#DDE5EA' }}>
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
           <div className="flex items-center justify-center gap-2 mb-4">
