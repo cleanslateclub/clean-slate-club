@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
+import WaveDivider from '@/components/shared/WaveDivider';
 
 const VALUES = [
   'No shame spirals',
@@ -36,7 +37,6 @@ export default function About() {
         title="When home feels heavy"
         script="That’s where we come in."
         description="Practical support for real homes, real routines, and the seasons when keeping up starts to feel like too much."
-        background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
         waveFill="#FDFCFB"
         scriptColor="#EB9486"
       />
@@ -100,6 +100,8 @@ export default function About() {
         </div>
       </section>
 
+      <WaveDivider fill="#F1F1F1" />
+
       <section className="px-6 lg:px-12 py-10 lg:py-16" style={{ background: '#F1F1F1' }}>
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-12">
@@ -117,6 +119,8 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <WaveDivider fill="#FDFCFB" flip />
 
       <section className="max-w-6xl mx-auto px-6 lg:px-12 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-start">
@@ -145,6 +149,8 @@ export default function About() {
           </AnimatedSection>
         </div>
       </section>
+
+      <WaveDivider fill="#F8E8E2" />
 
       <section className="px-6 lg:px-12 py-16 lg:py-20" style={{ background: '#F8E8E2' }}>
         <div className="max-w-5xl mx-auto text-center">
