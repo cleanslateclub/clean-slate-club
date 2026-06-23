@@ -249,7 +249,7 @@ export function HeavyManifestoSection() {
             <div className="absolute inset-x-10 top-0 h-px" style={{ background: '#EB948640' }} />
             <LogoLockup />
             <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
-              was built for the households carrying more than a to-do list.
+              Was built for the households carrying more than a to-do list.
             </p>
             <div className="mx-auto mb-7 h-px w-28" style={{ background: '#33333322' }} />
             <div className="space-y-5 font-body text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto" style={{ color: '#333333b3' }}>
@@ -274,7 +274,10 @@ export function HeavySituationsSection() {
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-10 max-w-3xl mx-auto">
-          <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Does this sound like your house?</p>
+          <SectionLabel label="DOES THIS SOUND LIKE YOUR HOUSE?" />
+          <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
+            Find the support that fits your season.
+          </h2>
           <p className="font-logo text-3xl md:text-4xl leading-tight" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
         </AnimatedSection>
 
