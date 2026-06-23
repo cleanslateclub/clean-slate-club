@@ -24,20 +24,20 @@ const VALUES = [
 const STORY_BEATS = [
   {
     icon: Home,
-    title: 'Built from real life',
-    text: 'Clean Slate Club did not come from a picture-perfect version of home where everything is labeled, folded, stocked, and magically handled.',
+    title: 'We start with what is actually heavy',
+    text: 'Not a perfect checklist. Not a performance. We look at what is draining you, what is time-sensitive, and what would make today feel lighter.',
     color: '#CAE7B9',
   },
   {
     icon: HeartHandshake,
-    title: 'Made for invisible labor',
-    text: 'For the calendar keeper, snack manager, laundry tracker, errand runner, emotional support system, and backup plan for everyone else.',
+    title: 'We turn the pileup into a plan',
+    text: 'Instead of asking you to explain everything perfectly, we help narrow the mess into clear priorities for the time booked.',
     color: '#F3DE8A',
   },
   {
     icon: ShieldCheck,
-    title: 'Designed for the pileup',
-    text: 'The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.',
+    title: 'We leave the home easier to re-enter',
+    text: 'The goal is a satisfying ending: a reset space, a shorter list, and enough breathing room to pick life back up.',
     color: '#EB9486',
   },
 ];
@@ -139,10 +139,10 @@ export default function About() {
       <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: STORY_BG }}>
         <div className="max-w-7xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10 lg:mb-14">
-            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>Why it feels different</p>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">It is not just help. It is relief with a plan.</h2>
+            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The difference</p>
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">Why it feels different.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
-              The point is not perfection. It is helping the home feel more manageable, one useful visit at a time.
+              Because the support starts with the feeling underneath the mess, then turns it into a realistic plan for right now.
             </p>
           </AnimatedSection>
 
