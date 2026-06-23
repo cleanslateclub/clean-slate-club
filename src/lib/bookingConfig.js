@@ -26,7 +26,7 @@ export const SERVICE_CONFIG = {
       { id: "biggest_pain_point", label: "What's the biggest thing weighing on you?", type: "select", options: ["The whole house is a mess", "Laundry / dishes spiral", "I'm postpartum / depleted", "Caring for an aging parent", "Just need recurring help", "I'm not sure - everything?", "Something else"] },
       { id: "ideal_outcome", label: "What would feel like success after our visit?", type: "text", placeholder: "e.g. I want to walk into a peaceful house, feel like I have a plan..." },
       { id: "preferred_contact", label: "Best way to reach you for the consult call", type: "select", options: ["Phone call", "Text message", "Email", "Video call (Zoom/FaceTime)"] },
-      { id: "availability_notes", label: "When are you generally available for a quick call?", type: "text", placeholder: "e.g. weekday mornings, evenings after 7pm..." },
+      { id: "availability_notes", label: "When are you generally available for a quick call?", type: "text", placeholder: "e.g. Monday mornings, lunch breaks, or a few times that usually work..." },
       { id: "wish_list_notes", label: "Anything specific you'd love help with? (optional wish list)", type: "text", placeholder: "Dream big - we'll work with your budget and timeline..." }
     ]
   },
@@ -146,7 +146,8 @@ export const SERVICE_CONFIG = {
       { id: "emergency_contact", label: "Emergency contact name & phone", type: "text", placeholder: "Name, relationship, phone number" }
     ]
   },
-    mothers_helper: {
+
+  mothers_helper: {
     label: "Chaos Coordinator",
     sublabel: "Family Support",
     color: "#EFB988",
@@ -157,7 +158,7 @@ export const SERVICE_CONFIG = {
     minHours: 2,
     mileage_enabled: true,
     description: "Extra hands for busy family life, school logistics, recovery seasons, and keeping routines moving.",
-    disclaimer: "Clean Slate Club provides support-based household and family assistance. This is not a licensed nanny agency or medical childcare provider.",
+    disclaimer: "Clean Slate Club provides support-based household and family assistance. This is not a licensed nanny agency, medical care provider, or bathing/personal care service.",
     examples: [
       "School pickup + snack + homework supervision",
       "Toddler entertainment while you work from home",
@@ -181,12 +182,11 @@ export const SERVICE_CONFIG = {
     addons: [
       { id: "light_meal_prep", label: "Light Meal Prep for Kids", minutes: 30, price: 25 },
       { id: "school_pickup", label: "School Pickup & Dropoff", minutes: 45, price: 35 },
-      { id: "bath_routine", label: "Bath & Bedtime Routine Support", minutes: 45, price: 35 },
       { id: "pediatric_errand", label: "Pharmacy/Pediatric Supply Run", minutes: 30, price: 30 },
       { id: "nursery_reset", label: "Nursery/Playroom Reset", minutes: 30, price: 25 },
       { id: "laundry_kids", label: "Kids Laundry Wash & Fold", minutes: 30, price: 25 },
       { id: "toy_story", label: "Toy Story - Toy Rotation & Reset", minutes: 45, price: 75 },
-      { id: "postpartum_support", label: "Post-Partum Meal & Recovery Support", minutes: 60, price: 55 }
+      { id: "postpartum_support", label: "Postpartum Meal & Recovery Support", minutes: 60, price: 55 }
     ],
     intakeQuestions: [
       { id: "num_children", label: "How many children?", type: "select", options: ["1", "2", "3", "4+"] },
@@ -194,7 +194,7 @@ export const SERVICE_CONFIG = {
       { id: "special_needs", label: "Special needs, allergies, or medical considerations?", type: "text", placeholder: "Please share anything helpful so we can prepare..." },
       { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes - friendly dog", "Yes - cat", "Yes - will be secured/separated"] },
       { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No - full solo support needed"] },
-      { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, bedtime rituals..." },
+      { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, homework flow, screen-time rules..." },
       { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes - school pickup/dropoff", "Yes - activity transport"] },
       { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
     ]
@@ -251,7 +251,8 @@ export const SERVICE_CONFIG = {
       { id: "special_notes", label: "Any areas to avoid or special instructions?", type: "text", placeholder: "e.g. don't touch the hobby room, partner's side of closet, kids' sentimental items..." }
     ]
   },
-    home_reset: {
+
+  home_reset: {
     label: "Hot Mess Express",
     sublabel: "Household Reset",
     color: "#EB9486",
