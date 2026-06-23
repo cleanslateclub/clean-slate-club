@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { calculateTotalDuration, getDynamicEstimate, timeToMinutes, minutesToTime, TRAVEL_BUFFER, SERVICE_CONFIG } from '@/lib/bookingConfig';
 import StepIndicator from '@/components/booking/StepIndicator';
+import PageHero from '@/components/shared/PageHero';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import Step1Service from '@/components/booking/Step1Service.jsx';
 import Step2Intake from '@/components/booking/Step2Intake';
@@ -286,16 +287,16 @@ export default function BookNow() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-cream pt-28 pb-20 flex items-center justify-center px-6">
-        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="max-w-md text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-sage flex items-center justify-center">
+      <div className="min-h-screen pt-28 pb-20 flex items-center justify-center px-6" style={{ background: '#FDFCFB' }}>
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="max-w-md text-center rounded-[2rem] border p-8 bg-white" style={{ borderColor: '#33333322', boxShadow: '0 18px 45px #8B93A715' }}>
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ background: '#CAE7B9' }}>
             <span className="text-3xl">✓</span>
           </div>
-          <h1 className="font-logo text-4xl text-coral mb-4">You're on our list</h1>
+          <h1 className="font-logo text-4xl mb-4" style={{ color: '#EB9486' }}>You're on our list</h1>
           <p className="font-body text-charcoal/60 font-light leading-relaxed mb-8">
             We've received your request and will be in touch soon to confirm details.
           </p>
-          <button onClick={() => window.location.href = '/'} className="bg-coral text-white px-8 py-3 rounded-full font-body text-sm tracking-wide">
+          <button onClick={() => window.location.href = '/'} className="text-white px-8 py-3 rounded-full font-body text-sm tracking-wide transition-all duration-300 hover:opacity-90 hover:shadow-lg" style={{ background: '#333333' }}>
             Back Home
           </button>
         </motion.div>
@@ -304,28 +305,31 @@ export default function BookNow() {
   }
 
   return (
-    <div className="min-h-screen bg-cream pt-28 pb-20">
-      <div className="max-w-4xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-          <p className="font-body text-xs tracking-[0.25em] uppercase text-coral/60 mb-3 font-light">Book Your Visit</p>
-          <h1 className="font-logo text-5xl lg:text-6xl text-coral mb-4">Let's clear some space</h1>
-          <p className="font-body text-charcoal/50 font-light max-w-xl mx-auto leading-relaxed">
-            Tell us what you need. We'll help you choose the right support and get you on the calendar.
-          </p>
-        </motion.div>
+    <div className="min-h-screen" style={{ background: '#FDFCFB' }}>
+      <PageHero
+        eyebrow="Book Your Visit"
+        title="Let's clear some space"
+        description="Tell us what you need. We'll help you choose the right support and get you on the calendar."
+        background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
+        waveFill="#FDFCFB"
+        scriptColor="#EB9486"
+      />
 
+      <div className="max-w-4xl mx-auto px-6 pb-20 -mt-8 relative z-10">
         {settingsLoading ? (
           <div className="text-center py-16 text-charcoal/40 font-body font-light">Loading booking settings...</div>
         ) : !getBool('booking_enabled') ? (
-          <div className="max-w-xl mx-auto bg-warm-white rounded-3xl border border-taupe/15 p-10 text-center">
-            <h2 className="font-logo text-4xl text-coral mb-4">Booking is temporarily paused</h2>
+          <div className="max-w-xl mx-auto bg-white rounded-[2rem] border p-10 text-center" style={{ borderColor: '#33333322', boxShadow: '0 18px 45px #8B93A715' }}>
+            <h2 className="font-logo text-4xl mb-4" style={{ color: '#EB9486' }}>Booking is temporarily paused</h2>
             <p className="font-body text-charcoal/60 font-light leading-relaxed">We're making a few updates behind the scenes. Please check back soon or email us directly at cleanslateclubpa@gmail.com.</p>
           </div>
         ) : (
           <div>
-            <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
+            <div className="rounded-[2rem] border bg-white p-5 md:p-7 mb-5" style={{ borderColor: '#33333322', boxShadow: '0 18px 45px #8B93A715' }}>
+              <StepIndicator currentStep={displayStep} totalSteps={totalSteps} />
+            </div>
 
-            <div className="bg-warm-white rounded-[2rem] border border-taupe/15 p-6 md:p-10 shadow-sm">
+            <div className="bg-white rounded-[2rem] border p-6 md:p-10" style={{ borderColor: '#33333322', boxShadow: '0 18px 45px #8B93A715' }}>
               <AnimatePresence mode="wait">
                 <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
                   {step === 1 && (
@@ -366,16 +370,17 @@ export default function BookNow() {
               {error && <p className="mt-4 text-sm text-red-500 font-body text-center">{error}</p>}
 
               {step !== 6 && (
-                <div className="flex items-center justify-between mt-10 pt-6 border-t border-taupe/10">
+                <div className="flex items-center justify-between mt-10 pt-6 border-t" style={{ borderColor: '#33333314' }}>
                   {step > 1
-                    ? <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
+                    ? <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-charcoal transition-colors">← Back</button>
                     : <div />}
 
                   {step === 1 ? <div /> : step < (isConsult ? 2 : 5) ? (
                     <button
                       onClick={() => setStep(s => s + 1)}
                       disabled={!canProceed()}
-                      className="bg-coral text-white font-body text-sm tracking-wide px-8 py-3 rounded-full hover:bg-coral/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                      className="text-white font-body text-sm tracking-wide px-8 py-3 rounded-full disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:opacity-90 hover:shadow-lg"
+                      style={{ background: '#333333' }}
                     >
                       Continue →
                     </button>
@@ -383,7 +388,8 @@ export default function BookNow() {
                     <button
                       onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setStep(6))}
                       disabled={submitting || !canProceed() || (!isConsult && !allAcknowledged)}
-                      className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
+                      className="text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full disabled:opacity-50 transition-all duration-300 hover:opacity-90 hover:shadow-lg"
+                      style={{ background: '#333333' }}
                     >
                       {submitting
                         ? (isConsult ? 'Sending...' : 'Booking...')
