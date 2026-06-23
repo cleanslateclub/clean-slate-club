@@ -103,9 +103,9 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
       </p>
 
       {/* Client Info */}
-      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EB9486' }}>
+      <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #DFE3A2' }}>
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EB9486' }} />
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#DFE3A2' }} />
           <h3 className="font-heading text-sm font-semibold text-charcoal">Your Information</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -124,38 +124,17 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                 value={clientInfo[f.key] || ''}
                 onChange={e => {
                   onClientChange({ ...clientInfo, [f.key]: e.target.value });
-                  // ✅ FIX: Removed checkServiceArea from onChange.
-                  // It was firing mid-keystroke and triggering false out-of-area warnings.
                 }}
                 onBlur={e => {
-                  // ✅ FIX: Only validate on blur (when user finishes typing and moves on).
                   if (f.key === 'address') checkServiceArea(e.target.value);
                 }}
                 placeholder={f.placeholder}
                 required={f.required}
-                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors"
               />
             </div>
           ))}
         </div>
-      </div>
-
-      {/* SMS opt-in */}
-      <div className="rounded-2xl border border-taupe/15 p-5 mb-5" style={{ background: '#fdfcfb' }}>
-        <label className="flex items-start gap-3 cursor-pointer group" onClick={() => onSmsOptInChange(!smsOptIn)}>
-          <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${smsOptIn ? 'bg-coral border-coral' : 'border-taupe bg-white group-hover:border-coral/40'}`}>
-            {smsOptIn && <span className="text-white text-xs font-bold">✓</span>}
-          </div>
-          <div>
-            <p className="font-body text-sm font-light text-charcoal leading-relaxed select-none">
-              Yes, send me appointment reminders & updates via text <span className="text-charcoal/40">(recommended)</span>
-            </p>
-            <p className="font-body text-[11px] text-charcoal/40 font-light mt-0.5 select-none">
-              Uncheck to receive confirmations by email only. Msg & data rates may apply.{' '}
-              <a href="/sms-terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-coral transition-colors" onClick={e => e.stopPropagation()}>SMS Terms</a>
-            </p>
-          </div>
-        </label>
       </div>
 
       {/* Task checkboxes */}
@@ -176,15 +155,15 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                   onClick={() => toggleTask(task)}
                   className={`px-3.5 py-2 rounded-full border text-xs font-body font-light transition-all duration-200 flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-coral border-coral text-white'
-                      : 'bg-cream border-taupe/20 hover:border-coral/30'
+                      ? 'text-white'
+                      : 'bg-cream border-taupe/20 hover:border-charcoal/30'
                   }`}
-                  style={!isSelected ? { color: '#333333' } : {}}
+                  style={isSelected ? { background: '#333333', borderColor: '#333333' } : { color: '#333333' }}
                 >
                   <span className={`w-3 h-3 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
                     isSelected ? 'bg-white border-white' : 'border-charcoal/25'
                   }`}>
-                    {isSelected && <span className="text-coral text-[8px] font-bold leading-none">✓</span>}
+                    {isSelected && <span className="text-charcoal text-[8px] font-bold leading-none">✓</span>}
                   </span>
                   {task}
                 </button>
@@ -223,9 +202,10 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                     onClick={() => handleAnswer(q.id, opt)}
                     className={`px-3 py-1.5 rounded-full border text-xs font-body font-light transition-all duration-200 ${
                       answers[q.id] === opt
-                        ? 'bg-coral border-coral text-white'
-                        : 'bg-cream border-taupe/20 text-charcoal hover:border-coral/30'
+                        ? 'text-white'
+                        : 'bg-cream border-taupe/20 text-charcoal hover:border-charcoal/30'
                     }`}
+                    style={answers[q.id] === opt ? { background: '#333333', borderColor: '#333333' } : {}}
                   >
                     {opt}
                   </button>
@@ -243,9 +223,10 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                       onClick={() => toggleMulti(q.id, opt)}
                       className={`px-3 py-1.5 rounded-full border text-xs font-body font-light transition-all duration-200 ${
                         selected
-                          ? 'bg-coral border-coral text-white'
-                          : 'bg-cream border-taupe/20 text-charcoal hover:border-coral/30'
+                          ? 'text-white'
+                          : 'bg-cream border-taupe/20 text-charcoal hover:border-charcoal/30'
                       }`}
+                      style={selected ? { background: '#333333', borderColor: '#333333' } : {}}
                     >
                       {opt}
                     </button>
@@ -260,7 +241,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
                 placeholder={q.placeholder}
                 rows={2}
                 className={`w-full px-4 py-2.5 rounded-xl border bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none transition-colors resize-none ${
-                  q.required ? 'border-coral/30 focus:border-coral/60' : 'border-taupe/20 focus:border-coral/40'
+                  q.required ? 'border-coral/30 focus:border-charcoal/60' : 'border-taupe/20 focus:border-charcoal/40'
                 }`}
               />
             )}
@@ -275,7 +256,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
               onChange={e => handleAnswer('special_notes', e.target.value)}
               placeholder="Alarm codes, parking instructions, dog info, anything..."
               rows={2}
-              className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors resize-none"
             />
           </div>
         )}
@@ -283,7 +264,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
 
       {/* Universal closing question */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #B58A90' }}>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EFB988' }}>
           <label className="font-body text-xs font-light text-charcoal block mb-2">
             What would feel like a win by the end of this visit?
           </label>
@@ -292,22 +273,22 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
             onChange={e => handleAnswer('win_goal', e.target.value)}
             placeholder="Tell us what would make you exhale..."
             rows={3}
-            className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-coral/40 transition-colors resize-none"
+            className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors resize-none"
           />
         </div>
       )}
 
       {/* Photo Upload - hidden for consult */}
       {!isConsult && (
-        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6" style={{ borderLeft: '3px solid #8B93A7' }}>
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EB9486' }}>
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#8B93A7' }} />
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EB9486' }} />
             <h3 className="font-heading text-sm font-semibold text-charcoal">Photos are welcome</h3>
           </div>
           <p className="font-body text-xs text-charcoal font-light mb-4">
             Upload photos if it helps explain the space. Totally optional, always judgment-free.
           </p>
-          <label className="block border-2 border-dashed border-taupe/20 rounded-2xl p-6 text-center cursor-pointer hover:border-coral/30 transition-colors bg-cream">
+          <label className="block border-2 border-dashed border-taupe/20 rounded-2xl p-6 text-center cursor-pointer hover:border-charcoal/30 transition-colors bg-cream">
             <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             <p className="font-body text-sm text-charcoal/60 font-light">
               {uploading ? 'Uploading...' : 'Click to upload photos'}
@@ -322,6 +303,27 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           )}
         </div>
       )}
+
+      {/* SMS opt-in */}
+      <div className="rounded-2xl border border-taupe/15 p-5" style={{ background: '#fdfcfb', borderLeft: '3px solid #B58A90' }}>
+        <label className="flex items-start gap-3 cursor-pointer group" onClick={() => onSmsOptInChange(!smsOptIn)}>
+          <div
+            className="mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200"
+            style={smsOptIn ? { background: '#333333', borderColor: '#333333' } : { background: '#FFFFFF', borderColor: '#DCDCDC' }}
+          >
+            {smsOptIn && <span className="text-white text-xs font-bold">✓</span>}
+          </div>
+          <div>
+            <p className="font-body text-sm font-light text-charcoal leading-relaxed select-none">
+              Yes, send me appointment reminders & updates via text <span className="text-charcoal/40">(recommended)</span>
+            </p>
+            <p className="font-body text-[11px] text-charcoal/40 font-light mt-0.5 select-none">
+              Uncheck to receive confirmations by email only. Msg & data rates may apply.{' '}
+              <a href="/sms-terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-charcoal transition-colors" onClick={e => e.stopPropagation()}>SMS Terms</a>
+            </p>
+          </div>
+        </label>
+      </div>
     </div>
   );
 }
