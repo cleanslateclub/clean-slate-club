@@ -24,7 +24,6 @@ export default function PageHero({
   script,
   description,
   children,
-  background = '#FDFCFB',
   waveFill = '#F7FAF4',
   scriptColor = '#7E7F9A',
   dotColors,
