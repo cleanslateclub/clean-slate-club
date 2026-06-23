@@ -87,7 +87,7 @@ export default function BookNow() {
     return true;
   };
 
-  const totalSteps = isConsult ? 3 : (skipDeposit ? 5 : 6);
+  const totalSteps = isConsult ? 2 : (skipDeposit ? 5 : 6);
   const displayStep = step;
 
   const handleSubmit = useCallback(async (stripePaymentIntentId = null) => {
@@ -371,7 +371,7 @@ export default function BookNow() {
                     ? <button onClick={() => setStep(s => s - 1)} className="font-body text-sm text-charcoal/40 font-light hover:text-coral transition-colors">← Back</button>
                     : <div />}
 
-                  {step === 1 ? <div /> : step < (isConsult ? 3 : 5) ? (
+                  {step === 1 ? <div /> : step < (isConsult ? 2 : 5) ? (
                     <button
                       onClick={() => setStep(s => s + 1)}
                       disabled={!canProceed()}
@@ -382,7 +382,7 @@ export default function BookNow() {
                   ) : (
                     <button
                       onClick={() => isConsult ? handleSubmit() : (skipDeposit ? handleSubmit() : setStep(6))}
-                      disabled={submitting || !canProceed() || !allAcknowledged}
+                      disabled={submitting || !canProceed() || (!isConsult && !allAcknowledged)}
                       className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
                     >
                       {submitting
