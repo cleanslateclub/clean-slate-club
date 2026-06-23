@@ -28,7 +28,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-16 md:pt-24 md:pb-20 lg:pt-28 lg:pb-20 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-12 pt-16 pb-14 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20 lg:pt-28 lg:pb-20 w-full">
         <div className="max-w-xl text-center mx-auto lg:mx-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -44,7 +44,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-8 lg:hidden overflow-hidden"
+            className="mb-6 sm:mb-8 lg:hidden overflow-hidden"
             style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
@@ -53,7 +53,7 @@ export default function HeroSection() {
               {[...Array(2)].flatMap(() => mobileTasks).map((t, i) =>
                 <span
                   key={`m-top-${t.label}-${i}`}
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 border text-xs font-body font-medium shrink-0"
+                  className="inline-flex items-center gap-2 rounded-full px-3.5 sm:px-4 py-2 border text-[11px] sm:text-xs font-body font-medium shrink-0"
                   style={{ background: withOpacity(t.color), borderColor: t.color, color: '#333333' }}>
                   <span
                     className="w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold shrink-0"
@@ -70,18 +70,18 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.35 }}>
-            <p className="font-body text-xs md:text-sm tracking-[0.34em] uppercase font-semibold mb-4" style={{ color: '#7E7F9A' }}>
+            <p className="font-body text-[11px] sm:text-xs md:text-sm tracking-[0.24em] sm:tracking-[0.3em] md:tracking-[0.34em] uppercase font-semibold mb-4" style={{ color: '#7E7F9A' }}>
               Household support for modern life
             </p>
-            <h1 className="mb-7 leading-none" aria-label="Busy homes, handled">
-              <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98]" style={{ color: '#333333' }}>
+            <h1 className="mb-6 sm:mb-7 leading-none" aria-label="Busy homes, handled">
+              <span className="block font-body text-[2.55rem] sm:text-[3.2rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.1em] md:tracking-[0.12em] font-light leading-[0.98]" style={{ color: '#333333' }}>
                 BUSY
               </span>
-              <span className="block font-body text-[3rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.12em] font-light leading-[0.98] mt-1" style={{ color: '#333333' }}>
+              <span className="block font-body text-[2.55rem] sm:text-[3.2rem] md:text-[4.65rem] lg:text-[6.1rem] uppercase tracking-[0.1em] md:tracking-[0.12em] font-light leading-[0.98] mt-1" style={{ color: '#333333' }}>
                 HOMES,
               </span>
               <motion.span
-                className="block font-logo text-[4rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4"
+                className="block font-logo text-[3.55rem] sm:text-[4.6rem] md:text-[6rem] lg:text-[7.9rem] leading-[0.9] font-normal mt-4"
                 style={{ color: '#EB9486' }}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -89,7 +89,7 @@ export default function HeroSection() {
                 handled
               </motion.span>
             </h1>
-            <p className="font-heading font-light text-xl md:text-2xl lg:text-3xl leading-[1.25] mb-8 max-w-lg mx-auto" style={{ color: '#333333' }}>
+            <p className="font-heading font-light text-lg sm:text-xl md:text-2xl lg:text-3xl leading-[1.25] mb-7 sm:mb-8 max-w-lg mx-auto" style={{ color: '#333333' }}>
               Because no one is actually all caught up.
             </p>
           </motion.div>
@@ -98,7 +98,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="font-body text-lg md:text-xl leading-relaxed mb-10 max-w-md font-light mx-auto"
+            className="font-body text-base md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-md font-light mx-auto"
             style={{ color: '#333333' }}>
             A helping hand for home resets, errands, meal prep, laundry piles, mental load, and all the everyday tasks taking up too much space.
           </motion.p>
@@ -107,16 +107,16 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className="flex flex-col sm:flex-row items-center gap-4 justify-center">
+            className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center">
             <Link
               to="/book"
-              className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-500 shadow-sm hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              className="inline-block w-full sm:w-auto font-body text-sm tracking-wide px-10 py-4 rounded-full transition-all duration-500 shadow-sm hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 text-center"
               style={{ background: '#333333', color: '#FFFFFF', outlineColor: '#7E7F9A' }}>
               Start Your Reset
             </Link>
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 font-body text-sm font-light py-4 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 rounded-full px-2"
+              className="inline-flex items-center justify-center gap-2 font-body text-sm font-light py-3 sm:py-4 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 rounded-full px-2"
               style={{ color: '#333333', outlineColor: '#7E7F9A' }}>
               See what we do <span style={{ color: '#7E7F9A' }}>→</span>
             </Link>
@@ -126,11 +126,11 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-10 flex flex-wrap gap-x-4 gap-y-3 justify-center max-w-lg mx-auto pb-2">
+            className="mt-8 sm:mt-10 flex flex-wrap gap-x-4 gap-y-2.5 sm:gap-y-3 justify-center max-w-lg mx-auto pb-2">
             {['Licensed & Insured', 'CPR Certified', 'Background Checked', 'Clearances Available Upon Request'].map((badge, index) => {
               const badgeColors = ['#CAE7B9', '#DFE3A2', '#F3DE8A', '#B58A90'];
               return (
-                <span key={badge} className="font-body text-[11px] tracking-wide font-light flex items-center gap-1.5 whitespace-nowrap" style={{ color: '#333333' }}>
+                <span key={badge} className="font-body text-[10px] sm:text-[11px] tracking-wide font-light flex items-center gap-1.5 whitespace-nowrap" style={{ color: '#333333' }}>
                   <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: withOpacity(badgeColors[index]) }} />
                   {badge}
                 </span>
