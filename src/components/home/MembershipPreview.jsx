@@ -11,7 +11,7 @@ const perks = [
   { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#F3DE8A', number: '06' }
 ];
 
-const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
+const withOpacity = (hex, opacity = '1F') => `${hex}${opacity}`;
 
 function MembershipLogoTitle() {
   return (
@@ -25,7 +25,7 @@ function MembershipLogoTitle() {
 
 export default function MembershipPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#EAF1EC' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#CAE7B91F' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -65,7 +65,7 @@ export default function MembershipPreview() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {perks.map((perk, i) =>
             <AnimatedSection key={perk.label} delay={0.15 + i * 0.05}>
-                <div className="h-full rounded-3xl border p-5" style={{ background: withOpacity(perk.dot, '40'), borderColor: perk.dot + '70' }}>
+                <div className="h-full rounded-3xl border p-5" style={{ background: withOpacity(perk.dot), borderColor: perk.dot + '55' }}>
                   <div className="flex items-start gap-4">
                     <span className="font-logo text-3xl leading-none" style={{ color: '#33333380' }}>{perk.number}</span>
                     <div>
