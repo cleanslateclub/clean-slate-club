@@ -1,35 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
-
-const PAIN_POINTS = [
-  {
-    number: '01',
-    title: 'The default person problem',
-    text: 'Everyone knows you will remember the appointment, the forms, the laundry, the lunches, the return, the gift, the refill, and the thing nobody wrote down.',
-    color: '#DFE3A2',
-  },
-  {
-    number: '02',
-    title: 'The room you keep avoiding',
-    text: 'Not because you are lazy. Because every pile has a decision attached to it, and you are already making too many decisions before noon.',
-    color: '#CAE7B9',
-  },
-  {
-    number: '03',
-    title: 'The transition season',
-    text: 'New baby, surgery, work stress, divorce, school chaos, aging parents, burnout, grief, ADHD overwhelm, or just a stretch of life that got too full.',
-    color: '#F3DE8A',
-  },
-  {
-    number: '04',
-    title: 'The help-me-choose moment',
-    text: 'When you do not even know what to book because the answer feels like everything, but what you really need is someone to help you find the first right move.',
-    color: '#EFB988',
-  },
-];
 
 const VALUES = [
   'No shame spirals',
@@ -41,9 +14,9 @@ const VALUES = [
 ];
 
 const SUPPORT_EXAMPLES = [
-  ['Reset the visible chaos', 'Dishes, counters, laundry movement, toy pickup, room resets, and the things that make the house feel livable again.'],
-  ['Handle the errand stack', 'Returns, pickups, grocery support, appointment help, school logistics, and the running-around that eats the whole day.'],
-  ['Support the people in the home', 'Family support, companion-style help, recovery support, children’s laundry, lunch packing, and practical backup when everyone needs something.'],
+  ['How we enter a home', 'Calmly, respectfully, and with the understanding that every household has its own rhythm, rules, supplies, pets, people, and pressure points.'],
+  ['How we choose what comes first', 'The goal is not to do everything at once. The goal is to find the highest-impact starting point and make the next few hours actually matter.'],
+  ['How we leave things behind', 'A little more order, a little more breathing room, and a clearer sense of what kind of support would help next time.'],
 ];
 
 function ValuePill({ label, index }) {
@@ -56,15 +29,13 @@ function ValuePill({ label, index }) {
 }
 
 export default function About() {
-  const [activeCard, setActiveCard] = useState(0);
-
   return (
     <main className="min-h-screen" style={{ background: '#FDFCFB' }}>
       <PageHero
         eyebrow="About Clean Slate Club"
         title="When home feels heavy"
         script="That’s where we come in."
-        description="Practical support for the mental tabs, household pileups, and real-life seasons that need more than a cleaning checklist."
+        description="Practical support for real homes, real routines, and the seasons when keeping up starts to feel like too much."
         background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
         waveFill="#FDFCFB"
         scriptColor="#EB9486"
@@ -130,34 +101,19 @@ export default function About() {
       </section>
 
       <section className="px-6 lg:px-12 py-10 lg:py-16" style={{ background: '#F1F1F1' }}>
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-12">
-            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The real reason people book</p>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">It is rarely just the mess.</h2>
+            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The standard</p>
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">Warm help still needs clear boundaries.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
-              It is the mental math behind the mess. The things you keep meaning to do. The room you close the door on. The errands that turn into a whole day. The feeling that everyone needs you, but nobody sees the list you are carrying.
+              The work is personal because home is personal. That is why Clean Slate Club is designed around trust, communication, safety, and realistic expectations from the beginning.
             </p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {PAIN_POINTS.map((card, index) => (
-              <AnimatedSection key={card.title} delay={index * 0.05}>
-                <button
-                  type="button"
-                  onClick={() => setActiveCard(index)}
-                  className="h-full w-full text-left rounded-[2rem] border p-6 transition-all duration-300 hover:-translate-y-1"
-                  style={{
-                    background: activeCard === index ? '#FFFFFF' : `${card.color}38`,
-                    borderColor: activeCard === index ? '#33333322' : `${card.color}80`,
-                    boxShadow: activeCard === index ? '0 18px 45px #8B93A718' : 'none',
-                  }}
-                >
-                  <p className="font-logo text-4xl leading-none mb-5" style={{ color: '#33333380' }}>{card.number}</p>
-                  <p className="font-heading text-xl font-semibold text-charcoal mb-3">{card.title}</p>
-                  <p className="font-body text-sm font-light leading-relaxed" style={{ color: '#333333b3' }}>{card.text}</p>
-                </button>
-              </AnimatedSection>
-            ))}
+          <div className="rounded-[2rem] border bg-white p-7 lg:p-9" style={{ borderColor: '#33333318', boxShadow: '0 18px 45px #8B93A712' }}>
+            <div className="flex flex-wrap justify-center gap-2">
+              {VALUES.map((value, index) => <ValuePill key={value} label={value} index={index} />)}
+            </div>
           </div>
         </div>
       </section>
@@ -166,14 +122,14 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
             <div className="rounded-[2rem] border bg-white p-8 lg:p-10 sticky top-28" style={{ borderColor: '#33333318', boxShadow: '0 18px 45px #8B93A712' }}>
-              <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>What changes after a visit</p>
-              <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-5">The house gets handled. So does the decision fatigue.</h2>
+              <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The approach</p>
+              <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-5">Not a one-size-fits-all checklist.</h2>
               <p className="font-body text-sm font-light leading-relaxed mb-6" style={{ color: '#333333b3' }}>
-                The service is designed to turn vague overwhelm into visible progress. Not by doing everything at once, but by choosing what matters most and making the next step obvious.
+                The right support depends on the home, the people in it, the time available, the supplies on hand, and what would make the biggest difference that day.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {VALUES.map((value, index) => <ValuePill key={value} label={value} index={index} />)}
-              </div>
+              <p className="font-body text-sm font-light leading-relaxed" style={{ color: '#333333b3' }}>
+                That is why Clean Slate Club works best when the service is practical, flexible, and honest about what can realistically happen in one visit.
+              </p>
             </div>
           </AnimatedSection>
 
