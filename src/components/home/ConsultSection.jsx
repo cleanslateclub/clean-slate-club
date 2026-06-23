@@ -220,16 +220,16 @@ export default function ConsultSection() {
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-5">
+          <div className="flex items-center justify-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
             <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
             <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
-            <p className="font-body tracking-[0.25em] uppercase font-light text-sm ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
+            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
           </div>
-          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3 leading-tight">
+          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             It is rarely just the mess.
           </h2>
-          <p className="font-logo text-2xl" style={{ color: '#EB9486' }}>It is everything the mess represents.</p>
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>It is everything the mess represents.</p>
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
