@@ -48,11 +48,16 @@ export default function TrustSection() {
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#F1ECEF' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-14">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--popover-foreground))]">YOU'RE IN GOOD HANDS</p>
-          <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>YOU'RE IN GOOD HANDS</p>
+          </div>
+          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             Trust isn't given. It's earned.
           </h2>
-          <p className="font-body text-base text-charcoal/65 font-light max-w-md mx-auto leading-relaxed">
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>
             When someone comes into your home, you deserve to feel completely safe. Here's what we bring to every visit.
           </p>
         </AnimatedSection>
