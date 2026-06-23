@@ -10,13 +10,13 @@ import FAQSection from '../components/home/FAQSection';
 import WaveDivider from '../components/shared/WaveDivider';
 
 const SECTION_BACKGROUNDS = {
-  services: '#CAE7B91F',
+  services: '#F9FCF7',
   consult: '#FDF5E6',
   manifesto: '#F8E8E2',
   situations: '#F5E6E9',
   trust: '#F1ECEF',
-  membership: '#CAE7B91F',
-  serviceArea: '#8B93A71F',
+  membership: '#F9FCF7',
+  serviceArea: '#F1F2F4',
   testimonials: '#E4EBEF',
   faq: '#F1F1F1',
 };
