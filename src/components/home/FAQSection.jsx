@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 
-const BRAND_COLORS = ['#DFE3A2', '#CAE7B9', '#F3DE8A', '#EFB988'];
+const BRAND_COLORS = ['#DFE3A2', '#CAE7B9', '#F3DE8A', '#EFB988', '#EB9486', '#B58A90'];
 
 const faqs = [
   {
@@ -14,12 +14,20 @@ const faqs = [
     a: "No. Please do not panic-clean for us. This is judgment-free support for busy homes and overwhelmed seasons."
   },
   {
-    q: "Can I book without a consult?",
-    a: "Yes. Book directly if you know what you need, or choose the free consult if you want help figuring out the best starting point."
+    q: "Do I need to be home for the first visit?",
+    a: "Yes. For the first visit, someone must be home to let the provider in, walk through priorities, show where supplies are kept, and share any pet, parking, entry, or household notes."
   },
   {
-    q: "What areas do you serve?",
-    a: "Clean Slate Club currently serves Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Conshohocken, Plymouth Meeting, Ambler, Glenside, Oreland, Fort Washington, and Willow Grove."
+    q: "Do I need to provide supplies?",
+    a: "Providers may bring a small basic kit for normal touch-ups, but Clean Slate Club is not stocked like a traditional cleaning company. We prefer to use your household’s products, tools, laundry items, bins, hangers, containers, and instructions."
+  },
+  {
+    q: "What is outside the scope of service?",
+    a: "Clean Slate Club does not handle medical care, biohazards, mold, pests, unsafe conditions, heavy lifting, furniture moving, hauling, junk removal, ladders, exterior work, or deep cleaning projects that require specialized equipment."
+  },
+  {
+    q: "What safety rules should I know?",
+    a: "Providers must be treated with kindness and respect. Service may be refused, paused, or ended for harassment, unsafe driving conditions, unsafe home conditions, unsecured pets, active conflict, threats, discrimination, or requests outside the booked scope."
   }
 ];
 
