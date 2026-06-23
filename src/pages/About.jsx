@@ -4,40 +4,46 @@ import { motion } from 'framer-motion';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
 
-const FEELING_CARDS = [
+const PAIN_POINTS = [
   {
     number: '01',
-    title: 'Relief before perfection',
-    text: 'The goal is not to impress anyone. The goal is to walk back into a home that feels lighter, calmer, and easier to breathe in.',
+    title: 'The default person problem',
+    text: 'Everyone knows you will remember the appointment, the forms, the laundry, the lunches, the return, the gift, the refill, and the thing nobody wrote down.',
     color: '#DFE3A2',
   },
   {
     number: '02',
-    title: 'Support without shame',
-    text: 'No raised eyebrows. No lectures. No silent judgment. Just capable help for the parts of home life that quietly get heavy.',
+    title: 'The room you keep avoiding',
+    text: 'Not because you are lazy. Because every pile has a decision attached to it, and you are already making too many decisions before noon.',
     color: '#CAE7B9',
   },
   {
     number: '03',
-    title: 'A real person who gets it',
-    text: 'Clean Slate Club was built from lived experience, not a polished fantasy of domestic life. That is why the support feels human.',
+    title: 'The transition season',
+    text: 'New baby, surgery, work stress, divorce, school chaos, aging parents, burnout, grief, ADHD overwhelm, or just a stretch of life that got too full.',
     color: '#F3DE8A',
   },
   {
     number: '04',
-    title: 'The exhale moment',
-    text: 'That small second when the dishes are handled, the laundry is moving, the errand is done, and your brain finally has room again.',
+    title: 'The help-me-choose moment',
+    text: 'When you do not even know what to book because the answer feels like everything, but what you really need is someone to help you find the first right move.',
     color: '#EFB988',
   },
 ];
 
 const VALUES = [
-  'Judgment-free support',
-  'Practical over performative',
-  'Clear boundaries',
-  'Reliable communication',
-  'Warm, capable presence',
-  'Care for the home and the human',
+  'No shame spirals',
+  'Clear priorities',
+  'Calm communication',
+  'Practical help',
+  'Safe boundaries',
+  'A real plan forward',
+];
+
+const SUPPORT_EXAMPLES = [
+  ['Reset the visible chaos', 'Dishes, counters, laundry movement, toy pickup, room resets, and the things that make the house feel livable again.'],
+  ['Handle the errand stack', 'Returns, pickups, grocery support, appointment help, school logistics, and the running-around that eats the whole day.'],
+  ['Support the people in the home', 'Family support, companion-style help, recovery support, children’s laundry, lunch packing, and practical backup when everyone needs something.'],
 ];
 
 function ValuePill({ label, index }) {
@@ -56,9 +62,9 @@ export default function About() {
     <main className="min-h-screen" style={{ background: '#FDFCFB' }}>
       <PageHero
         eyebrow="About Clean Slate Club"
-        title="A softer way to ask for help"
-        script="You do not need perfect. You need backup."
-        description="Household support for the invisible load, the half-finished lists, and the weeks that get away from you."
+        title="When home feels heavy"
+        script="That’s where I come in."
+        description="Practical support for the mental tabs, household pileups, and real-life seasons that need more than a cleaning checklist."
         background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
         waveFill="#FDFCFB"
         scriptColor="#EB9486"
@@ -83,7 +89,7 @@ export default function About() {
                 viewport={{ once: true }}
               >
                 <p className="font-logo text-coral text-lg leading-tight mb-1">"Finally."</p>
-                <p className="font-body text-[11px] font-light" style={{ color: '#33333399' }}>— every client, first visit</p>
+                <p className="font-body text-[11px] font-light" style={{ color: '#33333399' }}>the feeling this was built for</p>
               </motion.div>
             </div>
           </AnimatedSection>
@@ -99,23 +105,23 @@ export default function About() {
               <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2 leading-tight">
                 Meet Masha.
               </h2>
-              <p className="font-logo text-2xl mb-8" style={{ color: '#EB9486' }}>She gets it.</p>
+              <p className="font-logo text-2xl mb-8" style={{ color: '#EB9486' }}>She understands the pileup.</p>
 
               <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
                 <p>
-                  Masha built Clean Slate Club around a simple truth: most people do not need perfect homes. They need relief.
+                  Clean Slate Club did not come from a fantasy version of home where everything is labeled, folded, stocked, and handled before anyone asks.
                 </p>
                 <p>
-                  She knows what it feels like to be the one holding the calendar, the meals, the laundry, the errands, the details, and the emotional weight of making sure nothing falls apart. She has lived the kind of overwhelm that does not always look dramatic from the outside, but quietly takes up every inch of your day.
+                  It came from real life. The kind where one person often becomes the calendar keeper, snack manager, laundry tracker, errand runner, emotional support system, and backup plan for everyone else.
                 </p>
                 <p>
-                  As a stay-at-home mom and later a single mom, Masha understood how much invisible labor goes into keeping a household moving. She also understood how hard it can be to ask for help when the thing you need help with is "everything."
+                  Masha has lived the kind of overwhelm that can look ordinary from the outside. A house that is not falling apart, but never feels fully caught up. A list that keeps regenerating. A nervous system that cannot relax because the next thing is always waiting.
                 </p>
                 <p>
-                  Clean Slate Club exists for that exact place. The half-finished lists. The messy transitions. The weeks that get away from you. The homes that need care, but so do the people living in them.
+                  As a stay-at-home mom and later a single mom, she understood how much invisible labor goes into keeping a household moving. She also understood how vulnerable it can feel to say, “I need help,” when what you really mean is, “I do not know where to begin.”
                 </p>
                 <p>
-                  What started with Masha's own understanding is becoming a new kind of household support: warm, practical, capable, and never judgmental.
+                  Clean Slate Club exists to meet people there with practical help, clear priorities, and no performance required.
                 </p>
               </div>
             </div>
@@ -126,15 +132,15 @@ export default function About() {
       <section className="px-6 lg:px-12 py-10 lg:py-16" style={{ background: '#F1F1F1' }}>
         <div className="max-w-7xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-12">
-            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The why</p>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">Because home should not feel like another job.</h2>
+            <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The real reason people book</p>
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4">It is rarely just the mess.</h2>
             <p className="font-body text-base font-light leading-relaxed" style={{ color: '#333333b3' }}>
-              Clean Slate Club is for the moment when you are not looking for luxury. You are looking for capacity. Someone steady. Someone practical. Someone who can walk into the chaos and know where to begin.
+              It is the mental math behind the mess. The things you keep meaning to do. The room you close the door on. The errands that turn into a whole day. The feeling that everyone needs you, but nobody sees the list you are carrying.
             </p>
           </AnimatedSection>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {FEELING_CARDS.map((card, index) => (
+            {PAIN_POINTS.map((card, index) => (
               <AnimatedSection key={card.title} delay={index * 0.05}>
                 <button
                   type="button"
@@ -160,10 +166,10 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
             <div className="rounded-[2rem] border bg-white p-8 lg:p-10 sticky top-28" style={{ borderColor: '#33333318', boxShadow: '0 18px 45px #8B93A712' }}>
-              <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>What it feels like</p>
-              <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-5">The service is practical. The feeling is emotional.</h2>
+              <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>What changes after a visit</p>
+              <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-5">The house gets handled. So does the decision fatigue.</h2>
               <p className="font-body text-sm font-light leading-relaxed mb-6" style={{ color: '#333333b3' }}>
-                A reset is not only about the dishes, the laundry, the errands, or the room that has been silently bothering you for three weeks. It is about getting a little bit of your bandwidth back.
+                The service is designed to turn vague overwhelm into visible progress. Not by doing everything at once, but by choosing what matters most and making the next step obvious.
               </p>
               <div className="flex flex-wrap gap-2">
                 {VALUES.map((value, index) => <ValuePill key={value} label={value} index={index} />)}
@@ -173,11 +179,7 @@ export default function About() {
 
           <AnimatedSection delay={0.1}>
             <div className="space-y-5">
-              {[
-                ['Before', 'You are running the house from memory, juggling five unfinished tasks, and trying to decide which fire matters most.'],
-                ['During', 'A capable person arrives, listens without judgment, gets oriented, and starts making visible progress.'],
-                ['After', 'The home feels more breathable. The list is shorter. The mental noise is quieter. You have proof that help can actually help.'],
-              ].map(([label, text], index) => (
+              {SUPPORT_EXAMPLES.map(([label, text], index) => (
                 <div key={label} className="rounded-[2rem] border bg-white p-7" style={{ borderColor: '#33333318', borderLeft: `7px solid ${['#CAE7B9', '#F3DE8A', '#EB9486'][index]}` }}>
                   <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2" style={{ color: '#33333399' }}>{label}</p>
                   <p className="font-heading text-xl font-semibold text-charcoal leading-snug">{text}</p>
@@ -198,9 +200,9 @@ export default function About() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-10">
               {[
-                ['Careful hiring', 'Future providers will be chosen for trust, communication, safety, and emotional intelligence.'],
-                ['Clear standards', 'The service should feel consistent whether it is Masha or a trained provider at the door.'],
-                ['Human support', 'Growth will not mean losing the warmth that made the brand worth building.'],
+                ['Trust first', 'Future providers will need to feel safe, steady, and respectful in the private space of someone’s home.'],
+                ['Training matters', 'The standard will include communication, scope boundaries, safety, and how to prioritize without judgment.'],
+                ['Growth with care', 'The goal is not to become the biggest. It is to become reliable enough to help more homes well.'],
               ].map(([title, text], index) => (
                 <div key={title} className="rounded-3xl border bg-white p-6" style={{ borderColor: '#33333318', borderTop: `7px solid ${['#DFE3A2', '#EFB988', '#B58A90'][index]}` }}>
                   <p className="font-heading text-lg font-semibold text-charcoal mb-2">{title}</p>
