@@ -1,6 +1,5 @@
 import React from 'react';
 import HeroSection from '../components/home/HeroSection';
-import MashaSection from '../components/home/MashaSection';
 import ServicesPreview from '../components/home/ServicesPreview';
 import TrustSection from '../components/home/TrustSection';
 import ConsultSection, { HeavyManifestoSection, HeavySituationsSection } from '../components/home/ConsultSection';
@@ -16,7 +15,6 @@ const SECTION_BACKGROUNDS = {
   manifesto: '#F8E8E2',
   situations: '#F5E6E9',
   trust: '#F1ECEF',
-  masha: '#97A7B31F',
   membership: '#CAE7B91F',
   serviceArea: '#8B93A71F',
   testimonials: '#E4EBEF',
@@ -37,8 +35,6 @@ export default function Home() {
       <HeavySituationsSection />
       <WaveDivider fill={SECTION_BACKGROUNDS.trust} />
       <TrustSection />
-      <WaveDivider fill={SECTION_BACKGROUNDS.masha} flip />
-      <MashaSection />
       <WaveDivider fill={SECTION_BACKGROUNDS.membership} />
       <MembershipPreview />
       <WaveDivider fill={SECTION_BACKGROUNDS.serviceArea} flip />
