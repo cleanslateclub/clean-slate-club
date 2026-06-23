@@ -25,7 +25,7 @@ const ACCENT_COLOR_OVERRIDES = {
   organization: '#7E7F9A',
 };
 
-const SOFT_GREEN_TINT = '#CAE7B91F';
+const SOFT_GREEN_TINT = '#F7F9F3';
 const FOOTER_COLOR = '#333333';
 const CARD_TINT = '1F';
 
