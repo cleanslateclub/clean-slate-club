@@ -68,7 +68,7 @@ export default function HeroSection() {
             style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 62, ease: 'linear', repeat: Infinity }}
+              transition={{ duration: 105, ease: 'linear', repeat: Infinity }}
               className="flex gap-2.5 w-max">
               {marqueeTasks.map((t, i) =>
                 <span
