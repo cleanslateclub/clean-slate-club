@@ -25,7 +25,7 @@ function MembershipLogoTitle() {
 
 export default function MembershipPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#CAE7B91F' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F9FCF7' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -45,38 +45,34 @@ export default function MembershipPreview() {
             <div className="h-full rounded-[2rem] border p-8 lg:p-10 flex flex-col justify-between" style={{ background: '#FFFFFFCC', borderColor: '#B58A9040', boxShadow: '0 18px 45px #B58A9015' }}>
               <div>
                 <MembershipLogoTitle />
-                <p className="font-body text-base leading-relaxed font-light mb-8" style={{ color: '#333333b3' }}>
-                  Membership is for the households that know support shouldn't be saved for a crisis. It's a simple way to keep your home, schedule, and mental load from reaching the breaking point.
+                <p className="font-body text-sm leading-relaxed font-light mb-8" style={{ color: '#333333b3' }}>
+                  A simple monthly membership for homes that want support to feel easier to book, plan, and repeat.
                 </p>
-                <div className="flex items-end gap-2 mb-8">
-                  <span className="font-heading text-5xl font-semibold" style={{ color: '#333333' }}>$49</span>
-                  <span className="font-body text-sm font-light mb-2" style={{ color: '#33333399' }}>/month</span>
+                <div className="rounded-[1.5rem] p-6 text-center" style={{ background: '#F1F1F1' }}>
+                  <p className="font-heading text-5xl font-semibold text-charcoal mb-1">$49</p>
+                  <p className="font-body text-xs uppercase tracking-[0.22em] text-charcoal/50 font-light">per month</p>
                 </div>
               </div>
-              <Link
-                to="/memberships"
-                className="inline-block font-body text-sm tracking-wide px-10 py-4 rounded-full hover:shadow-xl transition-all duration-500 text-center"
-                style={{ background: '#333333', color: '#FFFFFF' }}>
-                Explore Membership
+              <Link to="/memberships" className="mt-8 inline-block text-center text-white font-body text-sm tracking-wide px-8 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg" style={{ background: '#333333' }}>
+                View Membership →
               </Link>
             </div>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {perks.map((perk, i) =>
-            <AnimatedSection key={perk.label} delay={0.15 + i * 0.05}>
-                <div className="h-full rounded-3xl border p-5" style={{ background: withOpacity(perk.dot), borderColor: perk.dot + '55' }}>
-                  <div className="flex items-start gap-4">
-                    <span className="font-logo text-3xl leading-none" style={{ color: '#33333380' }}>{perk.number}</span>
-                    <div>
-                      <h3 className="font-heading text-base font-semibold mb-1" style={{ color: '#333333' }}>{perk.label}</h3>
-                      <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333b3' }}>{perk.detail}</p>
-                    </div>
+          <AnimatedSection delay={0.2}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
+              {perks.map(perk => (
+                <div key={perk.label} className="rounded-[1.5rem] border p-5" style={{ background: withOpacity(perk.dot), borderColor: `${perk.dot}55` }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: perk.dot }} />
+                    <span className="font-body text-xs text-charcoal/35 font-light">{perk.number}</span>
                   </div>
+                  <h3 className="font-heading text-xl font-semibold text-charcoal mb-2">{perk.label}</h3>
+                  <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333b3' }}>{perk.detail}</p>
                 </div>
-              </AnimatedSection>
-            )}
-          </div>
+              ))}
+            </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>
