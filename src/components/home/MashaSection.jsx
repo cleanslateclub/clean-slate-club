@@ -26,16 +26,16 @@ export default function MashaSection() {
 
           {/* Story copy */}
           <AnimatedSection delay={0.2}>
-            <div className="flex items-center gap-2 mb-5">
+            <div className="flex items-center gap-2 mb-4">
               <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
               <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>THE WOMAN BEHIND THE BRAND</p>
             </div>
-            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2 leading-tight">
+            <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
               Meet Masha.
             </h2>
-            <p className="font-logo text-2xl mb-8" style={{ color: '#EB9486' }}>She gets it.</p>
+            <p className="font-body text-base max-w-lg leading-relaxed font-light mb-8" style={{ color: '#333333b3' }}>She gets it.</p>
 
             <div className="space-y-5 font-body text-base leading-relaxed font-light" style={{ color: '#333333cc' }}>
               <p>
