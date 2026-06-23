@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UsersRound } from 'lucide-react';
+import { Globe, Mail, Phone, UsersRound } from 'lucide-react';
 
 const serviceAreas = [
   'Flourtown', 'Wyndmoor', 'Erdenheim', 'Chestnut Hill',
@@ -23,6 +23,19 @@ function TeamLoginLink({ compact = false }) {
         <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">Provider portal</span>
       </span>
     </Link>
+  );
+}
+
+function FooterContactLink({ href, icon: Icon, children, ariaLabel }) {
+  return (
+    <a
+      href={href}
+      aria-label={ariaLabel}
+      className="inline-flex items-center gap-1.5 font-body text-xs text-white/40 hover:text-coral transition-colors font-light"
+    >
+      <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+      <span>{children}</span>
+    </a>
   );
 }
 
@@ -137,7 +150,17 @@ export default function Footer() {
             <span className="text-white/20 text-xs">·</span>
             <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
             <span className="hidden sm:inline text-white/20 text-xs">·</span>
-            <a href="https://cleanslateclub.co" className="hidden sm:inline font-body text-xs text-white/40 hover:text-coral transition-colors font-light">cleanslateclubpa@gmail.com · (215) 500-3758 · cleanslateclub.co</a>
+            <FooterContactLink href="mailto:cleanslateclubpa@gmail.com" icon={Mail} ariaLabel="Email Clean Slate Club">
+              cleanslateclubpa@gmail.com
+            </FooterContactLink>
+            <span className="text-white/20 text-xs">·</span>
+            <FooterContactLink href="tel:+12155003758" icon={Phone} ariaLabel="Call Clean Slate Club">
+              (215) 500-3758
+            </FooterContactLink>
+            <span className="text-white/20 text-xs">·</span>
+            <FooterContactLink href="https://cleanslateclub.co" icon={Globe} ariaLabel="Visit Clean Slate Club website">
+              cleanslateclub.co
+            </FooterContactLink>
           </div>
         </div>
       </div>
