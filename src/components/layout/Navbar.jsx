@@ -21,7 +21,7 @@ const navLinks = [
   { label: 'Services', path: '/services' },
   { label: 'Memberships', path: '/memberships' },
   { label: 'FAQ', path: '/faq' },
-  { label: 'About', path: '/', hash: 'about' },
+  { label: 'About', path: '/about' },
 ];
 
 export default function Navbar() {
