@@ -24,6 +24,15 @@ const IconCare = () => (
   </svg>
 );
 
+function LogoText() {
+  return (
+    <span className="inline-flex items-baseline gap-1.5 align-baseline whitespace-nowrap">
+      <span className="font-heading text-[0.74em] font-semibold tracking-[0.18em] uppercase text-charcoal">Clean Slate</span>
+      <span className="font-logo text-[1em] leading-none" style={{ color: '#EB9486' }}>Club</span>
+    </span>
+  );
+}
+
 const painPoints = [
   {
     title: 'Mental tabs everywhere',
@@ -91,30 +100,29 @@ const painPoints = [
   },
 ];
 
-const supportTags = [
-  'home reset help',
-  'household support',
-  'family logistics',
-  'errand support',
-  'meal prep help',
-  'recovery support',
-  'busy moms',
-  'Montgomery County homes'
-];
-
-function PainPointCard({ point, open, onToggle }) {
+function PainPointCard({ point, open, onToggle, index }) {
   const PointIcon = point.icon;
   return (
-    <div className="rounded-3xl border overflow-hidden transition-all duration-300" style={{ background: open ? '#FFFFFF' : `${point.color}38`, borderColor: open ? '#33333322' : `${point.color}90`, boxShadow: open ? '0 16px 38px #8B93A714' : 'none' }}>
+    <div
+      className="rounded-[1.75rem] border overflow-hidden transition-all duration-500 hover:-translate-y-1"
+      style={{
+        background: open ? '#FFFFFF' : `linear-gradient(135deg, #FFFFFF 0%, ${point.color}33 100%)`,
+        borderColor: open ? `${point.color}AA` : '#33333314',
+        boxShadow: open ? '0 18px 45px #8B93A71A' : '0 8px 24px #8B93A70D',
+      }}
+    >
       <button type="button" onClick={onToggle} className="w-full text-left p-5 flex gap-4 items-start">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border" style={{ background: '#FFFFFFB3', borderColor: point.color, color: '#333333' }}>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border" style={{ background: `${point.color}45`, borderColor: `${point.color}BB`, color: '#333333' }}>
           <PointIcon />
         </div>
         <div className="flex-1">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-heading text-lg font-semibold" style={{ color: '#333333' }}>{point.title}</h3>
-              <p className="font-body text-xs font-light mt-1" style={{ color: '#33333399' }}>{point.prompt}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-logo text-2xl leading-none" style={{ color: '#33333366' }}>{String(index + 1).padStart(2, '0')}</span>
+                <h3 className="font-heading text-lg font-semibold" style={{ color: '#333333' }}>{point.title}</h3>
+              </div>
+              <p className="font-body text-xs font-light" style={{ color: '#33333399' }}>{point.prompt}</p>
             </div>
             <span className="font-logo text-3xl leading-none transition-transform duration-300" style={{ color: '#33333399', transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
           </div>
@@ -122,9 +130,9 @@ function PainPointCard({ point, open, onToggle }) {
       </button>
 
       {open && (
-        <div className="px-5 pb-5 ml-16 -mt-2">
+        <div className="px-5 pb-5 md:ml-16 -mt-1">
           <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{point.intro}</p>
-          <div className="rounded-2xl p-4" style={{ background: `${point.color}30` }}>
+          <div className="rounded-2xl p-4" style={{ background: `${point.color}25`, border: `1px solid ${point.color}70` }}>
             <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Ways we can help</p>
             <ul className="space-y-2">
               {point.helps.map(item => (
@@ -142,17 +150,20 @@ function PainPointCard({ point, open, onToggle }) {
 }
 
 export default function ConsultSection() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(-1);
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FDF5E6 0%, #FDFCFB 48%, #F1F1F1 100%)' }}>
+      <div className="absolute -top-24 -left-20 w-72 h-72 rounded-full blur-3xl opacity-40" style={{ background: '#CAE7B9' }} />
+      <div className="absolute top-80 -right-24 w-80 h-80 rounded-full blur-3xl opacity-35" style={{ background: '#EB9486' }} />
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <AnimatedSection className="mb-10 text-center max-w-3xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-5">
+        <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center justify-center gap-2 mb-5 rounded-full border px-5 py-2 bg-white/70" style={{ borderColor: '#33333312', boxShadow: '0 8px 24px #8B93A70D' }}>
             <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
             <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
             <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
+            <p className="font-body tracking-[0.25em] uppercase font-light text-sm ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
           </div>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3 leading-tight">
             It is rarely just the mess.
@@ -161,54 +172,48 @@ export default function ConsultSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white p-7 md:p-10 lg:p-12 text-center relative overflow-hidden" style={{ borderColor: '#33333318', boxShadow: '0 22px 55px #8B93A716' }}>
-            <div className="absolute inset-x-0 top-0 h-2" style={{ background: 'linear-gradient(90deg, #DFE3A2, #CAE7B9, #F3DE8A, #EFB988, #EB9486, #B58A90)' }} />
-            <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-6">
-              Clean Slate Club was built for the households carrying more than a to-do list.
-            </p>
-            <div className="space-y-4 font-body text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto" style={{ color: '#333333b3' }}>
-              <p>
-                For the default parent. The ADHD household. The caregiver. The person recovering from surgery. The home moving through grief, burnout, school chaos, postpartum life, aging-parent stress, or a season that simply got too full.
+          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white/95 p-7 md:p-10 lg:p-14 text-center relative overflow-hidden" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 12% 16%, #CAE7B933 0, transparent 30%), radial-gradient(circle at 88% 78%, #EB948626 0, transparent 34%)' }} />
+            <div className="relative">
+              <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
+                <LogoText /> was built for the households carrying more than a to-do list.
               </p>
-              <p>
-                This is practical household support for the moments when the dishes are not just dishes, the laundry is not just laundry, and the errand is not just an errand. It is the mental load behind all of it.
-              </p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-2 mt-7">
-              {supportTags.map((tag, index) => {
-                const colors = ['#DFE3A2', '#CAE7B9', '#F3DE8A', '#EFB988', '#EB9486', '#B58A90'];
-                const color = colors[index % colors.length];
-                return (
-                  <span key={tag} className="rounded-full border px-4 py-2 font-body text-xs font-light" style={{ background: `${color}40`, borderColor: `${color}80`, color: '#333333' }}>
-                    {tag}
-                  </span>
-                );
-              })}
+              <div className="mx-auto mb-7 h-px w-28" style={{ background: '#33333322' }} />
+              <div className="space-y-5 font-body text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto" style={{ color: '#333333b3' }}>
+                <p>
+                  For the default parent. The ADHD household. The caregiver. The person recovering from surgery. The home moving through grief, burnout, school chaos, postpartum life, aging-parent stress, or a season that simply got too full.
+                </p>
+                <p>
+                  This is practical household support for the moments when the dishes are not just dishes, the laundry is not just laundry, and the errand is not just an errand. It is the mental load behind all of it.
+                </p>
+              </div>
             </div>
           </div>
         </AnimatedSection>
 
-        <AnimatedSection delay={0.2}>
-          <div className="max-w-5xl mx-auto mt-10">
-            <div className="text-center mb-6">
+        <AnimatedSection delay={0.18}>
+          <div className="max-w-5xl mx-auto mt-14 rounded-[2.25rem] border bg-white/75 p-5 md:p-7 lg:p-8" style={{ borderColor: '#33333314', boxShadow: '0 18px 50px #8B93A711' }}>
+            <div className="text-center mb-7">
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Does this sound like your house?</p>
               <p className="font-logo text-2xl" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {painPoints.map((point, index) => (
-                <PainPointCard
-                  key={point.title}
-                  point={point}
-                  open={openIndex === index}
-                  onToggle={() => setOpenIndex(openIndex === index ? -1 : index)}
-                />
+                <AnimatedSection key={point.title} delay={0.03 * index}>
+                  <PainPointCard
+                    point={point}
+                    index={index}
+                    open={openIndex === index}
+                    onToggle={() => setOpenIndex(openIndex === index ? -1 : index)}
+                  />
+                </AnimatedSection>
               ))}
             </div>
           </div>
         </AnimatedSection>
 
         <AnimatedSection delay={0.25}>
-          <div className="max-w-3xl mx-auto mt-10 rounded-3xl border bg-white p-6 text-center" style={{ borderColor: '#33333318' }}>
+          <div className="max-w-3xl mx-auto mt-12 rounded-[2rem] border bg-white p-7 text-center" style={{ borderColor: '#33333318', boxShadow: '0 14px 40px #8B93A710' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#EB9486' }}>You do not have to know what to ask for.</p>
             <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
               That is part of the service. We help turn “everything feels like too much” into a realistic home reset, errand plan, family support visit, meal prep day, or custom household support session that actually fits your life.
