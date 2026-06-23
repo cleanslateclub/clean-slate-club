@@ -85,7 +85,7 @@ export default function SmsTerms() {
               </p>
               <ul className="mt-3 space-y-1.5">
                 <li className="font-body text-sm text-charcoal font-light">
-                  Text or call: <strong>(206) 825-4061</strong>
+                  Text or call: <strong>(215) 500-3758</strong>
                 </li>
                 <li className="font-body text-sm text-charcoal font-light">
                   Email: <strong>cleanslateclubpa@gmail.com</strong>
