@@ -48,7 +48,7 @@ const IconQuestion = () =>
   </svg>;
 
 const CARD_TINT = '1F';
-const SECTION_BACKGROUND = '#CAE7B91F';
+const SECTION_BACKGROUND = '#F9FCF7';
 
 const categories = [{
   iconKey: 'home',
@@ -128,65 +128,51 @@ export default function ServicesPreview() {
             This isn't a cleaning menu.
           </h2>
           <p className="font-body text-base max-w-lg leading-relaxed font-light" style={{ color: '#333333b3' }}>
-            It's household support — organized around your life, your family, and what actually needs to happen.
+            It's practical support for the parts of home life that keep piling up.
           </p>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat, i) =>
-          <AnimatedSection key={cat.name} delay={i * 0.1}>
-              <div
-              className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative"
-              style={{ background: '#FFFFFF', borderColor: cat.color + '35', boxShadow: `0 18px 45px ${cat.color}12` }}>
-                <div className="absolute top-0 left-0 right-0 h-1" style={{ background: cat.color }} />
-                {cat.img &&
-              <div className="h-44 overflow-hidden relative" style={{ background: `linear-gradient(135deg, ${cat.color}66, ${cat.glow}33)` }}>
-                    <img
-                      src={cat.img}
-                      alt={cat.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                    />
-                    <div className="absolute inset-0 opacity-20" style={{ background: cat.color }} />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+          {categories.map((cat, i) => {
+            const Icon = iconMap[cat.iconKey];
+            return (
+              <AnimatedSection key={cat.name} delay={i * 0.05}>
+                <div className="group h-full rounded-[2rem] overflow-hidden border transition-all duration-500 hover:-translate-y-1 hover:shadow-xl" style={{ background: '#FFFFFF', borderColor: `${cat.color}35`, boxShadow: '0 14px 45px #8B93A712' }}>
+                  <div className="relative h-48 overflow-hidden">
+                    <img src={cat.img} alt={cat.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent, ${cat.color}55)` }} />
                   </div>
-              }
-                <div className="p-7 flex flex-col flex-1 relative" style={{ background: cat.bg }}>
-                  <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: cat.color, background: '#FFFFFFB3', borderColor: cat.color + '35' }}>{React.createElement(iconMap[cat.iconKey])}</div>
-                  <h3 className="font-heading text-lg font-semibold mb-1" style={{ color: '#333333' }}>{cat.name}</h3>
-                  <p className="font-body text-sm font-medium mb-3" style={{ color: cat.color }}>{cat.tagline}</p>
-                  <p className="font-body text-sm leading-relaxed font-light flex-1" style={{ color: '#333333cc' }}>{cat.desc}</p>
-                </div>
-              </div>
-            </AnimatedSection>
-          )}
-
-          <AnimatedSection delay={0.5}>
-            <div className="group rounded-3xl border overflow-hidden hover:shadow-xl transition-all duration-500 h-full flex flex-col relative" style={{ background: '#FFFFFF', borderColor: customSupport.color, boxShadow: `0 18px 45px ${customSupport.color}18` }}>
-              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: customSupport.color }} />
-              <div className="h-44 overflow-hidden relative">
-                <img src={customSupport.img} alt="Custom household support" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
-                <div className="absolute inset-0 opacity-20" style={{ background: customSupport.color }} />
-              </div>
-              <div className="p-7 flex flex-col flex-1 relative" style={{ background: customSupport.bg }}>
-                <div className="mb-3 w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ color: '#333333', background: '#FFFFFFB3', borderColor: customSupport.color }}>{React.createElement(iconMap[customSupport.iconKey])}</div>
-                <h3 className="font-heading text-lg font-semibold mb-2" style={{ color: '#333333' }}>{customSupport.tagline}</h3>
-                <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
-                <div className="space-y-2 mb-6">
-                  {customSupport.fit.map((item) => (
-                    <div key={item} className="flex items-center gap-2 font-body text-xs font-light" style={{ color: '#333333cc' }}>
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: customSupport.color }} />
-                      {item}
+                  <div className="p-7" style={{ background: cat.bg }}>
+                    <div className="mb-4 flex items-center justify-between gap-4">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full" style={{ background: '#FFFFFFCC', color: '#333333' }}><Icon /></span>
+                      <span className="h-2 w-2 rounded-full" style={{ background: cat.color }} />
                     </div>
-                  ))}
+                    <h3 className="font-heading text-2xl font-semibold text-charcoal mb-1">{cat.name}</h3>
+                    <p className="font-logo text-xl mb-4" style={{ color: cat.color }}>{cat.tagline}</p>
+                    <p className="font-body text-sm leading-relaxed font-light" style={{ color: '#333333cc' }}>{cat.desc}</p>
+                  </div>
                 </div>
-                <Link to="/services" className="font-body text-sm font-medium inline-flex items-center gap-2 mt-auto" style={{ color: '#333333' }}>
-                  Explore options <span>→</span>
-                </Link>
+              </AnimatedSection>
+            );
+          })}
+
+          <AnimatedSection delay={0.3}>
+            <div className="h-full rounded-[2rem] border p-7 flex flex-col justify-between" style={{ background: customSupport.bg, borderColor: '#CAE7B955', boxShadow: '0 14px 45px #8B93A712' }}>
+              <div>
+                <span className="mb-5 flex h-12 w-12 items-center justify-center rounded-full" style={{ background: '#FFFFFFCC', color: '#333333' }}>{React.createElement(iconMap[customSupport.iconKey])}</span>
+                <p className="font-logo text-2xl mb-4" style={{ color: '#7E7F9A' }}>{customSupport.tagline}</p>
+                <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333cc' }}>{customSupport.desc}</p>
+                <div className="flex flex-wrap gap-2">
+                  {customSupport.fit.map(item => <span key={item} className="rounded-full bg-white/70 px-3 py-1.5 font-body text-xs text-charcoal/70 font-light">{item}</span>)}
+                </div>
               </div>
+              <Link to="/services" className="mt-8 inline-block text-center text-white font-body text-sm tracking-wide px-6 py-3 rounded-full transition-all duration-300 hover:opacity-90" style={{ background: '#333333' }}>
+                Explore Services →
+              </Link>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 }
