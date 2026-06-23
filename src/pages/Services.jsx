@@ -1,147 +1,57 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
+import AnimatedSection from '@/components/shared/AnimatedSection';
 import WaveDivider from '@/components/shared/WaveDivider';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-// Display order: least expensive services to most expensive.
-const SERVICE_ORDER = [
-  'errands',
-  'senior_support',
-  'mothers_helper',
-  'organization',
-  'home_reset',
-  'meal_prep',
-];
+const SERVICE_ORDER = ['home_reset', 'meal_prep', 'mothers_helper', 'senior_support', 'errands', 'organization'];
 
-// Service card colors move lightest to darkest down the page.
 const COLOR_OVERRIDES = {
-  errands: '#DFE3A2',
-  senior_support: '#CAE7B9',
-  mothers_helper: '#F3DE8A',
-  organization: '#EFB988',
   home_reset: '#EB9486',
-  meal_prep: '#B58A90',
+  meal_prep: '#F3DE8A',
+  mothers_helper: '#EFB988',
+  senior_support: '#B58A90',
+  errands: '#CAE7B9',
+  organization: '#7E7F9A',
 };
 
 const ACCENT_COLOR_OVERRIDES = {
+  home_reset: '#EB9486',
+  meal_prep: '#8B93A7',
+  mothers_helper: '#EFB988',
+  senior_support: '#B58A90',
   errands: '#8B93A7',
-  senior_support: '#7E7F9A',
-  mothers_helper: '#B58A90',
-  organization: '#B58A90',
-  home_reset: '#7E7F9A',
-  meal_prep: '#7E7F9A',
+  organization: '#7E7F9A',
 };
+
+const SOFT_GREEN_TINT = '#CAE7B91F';
+const CARD_TINT = '1F';
 
 const SERVICE_EXAMPLE_CHIPS = {
   errands: {
-    preview: [
-      'Grocery pickup',
-      'Pharmacy runs',
-      'Returns & shipping',
-      'Donation dropoff',
-      'Dry cleaning',
-      'Gift errands',
-    ],
-    more: [
-      'Household supply runs',
-      'Pet supply pickup',
-      'Appointment transportation',
-      'Activity pickup',
-      'Marketplace pickups',
-      'Personal shopping',
-    ],
+    preview: ['Grocery pickup', 'Pharmacy runs', 'Returns & shipping', 'Donation dropoff', 'Dry cleaning', 'Gift errands'],
+    more: ['Household supply runs', 'Pet supply pickup', 'Appointment transportation', 'Activity pickup', 'Marketplace pickups', 'Personal shopping'],
   },
   senior_support: {
-    preview: [
-      'Friendly check-ins',
-      'Companionship',
-      'Grocery support',
-      'Prescription pickup',
-      'Laundry help',
-      'Meal portioning',
-    ],
-    more: [
-      'Appointment rides',
-      'Waiting room support',
-      'Mail assistance',
-      'Technology help',
-      'Light kitchen help',
-      'Pet feeding',
-    ],
+    preview: ['Friendly check-ins', 'Companionship', 'Grocery support', 'Prescription pickup', 'Laundry help', 'Meal portioning'],
+    more: ['Appointment rides', 'Waiting room support', 'Mail assistance', 'Technology help', 'Light kitchen help', 'Pet feeding'],
   },
   mothers_helper: {
-    preview: [
-      'School pickup',
-      'Activity transportation',
-      'Baby & toddler support',
-      'Lunch packing',
-      "Children's laundry",
-      'Playroom reset',
-    ],
-    more: [
-      'Snack prep',
-      'Child bedroom reset',
-      'Postpartum support',
-      'Recovery support',
-      'Errand assistance',
-      'Grocery help',
-    ],
+    preview: ['School pickup', 'Activity transportation', 'Baby & toddler support', 'Lunch packing', 'Children’s laundry', 'Playroom reset'],
+    more: ['Snack prep', 'Child bedroom reset', 'Postpartum support', 'Recovery support', 'Errand assistance', 'Grocery help'],
   },
   organization: {
-    preview: [
-      'Pantry zones',
-      'Closet reset',
-      'Toy organization',
-      'Paper sorting',
-      'Donation prep',
-      'Laundry room reset',
-    ],
-    more: [
-      'Bathroom cabinets',
-      'Kitchen drawers',
-      'Linen closet',
-      'Office reset',
-      'Storage labeling',
-      'Household systems',
-    ],
+    preview: ['Pantry zones', 'Closet reset', 'Toy organization', 'Paper sorting', 'Donation prep', 'Laundry room reset'],
+    more: ['Bathroom cabinets', 'Kitchen drawers', 'Linen closet', 'Office reset', 'Storage labeling', 'Household systems'],
   },
   home_reset: {
-    preview: [
-      'Kitchen reset',
-      'Laundry catch-up',
-      'Dish reset',
-      'Living room tidy',
-      'Bed linen change',
-      'Entryway reset',
-    ],
-    more: [
-      'Bathroom surface refresh',
-      'Toy pickup',
-      'Mail sorting',
-      'Trash & recycling',
-      'Supply restock',
-      'Guest room prep',
-    ],
+    preview: ['Kitchen reset', 'Laundry catch-up', 'Dish reset', 'Living room tidy', 'Bed linen change', 'Entryway reset'],
+    more: ['Bathroom surface refresh', 'Toy pickup', 'Mail sorting', 'Trash & recycling', 'Supply restock', 'Guest room prep'],
   },
   meal_prep: {
-    preview: [
-      'Produce prep',
-      'Protein prep',
-      'School lunches',
-      'Smoothie packs',
-      'Freezer meals',
-      'Snack stations',
-    ],
-    more: [
-      'Breakfast prep',
-      'Family dinners',
-      'Pantry restock',
-      'Fridge refresh',
-      'Meal portioning',
-      'Labeling & storage',
-    ],
+    preview: ['Produce prep', 'Protein prep', 'School lunches', 'Smoothie packs', 'Freezer meals', 'Snack stations'],
+    more: ['Breakfast prep', 'Family dinners', 'Pantry restock', 'Fridge refresh', 'Meal portioning', 'Labeling & storage'],
   },
 };
 
@@ -150,39 +60,39 @@ const CTA_STYLE = { background: '#333333' };
 
 function ExampleChips({ serviceKey, accentColor }) {
   const [expanded, setExpanded] = useState(false);
-  const examples = SERVICE_EXAMPLE_CHIPS[serviceKey];
+  const chipData = SERVICE_EXAMPLE_CHIPS[serviceKey];
+  if (!chipData) return null;
 
-  if (!examples) return null;
-
-  const chips = expanded ? [...examples.preview, ...examples.more] : examples.preview;
+  const chips = expanded ? [...chipData.preview, ...chipData.more] : chipData.preview;
 
   return (
-    <div className="mb-7">
-      <p className="font-body text-xs uppercase tracking-[0.18em] text-charcoal/55 font-light mb-3">
-        Examples only. Each visit is built around time, priorities, and your actual needs.
+    <div className="mb-6">
+      <p className="font-body text-[11px] uppercase tracking-[0.18em] text-charcoal/45 font-light mb-2">
+        Examples only
       </p>
       <div className="flex flex-wrap gap-2">
-        {chips.map(task => (
+        {chips.map(chip => (
           <span
-            key={task}
-            className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
-            style={{ borderColor: accentColor + '30', background: '#FFFFFFCC' }}
+            key={chip}
+            className="inline-flex items-center rounded-full border px-3 py-1.5 font-body text-xs font-light text-charcoal/75"
+            style={{ background: '#FFFFFFB8', borderColor: `${accentColor}40` }}
           >
-            {task}
+            {chip}
           </span>
         ))}
-        {examples.more.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setExpanded(prev => !prev)}
-            className="px-3 py-1.5 rounded-full text-sm font-body font-medium text-charcoal border transition-all duration-200 hover:shadow-sm"
-            style={{ borderColor: accentColor + '55', background: '#FFFFFF' }}
-            aria-expanded={expanded}
-          >
-            {expanded ? 'Show less' : '+ More'}
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={() => setExpanded(prev => !prev)}
+          className="inline-flex items-center rounded-full border px-3 py-1.5 font-body text-xs font-medium transition-all duration-200 hover:shadow-sm"
+          style={{ background: `${accentColor}${CARD_TINT}`, borderColor: `${accentColor}66`, color: '#333333' }}
+          aria-expanded={expanded}
+        >
+          {expanded ? 'Show less' : '+ More'}
+        </button>
       </div>
+      <p className="font-body text-xs text-charcoal/45 font-light mt-2 leading-relaxed">
+        Examples only. Each visit is built around time, priorities, and your actual needs.
+      </p>
     </div>
   );
 }
@@ -198,11 +108,11 @@ export default function Services() {
         title="Pick Your Backup."
         script="Start where it feels heaviest."
         description="Choose the support you need, build a visit around real life, and get an estimate before anything is finalized."
-        waveFill="#F7FAF4"
+        waveFill={SOFT_GREEN_TINT}
         scriptColor="#EB9486"
       />
 
-      <section style={{ background: '#F7FAF4' }}>
+      <section style={{ background: SOFT_GREEN_TINT }}>
         {/* Free Consult Banner — only renders if consult config exists */}
         {consult && (
           <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-10 pb-8 sm:pb-4">
@@ -258,7 +168,7 @@ export default function Services() {
                   style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
                 >
                   <div className="h-3" style={{ background: color }} />
-                  <div className="p-6 sm:p-9" style={{ background: color + '24' }}>
+                  <div className="p-6 sm:p-9" style={{ background: color + CARD_TINT }}>
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                       <div>
                         <div className="flex items-center gap-3 mb-1">
@@ -269,7 +179,7 @@ export default function Services() {
                           <p className="font-logo text-xl ml-6" style={{ color: accentColor }}>{service.sublabel}</p>
                         )}
                       </div>
-                      <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFFCC', borderColor: accentColor + '24' }}>
+                      <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFFCC', borderColor: accentColor + CARD_TINT }}>
                         <p className="font-heading text-xl font-semibold text-charcoal">{priceDisplay}</p>
                         <p className="font-body text-sm text-charcoal/75 font-light">
                           {minHrs}–{Math.round(durationHrs) + 1} hrs typical
