@@ -26,6 +26,7 @@ const ACCENT_COLOR_OVERRIDES = {
 };
 
 const SOFT_GREEN_TINT = '#CAE7B91F';
+const FOOTER_COLOR = '#333333';
 const CARD_TINT = '1F';
 
 const SERVICE_EXAMPLE_CHIPS = {
@@ -92,7 +93,7 @@ function ExampleChips({ serviceKey, accentColor }) {
   return (
     <div className="mb-6">
       <p className="font-body text-[11px] uppercase tracking-[0.18em] text-charcoal/45 font-light mb-2">
-        Examples only
+        Examples
       </p>
       <div className="flex flex-wrap gap-2">
         {chips.map(chip => (
@@ -114,9 +115,6 @@ function ExampleChips({ serviceKey, accentColor }) {
           {expanded ? 'Show less' : '+ More'}
         </button>
       </div>
-      <p className="font-body text-xs text-charcoal/45 font-light mt-2 leading-relaxed">
-        Examples only. Each visit is built around time, priorities, and your actual needs.
-      </p>
     </div>
   );
 }
@@ -174,7 +172,7 @@ export default function Services() {
 
       {/* Service Cards */}
       <section style={{ background: SOFT_GREEN_TINT }}>
-        <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-10 sm:py-8 space-y-5 sm:space-y-6">
+        <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-12 sm:pt-8 sm:pb-16 space-y-5 sm:space-y-6">
           {SERVICE_ORDER.map((key, i) => {
             const service = SERVICE_CONFIG[key];
             if (!service) return null;
@@ -239,11 +237,7 @@ export default function Services() {
         </div>
       </section>
 
-      <WaveDivider fill="#F1F1F1" />
-
-      <section style={{ background: '#F1F1F1' }}>
-        <div className="h-8 sm:h-12" />
-      </section>
+      <WaveDivider fill={FOOTER_COLOR} />
     </main>
   );
 }
