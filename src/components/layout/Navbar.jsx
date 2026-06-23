@@ -20,7 +20,7 @@ const CloseIcon = () => (
 const navLinks = [
   { label: 'Services', path: '/services' },
   { label: 'Memberships', path: '/memberships' },
-  { label: 'FAQ', path: '/', hash: 'faq' },
+  { label: 'FAQ', path: '/faq' },
   { label: 'About', path: '/', hash: 'about' },
 ];
 
@@ -94,7 +94,7 @@ export default function Navbar() {
             <Link
               to="/book"
               className="text-white font-body text-sm tracking-wide px-6 py-2.5 rounded-full hover:opacity-90 transition-all duration-300"
-              style={{ background: 'linear-gradient(to right, #EB9486, #fcd5ce)' }}
+              style={{ background: '#333333' }}
             >
               Book Now
             </Link>
@@ -127,7 +127,7 @@ export default function Navbar() {
             <Link
               to="/book"
               className="inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full mt-2"
-              style={{ background: '#EB9486' }}
+              style={{ background: '#333333' }}
             >
               Book Now
             </Link>
