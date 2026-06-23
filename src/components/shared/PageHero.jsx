@@ -16,7 +16,7 @@ export default function PageHero({
   return (
     <>
       <section
-        className={`pt-28 pb-24 px-6 relative overflow-hidden ${className}`}
+        className={`pt-24 sm:pt-28 pb-18 sm:pb-24 px-5 sm:px-6 relative overflow-hidden ${className}`}
         style={{ background }}
       >
         <div className="relative z-10 max-w-3xl mx-auto text-center">
@@ -24,12 +24,12 @@ export default function PageHero({
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-center gap-2 mb-5"
+              className="flex items-center justify-center gap-2 mb-4 sm:mb-5"
             >
               <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EFB988' }} />
               <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
-              <p className="font-body text-xs md:text-sm tracking-[0.32em] uppercase font-light ml-2" style={{ color: '#333333' }}>
+              <p className="font-body text-[11px] md:text-sm tracking-[0.24em] md:tracking-[0.32em] uppercase font-light ml-1.5 sm:ml-2" style={{ color: '#333333' }}>
                 {eyebrow}
               </p>
             </motion.div>
@@ -39,7 +39,7 @@ export default function PageHero({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-body text-3xl md:text-5xl font-light tracking-[0.08em] uppercase mb-4 leading-tight"
+            className="font-body text-[1.9rem] sm:text-4xl md:text-5xl font-light tracking-[0.06em] md:tracking-[0.08em] uppercase mb-4 leading-tight"
             style={{ color: '#333333' }}
           >
             {title}
@@ -50,7 +50,7 @@ export default function PageHero({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="font-logo text-3xl md:text-4xl mb-5 leading-tight"
+              className="font-logo text-[2rem] sm:text-3xl md:text-4xl mb-5 leading-tight"
               style={{ color: scriptColor }}
             >
               {script}
@@ -74,7 +74,7 @@ export default function PageHero({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="mt-8"
+              className="mt-7 sm:mt-8"
             >
               {children}
             </motion.div>
