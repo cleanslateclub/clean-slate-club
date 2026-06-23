@@ -6,11 +6,13 @@ import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
 import WaveDivider from '@/components/shared/WaveDivider';
 
-const ABOUT_BG = '#F7F9F3';
-const STORY_BG = '#FDFCFB';
-const STANDARD_BG = '#F1F1F1';
-const GROWTH_BG = '#F8E8E2';
+const INTRO_BG = '#F7F9F3';
+const DIFFERENCE_BG = '#F8F6EA';
+const STANDARD_BG = '#F6EEE9';
+const APPROACH_BG = '#F2E8EA';
+const GROWTH_BG = '#E4EBEF';
 const FOOTER_COLOR = '#333333';
+const ABOUT_WAVE_CLASS = '!-mt-10 !h-10 sm:!-mt-12 sm:!h-12 lg:!-mt-14 lg:!h-14';
 
 const VALUES = [
   { label: 'No shame spirals', color: '#CAE7B9' },
@@ -71,17 +73,18 @@ function Dots({ className = '' }) {
 
 export default function About() {
   return (
-    <main className="min-h-screen" style={{ background: ABOUT_BG }}>
+    <main className="min-h-screen" style={{ background: INTRO_BG }}>
       <PageHero
         eyebrow="About Clean Slate Club"
         title="For the homes carrying too much."
         script="And the people holding it all."
         description="Practical support for real homes, real routines, and the seasons when keeping up starts to feel like too much."
-        waveFill={ABOUT_BG}
+        waveFill={INTRO_BG}
+        waveClassName={ABOUT_WAVE_CLASS}
         scriptColor="#EB9486"
       />
 
-      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: ABOUT_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: INTRO_BG }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-18 items-center">
           <AnimatedSection>
             <div className="relative mx-auto max-w-md lg:max-w-none">
@@ -134,9 +137,9 @@ export default function About() {
         </div>
       </section>
 
-      <WaveDivider fill={STORY_BG} />
+      <WaveDivider fill={DIFFERENCE_BG} className={ABOUT_WAVE_CLASS} />
 
-      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: STORY_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: DIFFERENCE_BG }}>
         <div className="max-w-7xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10 lg:mb-14">
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The difference</p>
@@ -162,7 +165,7 @@ export default function About() {
         </div>
       </section>
 
-      <WaveDivider fill={STANDARD_BG} />
+      <WaveDivider fill={STANDARD_BG} className={ABOUT_WAVE_CLASS} />
 
       <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-12 lg:pt-12 lg:pb-18" style={{ background: STANDARD_BG }}>
         <div className="max-w-6xl mx-auto">
@@ -182,9 +185,9 @@ export default function About() {
         </div>
       </section>
 
-      <WaveDivider fill={STORY_BG} flip />
+      <WaveDivider fill={APPROACH_BG} flip className={ABOUT_WAVE_CLASS} />
 
-      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: STORY_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-14 lg:pt-12 lg:pb-20" style={{ background: APPROACH_BG }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-start">
           <AnimatedSection>
             <div className="rounded-[2rem] border bg-white p-7 lg:p-10 lg:sticky lg:top-28" style={{ borderColor: '#33333318', boxShadow: '0 18px 45px #8B93A712' }}>
@@ -212,7 +215,7 @@ export default function About() {
         </div>
       </section>
 
-      <WaveDivider fill={GROWTH_BG} />
+      <WaveDivider fill={GROWTH_BG} className={ABOUT_WAVE_CLASS} />
 
       <section className="px-5 sm:px-6 lg:px-12 py-14 lg:py-20" style={{ background: GROWTH_BG }}>
         <div className="max-w-5xl mx-auto text-center">
@@ -247,7 +250,7 @@ export default function About() {
         </div>
       </section>
 
-      <WaveDivider fill={FOOTER_COLOR} />
+      <WaveDivider fill={FOOTER_COLOR} className={ABOUT_WAVE_CLASS} />
     </main>
   );
 }
