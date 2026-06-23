@@ -1,10 +1,10 @@
 import React from 'react';
 import HeroSection from '../components/home/HeroSection';
 import ServicesPreview from '../components/home/ServicesPreview';
-import TrustSection from '../components/home/TrustSection';
+import TrustSection from '../components/home/TrustSectionLite';
 import ConsultSection, { HeavyManifestoSection, HeavySituationsSection } from '../components/home/ConsultSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
-import MembershipPreview from '../components/home/MembershipPreview';
+import MembershipPreview from '../components/home/MembershipPreviewLite';
 import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import FAQSection from '../components/home/FAQSection';
 import WaveDivider from '../components/shared/WaveDivider';
