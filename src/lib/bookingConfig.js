@@ -48,7 +48,7 @@ export const SERVICE_CONFIG = {
       "Pharmacy, dry cleaning, post office in one trip",
       "Birthday gift shopping + wrapped and ready",
       "Amazon returns + donation drop-off",
-      "Multiple store run handled start to finish"
+      "Multiple local stops handled start to finish"
     ],
     taskOptions: [
       "Grocery Shopping & Pickup",
@@ -65,11 +65,10 @@ export const SERVICE_CONFIG = {
       "Appointment Waiting Support",
       "School Pickup or Dropoff",
       "Activity Pickup or Dropoff",
-      "Airport Dropoff or Pickup",
       "Facebook Marketplace Pickup",
       "Coffee, Food or Catering Pickup",
       "Personal Shopping Support",
-      "Last-Minute Errand Assistance",
+      "Local Errand Assistance",
       "Help Me Choose - I'm Overwhelmed"
     ],
     addons: [
@@ -87,10 +86,10 @@ export const SERVICE_CONFIG = {
       { id: "grocery_store_pref", label: "Preferred grocery store(s)?", type: "text", placeholder: "e.g. Whole Foods, Giant, Trader Joe's, ALDI..." },
       { id: "dietary_restrictions", label: "Dietary restrictions or allergies?", type: "text", placeholder: "e.g. gluten-free, nut-free, dairy-free, vegetarian..." },
       { id: "household_size", label: "Household size (shopping for how many?)", type: "select", options: ["1-2 people", "3-4 people", "5-6 people", "7+ people"] },
-      { id: "budget_limit", label: "Errand spend limit (we use your card or reimburse)", type: "select", options: ["Under $50", "$50-$100", "$100-$200", "$200+", "No limit - use judgment"] },
+      { id: "budget_limit", label: "Errand spend limit (we use your card or reimburse)", type: "select", options: ["Under $50", "$50-$100", "$100-$200", "$200+", "Please confirm with me first"] },
       { id: "list_ready", label: "Do you have a list ready?", type: "select", options: ["Yes - I'll share it", "Mostly - I'll finalize it", "No - please help me build one"] },
       { id: "num_stops", label: "Estimated number of stops", type: "select", options: ["1-2", "3-4", "5+", "Not sure"] },
-      { id: "mileage_notes", label: "Any travel distance expectations or area limits?", type: "text", placeholder: "e.g. within 10 miles, specific towns..." },
+      { id: "mileage_notes", label: "Any travel distance expectations or area limits?", type: "text", placeholder: "e.g. nearby only, specific towns, no highway, school/store names..." },
       { id: "special_instructions", label: "Brand preferences or special instructions?", type: "text", placeholder: "e.g. organic only, specific brands, call if substituting..." }
     ]
   },
@@ -124,7 +123,7 @@ export const SERVICE_CONFIG = {
       "Shoe & Jacket Assistance", "Recovery Check-In Support",
       "Conversation & Social Time", "Light Kitchen Assistance",
       "Puzzle/Game Companion Time", "Reading Assistance",
-      "Household Supply Pickup", "Appointment Reminder Support", "Simple Mobility Assistance"
+      "Household Supply Pickup", "Appointment Reminder Support", "Walk-Along Support"
     ],
     addons: [
       { id: "meal_prep_senior", label: "Light Meal Prep & Kitchen Tidy", minutes: 45, price: 35 },
@@ -136,14 +135,13 @@ export const SERVICE_CONFIG = {
     ],
     intakeQuestions: [
       { id: "client_age", label: "Approximate age of senior", type: "select", options: ["65-74", "75-84", "85-94", "95+"] },
-      { id: "mobility_level", label: "Mobility level", type: "select", options: ["Fully mobile", "Uses cane or walker", "Uses wheelchair", "Primarily bed/chair-bound"] },
+      { id: "mobility_level", label: "Mobility level", type: "select", options: ["Fully mobile", "Uses cane or walker", "Uses wheelchair", "Limited mobility - please explain in notes"] },
       { id: "stairs", label: "Stairs in home?", type: "select", options: ["No stairs", "Yes - one flight", "Yes - multi-level"] },
       { id: "transportation_needed", label: "Transportation to appointments needed?", type: "select", options: ["No", "Yes - medical appointments", "Yes - general errands"] },
       { id: "cognitive_notes", label: "Any memory or cognitive considerations?", type: "select", options: ["No", "Mild - occasional forgetfulness", "Moderate - needs guidance", "Significant - please call ahead"] },
       { id: "surgery_recovery", label: "Surgery or medical recovery?", type: "select", options: ["No", "Yes - recent surgery", "Yes - ongoing recovery"] },
       { id: "special_diet", label: "Dietary restrictions for meal support?", type: "text", placeholder: "e.g. diabetic, low sodium, soft foods only..." },
-      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes - dog", "Yes - cat", "Yes - other"] },
-      { id: "emergency_contact", label: "Emergency contact name & phone", type: "text", placeholder: "Name, relationship, phone number" }
+      { id: "has_pets", label: "Pets in home?", type: "select", options: ["No", "Yes - dog", "Yes - cat", "Yes - other"] }
     ]
   },
 
@@ -163,7 +161,7 @@ export const SERVICE_CONFIG = {
       "School pickup + snack + homework supervision",
       "Toddler entertainment while you work from home",
       "Postpartum support - baby and household",
-      "Sick day when you can't be in two places",
+      "Schedule gaps when you can't be in two places",
       "Recovery support while you rest"
     ],
     taskOptions: [
@@ -195,8 +193,7 @@ export const SERVICE_CONFIG = {
       { id: "pets_present", label: "Pets in the home during visit?", type: "select", options: ["No", "Yes - friendly dog", "Yes - cat", "Yes - will be secured/separated"] },
       { id: "parent_present", label: "Will a parent/guardian be home?", type: "select", options: ["Yes, working from home", "Yes, resting/recovering", "No - full solo support needed"] },
       { id: "preferred_routines", label: "Any preferred routines to follow?", type: "text", placeholder: "Nap times, snack preferences, homework flow, screen-time rules..." },
-      { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes - school pickup/dropoff", "Yes - activity transport"] },
-      { id: "emergency_contact", label: "Emergency contact name & phone *", type: "text", placeholder: "Name, relationship, phone number", required: true }
+      { id: "transportation_needed", label: "Transportation needed?", type: "select", options: ["No", "Yes - school pickup/dropoff", "Yes - activity transport"] }
     ]
   },
 
@@ -358,7 +355,7 @@ export const SERVICE_CONFIG = {
     intakeQuestions: [
       { id: "num_people", label: "Household size (meals for how many?)", type: "select", options: ["1-2 people", "3-4 people", "5-6 people", "7+ people"] },
       { id: "dietary_restrictions", label: "Dietary restrictions or allergies", type: "text", placeholder: "e.g. gluten-free, nut-free, dairy-free, vegetarian..." },
-      { id: "meal_types", label: "What types of meals? (select all)", type: "multiselect", options: ["Breakfasts", "Lunches", "Dinners", "Snacks", "Kids meals", "Baby food", "Smoothie packs"] },
+      { id: "meal_types", label: "What types of meals? (select all)", type: "multiselect", options: ["Breakfasts", "Lunches", "Dinners", "Snacks", "Kids meals", "Toddler-friendly prep", "Smoothie packs"] },
       { id: "cooking_style", label: "Preferred cooking style", type: "select", options: ["Simple & quick", "Comfort food", "Clean eating / whole foods", "Mediterranean", "Whatever you suggest!"] },
       { id: "appliances", label: "Available appliances", type: "multiselect", options: ["Instant Pot", "Air Fryer", "Slow Cooker", "Stand Mixer", "Blender", "Standard oven only"] },
       { id: "groceries_provided", label: "Will groceries be ready?", type: "select", options: ["Yes - all ingredients provided", "Mostly - a few things missing", "No - please add grocery run add-on"] },
@@ -474,11 +471,6 @@ export function getDynamicEstimate(serviceKey, intakeAnswers = {}, selectedTasks
       flags.push('Special diet - extra sourcing time added');
     }
 
-    if ((selectedTasks || []).some(task => task.includes('Airport'))) {
-      extraMinutes += 120;
-      flags.push('Airport transportation may require manual review');
-    }
-
     if ((selectedTasks || []).some(task => task.includes('Appointment Transportation'))) {
       extraMinutes += 60;
       flags.push('Appointment transportation - additional travel time added');
@@ -486,7 +478,7 @@ export function getDynamicEstimate(serviceKey, intakeAnswers = {}, selectedTasks
   }
 
   if (serviceKey === 'senior_support') {
-    if (intakeAnswers.mobility_level === 'Uses wheelchair' || intakeAnswers.mobility_level === 'Primarily bed/chair-bound') {
+    if (intakeAnswers.mobility_level === 'Uses wheelchair' || intakeAnswers.mobility_level === 'Limited mobility - please explain in notes') {
       extraMinutes += 45;
       flags.push('Mobility considerations - extra support time added');
     }
