@@ -111,7 +111,7 @@ export default function PageHero({
           )}
         </div>
       </section>
-      <WaveDivider fill={waveFill} className="-mt-16" />
+      <WaveDivider fill={waveFill} />
     </>
   );
 }
