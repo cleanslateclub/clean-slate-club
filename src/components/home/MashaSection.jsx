@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../shared/AnimatedSection';
 export default function MashaSection() {
@@ -65,6 +66,12 @@ export default function MashaSection() {
                 You don't need perfect. You need backup.
               </p>
             </motion.div>
+
+            <div className="mt-6 text-center">
+              <Link to="/about" className="inline-block text-white font-body text-sm tracking-wide px-8 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg" style={{ background: '#333333' }}>
+                Read More About Clean Slate Club →
+              </Link>
+            </div>
           </AnimatedSection>
         </div>
       </div>
