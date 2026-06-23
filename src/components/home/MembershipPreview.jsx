@@ -13,6 +13,16 @@ const perks = [
 
 const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
+function MembershipLogoTitle() {
+  return (
+    <div className="mb-4 flex flex-wrap items-baseline gap-2">
+      <span className="font-heading text-sm md:text-base font-semibold tracking-[0.22em] uppercase text-charcoal">Clean Slate</span>
+      <span className="font-logo text-3xl md:text-4xl" style={{ color: '#EB9486', lineHeight: 1 }}>Club</span>
+      <span className="font-heading text-2xl font-semibold" style={{ color: '#333333' }}>Membership</span>
+    </div>
+  );
+}
+
 export default function MembershipPreview() {
   return (
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#EAF1EC' }}>
@@ -27,14 +37,14 @@ export default function MembershipPreview() {
           <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             For homes that need regular backup.
           </h2>
-          <p className="font-logo text-2xl md:text-3xl leading-tight" style={{ color: '#EB9486' }}>$49/month. A softer landing, every month.</p>
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>$49/month for priority access, easier planning, and a little more breathing room.</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-stretch">
           <AnimatedSection delay={0.1}>
             <div className="h-full rounded-[2rem] border p-8 lg:p-10 flex flex-col justify-between" style={{ background: '#FFFFFFCC', borderColor: '#B58A9040', boxShadow: '0 18px 45px #B58A9015' }}>
               <div>
-                <p className="font-heading text-2xl font-semibold mb-4" style={{ color: '#333333' }}>Clean Slate Club Membership</p>
+                <MembershipLogoTitle />
                 <p className="font-body text-base leading-relaxed font-light mb-8" style={{ color: '#333333b3' }}>
                   Membership is for the households that know support shouldn't be saved for a crisis. It's a simple way to keep your home, schedule, and mental load from reaching the breaking point.
                 </p>
