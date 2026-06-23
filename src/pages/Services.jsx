@@ -172,7 +172,7 @@ export default function Services() {
 
       {/* Service Cards */}
       <section style={{ background: SOFT_GREEN_TINT }}>
-        <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-12 sm:pt-8 sm:pb-16 space-y-5 sm:space-y-6">
+        <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-14 sm:pt-8 sm:pb-20 space-y-5 sm:space-y-6">
           {SERVICE_ORDER.map((key, i) => {
             const service = SERVICE_CONFIG[key];
             if (!service) return null;
@@ -237,7 +237,10 @@ export default function Services() {
         </div>
       </section>
 
-      <WaveDivider fill={FOOTER_COLOR} />
+      <div className="relative" style={{ background: SOFT_GREEN_TINT }}>
+        <WaveDivider fill={FOOTER_COLOR} className="!-mt-10 !h-10 sm:!-mt-12 sm:!h-12 lg:!-mt-14 lg:!h-14" />
+        <div className="h-2" style={{ background: FOOTER_COLOR }} aria-hidden="true" />
+      </div>
     </main>
   );
 }
