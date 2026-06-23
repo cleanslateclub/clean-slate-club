@@ -118,3 +118,81 @@
 html {
   scroll-behavior: smooth;
 }
+
+@media (max-width: 640px) {
+  section[class*="py-16"],
+  section[class*="py-20"],
+  section[class*="py-24"] {
+    padding-top: 3.5rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+
+  [class*="px-6"] {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  [class*="tracking-[0.25em]"][class*="uppercase"],
+  [class*="tracking-[0.28em]"][class*="uppercase"],
+  [class*="tracking-[0.32em]"][class*="uppercase"],
+  [class*="tracking-[0.34em]"][class*="uppercase"] {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.18em !important;
+    line-height: 1.35 !important;
+  }
+
+  [class*="text-[2.45rem]"],
+  [class*="text-[2.7rem]"] {
+    font-size: 2.05rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .font-heading.text-5xl,
+  .font-heading.text-4xl {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .font-heading.text-3xl {
+    font-size: 1.8rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .font-logo.text-4xl {
+    font-size: 2.35rem !important;
+    line-height: 0.98 !important;
+  }
+
+  .font-logo.text-3xl {
+    font-size: 1.9rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .font-logo.text-2xl {
+    font-size: 1.65rem !important;
+    line-height: 1.08 !important;
+  }
+
+  [class*="rounded-[2.75rem]"],
+  [class*="rounded-[2.5rem]"],
+  [class*="rounded-[2.25rem]"] {
+    border-radius: 2rem !important;
+  }
+
+  [class*="p-7"] {
+    padding: 1.35rem !important;
+  }
+
+  [class*="p-8"] {
+    padding: 1.5rem !important;
+  }
+
+  [class*="gap-16"] {
+    gap: 2.75rem !important;
+  }
+
+  [class*="mb-16"],
+  [class*="mb-14"] {
+    margin-bottom: 2.5rem !important;
+  }
+}
