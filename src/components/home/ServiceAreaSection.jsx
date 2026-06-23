@@ -29,11 +29,16 @@ export default function ServiceAreaSection() {
     <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#EAF1EC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
-          <p className="font-body tracking-[0.25em] uppercase mb-4 font-light text-lg text-[hsl(var(--foreground))]">SERVICE AREA</p>
-          <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal mb-3">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>SERVICE AREA</p>
+          </div>
+          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
             Montgomery County, PA
           </h2>
-          <p className="font-body text-base text-charcoal/65 font-light max-w-lg mx-auto">
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>
             Thoughtful household support for local homes, busy families, and the neighborhoods we know best.
           </p>
         </AnimatedSection>
