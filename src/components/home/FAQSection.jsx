@@ -1,49 +1,27 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import AnimatedSection from '../shared/AnimatedSection';
 
-const BRAND_COLORS = ['#EB9486', '#CAE7B9', '#F3DE8A', '#EFB988', '#B58A90', '#EB9486', '#97A7B3', '#CAE7B9', '#EFB988', '#B58A90'];
+const BRAND_COLORS = ['#DFE3A2', '#CAE7B9', '#F3DE8A', '#EFB988'];
 
 const faqs = [
-{
-  q: "Is this a cleaning service?",
-  a: "Not exactly. We're a household support and lifestyle assistance brand. Think of us as executive function help for your home — we tackle the overwhelm, laundry mountains, kitchen chaos, and everything that's been piling up. We show up, handle what needs handling, and leave your home — and your nervous system — in a better place."
-},
-{
-  q: "Do I have to be embarrassed about the state of my house?",
-  a: "Absolutely not. There is zero judgment here — ever. Our clients are brilliant, busy families and individuals carrying way too much. The state of your home doesn't define you, and we've seen it all. You don't need to clean before we arrive. Seriously."
-},
-{
-  q: "What is the Reset Consult and why do I need one?",
-  a: "Every new client starts with a free 15-minute Reset Consult. This isn't a quote call — it's a real conversation. We use it to understand your routines, priorities, household preferences, scheduling needs, and to make sure we show up fully prepared for your home. It makes the first visit so much better. And it's completely free."
-},
-{
-  q: "How quickly can I get scheduled?",
-  a: "We aim for 24–48 hour turnaround after your consult for most services. Members of the Catch-Up Club™ get priority scheduling and can often book same-day resets. Saturday slots fill fast — we recommend booking early in the week to secure your preferred time."
-},
-{
-  q: "What areas do you serve?",
-  a: "We serve Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Plymouth Meeting, Ambler, Glenside, Oreland, and Fort Washington — proudly local to Montgomery County."
-},
-{
-  q: "Can you help with kids or aging parents?",
-  a: "Yes, within our scope. We provide household support, companion-style help, errands, light meal prep, organization, and day-to-day assistance. We do not provide medical care, bathing, or hands-on clinical support."
-},
-{
-  q: "Do I need to provide supplies?",
-  a: "Yes. We use your household's preferred supplies, tools, containers, grocery funds, and instructions. If shopping is part of your service, funds must be provided before the errand begins."
-},
-{
-  q: "How does payment work?",
-  a: "Bookings require a card on file and a $50 deposit for service time. Shopping funds are separate and must be provided directly. Memberships, add-ons, and final balances are handled through the booking system."
-},
-{
-  q: "What if I need more time than I booked?",
-  a: "If your provider has availability, extra time may be added at the hourly rate. If not, we will prioritize the most important tasks and help you choose what to book next."
-},
-{
-  q: "Can I book without a consult?",
-  a: "Yes. If you already know what you need, you can book directly. The consult is there for anyone who wants help choosing the right support or explaining a more layered household situation."
-}];
+  {
+    q: "Is this a cleaning service?",
+    a: "Not exactly. Clean Slate Club is household support for the real-life pileup: light resets, laundry, dishes, errands, family logistics, and the things that help your home feel manageable again."
+  },
+  {
+    q: "Do I need to clean before you come?",
+    a: "No. Please do not panic-clean for us. This is judgment-free support for busy homes and overwhelmed seasons."
+  },
+  {
+    q: "Can I book without a consult?",
+    a: "Yes. Book directly if you know what you need, or choose the free consult if you want help figuring out the best starting point."
+  },
+  {
+    q: "What areas do you serve?",
+    a: "Clean Slate Club currently serves Flourtown, Wyndmoor, Erdenheim, Chestnut Hill, Lafayette Hill, Blue Bell, Conshohocken, Plymouth Meeting, Ambler, Glenside, Oreland, Fort Washington, and Willow Grove."
+  }
+];
 
 function FAQItem({ faq, color }) {
   const [open, setOpen] = useState(false);
@@ -55,7 +33,7 @@ function FAQItem({ faq, color }) {
         className="w-full text-left px-6 py-5 flex items-center justify-between gap-5"
       >
         <span className="font-body text-base font-medium" style={{ color: '#333333' }}>{faq.q}</span>
-        <span className="shrink-0 font-logo text-2xl leading-none transition-transform duration-300" style={{ color, transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
+        <span className="shrink-0 font-logo text-2xl leading-none transition-transform duration-300" style={{ color: '#333333', transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
       </button>
       {open && (
         <div className="px-6 pb-6 pt-0">
@@ -75,17 +53,25 @@ export default function FAQSection() {
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-2">
             Questions? We got you.
           </h2>
-          <p className="font-logo text-xl text-coral">No judgment, not even here.</p>
+          <p className="font-logo text-xl text-coral">A few quick answers before you book.</p>
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
           <div className="space-y-3">
             {faqs.map((faq, i) =>
-            <FAQItem key={i} faq={faq} color={BRAND_COLORS[i % BRAND_COLORS.length]} />
+              <FAQItem key={i} faq={faq} color={BRAND_COLORS[i % BRAND_COLORS.length]} />
             )}
           </div>
         </AnimatedSection>
-      </div>
-    </section>);
 
+        <AnimatedSection delay={0.15}>
+          <div className="mt-10 text-center">
+            <Link to="/faq" className="inline-block text-white font-body text-sm tracking-wide px-8 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg" style={{ background: '#333333' }}>
+              View Full FAQ →
+            </Link>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
 }
