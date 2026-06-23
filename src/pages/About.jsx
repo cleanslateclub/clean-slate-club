@@ -167,7 +167,7 @@ export default function About() {
 
       <WaveDivider fill={STANDARD_BG} className={ABOUT_WAVE_CLASS} />
 
-      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-12 lg:pt-12 lg:pb-18" style={{ background: STANDARD_BG }}>
+      <section className="px-5 sm:px-6 lg:px-12 pt-8 pb-20 lg:pt-12 lg:pb-28" style={{ background: STANDARD_BG }}>
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-3xl mx-auto mb-10">
             <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-4" style={{ color: '#33333399' }}>The standard</p>
