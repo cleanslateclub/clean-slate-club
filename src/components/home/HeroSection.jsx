@@ -4,17 +4,37 @@ import { motion } from 'framer-motion';
 import TaskScrollPanel from './TaskScrollPanel';
 
 const mobileTasks = [
-  { label: 'Grocery Shopping', color: '#EB9486', emoji: '🛒' },
-  { label: 'Meal Prep', color: '#CAE7B9', emoji: '🍳' },
-  { label: 'Pharmacy Pickup', color: '#B58A90', emoji: '💊' },
-  { label: 'Pantry Restock', color: '#7E7F9A', emoji: '🧺' },
-  { label: 'Pet Supply Run', color: '#97A7B3', emoji: '🦴' },
-  { label: 'Freezer Meals', color: '#DFE3A2', emoji: '🫙' },
-  { label: 'Donation Dropoff', color: '#F3DE8A', emoji: '💛' },
-  { label: 'Returns', color: '#EFB985', emoji: '📦' },
   { label: 'Dry Cleaning', color: '#FFE5D9', emoji: '👗' },
+  { label: 'Meal Prep', color: '#CAE7B9', emoji: '🍳' },
+  { label: 'Grocery Pickup', color: '#CAE7B9', emoji: '🛒' },
+  { label: 'Snack Prep', color: '#CAE7B9', emoji: '🍎' },
+  { label: 'Laundry Catch-Up', color: '#DFE3A2', emoji: '🧺' },
+  { label: 'Lunch Packing', color: '#DFE3A2', emoji: '🥪' },
+  { label: 'Playroom Reset', color: '#DFE3A2', emoji: '🧸' },
+  { label: 'Donation Dropoff', color: '#F3DE8A', emoji: '💛' },
+  { label: 'Freezer Meals', color: '#F3DE8A', emoji: '🫙' },
+  { label: 'Pantry Zones', color: '#F3DE8A', emoji: '🏷️' },
+  { label: 'Returns', color: '#EFB988', emoji: '📦' },
+  { label: 'Activity Bags', color: '#EFB988', emoji: '🎒' },
+  { label: 'School Pickup', color: '#EFB988', emoji: '🚗' },
+  { label: 'Home Reset', color: '#EB9486', emoji: '🏠' },
+  { label: 'Kitchen Reset', color: '#EB9486', emoji: '✨' },
+  { label: 'Dishes', color: '#EB9486', emoji: '🍽️' },
+  { label: 'Pharmacy Pickup', color: '#B58A90', emoji: '💊' },
+  { label: 'Senior Check-In', color: '#B58A90', emoji: '🤍' },
+  { label: 'Companionship', color: '#B58A90', emoji: '☕' },
+  { label: 'Pet Supply Run', color: '#97A7B3', emoji: '🦴' },
+  { label: 'Appointment Support', color: '#97A7B3', emoji: '📍' },
+  { label: 'Room Reset', color: '#97A7B3', emoji: '🛏️' },
+  { label: 'Paper Sorting', color: '#8B93A7', emoji: '📄' },
+  { label: 'Closet Reset', color: '#8B93A7', emoji: '👚' },
+  { label: 'Household Systems', color: '#8B93A7', emoji: '🗂️' },
+  { label: 'Pantry Restock', color: '#7E7F9A', emoji: '🧂' },
+  { label: 'Errand Run', color: '#7E7F9A', emoji: '🗺️' },
+  { label: 'Mental Load Help', color: '#7E7F9A', emoji: '📝' },
 ];
 
+const marqueeTasks = [...mobileTasks, ...mobileTasks];
 const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
 export default function HeroSection() {
@@ -48,9 +68,9 @@ export default function HeroSection() {
             style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)' }}>
             <motion.div
               animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
+              transition={{ duration: 62, ease: 'linear', repeat: Infinity }}
               className="flex gap-2.5 w-max">
-              {[...Array(2)].flatMap(() => mobileTasks).map((t, i) =>
+              {marqueeTasks.map((t, i) =>
                 <span
                   key={`m-top-${t.label}-${i}`}
                   className="inline-flex items-center gap-2 rounded-full px-3.5 sm:px-4 py-2 border text-[11px] sm:text-xs font-body font-medium shrink-0"
