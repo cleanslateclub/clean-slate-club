@@ -73,12 +73,12 @@ const IconMeals = () => (
   </svg>
 );
 
-function LogoText() {
+function LogoLockup() {
   return (
-    <span className="inline-flex items-baseline gap-1.5 align-baseline whitespace-nowrap">
-      <span className="font-heading text-[0.74em] font-semibold tracking-[0.18em] uppercase text-charcoal">Clean Slate</span>
-      <span className="font-logo text-[1em] leading-none" style={{ color: '#EB9486' }}>Club</span>
-    </span>
+    <div className="mb-5 flex items-baseline justify-center gap-2 leading-none">
+      <span className="font-heading text-sm md:text-base font-semibold tracking-[0.22em] uppercase text-charcoal">Clean Slate</span>
+      <span className="font-logo text-3xl md:text-4xl" style={{ color: '#EB9486', lineHeight: 1 }}>Club</span>
+    </div>
   );
 }
 
@@ -89,6 +89,7 @@ const painPoints = [
     intro: 'The appointments, lunches, returns, laundry, groceries, medications, school notes, pet food, and tiny invisible tasks no one else seems to track.',
     color: '#DFE3A2',
     icon: IconMentalTabs,
+    services: ['Hot Mess Express', 'The Runaround', 'Chaos Coordinator'],
     helps: ['Create a priority list for the visit', 'Move laundry, dishes, counters, and visible reset tasks forward', 'Handle pickup orders, returns, errands, and small household loose ends', 'Turn the mental pile into a practical plan for the day'],
   },
   {
@@ -97,6 +98,7 @@ const painPoints = [
     intro: 'The room you keep avoiding because every pile requires a decision. The reset you want, but cannot start because your brain is already over capacity.',
     color: '#CAE7B9',
     icon: IconADHD,
+    services: ['Room Service', 'Hot Mess Express', 'Help Me Choose'],
     helps: ['Break the space into small, doable zones', 'Sort obvious categories without overcomplicating the project', 'Reset the highest-impact areas first', 'Help choose what to keep moving now and what can wait'],
   },
   {
@@ -105,6 +107,7 @@ const painPoints = [
     intro: 'New baby, surgery, burnout, divorce, loss, work stress, or a stretch of life where basic household support would change the whole day.',
     color: '#F3DE8A',
     icon: IconRecovery,
+    services: ['Hot Mess Express', 'Clean Plate Club', 'The Runaround'],
     helps: ['Keep dishes, laundry, and kitchen basics from piling up', 'Prepare simple food support or reset the fridge/pantry', 'Run errands or pick up essentials', 'Lighten the home load while your energy is needed elsewhere'],
   },
   {
@@ -113,6 +116,7 @@ const painPoints = [
     intro: 'When your own home needs care, but so does a parent, grandparent, neighbor, or loved one who needs check-ins, errands, meals, or practical help.',
     color: '#EFB988',
     icon: IconCaregiving,
+    services: ['The Check-In', 'The Runaround', 'Clean Plate Club'],
     helps: ['Companion-style check-ins within non-medical scope', 'Errands, grocery pickup, appointment support, and household resets', 'Light meal prep and kitchen support', 'Help with the practical tasks that make caregiving feel less scattered'],
   },
   {
@@ -121,6 +125,7 @@ const painPoints = [
     intro: 'Bottles, laundry, snacks, dishes, older kids, recovery, sleep deprivation, and the strange pressure to keep the home moving while you are still healing.',
     color: '#EB9486',
     icon: IconBaby,
+    services: ['Chaos Coordinator', 'Clean Plate Club', 'Hot Mess Express'],
     helps: ['Baby and toddler support within scope', 'Children’s laundry, lunch packing, and playroom resets', 'Kitchen reset, snack prep, and simple meal support', 'Recovery-focused household help without judgment'],
   },
   {
@@ -129,6 +134,7 @@ const painPoints = [
     intro: 'The returns, pickups, drop-offs, grocery order, post office, pharmacy, school item, and appointment logistics that seem small until they own your day.',
     color: '#B58A90',
     icon: IconErrands,
+    services: ['The Runaround', 'Chaos Coordinator', 'Custom Support'],
     helps: ['Pickup orders and returns', 'Grocery support and supply runs with provided funds', 'Appointment and activity transportation when approved', 'A cleaner plan for what has to happen first'],
   },
   {
@@ -137,6 +143,7 @@ const painPoints = [
     intro: 'The bedroom corner, playroom, laundry area, kitchen counter, closet floor, or spare room that has become a holding zone for everything unfinished.',
     color: '#97A7B3',
     icon: IconRoom,
+    services: ['Room Service', 'Hot Mess Express', 'Help Me Choose'],
     helps: ['Room reset and light organizing', 'Sort obvious piles into simple categories', 'Clear surfaces and make the space usable again', 'Identify what needs bins, labels, hangers, or a future deeper project'],
   },
   {
@@ -145,6 +152,7 @@ const painPoints = [
     intro: 'The lunch packing, snacks, fridge chaos, dinner ingredients, grocery list, and kitchen reset that decide whether the rest of the day feels manageable.',
     color: '#8B93A7',
     icon: IconMeals,
+    services: ['Clean Plate Club', 'The Runaround', 'Chaos Coordinator'],
     helps: ['Lunch packing and snack prep', 'Simple meal prep and ingredient organization', 'Fridge refresh and kitchen reset', 'Grocery pickup or ingredient run with provided funds'],
   },
 ];
@@ -153,15 +161,15 @@ function PainPointCard({ point, open, onToggle }) {
   const PointIcon = point.icon;
   return (
     <div
-      className="rounded-[1.75rem] border overflow-hidden transition-all duration-500 hover:-translate-y-1"
+      className="rounded-[1.75rem] border overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
       style={{
         background: open ? '#FFFFFF' : `${point.color}2E`,
         borderColor: open ? `${point.color}AA` : '#33333314',
         boxShadow: open ? '0 18px 45px #8B93A71A' : '0 8px 24px #8B93A70D',
       }}
     >
-      <button type="button" onClick={onToggle} className="w-full text-left p-5 flex gap-4 items-start">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border" style={{ background: '#FFFFFFB8', borderColor: `${point.color}BB`, color: '#333333' }}>
+      <button type="button" onClick={onToggle} className="group w-full text-left p-5 flex gap-4 items-start">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border transition-all duration-500 group-hover:scale-105" style={{ background: '#FFFFFFB8', borderColor: `${point.color}BB`, color: '#333333' }}>
           <PointIcon />
         </div>
         <div className="flex-1">
@@ -176,8 +184,18 @@ function PainPointCard({ point, open, onToggle }) {
       </button>
 
       {open && (
-        <div className="px-5 pb-5 md:ml-16 -mt-1">
+        <div className="px-5 pb-5 md:ml-16 -mt-1 animate-in fade-in slide-in-from-top-2 duration-500">
           <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{point.intro}</p>
+          <div className="mb-4 rounded-2xl p-4" style={{ background: '#FFFFFF', border: `1px solid ${point.color}70` }}>
+            <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Suggested services</p>
+            <div className="flex flex-wrap gap-2">
+              {point.services.map(service => (
+                <span key={service} className="rounded-full px-3 py-1.5 font-body text-xs font-light" style={{ background: `${point.color}35`, color: '#333333' }}>
+                  {service}
+                </span>
+              ))}
+            </div>
+          </div>
           <div className="rounded-2xl p-4" style={{ background: `${point.color}25`, border: `1px solid ${point.color}70` }}>
             <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Ways we can help</p>
             <ul className="space-y-2">
@@ -202,10 +220,10 @@ export default function ConsultSection() {
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center justify-center gap-2 mb-5 rounded-full border px-5 py-2 bg-white/70" style={{ borderColor: '#33333312', boxShadow: '0 8px 24px #8B93A70D' }}>
-            <span className="w-2 h-2 rounded-full" style={{ background: '#CAE7B9' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#DFE3A2' }} />
-            <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
+            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
+            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
             <p className="font-body tracking-[0.25em] uppercase font-light text-sm ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
           </div>
           <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-3 leading-tight">
@@ -215,20 +233,19 @@ export default function ConsultSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white p-7 md:p-10 lg:p-14 text-center relative overflow-hidden" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
-            <div className="relative">
-              <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
-                <LogoText /> was built for the households carrying more than a to-do list.
+          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white p-7 md:p-10 lg:p-14 text-center relative overflow-hidden transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
+            <LogoLockup />
+            <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
+              was built for the households carrying more than a to-do list.
+            </p>
+            <div className="mx-auto mb-7 h-px w-28" style={{ background: '#33333322' }} />
+            <div className="space-y-5 font-body text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto" style={{ color: '#333333b3' }}>
+              <p>
+                For the default parent. The ADHD household. The caregiver. The person recovering from surgery. The home moving through grief, burnout, school chaos, postpartum life, aging-parent stress, or a season that simply got too full.
               </p>
-              <div className="mx-auto mb-7 h-px w-28" style={{ background: '#33333322' }} />
-              <div className="space-y-5 font-body text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto" style={{ color: '#333333b3' }}>
-                <p>
-                  For the default parent. The ADHD household. The caregiver. The person recovering from surgery. The home moving through grief, burnout, school chaos, postpartum life, aging-parent stress, or a season that simply got too full.
-                </p>
-                <p>
-                  This is practical household support for the moments when the dishes are not just dishes, the laundry is not just laundry, and the errand is not just an errand. It is the mental load behind all of it.
-                </p>
-              </div>
+              <p>
+                This is practical household support for the moments when the dishes are not just dishes, the laundry is not just laundry, and the errand is not just an errand. It is the mental load behind all of it.
+              </p>
             </div>
           </div>
         </AnimatedSection>
@@ -241,7 +258,7 @@ export default function ConsultSection() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {painPoints.map((point, index) => (
-                <AnimatedSection key={point.title} delay={0.03 * index}>
+                <AnimatedSection key={point.title} delay={0.04 * index}>
                   <PainPointCard
                     point={point}
                     open={openIndex === index}
@@ -254,7 +271,7 @@ export default function ConsultSection() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.25}>
-          <div className="max-w-3xl mx-auto mt-12 rounded-[2rem] border bg-white p-7 text-center" style={{ borderColor: '#33333318', boxShadow: '0 14px 40px #8B93A710' }}>
+          <div className="max-w-3xl mx-auto mt-12 rounded-[2rem] border bg-white p-7 text-center transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 14px 40px #8B93A710' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#EB9486' }}>You do not have to know what to ask for.</p>
             <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
               That is part of the service. We help turn “everything feels like too much” into a realistic home reset, errand plan, family support visit, meal prep day, or custom household support session that actually fits your life.
