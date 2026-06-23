@@ -73,11 +73,11 @@ export default function Memberships() {
       <PageHero
         eyebrow="Membership"
         title="Catch-Up Club™"
-        script="Recurring support for homes that deserve to stay ahead."
-        description="Priority booking, member pricing, and seasonal perks — for the home that’s ready to stop playing catch-up."
-        background="#F3DE8A66"
+        script="Stay ahead of the pileup."
+        description="Priority booking, preferred hours, and member-only perks."
+        background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
         waveFill="#F1F1F1"
-        scriptColor="#7E7F9A"
+        scriptColor="#EB9486"
       />
 
       <section className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
