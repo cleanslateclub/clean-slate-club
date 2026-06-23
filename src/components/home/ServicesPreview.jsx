@@ -48,7 +48,7 @@ const IconQuestion = () =>
   </svg>;
 
 const CARD_TINT = '1F';
-const SECTION_BACKGROUND = '#F9FCF7';
+const SECTION_BACKGROUND = '#FDFCFB';
 
 const categories = [{
   iconKey: 'home',
