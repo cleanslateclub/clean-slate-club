@@ -15,6 +15,18 @@ const sortTaskOptions = (options = []) => {
   return helpOption ? [helpOption, ...sortedOptions] : sortedOptions;
 };
 
+const requiredMark = <span className="text-coral ml-0.5" aria-label="required">*</span>;
+
+const buildServiceAddress = (info = {}) => {
+  const street = info.service_street?.trim();
+  const unit = info.service_unit?.trim();
+  const city = info.service_city?.trim();
+  const state = (info.service_state || 'PA').trim();
+  const zip = info.service_zip?.trim();
+
+  return [street, unit, [city, state, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+};
+
 export default function Step2Intake({ serviceKey, answers, onChange, clientInfo, onClientChange, onPhotoUpload, uploadedPhotos = [], smsOptIn, onSmsOptInChange }) {
   const [uploading, setUploading] = useState(false);
   const [territories, setTerritories] = useState([]);
@@ -25,18 +37,18 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
     base44.entities.Territory.filter({ is_active: true }).then(t => setTerritories(t || []));
   }, []);
 
-  const checkServiceArea = (address) => {
-    // ✅ FIX: Only validate when address looks complete (must have a comma,
-    // meaning the user has typed at least "Street, City").
-    // Previously this fired on every keystroke via onChange, triggering
-    // the out-of-area modal mid-typing even for valid addresses.
-    if (!address || territories.length === 0 || !address.includes(',')) return;
+  const checkServiceArea = (info) => {
+    const city = info?.service_city?.trim();
+    if (!city || territories.length === 0) return;
 
-    const addressLower = address.toLowerCase();
-    const match = territories.some(t => addressLower.includes(t.name.toLowerCase()));
+    const cityLower = city.toLowerCase();
+    const addressLower = buildServiceAddress(info).toLowerCase();
+    const match = territories.some(t => {
+      const territoryName = t.name.toLowerCase();
+      return cityLower === territoryName || addressLower.includes(territoryName);
+    });
+
     if (!match) {
-      const parts = address.split(',');
-      const city = parts.length > 1 ? parts[parts.length - 2].trim() : address.trim();
       setOutOfAreaCity(city);
       setOutOfArea(true);
     } else {
@@ -62,9 +74,28 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   if (!config) return null;
 
   const isConsult = serviceKey === 'consult';
+  const isErrands = serviceKey === 'errands';
+  const needsEmergencyContact = serviceKey === 'senior_support' || serviceKey === 'mothers_helper';
   const sortedTaskOptions = sortTaskOptions(config.taskOptions);
 
   const handleAnswer = (id, value) => onChange({ ...answers, [id]: value });
+
+  const handleEmergencyChange = (field, value) => {
+    const updated = { ...answers, [field]: value };
+    const first = field === 'emergency_first_name' ? value : answers.emergency_first_name;
+    const last = field === 'emergency_last_name' ? value : answers.emergency_last_name;
+    const phone = field === 'emergency_phone' ? value : answers.emergency_phone;
+    updated.emergency_contact = [first, last].filter(Boolean).join(' ') + (phone ? ` - ${phone}` : '');
+    onChange(updated);
+  };
+
+  const handleClientField = (field, value) => {
+    const updated = { ...clientInfo, [field]: value };
+    if (!isConsult && ['service_street', 'service_unit', 'service_city', 'service_state', 'service_zip'].includes(field)) {
+      updated.address = buildServiceAddress(updated);
+    }
+    onClientChange(updated);
+  };
 
   const toggleMulti = (id, option) => {
     const current = answers[id] || [];
@@ -83,6 +114,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
   };
 
   const selectedTasks = (answers || {})._tasks || [];
+  const intakeQuestions = config.intakeQuestions.filter(q => q.id !== 'emergency_contact');
 
   return (
     <div>
@@ -94,12 +126,15 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         />
       )}
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">
-        {isConsult ? 'Tell us a little about you' : 'Tell us about your home'}
+        {isConsult ? 'Tell us a little about you' : 'Tell us about your visit'}
       </h2>
-      <p className="font-body text-sm text-charcoal font-light mb-8">
+      <p className="font-body text-sm text-charcoal font-light mb-2">
         {isConsult
           ? 'The more you share, the better we can prepare for our call. Zero judgment.'
           : 'The more detail you share, the better we can prepare. Zero judgment, always.'}
+      </p>
+      <p className="font-body text-xs text-charcoal/50 font-light mb-8">
+        Fields marked with <span className="text-coral">*</span> are required.
       </p>
 
       {/* Client Info */}
@@ -110,24 +145,18 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
-            { key: 'email', label: 'Email', placeholder: 'your@email.com', required: true },
-            { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555', required: true },
-            ...(!isConsult ? [{ key: 'address', label: 'Service Address', placeholder: 'Street address, City, PA', required: true }] : []),
+            { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true, type: 'text' },
+            { key: 'email', label: 'Email', placeholder: 'your@email.com', required: true, type: 'email' },
+            { key: 'phone', label: 'Phone', placeholder: '(555) 555-5555', required: true, type: 'tel' },
           ].map(f => (
             <div key={f.key}>
               <label className="font-body text-xs font-light text-charcoal block mb-1.5">
-                {f.label}{f.required && <span className="text-coral ml-0.5">*</span>}
+                {f.label}{f.required && requiredMark}
               </label>
               <input
-                type="text"
+                type={f.type}
                 value={clientInfo[f.key] || ''}
-                onChange={e => {
-                  onClientChange({ ...clientInfo, [f.key]: e.target.value });
-                }}
-                onBlur={e => {
-                  if (f.key === 'address') checkServiceArea(e.target.value);
-                }}
+                onChange={e => handleClientField(f.key, e.target.value)}
                 placeholder={f.placeholder}
                 required={f.required}
                 className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors"
@@ -136,6 +165,40 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           ))}
         </div>
       </div>
+
+      {!isConsult && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #8B93A7' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#8B93A7' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Service Address</h3>
+          </div>
+          <p className="font-body text-xs text-charcoal font-light mb-4">
+            This is the home base for the visit. It must be inside the current service area.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <div className="sm:col-span-4">
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">Street Address{requiredMark}</label>
+              <input type="text" value={clientInfo.service_street || ''} onChange={e => handleClientField('service_street', e.target.value)} placeholder="123 Example Lane" className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">Apt / Unit</label>
+              <input type="text" value={clientInfo.service_unit || ''} onChange={e => handleClientField('service_unit', e.target.value)} placeholder="Optional" className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors" />
+            </div>
+            <div className="sm:col-span-3">
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">City{requiredMark}</label>
+              <input type="text" value={clientInfo.service_city || ''} onChange={e => handleClientField('service_city', e.target.value)} onBlur={() => checkServiceArea({ ...clientInfo, address: buildServiceAddress(clientInfo) })} placeholder="Flourtown" className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors" />
+            </div>
+            <div className="sm:col-span-1">
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">State{requiredMark}</label>
+              <input type="text" value={clientInfo.service_state || 'PA'} onChange={e => handleClientField('service_state', e.target.value)} maxLength={2} className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors uppercase" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">ZIP Code{requiredMark}</label>
+              <input type="text" value={clientInfo.service_zip || ''} onChange={e => handleClientField('service_zip', e.target.value)} placeholder="19031" inputMode="numeric" className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors" />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Task checkboxes */}
       {sortedTaskOptions.length > 0 && (
@@ -181,6 +244,66 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         </div>
       )}
 
+      {isErrands && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5 space-y-4" style={{ borderLeft: '3px solid #B58A90' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#B58A90' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Errand Details</h3>
+          </div>
+          <p className="font-body text-xs text-charcoal font-light">
+            Tell us where the errand actually happens. If there are multiple stops, list each one with the town or address when you have it.
+          </p>
+          <div>
+            <label className="font-body text-xs font-light text-charcoal block mb-2">Primary errand location or list of stops{requiredMark}</label>
+            <textarea
+              value={answers.errand_locations || ''}
+              onChange={e => handleAnswer('errand_locations', e.target.value)}
+              placeholder="Example: Giant in Flourtown, CVS in Wyndmoor, post office in Glenside. Include exact addresses if pickup/dropoff matters."
+              rows={3}
+              className="w-full px-4 py-2.5 rounded-xl border border-coral/30 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/60 transition-colors resize-none"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="font-body text-xs font-light text-charcoal block mb-2">Where should we start?</label>
+              <div className="flex flex-wrap gap-2">
+                {['Service address', 'Store / first stop', 'Other - explain below'].map(opt => (
+                  <button key={opt} type="button" onClick={() => handleAnswer('errand_start_point', opt)} className={`px-3 py-1.5 rounded-full border text-xs font-body font-light transition-all duration-200 ${answers.errand_start_point === opt ? 'text-white' : 'bg-cream border-taupe/20 text-charcoal hover:border-charcoal/30'}`} style={answers.errand_start_point === opt ? { background: '#333333', borderColor: '#333333' } : {}}>{opt}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="font-body text-xs font-light text-charcoal block mb-2">Pickup/dropoff details</label>
+              <textarea value={answers.pickup_dropoff_notes || ''} onChange={e => handleAnswer('pickup_dropoff_notes', e.target.value)} placeholder="Order names, return QR codes, appointment address, who we are meeting, etc." rows={2} className="w-full px-4 py-2.5 rounded-xl border border-taupe/20 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/40 transition-colors resize-none" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {needsEmergencyContact && (
+        <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EB9486' }}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EB9486' }} />
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Emergency Contact</h3>
+          </div>
+          <p className="font-body text-xs text-charcoal font-light mb-4">Required for child, family, senior, and companion-style support.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">First Name{requiredMark}</label>
+              <input type="text" value={answers.emergency_first_name || ''} onChange={e => handleEmergencyChange('emergency_first_name', e.target.value)} placeholder="First" className="w-full px-4 py-2.5 rounded-xl border border-coral/30 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/60 transition-colors" />
+            </div>
+            <div>
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">Last Name{requiredMark}</label>
+              <input type="text" value={answers.emergency_last_name || ''} onChange={e => handleEmergencyChange('emergency_last_name', e.target.value)} placeholder="Last" className="w-full px-4 py-2.5 rounded-xl border border-coral/30 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/60 transition-colors" />
+            </div>
+            <div>
+              <label className="font-body text-xs font-light text-charcoal block mb-1.5">Phone Number{requiredMark}</label>
+              <input type="tel" value={answers.emergency_phone || ''} onChange={e => handleEmergencyChange('emergency_phone', e.target.value)} placeholder="(555) 555-5555" className="w-full px-4 py-2.5 rounded-xl border border-coral/30 bg-cream font-body text-sm text-charcoal placeholder-charcoal/25 focus:outline-none focus:border-charcoal/60 transition-colors" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Household / Service intake questions */}
       <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5 space-y-5" style={{ borderLeft: '3px solid #F3DE8A' }}>
         <div className="flex items-center gap-2">
@@ -188,10 +311,10 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
           <h3 className="font-heading text-sm font-semibold text-charcoal">About this visit</h3>
         </div>
 
-        {config.intakeQuestions.map(q => (
+        {intakeQuestions.map(q => (
           <div key={q.id}>
             <label className="font-body text-xs font-light text-charcoal block mb-2">
-              {q.label}{q.required && <span className="text-coral ml-0.5">*</span>}
+              {q.label}{q.required && requiredMark}
             </label>
             {q.type === 'select' && (
               <div className="flex flex-wrap gap-2">
@@ -283,7 +406,7 @@ export default function Step2Intake({ serviceKey, answers, onChange, clientInfo,
         <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-5" style={{ borderLeft: '3px solid #EB9486' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#EB9486' }} />
-            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos are welcome</h3>
+            <h3 className="font-heading text-sm font-semibold text-charcoal">Photos are optional, but helpful</h3>
           </div>
           <p className="font-body text-xs text-charcoal font-light mb-4">
             Upload photos if it helps explain the space. Totally optional, always judgment-free.
