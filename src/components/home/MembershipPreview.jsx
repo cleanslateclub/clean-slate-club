@@ -15,7 +15,7 @@ const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
 export default function MembershipPreview() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#EAF1EC' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
