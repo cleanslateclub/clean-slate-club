@@ -26,7 +26,7 @@ export default function ServiceAreaSection() {
   };
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#8B93A71F' }}>
+    <section className="py-20 lg:py-28 relative overflow-hidden" style={{ background: '#F1F2F4' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
