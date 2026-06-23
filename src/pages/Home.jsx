@@ -10,29 +10,42 @@ import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import FAQSection from '../components/home/FAQSection';
 import WaveDivider from '../components/shared/WaveDivider';
 
+const SECTION_TINTS = {
+  services: '#CAE7B91F',
+  consult: '#F3DE8A1F',
+  manifesto: '#EB94861F',
+  situations: '#B58A901F',
+  trust: '#B58A901F',
+  masha: '#97A7B31F',
+  membership: '#CAE7B91F',
+  serviceArea: '#8B93A71F',
+  testimonials: '#97A7B31F',
+  faq: '#F1F1F1',
+};
+
 export default function Home() {
   return (
     <main>
       <HeroSection />
-      <WaveDivider fill="#F7FAF4" />
+      <WaveDivider fill={SECTION_TINTS.services} />
       <ServicesPreview />
-      <WaveDivider fill="#FDF5E6" flip />
+      <WaveDivider fill={SECTION_TINTS.consult} flip />
       <ConsultSection />
-      <WaveDivider fill="#F8E8E2" />
+      <WaveDivider fill={SECTION_TINTS.manifesto} />
       <HeavyManifestoSection />
-      <WaveDivider fill="#F5E6E9" flip />
+      <WaveDivider fill={SECTION_TINTS.situations} flip />
       <HeavySituationsSection />
-      <WaveDivider fill="#F1ECEF" />
+      <WaveDivider fill={SECTION_TINTS.trust} />
       <TrustSection />
-      <WaveDivider fill="#EEF3F5" flip />
+      <WaveDivider fill={SECTION_TINTS.masha} flip />
       <MashaSection />
-      <WaveDivider fill="#EAF1EC" />
+      <WaveDivider fill={SECTION_TINTS.membership} />
       <MembershipPreview />
-      <WaveDivider fill="#E8EEE9" flip />
+      <WaveDivider fill={SECTION_TINTS.serviceArea} flip />
       <ServiceAreaSection />
-      <WaveDivider fill="#E4EBEF" />
+      <WaveDivider fill={SECTION_TINTS.testimonials} />
       <TestimonialsSection />
-      <WaveDivider fill="#F1F1F1" flip />
+      <WaveDivider fill={SECTION_TINTS.faq} flip />
       <FAQSection />
     </main>
   );
