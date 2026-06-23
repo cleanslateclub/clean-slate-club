@@ -315,7 +315,7 @@ export default function BookNow() {
         scriptColor="#EB9486"
       />
 
-      <div className="max-w-4xl mx-auto px-6 pb-20 -mt-8 relative z-10">
+      <div className="max-w-4xl mx-auto px-6 pb-20 mt-8 relative z-10">
         {settingsLoading ? (
           <div className="text-center py-16 text-charcoal/40 font-body font-light">Loading booking settings...</div>
         ) : !getBool('booking_enabled') ? (
