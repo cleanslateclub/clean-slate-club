@@ -228,7 +228,7 @@ function PainPointCard({ point, open, onToggle }) {
 
 export default function ConsultSection() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F7F9F3' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center max-w-3xl mx-auto">
           <SectionLabel label="WHEN HOME FEELS HEAVY" />
@@ -244,7 +244,7 @@ export default function ConsultSection() {
 
 export function HeavyManifestoSection() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F8E8E2' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F8F6EA' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection>
           <div className="max-w-5xl mx-auto rounded-[2.75rem] border bg-white p-7 md:p-10 lg:p-16 text-center relative overflow-hidden transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 28px 80px #B58A901C' }}>
@@ -273,7 +273,7 @@ export function HeavySituationsSection() {
   const [openIndex, setOpenIndex] = useState(-1);
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F6EEE9' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-10 max-w-3xl mx-auto">
           <div className="hidden sm:block">
