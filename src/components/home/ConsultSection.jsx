@@ -159,11 +159,13 @@ const painPoints = [
 
 function SectionLabel({ label, center = true }) {
   return (
-    <div className={`flex items-center gap-2 mb-4 ${center ? 'justify-center' : ''}`}>
-      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
-      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
-      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
-      <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>{label}</p>
+    <div className={`${center ? 'flex justify-center' : ''} mb-4`}>
+      <div className="inline-flex items-center gap-2 max-w-full">
+        <span className="w-2 h-2 rounded-full shrink-0 transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
+        <span className="w-2 h-2 rounded-full shrink-0 transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
+        <span className="w-2 h-2 rounded-full shrink-0 transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
+        <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2 leading-tight" style={{ color: '#333333' }}>{label}</p>
+      </div>
     </div>
   );
 }
@@ -197,17 +199,7 @@ function PainPointCard({ point, open, onToggle }) {
       {open && (
         <div className="px-5 pb-5 md:ml-16 -mt-1 animate-in fade-in slide-in-from-top-2 duration-500">
           <p className="font-body text-sm leading-relaxed font-light mb-4" style={{ color: '#333333cc' }}>{point.intro}</p>
-          <div className="mb-4 rounded-2xl p-4" style={{ background: '#FFFFFF', border: `1px solid ${point.color}70` }}>
-            <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Suggested services</p>
-            <div className="flex flex-wrap gap-2">
-              {point.services.map(service => (
-                <span key={service} className="rounded-full px-3 py-1.5 font-body text-xs font-light" style={{ background: `${point.color}35`, color: '#333333' }}>
-                  {service}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-2xl p-4" style={{ background: `${point.color}25`, border: `1px solid ${point.color}70` }}>
+          <div className="rounded-2xl p-4 mb-4" style={{ background: `${point.color}25`, border: `1px solid ${point.color}70` }}>
             <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Ways we can help</p>
             <ul className="space-y-2">
               {point.helps.map(item => (
@@ -217,6 +209,16 @@ function PainPointCard({ point, open, onToggle }) {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="rounded-2xl p-4" style={{ background: '#FFFFFF', border: `1px solid ${point.color}70` }}>
+            <p className="font-body text-[11px] tracking-[0.2em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Suggested services</p>
+            <div className="flex flex-wrap gap-2">
+              {point.services.map(service => (
+                <span key={service} className="rounded-full px-3 py-1.5 font-body text-xs font-light" style={{ background: `${point.color}35`, color: '#333333' }}>
+                  {service}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -274,11 +276,22 @@ export function HeavySituationsSection() {
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-10 max-w-3xl mx-auto">
-          <SectionLabel label="DOES THIS SOUND LIKE YOUR HOUSE?" />
-          <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
-            Find the support that fits your season.
-          </h2>
-          <p className="font-logo text-3xl md:text-4xl leading-tight" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
+          <div className="hidden sm:block">
+            <SectionLabel label="DOES THIS SOUND LIKE YOUR HOUSE?" />
+            <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
+              Find the support that fits your season.
+            </h2>
+            <p className="font-logo text-3xl md:text-4xl leading-tight" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
+          </div>
+          <div className="sm:hidden">
+            <SectionLabel label="DOES THIS SOUND LIKE YOUR HOUSE?" />
+            <h2 className="font-heading text-[2.05rem] font-semibold text-charcoal mb-4 leading-tight">
+              Need help, but not sure where to start?
+            </h2>
+            <p className="font-body text-base leading-relaxed font-light max-w-md mx-auto" style={{ color: '#333333b3' }}>
+              Choose the card that sounds most like your home right now. Each one connects the overwhelm to the services that can actually help.
+            </p>
+          </div>
         </AnimatedSection>
 
         <AnimatedSection delay={0.12}>
