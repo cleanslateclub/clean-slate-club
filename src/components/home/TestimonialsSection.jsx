@@ -56,7 +56,7 @@ export default function TestimonialsSection() {
   ].slice(0, 6);
 
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#EEF3F5' }}>
+    <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: '#E4EBEF' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <AnimatedSection className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-4">
