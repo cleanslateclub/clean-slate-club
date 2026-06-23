@@ -6,11 +6,11 @@ import { base44 } from '@/api/base44Client';
 
 const perks = [
   { label: 'Priority scheduling', detail: 'Book 48hrs before the calendar opens to the public', dot: '#CAE7B9', number: '01' },
-  { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#EB9486', number: '02' },
-  { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#EFB988', number: '03' },
-  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule — up to 3 sessions in a row', dot: '#B58A90', number: '04' },
-  { label: 'Monthly check-ins', detail: 'Wellness check-in text from Masha every month', dot: '#97A7B3', number: '05' },
-  { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#F3DE8A', number: '06' },
+  { label: 'Early access hours', detail: 'Book visits starting at 9:00 AM (vs. 10:00 AM standard)', dot: '#DFE3A2', number: '02' },
+  { label: 'Reduced overtime rate', detail: '$65/hr for overtime vs. $85/hr standard', dot: '#F3DE8A', number: '03' },
+  { label: 'Preferred scheduling', detail: 'Hold recurring time slots on a consistent schedule, up to 3 sessions in a row', dot: '#EFB988', number: '04' },
+  { label: 'Monthly check-ins', detail: 'Wellness check-in text from Masha every month', dot: '#EB9486', number: '05' },
+  { label: 'Flexible reschedules', detail: 'Easy reschedules with no penalty for members', dot: '#B58A90', number: '06' },
 ];
 
 const comparisonRows = [
@@ -29,17 +29,11 @@ export default function Memberships() {
   const handleJoin = async () => {
     setLoading(true);
     setEligibilityMessage(null);
+
     try {
-      let email = '';
-      let name = '';
-      try {
-        const user = await base44.auth.me();
-        email = user?.email || '';
-        name = user?.full_name || '';
-      } catch (_) {
-        setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
-        return;
-      }
+      const user = await base44.auth.me();
+      const email = user?.email || '';
+      const name = user?.full_name || '';
 
       if (!email) {
         setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
@@ -59,15 +53,16 @@ export default function Memberships() {
         cancelUrl: `${window.location.origin}/memberships`,
       });
 
-      const checkoutUrl = res.data?.url;
+      const checkoutUrl = res?.data?.url;
 
       if (checkoutUrl && checkoutUrl.startsWith(STRIPE_CHECKOUT_ORIGIN)) {
         window.location.href = checkoutUrl;
       } else {
-        console.error('Unable to start checkout:', checkoutUrl || 'Missing checkout URL');
+        setEligibilityMessage('I could not open checkout from here. Please reach out and I’ll help you get set up.');
       }
     } catch (e) {
       console.error('Membership eligibility or checkout error:', e);
+      setEligibilityMessage('Please log in first. Membership opens after your first completed service.');
     } finally {
       setLoading(false);
     }
@@ -188,7 +183,7 @@ export default function Memberships() {
 
         <AnimatedSection delay={0.2}>
           <p className="text-center font-body text-xs font-light mt-8" style={{ color: '#33333380' }}>
-            Questions? Text us at (206) 825-4061 or email cleanslateclubpa@gmail.com
+            Questions? Text us at (215) 500-3758 or email cleanslateclubpa@gmail.com
           </p>
         </AnimatedSection>
       </section>
