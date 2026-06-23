@@ -65,10 +65,10 @@ export default function TestimonialsSection() {
             <span className="w-2 h-2 rounded-full" style={{ background: '#EB9486' }} />
             <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>KIND WORDS</p>
           </div>
-          <h2 className="font-heading text-4xl lg:text-5xl font-semibold text-charcoal mb-4 leading-tight">
+          <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             "I can breathe again."
           </h2>
-          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>Real houses. Real relief.</p>
+          <p className="font-logo text-2xl md:text-3xl leading-tight" style={{ color: '#EB9486' }}>Real houses. Real relief.</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
