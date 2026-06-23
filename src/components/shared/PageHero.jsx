@@ -16,7 +16,7 @@ export default function PageHero({
   return (
     <>
       <section
-        className={`pt-24 sm:pt-28 pb-18 sm:pb-24 px-5 sm:px-6 relative overflow-hidden ${className}`}
+        className={`pt-24 sm:pt-28 pb-20 sm:pb-24 px-5 sm:px-6 relative overflow-hidden ${className}`}
         style={{ background }}
       >
         <div className="relative z-10 max-w-3xl mx-auto text-center">
