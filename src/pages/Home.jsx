@@ -10,16 +10,16 @@ import ServiceAreaSection from '../components/home/ServiceAreaSection';
 import FAQSection from '../components/home/FAQSection';
 import WaveDivider from '../components/shared/WaveDivider';
 
-const SECTION_TINTS = {
+const SECTION_BACKGROUNDS = {
   services: '#CAE7B91F',
-  consult: '#F3DE8A1F',
-  manifesto: '#EB94861F',
-  situations: '#B58A901F',
-  trust: '#B58A901F',
+  consult: '#FDF5E6',
+  manifesto: '#F8E8E2',
+  situations: '#F5E6E9',
+  trust: '#F1ECEF',
   masha: '#97A7B31F',
   membership: '#CAE7B91F',
   serviceArea: '#8B93A71F',
-  testimonials: '#97A7B31F',
+  testimonials: '#E4EBEF',
   faq: '#F1F1F1',
 };
 
@@ -27,25 +27,25 @@ export default function Home() {
   return (
     <main>
       <HeroSection />
-      <WaveDivider fill={SECTION_TINTS.services} />
+      <WaveDivider fill={SECTION_BACKGROUNDS.services} />
       <ServicesPreview />
-      <WaveDivider fill={SECTION_TINTS.consult} flip />
+      <WaveDivider fill={SECTION_BACKGROUNDS.consult} flip />
       <ConsultSection />
-      <WaveDivider fill={SECTION_TINTS.manifesto} />
+      <WaveDivider fill={SECTION_BACKGROUNDS.manifesto} />
       <HeavyManifestoSection />
-      <WaveDivider fill={SECTION_TINTS.situations} flip />
+      <WaveDivider fill={SECTION_BACKGROUNDS.situations} flip />
       <HeavySituationsSection />
-      <WaveDivider fill={SECTION_TINTS.trust} />
+      <WaveDivider fill={SECTION_BACKGROUNDS.trust} />
       <TrustSection />
-      <WaveDivider fill={SECTION_TINTS.masha} flip />
+      <WaveDivider fill={SECTION_BACKGROUNDS.masha} flip />
       <MashaSection />
-      <WaveDivider fill={SECTION_TINTS.membership} />
+      <WaveDivider fill={SECTION_BACKGROUNDS.membership} />
       <MembershipPreview />
-      <WaveDivider fill={SECTION_TINTS.serviceArea} flip />
+      <WaveDivider fill={SECTION_BACKGROUNDS.serviceArea} flip />
       <ServiceAreaSection />
-      <WaveDivider fill={SECTION_TINTS.testimonials} />
+      <WaveDivider fill={SECTION_BACKGROUNDS.testimonials} />
       <TestimonialsSection />
-      <WaveDivider fill={SECTION_TINTS.faq} flip />
+      <WaveDivider fill={SECTION_BACKGROUNDS.faq} flip />
       <FAQSection />
     </main>
   );
