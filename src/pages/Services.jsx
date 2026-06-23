@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '@/components/shared/AnimatedSection';
 import PageHero from '@/components/shared/PageHero';
@@ -34,30 +34,165 @@ const ACCENT_COLOR_OVERRIDES = {
   meal_prep: '#7E7F9A',
 };
 
-const CTA_CLASS = 'inline-block text-white font-body text-sm tracking-wide px-7 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg';
+const SERVICE_EXAMPLE_CHIPS = {
+  errands: {
+    preview: [
+      'Grocery pickup',
+      'Pharmacy runs',
+      'Returns & shipping',
+      'Donation dropoff',
+      'Dry cleaning',
+      'Gift errands',
+    ],
+    more: [
+      'Household supply runs',
+      'Pet supply pickup',
+      'Appointment transportation',
+      'Activity pickup',
+      'Marketplace pickups',
+      'Personal shopping',
+    ],
+  },
+  senior_support: {
+    preview: [
+      'Friendly check-ins',
+      'Companionship',
+      'Grocery support',
+      'Prescription pickup',
+      'Laundry help',
+      'Meal portioning',
+    ],
+    more: [
+      'Appointment rides',
+      'Waiting room support',
+      'Mail assistance',
+      'Technology help',
+      'Light kitchen help',
+      'Pet feeding',
+    ],
+  },
+  mothers_helper: {
+    preview: [
+      'School pickup',
+      'Activity transportation',
+      'Baby & toddler support',
+      'Lunch packing',
+      "Children's laundry",
+      'Playroom reset',
+    ],
+    more: [
+      'Snack prep',
+      'Child bedroom reset',
+      'Postpartum support',
+      'Recovery support',
+      'Errand assistance',
+      'Grocery help',
+    ],
+  },
+  organization: {
+    preview: [
+      'Pantry zones',
+      'Closet reset',
+      'Toy organization',
+      'Paper sorting',
+      'Donation prep',
+      'Laundry room reset',
+    ],
+    more: [
+      'Bathroom cabinets',
+      'Kitchen drawers',
+      'Linen closet',
+      'Office reset',
+      'Storage labeling',
+      'Household systems',
+    ],
+  },
+  home_reset: {
+    preview: [
+      'Kitchen reset',
+      'Laundry catch-up',
+      'Dish reset',
+      'Living room tidy',
+      'Bed linen change',
+      'Entryway reset',
+    ],
+    more: [
+      'Bathroom surface refresh',
+      'Toy pickup',
+      'Mail sorting',
+      'Trash & recycling',
+      'Supply restock',
+      'Guest room prep',
+    ],
+  },
+  meal_prep: {
+    preview: [
+      'Produce prep',
+      'Protein prep',
+      'School lunches',
+      'Smoothie packs',
+      'Freezer meals',
+      'Snack stations',
+    ],
+    more: [
+      'Breakfast prep',
+      'Family dinners',
+      'Pantry restock',
+      'Fridge refresh',
+      'Meal portioning',
+      'Labeling & storage',
+    ],
+  },
+};
+
+const CTA_CLASS = 'inline-flex w-full items-center justify-center text-center text-white font-body text-sm tracking-wide px-5 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg sm:w-auto sm:px-7';
 const CTA_STYLE = { background: '#333333' };
 
-function getRandomTaskChips(taskOptions, limit = 6) {
-  return [...taskOptions]
-    .filter(task => task !== 'Help Me Choose' && task !== "Help Me Choose - I'm Overwhelmed")
-    .sort(() => Math.random() - 0.5)
-    .slice(0, limit);
+function ExampleChips({ serviceKey, accentColor }) {
+  const [expanded, setExpanded] = useState(false);
+  const examples = SERVICE_EXAMPLE_CHIPS[serviceKey];
+
+  if (!examples) return null;
+
+  const chips = expanded ? [...examples.preview, ...examples.more] : examples.preview;
+
+  return (
+    <div className="mb-7">
+      <p className="font-body text-xs uppercase tracking-[0.18em] text-charcoal/55 font-light mb-3">
+        Examples only. Each visit is built around time, priorities, and your actual needs.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {chips.map(task => (
+          <span
+            key={task}
+            className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
+            style={{ borderColor: accentColor + '30', background: '#FFFFFFCC' }}
+          >
+            {task}
+          </span>
+        ))}
+        {examples.more.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(prev => !prev)}
+            className="px-3 py-1.5 rounded-full text-sm font-body font-medium text-charcoal border transition-all duration-200 hover:shadow-sm"
+            style={{ borderColor: accentColor + '55', background: '#FFFFFF' }}
+            aria-expanded={expanded}
+          >
+            {expanded ? 'Show less' : '+ More'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function Services() {
   // Null guard — consult may be missing during dev or config refactor
   const consult = SERVICE_CONFIG['consult'] ?? null;
 
-  const taskChipsByService = useMemo(() => {
-    return SERVICE_ORDER.reduce((acc, key) => {
-      const taskOptions = SERVICE_CONFIG[key]?.taskOptions;
-      acc[key] = taskOptions ? getRandomTaskChips(taskOptions) : [];
-      return acc;
-    }, {});
-  }, []);
-
   return (
-    <main className="min-h-screen" style={{ background: '#FDFCFB' }}>
+    <main className="min-h-screen overflow-hidden" style={{ background: '#FDFCFB' }}>
       <PageHero
         eyebrow="Services"
         title="Pick Your Backup."
@@ -70,7 +205,7 @@ export default function Services() {
       <section style={{ background: '#F7FAF4' }}>
         {/* Free Consult Banner — only renders if consult config exists */}
         {consult && (
-          <div className="max-w-5xl mx-auto px-6 pt-10 pb-4">
+          <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-10 pb-8 sm:pb-4">
             <AnimatedSection>
               <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
                 <div className="p-7 sm:p-9 text-center" style={{ background: '#F1F1F1' }}>
@@ -91,7 +226,8 @@ export default function Services() {
                     className={CTA_CLASS}
                     style={CTA_STYLE}
                   >
-                    Book Free Consult →
+                    <span className="sm:hidden">Free Consult →</span>
+                    <span className="hidden sm:inline">Book Free Consult →</span>
                   </Link>
                 </div>
               </div>
@@ -104,7 +240,7 @@ export default function Services() {
 
       {/* Service Cards */}
       <section style={{ background: '#FDFCFB' }}>
-        <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+        <div className="max-w-5xl mx-auto px-5 sm:px-6 py-8 space-y-6">
           {SERVICE_ORDER.map((key, i) => {
             const service = SERVICE_CONFIG[key];
             if (!service) return null;
@@ -114,7 +250,6 @@ export default function Services() {
             const priceDisplay = priceLow === 0 ? 'Free' : `Starting at $${priceLow}`;
             const durationHrs = service.baseMinutes / 60;
             const minHrs = service.minHours || 2;
-            const taskChips = taskChipsByService[key] || [];
 
             return (
               <AnimatedSection key={key} delay={i * 0.05}>
@@ -123,7 +258,7 @@ export default function Services() {
                   style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
                 >
                   <div className="h-3" style={{ background: color }} />
-                  <div className="p-7 sm:p-9" style={{ background: color + '24' }}>
+                  <div className="p-6 sm:p-9" style={{ background: color + '24' }}>
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
                       <div>
                         <div className="flex items-center gap-3 mb-1">
@@ -146,19 +281,7 @@ export default function Services() {
                       {service.description}
                     </p>
 
-                    {taskChips.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-7">
-                        {taskChips.map(task => (
-                          <span
-                            key={task}
-                            className="px-3 py-1.5 rounded-full text-sm font-body font-light text-charcoal border"
-                            style={{ borderColor: accentColor + '30', background: '#FFFFFFCC' }}
-                          >
-                            {task}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    <ExampleChips serviceKey={key} accentColor={accentColor} />
 
                     {service.disclaimer && (
                       <p className="font-body text-sm text-charcoal/70 font-light italic mb-5 leading-relaxed">
@@ -171,7 +294,8 @@ export default function Services() {
                       className={CTA_CLASS}
                       style={CTA_STYLE}
                     >
-                      Build a quote for {service.label} →
+                      <span className="sm:hidden">Build My Quote →</span>
+                      <span className="hidden sm:inline">Build a quote for {service.label} →</span>
                     </Link>
                   </div>
                 </div>
@@ -185,7 +309,7 @@ export default function Services() {
 
       <section style={{ background: '#F1F1F1' }}>
         <AnimatedSection>
-          <div className="max-w-5xl mx-auto px-6 pb-16 pt-8">
+          <div className="max-w-5xl mx-auto px-5 sm:px-6 pb-16 pt-8">
             <div
               className="rounded-[2rem] p-6 text-center border"
               style={{ background: '#FFFFFF', borderColor: '#B58A9035' }}

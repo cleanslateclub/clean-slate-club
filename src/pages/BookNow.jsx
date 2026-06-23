@@ -13,6 +13,15 @@ import Step4Schedule from '@/components/booking/Step4Schedule';
 import Step5Confirm from '@/components/booking/Step5Confirm';
 import Step6Payment from '@/components/booking/Step6Payment';
 
+const buildServiceAddress = (info = {}) => {
+  const street = info.service_street?.trim();
+  const unit = info.service_unit?.trim();
+  const city = info.service_city?.trim();
+  const state = (info.service_state || 'PA').trim();
+  const zip = info.service_zip?.trim();
+  return [street, unit, [city, state, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+};
+
 export default function BookNow() {
   const { getBool, loading: settingsLoading } = useAppSettings();
   const [searchParams] = useSearchParams();
@@ -22,7 +31,17 @@ export default function BookNow() {
 
   const [step, setStep] = useState(validatedPreselected ? 2 : 1);
   const [serviceKey, setServiceKey] = useState(validatedPreselected || null);
-  const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '', address: '' });
+  const [clientInfo, setClientInfo] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    service_street: '',
+    service_unit: '',
+    service_city: '',
+    service_state: 'PA',
+    service_zip: '',
+  });
   const [intakeAnswers, setIntakeAnswers] = useState({});
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -78,10 +97,21 @@ export default function BookNow() {
     if (step === 1) return !!serviceKey;
     if (step === 2) {
       if (isConsult) return !!(clientInfo.name && clientInfo.email && clientInfo.phone);
-      const basicInfo = clientInfo.name && clientInfo.email && clientInfo.phone && clientInfo.address;
+      const hasContact = !!(clientInfo.name && clientInfo.email && clientInfo.phone);
+      const hasServiceAddress = !!(
+        clientInfo.service_street &&
+        clientInfo.service_city &&
+        clientInfo.service_state &&
+        clientInfo.service_zip
+      );
       const needsEmergencyContact = serviceKey === 'senior_support' || serviceKey === 'mothers_helper';
-      const hasEmergencyContact = !needsEmergencyContact || !!intakeAnswers.emergency_contact;
-      return !!(basicInfo && hasEmergencyContact);
+      const hasEmergencyContact = !needsEmergencyContact || !!(
+        intakeAnswers.emergency_first_name &&
+        intakeAnswers.emergency_last_name &&
+        intakeAnswers.emergency_phone
+      );
+      const hasErrandLocations = serviceKey !== 'errands' || !!intakeAnswers.errand_locations;
+      return !!(hasContact && hasServiceAddress && hasEmergencyContact && hasErrandLocations);
     }
     if (step === 3) return true;
     if (step === 4) return !!selectedDate && !!selectedTime;
@@ -95,6 +125,21 @@ export default function BookNow() {
     setSubmitting(true);
     setError(null);
     try {
+      const normalizedClientAddress = clientInfo.address || buildServiceAddress(clientInfo);
+      const serviceAddressParts = {
+        street: clientInfo.service_street || '',
+        unit: clientInfo.service_unit || '',
+        city: clientInfo.service_city || '',
+        state: clientInfo.service_state || 'PA',
+        zip: clientInfo.service_zip || '',
+        formatted: normalizedClientAddress,
+      };
+      const emergencyContact = {
+        first_name: intakeAnswers.emergency_first_name || '',
+        last_name: intakeAnswers.emergency_last_name || '',
+        phone: intakeAnswers.emergency_phone || '',
+        formatted: intakeAnswers.emergency_contact || '',
+      };
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
 
       const displayDate = selectedDate
@@ -113,7 +158,7 @@ export default function BookNow() {
         client_name: clientInfo.name,
         client_email: clientInfo.email,
         client_phone: clientInfo.phone,
-        client_address: clientInfo.address || '',
+        client_address: normalizedClientAddress || '',
         service_category: isConsult ? 'consult' : serviceKey,
         scheduled_date: selectedDate || new Date().toISOString().split('T')[0],
         scheduled_start_time: selectedTime || 'TBD',
@@ -121,7 +166,7 @@ export default function BookNow() {
         base_duration_minutes: config?.baseMinutes || 0,
         total_duration_minutes: isConsult ? 15 : totalDuration,
         addons: selectedAddons,
-        intake_answers: { ...intakeAnswers, uploaded_photos: uploadedPhotos, sms_opt_in: smsOptIn },
+        intake_answers: { ...intakeAnswers, service_address: serviceAddressParts, emergency_contact_details: emergencyContact, uploaded_photos: uploadedPhotos, sms_opt_in: smsOptIn },
         special_notes: intakeAnswers.situation || intakeAnswers.special_notes || '',
         estimated_price_low: estimateLow,
         estimated_price_high: estimateHigh,
@@ -257,7 +302,13 @@ export default function BookNow() {
         </div>
         <p>Next, we'll review your request, confirm details, and reach out if anything needs clarification.</p>
       `);
-      const adminBody = `New booking request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${clientInfo.address}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} - ${endTime}\nDuration: ${totalDuration} minutes\nEstimate: $${estimateLow} - $${estimateHigh}\n\nTasks: ${selectedTasks.join(', ') || 'None selected'}\nAdd-ons: ${addonLabels.join(', ') || 'None'}\n\nSpecial notes: ${intakeAnswers.special_notes || intakeAnswers.situation || 'N/A'}\n\nSMS opt-in: ${smsOptIn ? 'Yes' : 'No'}\nStripe Payment Intent: ${stripePaymentIntentId || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`;
+      const errandDetails = serviceKey === 'errands'
+        ? `\nErrand locations/stops: ${intakeAnswers.errand_locations || 'N/A'}\nStart point: ${intakeAnswers.errand_start_point || 'N/A'}\nPickup/dropoff notes: ${intakeAnswers.pickup_dropoff_notes || 'N/A'}\n`
+        : '';
+      const emergencyDetails = emergencyContact.formatted
+        ? `\nEmergency contact: ${emergencyContact.formatted}\n`
+        : '';
+      const adminBody = `New booking request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${normalizedClientAddress}\nCity: ${serviceAddressParts.city}\nZIP: ${serviceAddressParts.zip}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} - ${endTime}\nDuration: ${totalDuration} minutes\nEstimate: $${estimateLow} - $${estimateHigh}\n\nTasks: ${selectedTasks.join(', ') || 'None selected'}\nAdd-ons: ${addonLabels.join(', ') || 'None'}\n${errandDetails}${emergencyDetails}\nSpecial notes: ${intakeAnswers.special_notes || intakeAnswers.situation || 'N/A'}\n\nSMS opt-in: ${smsOptIn ? 'Yes' : 'No'}\nStripe Payment Intent: ${stripePaymentIntentId || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`;
       Promise.all([
         base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: 'We got your request - Clean Slate Club', body: clientBody }),
         base44.integrations.Core.SendEmail({ to: 'cleanslateclubpa@gmail.com', subject: `New Booking Request - ${clientInfo.name}`, body: adminBody }),
@@ -266,7 +317,7 @@ export default function BookNow() {
       base44.functions.invoke('addBookingToCalendar', {
         data: {
           clientName: clientInfo.name, clientEmail: clientInfo.email, clientPhone: clientInfo.phone,
-          clientAddress: clientInfo.address, serviceLabel: config?.label, addonLabels,
+          clientAddress: normalizedClientAddress, serviceLabel: config?.label, addonLabels,
           selectedDate, startTime: selectedTime, endTime, totalDuration,
           estimateLow, estimateHigh, specialNotes: intakeAnswers.special_notes || intakeAnswers.situation || '',
           tasks: selectedTasks, sendInviteToClient: true, isConsult: false
@@ -283,7 +334,7 @@ export default function BookNow() {
     } finally {
       setSubmitting(false);
     }
-  }, [clientInfo, selectedDate, selectedTime, totalDuration, config, dynamicEstimate, selectedAddons, intakeAnswers, uploadedPhotos, smsOptIn, isConsult, skipDeposit]);
+  }, [clientInfo, selectedDate, selectedTime, totalDuration, config, dynamicEstimate, selectedAddons, intakeAnswers, uploadedPhotos, smsOptIn, isConsult, serviceKey]);
 
   if (submitted) {
     return (
