@@ -2,8 +2,29 @@ import React from 'react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Consult first, then the rest
-const SERVICE_ORDER = ['consult', 'home_reset', 'mothers_helper', 'errands', 'senior_support', 'meal_prep', 'organization'];
+// Consult first, then services from least expensive to most expensive.
+const SERVICE_ORDER = ['consult', 'errands', 'senior_support', 'mothers_helper', 'organization', 'home_reset', 'meal_prep'];
+
+// Matches the Services page color assignments, moving lightest to darkest.
+const SERVICE_COLORS = {
+  consult: '#333333',
+  errands: '#DFE3A2',
+  senior_support: '#CAE7B9',
+  mothers_helper: '#F3DE8A',
+  organization: '#EFB988',
+  home_reset: '#EB9486',
+  meal_prep: '#B58A90',
+};
+
+const SERVICE_ACCENTS = {
+  consult: '#333333',
+  errands: '#8B93A7',
+  senior_support: '#7E7F9A',
+  mothers_helper: '#B58A90',
+  organization: '#B58A90',
+  home_reset: '#7E7F9A',
+  meal_prep: '#7E7F9A',
+};
 
 export default function Step1Service({ selected, serviceKey, onSelect, setServiceKey, onContinue, onNext }) {
   const selectedService = selected ?? serviceKey;
@@ -26,6 +47,8 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
           if (!config) return null;
           const isSelected = selectedService === key;
           const isConsult = key === 'consult';
+          const cardColor = SERVICE_COLORS[key] || config.color;
+          const accentColor = SERVICE_ACCENTS[key] || config.color;
 
           return (
             <div key={key}>
@@ -37,12 +60,12 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                     ? 'shadow-sm'
                     : 'bg-warm-white border-taupe/15 hover:border-taupe/40'
                 }`}
-                style={isSelected ? { background: config.color + '12', borderColor: config.color + '60' } : {}}
+                style={isSelected ? { background: cardColor + '18', borderColor: accentColor + '55' } : {}}
               >
                 <div className="flex items-start gap-3">
                   <span
                     className="w-3 h-3 rounded-full shrink-0 mt-1"
-                    style={{ background: config.color }}
+                    style={{ background: cardColor }}
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -53,10 +76,10 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                     </div>
                     <p className="font-body text-xs text-charcoal font-light mt-0.5 leading-relaxed">{config.description}</p>
                     {isConsult && (
-                      <p className="font-body text-xs mt-1 font-light" style={{ color: config.color }}>Free · 15 min call</p>
+                      <p className="font-body text-xs mt-1 font-light" style={{ color: accentColor }}>Free · 15 min call</p>
                     )}
                     {isConsult && config.scheduleNote && (
-                      <p className="font-body text-xs mt-1 font-light" style={{ color: config.color }}>
+                      <p className="font-body text-xs mt-1 font-light" style={{ color: '#33333399' }}>
                         {config.scheduleNote}
                       </p>
                     )}
@@ -68,7 +91,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                   </div>
                   <span className={`w-4 h-4 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all ${
                     isSelected ? 'border-transparent' : 'border-taupe/30'
-                  }`} style={isSelected ? { background: config.color } : {}}>
+                  }`} style={isSelected ? { background: '#333333' } : {}}>
                     {isSelected && <span className="text-white text-[8px] font-bold">✓</span>}
                   </span>
                 </div>
@@ -80,7 +103,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                       <span
                         key={ex}
                         className="px-2.5 py-1 rounded-full text-[10px] font-body font-light text-charcoal border"
-                        style={{ background: config.color + '18', borderColor: config.color + '30' }}
+                        style={{ background: cardColor + '18', borderColor: accentColor + '30' }}
                       >
                         {ex}
                       </span>
@@ -103,7 +126,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                       type="button"
                       onClick={() => continueWithService(key)}
                       className="w-full py-3.5 rounded-2xl font-body text-sm tracking-wide text-white transition-all duration-300 hover:opacity-90 hover:shadow-lg"
-                      style={{ background: config.color }}
+                      style={{ background: '#333333' }}
                     >
                       {isConsult ? 'Book My Free Consult →' : `Continue with ${config.label} →`}
                     </button>
