@@ -63,7 +63,7 @@ export default function About() {
       <PageHero
         eyebrow="About Clean Slate Club"
         title="When home feels heavy"
-        script="That’s where I come in."
+        script="That’s where we come in."
         description="Practical support for the mental tabs, household pileups, and real-life seasons that need more than a cleaning checklist."
         background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
         waveFill="#FDFCFB"
