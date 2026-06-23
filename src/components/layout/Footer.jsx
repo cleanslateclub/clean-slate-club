@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UsersRound } from 'lucide-react';
 
 const serviceAreas = [
   'Flourtown', 'Wyndmoor', 'Erdenheim', 'Chestnut Hill',
@@ -13,10 +14,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-charcoal text-cream relative overflow-hidden">
-      {/* Blob accents */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-5" style={{ background: '#EB9486', filter: 'blur(80px)', transform: 'translate(30%, -30%)' }} />
-      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full opacity-5" style={{ background: '#CAE7B9', filter: 'blur(80px)', transform: 'translate(-30%, 30%)' }} />
-
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28">
         {/* CTA */}
         <div className="text-center mb-20 pb-20 border-b border-white/10">
@@ -90,20 +87,36 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-body text-xs text-white/50 font-light">
-            © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
-          </p>
-          <div className="flex items-center gap-4 flex-wrap justify-center">
-            <Link to="/terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Terms & Conditions</Link>
-            <span className="text-white/20 text-xs">·</span>
-            <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Privacy Policy</Link>
-            <span className="text-white/20 text-xs">·</span>
-            <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
-            <span className="text-white/20 text-xs">·</span>
-            <a href="https://cleanslateclub.co" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">cleanslateclubpa@gmail.com · (215) 500-3758 · cleanslateclub.co</a>
-            <span className="text-white/20 text-xs">·</span>
-            <Link to="/staff-login" className="font-body text-[10px] text-white/15 hover:text-white/40 transition-colors font-light tracking-wide">Team Login</Link>
+        <div className="pt-8 border-t border-white/10 flex flex-col gap-6">
+          <div className="flex justify-center md:justify-end">
+            <Link
+              to="/staff-login"
+              className="inline-flex items-center gap-3 rounded-full border px-5 py-3 font-body text-sm tracking-wide text-white/85 transition-all duration-300 hover:border-coral/70 hover:bg-white/5 hover:text-white"
+              style={{ borderColor: 'rgba(255,255,255,0.22)' }}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: '#EB9486', color: '#FFFFFF' }}>
+                <UsersRound className="h-4 w-4" />
+              </span>
+              <span className="flex flex-col text-left leading-tight">
+                <span className="font-semibold">Team Login</span>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">Provider portal</span>
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="font-body text-xs text-white/50 font-light">
+              © {new Date().getFullYear()} Clean Slate Club™ · All rights reserved
+            </p>
+            <div className="flex items-center gap-4 flex-wrap justify-center">
+              <Link to="/terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Terms & Conditions</Link>
+              <span className="text-white/20 text-xs">·</span>
+              <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">Privacy Policy</Link>
+              <span className="text-white/20 text-xs">·</span>
+              <Link to="/sms-terms" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">SMS Terms</Link>
+              <span className="text-white/20 text-xs">·</span>
+              <a href="https://cleanslateclub.co" className="font-body text-xs text-white/40 hover:text-coral transition-colors font-light">cleanslateclubpa@gmail.com · (215) 500-3758 · cleanslateclub.co</a>
+            </div>
           </div>
         </div>
       </div>
