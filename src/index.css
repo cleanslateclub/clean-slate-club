@@ -123,8 +123,8 @@ html {
   section[class*="py-16"],
   section[class*="py-20"],
   section[class*="py-24"] {
-    padding-top: 3.5rem !important;
-    padding-bottom: 3.5rem !important;
+    padding-top: 4.25rem !important;
+    padding-bottom: 4.25rem !important;
   }
 
   [class*="px-6"] {
@@ -180,11 +180,11 @@ html {
   }
 
   [class~="p-7"] {
-    padding: 1.35rem !important;
+    padding: 1.55rem !important;
   }
 
   [class~="p-8"] {
-    padding: 1.5rem !important;
+    padding: 1.75rem !important;
   }
 
   [class*="gap-16"] {
@@ -193,6 +193,6 @@ html {
 
   [class*="mb-16"],
   [class*="mb-14"] {
-    margin-bottom: 2.5rem !important;
+    margin-bottom: 3rem !important;
   }
 }
