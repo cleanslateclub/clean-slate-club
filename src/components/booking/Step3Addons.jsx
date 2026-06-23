@@ -1,7 +1,8 @@
 import React from 'react';
 import { SERVICE_CONFIG, BUFFER_PREP, BUFFER_WRAP } from '@/lib/bookingConfig';
 
-export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dynamicEstimate, selectedTasks = [] }) {
+export default function Step3Addons({ serviceKey, selectedAddons, onToggle, toggleAddon, dynamicEstimate, selectedTasks = [] }) {
+  const handleToggle = onToggle || toggleAddon;
   const config = SERVICE_CONFIG[serviceKey];
   if (!config) return null;
 
@@ -86,7 +87,7 @@ export default function Step3Addons({ serviceKey, selectedAddons, onToggle, dyna
             <button
               key={addon.id}
               type="button"
-              onClick={() => onToggle(addon.id)}
+              onClick={() => handleToggle(addon.id)}
               className={`text-left p-4 rounded-2xl border transition-all duration-200 ${
                 isSelected
                   ? 'bg-coral/5 border-coral shadow-sm shadow-coral/10'
