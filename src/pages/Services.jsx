@@ -58,6 +58,30 @@ const SERVICE_EXAMPLE_CHIPS = {
 const CTA_CLASS = 'inline-flex w-full items-center justify-center text-center text-white font-body text-sm tracking-wide px-5 py-3 rounded-full transition-all duration-300 hover:opacity-90 hover:shadow-lg sm:w-auto sm:px-7';
 const CTA_STYLE = { background: '#333333' };
 
+function ServiceHoursCard() {
+  return (
+    <AnimatedSection>
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-6 sm:pt-8">
+        <div
+          className="rounded-[1.5rem] sm:rounded-[2rem] border px-5 py-4 sm:px-7 sm:py-5 text-center shadow-sm"
+          style={{ background: '#FFFFFFCC', borderColor: '#B58A9035', boxShadow: '0 12px 30px #8B93A710' }}
+        >
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-charcoal/45 font-light mb-2">
+            Service hours
+          </p>
+          <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-3 font-body text-sm sm:text-base text-charcoal/75 font-light leading-relaxed">
+            <span><strong className="font-semibold text-charcoal">10:00 AM – 6:00 PM</strong></span>
+            <span className="hidden sm:inline text-charcoal/20">·</span>
+            <span>Monday – Saturday</span>
+            <span className="hidden sm:inline text-charcoal/20">·</span>
+            <span>No Sundays</span>
+          </div>
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
 function ExampleChips({ serviceKey, accentColor }) {
   const [expanded, setExpanded] = useState(false);
   const chipData = SERVICE_EXAMPLE_CHIPS[serviceKey];
@@ -113,22 +137,24 @@ export default function Services() {
       />
 
       <section style={{ background: SOFT_GREEN_TINT }}>
+        <ServiceHoursCard />
+
         {/* Free Consult Banner — only renders if consult config exists */}
         {consult && (
-          <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-10 pb-8 sm:pb-4">
+          <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-2 sm:pt-6 sm:pb-4">
             <AnimatedSection>
-              <div className="rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
-                <div className="p-7 sm:p-9 text-center" style={{ background: '#F1F1F1' }}>
-                  <p className="font-body text-xs tracking-[0.28em] uppercase font-light mb-3" style={{ color: '#33333399' }}>Not sure where to begin?</p>
-                  <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-charcoal mb-2">{consult.label}</h2>
-                  <p className="font-logo text-xl" style={{ color: '#7E7F9A' }}>
+              <div className="rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden border h-full" style={{ background: '#FFFFFFCC', borderColor: '#8B93A740', boxShadow: '0 18px 45px #8B93A715' }}>
+                <div className="p-5 sm:p-9 text-center" style={{ background: '#F1F1F1' }}>
+                  <p className="font-body text-[11px] sm:text-xs tracking-[0.24em] sm:tracking-[0.28em] uppercase font-light mb-2 sm:mb-3" style={{ color: '#33333399' }}>Not sure where to begin?</p>
+                  <h2 className="font-heading text-2xl sm:text-4xl font-semibold text-charcoal mb-1 sm:mb-2">{consult.label}</h2>
+                  <p className="font-logo text-lg sm:text-xl" style={{ color: '#7E7F9A' }}>
                     A quick call to figure it out together.
                   </p>
                 </div>
 
-                <div className="p-7 sm:p-9">
-                  <p className="font-body text-base text-charcoal font-light leading-relaxed mb-5">{consult.description}</p>
-                  <p className="font-body text-sm text-charcoal/70 font-light mb-7 italic">
+                <div className="p-5 sm:p-9">
+                  <p className="font-body text-sm sm:text-base text-charcoal font-light leading-relaxed mb-4 sm:mb-5">{consult.description}</p>
+                  <p className="font-body text-sm text-charcoal/70 font-light mb-5 sm:mb-7 italic leading-relaxed">
                     Bring the messy version. We’ll talk through what feels heaviest, what your home actually needs, and whether a standard service or custom visit makes the most sense.
                   </p>
                   <Link
@@ -146,11 +172,9 @@ export default function Services() {
         )}
       </section>
 
-      <WaveDivider fill={SOFT_GREEN_TINT} flip />
-
       {/* Service Cards */}
       <section style={{ background: SOFT_GREEN_TINT }}>
-        <div className="max-w-5xl mx-auto px-5 sm:px-6 py-8 space-y-6">
+        <div className="max-w-5xl mx-auto px-5 sm:px-6 pt-5 pb-10 sm:py-8 space-y-5 sm:space-y-6">
           {SERVICE_ORDER.map((key, i) => {
             const service = SERVICE_CONFIG[key];
             if (!service) return null;
@@ -164,30 +188,30 @@ export default function Services() {
             return (
               <AnimatedSection key={key} delay={i * 0.05}>
                 <div
-                  className="rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+                  className="rounded-[1.75rem] sm:rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
                   style={{ borderColor: accentColor + '35', background: '#FFFFFF' }}
                 >
-                  <div className="h-3" style={{ background: color }} />
-                  <div className="p-6 sm:p-9" style={{ background: color + CARD_TINT }}>
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-5">
+                  <div className="h-2.5 sm:h-3" style={{ background: color }} />
+                  <div className="p-5 sm:p-9" style={{ background: color + CARD_TINT }}>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-5 mb-5">
                       <div>
                         <div className="flex items-center gap-3 mb-1">
                           <span className="w-3 h-3 rounded-full shrink-0" style={{ background: color }} />
                           <h2 className="font-heading text-2xl md:text-3xl font-semibold text-charcoal">{service.label}</h2>
                         </div>
                         {service.sublabel && (
-                          <p className="font-logo text-xl ml-6" style={{ color: accentColor }}>{service.sublabel}</p>
+                          <p className="font-logo text-lg sm:text-xl ml-6" style={{ color: accentColor }}>{service.sublabel}</p>
                         )}
                       </div>
                       <div className="sm:text-right shrink-0 rounded-2xl px-4 py-3 border" style={{ background: '#FFFFFFCC', borderColor: accentColor + CARD_TINT }}>
-                        <p className="font-heading text-xl font-semibold text-charcoal">{priceDisplay}</p>
+                        <p className="font-heading text-lg sm:text-xl font-semibold text-charcoal">{priceDisplay}</p>
                         <p className="font-body text-sm text-charcoal/75 font-light">
                           {minHrs}–{Math.round(durationHrs) + 1} hrs typical
                         </p>
                       </div>
                     </div>
 
-                    <p className="font-body text-base text-charcoal font-light leading-relaxed mb-6 max-w-3xl">
+                    <p className="font-body text-sm sm:text-base text-charcoal font-light leading-relaxed mb-6 max-w-3xl">
                       {service.description}
                     </p>
 
@@ -218,22 +242,7 @@ export default function Services() {
       <WaveDivider fill="#F1F1F1" />
 
       <section style={{ background: '#F1F1F1' }}>
-        <AnimatedSection>
-          <div className="max-w-5xl mx-auto px-5 sm:px-6 pb-16 pt-8">
-            <div
-              className="rounded-[2rem] p-6 text-center border"
-              style={{ background: '#FFFFFF', borderColor: '#B58A9035' }}
-            >
-              <p className="font-body text-base text-charcoal font-light leading-relaxed">
-                <strong className="font-semibold text-charcoal">Service hours:</strong> 10:00 AM – 6:00 PM
-                <span className="mx-3 text-charcoal/20">·</span>
-                Monday – Saturday
-                <span className="mx-3 text-charcoal/20">·</span>
-                No Sundays
-              </p>
-            </div>
-          </div>
-        </AnimatedSection>
+        <div className="h-8 sm:h-12" />
       </section>
     </main>
   );
