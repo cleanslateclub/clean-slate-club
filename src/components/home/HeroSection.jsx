@@ -39,10 +39,10 @@ const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
 
 export default function HeroSection() {
   return (
-    <section className="relative flex items-start overflow-hidden" style={{ background: '#F1F1F1' }}>
+    <section className="relative flex items-start overflow-hidden" style={{ background: '#FFFFFF' }}>
       <div className="absolute right-0 top-0 bottom-0 w-[46%] hidden lg:flex flex-col justify-center overflow-hidden">
-        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #F1F1F1 0%, transparent 100%)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #F1F1F1 0%, transparent 100%)' }} />
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #FFFFFF 0%, transparent 100%)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #FFFFFF 0%, transparent 100%)' }} />
         <div className="h-full py-20">
           <TaskScrollPanel />
         </div>
