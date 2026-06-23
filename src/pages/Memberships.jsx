@@ -72,7 +72,7 @@ export default function Memberships() {
     <div className="min-h-screen" style={{ background: '#F1F1F1' }}>
       <PageHero
         eyebrow="Membership"
-        title="Catch-Up Club™"
+        title="Catch-Up Club"
         script="Stay ahead of the pileup."
         description="Priority booking, preferred hours, and member-only perks."
         background="linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)"
