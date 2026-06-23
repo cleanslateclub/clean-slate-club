@@ -25,6 +25,7 @@ export default function PageHero({
   description,
   children,
   waveFill = '#F7FAF4',
+  waveClassName = '',
   scriptColor = '#7E7F9A',
   dotColors,
   className = '',
@@ -111,7 +112,7 @@ export default function PageHero({
           )}
         </div>
       </section>
-      <WaveDivider fill={waveFill} />
+      <WaveDivider fill={waveFill} className={waveClassName} />
     </>
   );
 }
