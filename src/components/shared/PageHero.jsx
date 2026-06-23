@@ -37,6 +37,18 @@ export default function PageHero({
         className={`pt-24 sm:pt-28 pb-20 sm:pb-24 px-5 sm:px-6 relative overflow-hidden ${className}`}
         style={{ background: '#FDFCFB' }}
       >
+        <motion.div
+          className="absolute left-0 right-0 top-0 z-20 flex h-2.5 md:h-3 overflow-hidden"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+          aria-hidden="true"
+        >
+          {RIBBON_COLORS.map((color) => (
+            <span key={color} className="h-full flex-1" style={{ background: color }} />
+          ))}
+        </motion.div>
+
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           {eyebrow && (
             <motion.div
@@ -98,18 +110,6 @@ export default function PageHero({
             </motion.div>
           )}
         </div>
-
-        <motion.div
-          className="absolute left-0 right-0 bottom-0 z-20 flex h-2.5 md:h-3 overflow-hidden"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.7 }}
-          aria-hidden="true"
-        >
-          {RIBBON_COLORS.map((color) => (
-            <span key={color} className="h-full flex-1" style={{ background: color }} />
-          ))}
-        </motion.div>
       </section>
       <WaveDivider fill={waveFill} className="-mt-16" />
     </>
