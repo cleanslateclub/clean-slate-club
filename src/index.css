@@ -179,11 +179,11 @@ html {
     border-radius: 2rem !important;
   }
 
-  [class*="p-7"] {
+  [class~="p-7"] {
     padding: 1.35rem !important;
   }
 
-  [class*="p-8"] {
+  [class~="p-8"] {
     padding: 1.5rem !important;
   }
 
