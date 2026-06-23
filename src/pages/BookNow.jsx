@@ -335,7 +335,7 @@ export default function BookNow() {
                       onContinue={() => setStep(2)}
                     />
                   )}
-                  {step === 2 && <Step2Intake serviceKey={serviceKey} clientInfo={clientInfo} setClientInfo={setClientInfo} intakeAnswers={intakeAnswers} setIntakeAnswers={setIntakeAnswers} uploadedPhotos={uploadedPhotos} setUploadedPhotos={setUploadedPhotos} />}
+                  {step === 2 && <Step2Intake serviceKey={serviceKey} clientInfo={clientInfo} onClientChange={setClientInfo} answers={intakeAnswers} onChange={setIntakeAnswers} uploadedPhotos={uploadedPhotos} onPhotoUpload={setUploadedPhotos} smsOptIn={smsOptIn} onSmsOptInChange={setSmsOptIn} />}
                   {step === 3 && !isConsult && <Step3Addons serviceKey={serviceKey} selectedAddons={selectedAddons} toggleAddon={toggleAddon} dynamicEstimate={dynamicEstimate} />}
                   {step === 4 && !isConsult && <Step4Schedule serviceKey={serviceKey} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedTime={selectedTime} setSelectedTime={setSelectedTime} totalDuration={totalDuration} />}
                   {step === 5 && !isConsult && (
