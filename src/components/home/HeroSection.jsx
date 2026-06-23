@@ -16,14 +16,16 @@ const mobileTasks = [
 ];
 
 const withOpacity = (hex, opacity = '66') => `${hex}${opacity}`;
-const heroBackground = 'linear-gradient(135deg, #FDFCFB 0%, #DFE3A266 22%, #CAE7B966 42%, #F3DE8A55 60%, #EFB98855 76%, #EB948655 90%, #B58A9038 100%)';
+const topStripBackground = 'linear-gradient(90deg, #DFE3A2 0%, #CAE7B9 18%, #F3DE8A 36%, #EFB988 56%, #EB9486 76%, #B58A90 100%)';
 
 export default function HeroSection() {
   return (
-    <section className="relative flex items-start overflow-hidden" style={{ background: heroBackground }}>
+    <section className="relative flex items-start overflow-hidden" style={{ background: '#F1F1F1' }}>
+      <div className="absolute inset-x-0 top-0 h-3 sm:h-4 z-30" style={{ background: topStripBackground }} aria-hidden="true" />
+
       <div className="absolute right-0 top-0 bottom-0 w-[46%] hidden lg:flex flex-col justify-center overflow-hidden">
-        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #FDFCFB 0%, rgba(253,252,251,0.72) 34%, transparent 100%)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #FDFCFB 0%, rgba(253,252,251,0.62) 36%, transparent 100%)' }} />
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #F1F1F1 0%, transparent 100%)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #F1F1F1 0%, transparent 100%)' }} />
         <div className="h-full py-20">
           <TaskScrollPanel />
         </div>
