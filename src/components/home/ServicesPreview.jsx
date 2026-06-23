@@ -124,7 +124,7 @@ export default function ServicesPreview() {
           <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             This isn't a cleaning menu.
           </h2>
-          <p className="font-logo text-2xl md:text-3xl max-w-xl leading-tight" style={{ color: '#EB9486' }}>
+          <p className="font-body text-base max-w-lg leading-relaxed font-light" style={{ color: '#333333b3' }}>
             It's household support — organized around your life, your family, and what actually needs to happen.
           </p>
         </AnimatedSection>
