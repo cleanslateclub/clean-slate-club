@@ -57,7 +57,7 @@ export default function TrustSection() {
           <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
             Trust isn't given. It's earned.
           </h2>
-          <p className="font-logo text-2xl md:text-3xl max-w-lg mx-auto leading-tight" style={{ color: '#EB9486' }}>
+          <p className="font-body text-base max-w-lg mx-auto leading-relaxed font-light" style={{ color: '#333333b3' }}>
             When someone comes into your home, you deserve to feel completely safe. Here's what we bring to every visit.
           </p>
         </AnimatedSection>
