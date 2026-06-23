@@ -157,6 +157,17 @@ const painPoints = [
   },
 ];
 
+function SectionLabel({ label, center = true }) {
+  return (
+    <div className={`flex items-center gap-2 mb-4 ${center ? 'justify-center' : ''}`}>
+      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
+      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
+      <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
+      <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>{label}</p>
+    </div>
+  );
+}
+
 function PainPointCard({ point, open, onToggle }) {
   const PointIcon = point.icon;
   return (
@@ -214,26 +225,28 @@ function PainPointCard({ point, open, onToggle }) {
 }
 
 export default function ConsultSection() {
-  const [openIndex, setOpenIndex] = useState(-1);
-
   return (
     <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#FDF5E6' }}>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <AnimatedSection className="mb-12 text-center max-w-3xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#CAE7B9' }} />
-            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#DFE3A2' }} />
-            <span className="w-2 h-2 rounded-full transition-transform duration-700 hover:scale-150" style={{ background: '#EB9486' }} />
-            <p className="font-body tracking-[0.25em] uppercase font-light text-lg ml-2" style={{ color: '#333333' }}>WHEN HOME FEELS HEAVY</p>
-          </div>
-          <h2 className="font-heading text-[2.45rem] lg:text-[3.35rem] font-semibold text-charcoal mb-4 leading-tight">
+        <AnimatedSection className="text-center max-w-3xl mx-auto">
+          <SectionLabel label="WHEN HOME FEELS HEAVY" />
+          <h2 className="font-heading text-[2.7rem] lg:text-[3.6rem] font-semibold text-charcoal mb-4 leading-tight">
             It is rarely just the mess.
           </h2>
-          <p className="font-logo text-2xl md:text-3xl leading-tight" style={{ color: '#EB9486' }}>It is everything the mess represents.</p>
+          <p className="font-logo text-3xl md:text-4xl leading-tight" style={{ color: '#EB9486' }}>It is everything the mess represents.</p>
         </AnimatedSection>
+      </div>
+    </section>
+  );
+}
 
-        <AnimatedSection delay={0.1}>
-          <div className="max-w-5xl mx-auto rounded-[2.5rem] border bg-white p-7 md:p-10 lg:p-14 text-center relative overflow-hidden transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 26px 70px #8B93A71B' }}>
+export function HeavyManifestoSection() {
+  return (
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F8E8E2' }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
+        <AnimatedSection>
+          <div className="max-w-5xl mx-auto rounded-[2.75rem] border bg-white p-7 md:p-10 lg:p-16 text-center relative overflow-hidden transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 28px 80px #B58A901C' }}>
+            <div className="absolute inset-x-10 top-0 h-px" style={{ background: '#EB948640' }} />
             <LogoLockup />
             <p className="font-heading text-3xl lg:text-4xl font-semibold text-charcoal leading-tight mb-7">
               was built for the households carrying more than a to-do list.
@@ -249,13 +262,24 @@ export default function ConsultSection() {
             </div>
           </div>
         </AnimatedSection>
+      </div>
+    </section>
+  );
+}
 
-        <AnimatedSection delay={0.18}>
-          <div className="max-w-5xl mx-auto mt-14 rounded-[2.25rem] border bg-white/75 p-5 md:p-7 lg:p-8" style={{ borderColor: '#33333314', boxShadow: '0 18px 50px #8B93A711' }}>
-            <div className="text-center mb-7">
-              <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Does this sound like your house?</p>
-              <p className="font-logo text-2xl" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
-            </div>
+export function HeavySituationsSection() {
+  const [openIndex, setOpenIndex] = useState(-1);
+
+  return (
+    <section className="py-16 lg:py-24 relative overflow-hidden" style={{ background: '#F5E6E9' }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
+        <AnimatedSection className="text-center mb-10 max-w-3xl mx-auto">
+          <p className="font-body text-xs tracking-[0.25em] uppercase font-light mb-2" style={{ color: '#33333399' }}>Does this sound like your house?</p>
+          <p className="font-logo text-3xl md:text-4xl leading-tight" style={{ color: '#EB9486' }}>Open the one that feels most true.</p>
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.12}>
+          <div className="max-w-5xl mx-auto rounded-[2.25rem] border bg-white/70 p-5 md:p-7 lg:p-8" style={{ borderColor: '#33333314', boxShadow: '0 18px 50px #8B93A711' }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {painPoints.map((point, index) => (
                 <AnimatedSection key={point.title} delay={0.04 * index}>
@@ -270,7 +294,7 @@ export default function ConsultSection() {
           </div>
         </AnimatedSection>
 
-        <AnimatedSection delay={0.25}>
+        <AnimatedSection delay={0.22}>
           <div className="max-w-3xl mx-auto mt-12 rounded-[2rem] border bg-white p-7 text-center transition-all duration-700 hover:-translate-y-1" style={{ borderColor: '#33333318', boxShadow: '0 14px 40px #8B93A710' }}>
             <p className="font-logo text-2xl mb-2" style={{ color: '#EB9486' }}>You do not have to know what to ask for.</p>
             <p className="font-body text-sm leading-relaxed font-light mb-5" style={{ color: '#333333b3' }}>
