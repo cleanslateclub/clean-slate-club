@@ -27,11 +27,7 @@ const filterBookings = (bookings = [], filter = 'review') => {
 
 function ActionFilterButton({ item, active, count, onClick }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-2xl border px-4 py-3 text-left transition-all ${active ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}
-    >
+    <button type="button" onClick={onClick} className={`rounded-2xl border px-4 py-3 text-left transition-all ${active ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}>
       <p className="font-body text-xs uppercase tracking-widest text-charcoal/35">{item.label}</p>
       <p className="font-heading text-2xl text-charcoal mt-1">{count}</p>
     </button>
@@ -40,11 +36,7 @@ function ActionFilterButton({ item, active, count, onClick }) {
 
 function BookingActionCard({ booking, selected, onSelect }) {
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(booking)}
-      className={`w-full text-left rounded-3xl border p-4 transition-all ${selected ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}
-    >
+    <button type="button" onClick={() => onSelect(booking)} className={`w-full text-left rounded-3xl border p-4 transition-all ${selected ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-heading text-lg text-charcoal">{booking.client_name || 'Guest'}</p>
@@ -92,7 +84,7 @@ function BookingActionDetail({ booking, onUpdated }) {
       </div>
 
       <BookingActionsPanel booking={booking} onUpdated={onUpdated} />
-      <ProviderAssignmentPreview booking={booking} />
+      <ProviderAssignmentPreview booking={booking} onAssigned={onUpdated} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Status" value={booking.status} />
