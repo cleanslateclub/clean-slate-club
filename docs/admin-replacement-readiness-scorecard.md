@@ -26,12 +26,12 @@ The branch is being committed in clean chunks, but it should not be treated as m
 | New admin replacement shell | Started | `/admin` now points to `AdminCommandCenter` on this branch. |
 | Legacy admin fallback | Available in repo | Old `AdminDashboard` still exists for rollback/reference. |
 | Command Center overview | Started | Preview shows dashboard counts and queues. |
-| Bookings workspace | Not complete | Placeholder only. Needs real queue/detail/action flow. |
+| Bookings workspace | Partially started | Real queues, search, and detail panel exist. Action flows still needed. |
 | Calendar workspace | Not complete | Placeholder only. Needs real calendar and conflict handling UI. |
 | Households workspace | Not complete | Placeholder only. Needs profile view and history. |
 | Providers workspace | Not complete | Placeholder only. Needs readiness, availability, assignment UI. |
 | Services workspace | Partially started | Services OS exists. Needs Base44 live save verification. |
-| Payments workspace | Not complete | Math helper exists only. Stripe/final checkout not wired. |
+| Payments workspace | Not complete | Math helper exists only. Final checkout not wired. |
 | Messages workspace | Not complete | Template/log helpers exist only. Sending UI not wired. |
 | Settings workspace | Not complete | Placeholder only. Needs toggles/rules UI. |
 | Base44 schema sync | Unknown | Must be verified in live Base44. |
