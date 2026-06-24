@@ -1,3 +1,5 @@
+import { buildGoogleMapsDirectionsUrl } from '@/lib/mapLinks';
+
 export const PROVIDER_PORTAL_TABS = [
   { key: 'today', label: 'Today', description: 'Assigned visits for today.' },
   { key: 'upcoming', label: 'Upcoming', description: 'Future assigned visits.' },
@@ -6,28 +8,33 @@ export const PROVIDER_PORTAL_TABS = [
   { key: 'profile', label: 'Profile', description: 'Provider-safe profile details.' },
 ];
 
-export const getProviderVisibleBooking = (booking = {}) => ({
-  id: booking.id,
-  status: booking.status,
-  client_name: booking.client_name,
-  client_phone: booking.client_phone,
-  client_address: booking.client_address,
-  service_category: booking.service_category,
-  service_label: booking.service_label,
-  scheduled_date: booking.scheduled_date,
-  scheduled_start_time: booking.scheduled_start_time,
-  scheduled_end_time: booking.scheduled_end_time,
-  total_duration_minutes: booking.total_duration_minutes,
-  addons: booking.addons || [],
-  addon_labels: booking.addon_labels || [],
-  provider_notes: booking.provider_notes || '',
-  special_notes: booking.special_notes || '',
-  intake_answers: {
-    service_address: booking.intake_answers?.service_address,
-    emergency_contact_details: booking.intake_answers?.emergency_contact_details,
-    uploaded_photos: booking.intake_answers?.uploaded_photos,
-  },
-});
+export const getProviderVisibleBooking = (booking = {}) => {
+  const address = booking.client_address || booking.intake_answers?.service_address?.formatted || '';
+
+  return {
+    id: booking.id,
+    status: booking.status,
+    client_name: booking.client_name,
+    client_phone: booking.client_phone,
+    client_address: address,
+    directions_url: buildGoogleMapsDirectionsUrl(address),
+    service_category: booking.service_category,
+    service_label: booking.service_label,
+    scheduled_date: booking.scheduled_date,
+    scheduled_start_time: booking.scheduled_start_time,
+    scheduled_end_time: booking.scheduled_end_time,
+    total_duration_minutes: booking.total_duration_minutes,
+    addons: booking.addons || [],
+    addon_labels: booking.addon_labels || [],
+    provider_notes: booking.provider_notes || '',
+    special_notes: booking.special_notes || '',
+    intake_answers: {
+      service_address: booking.intake_answers?.service_address,
+      emergency_contact_details: booking.intake_answers?.emergency_contact_details,
+      uploaded_photos: booking.intake_answers?.uploaded_photos,
+    },
+  };
+};
 
 export const filterProviderBookings = (bookings = [], providerEmail = '') => (
   bookings.filter(booking => booking.provider_email === providerEmail)
