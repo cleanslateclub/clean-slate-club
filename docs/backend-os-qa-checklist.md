@@ -17,6 +17,7 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - [ ] `/admin-os` opens the Admin OS preview.
 - [ ] `/admin-os/modules` opens the backend feature map.
 - [ ] `/admin-os/compliance` opens the provider compliance center.
+- [ ] `/admin-os/overrides` opens the admin overrides page.
 
 ## Admin OS preview
 
@@ -47,6 +48,19 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - [ ] Expiration dates can be saved for expiring documents.
 - [ ] Internal notes can be saved on document requirements.
 - [ ] A provider only reads as ready when active and all required items are complete.
+
+## Admin overrides
+
+- [ ] `/admin-os/overrides` loads provider records.
+- [ ] Selecting a provider shows missing requirements available for override.
+- [ ] Override cannot be created without a requirement.
+- [ ] Override cannot be created without a reason.
+- [ ] Override cannot be created without an expiration date.
+- [ ] Override cannot be created without confirmation checkbox.
+- [ ] Creating an override stores it on the provider record.
+- [ ] Active overrides show in the override warning area.
+- [ ] Active overrides can be revoked.
+- [ ] Revoked overrides no longer appear as active.
 
 ## Public booking dynamic menu
 
@@ -83,7 +97,6 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 
 - [ ] Service editor UI is not yet merged into the current live admin dashboard.
 - [ ] Provider compliance document uploads are not yet wired.
-- [ ] Admin manual compliance bypass is not yet wired.
 - [ ] Google OAuth provider onboarding is not yet wired.
 - [ ] Stripe final checkout/refund/reschedule fee engine is not yet wired.
 - [ ] Campaign builder is not yet wired.
@@ -98,3 +111,4 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - Provider session/login redirects.
 - Service key mapping: `family_support` maps to legacy booking key `mothers_helper`.
 - Provider entity schema flexibility for `doc_*` compliance fields.
+- Provider entity schema flexibility for `compliance_overrides` JSON.
