@@ -16,6 +16,7 @@ import BookNowDynamic from './pages/BookNowDynamic';
 import AdminPortal from './pages/AdminPortal';
 import AdminOS from './pages/AdminOS';
 import AdminOSModules from './pages/AdminOSModules';
+import AdminOSCompliance from './pages/AdminOSCompliance';
 import TeamPortal from './pages/TeamPortal';
 import MemberDashboard from './pages/MemberDashboard';
 import MemberLogin from './pages/MemberLogin';
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
     location.pathname === '/admin' ||
     location.pathname === '/admin-os' ||
     location.pathname === '/admin-os/modules' ||
+    location.pathname === '/admin-os/compliance' ||
     location.pathname === '/admin-login' ||
     location.pathname === '/team' ||
     location.pathname === '/provider' ||
@@ -72,6 +74,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminPortal />} />
         <Route path="/admin-os" element={<AdminOS />} />
         <Route path="/admin-os/modules" element={<AdminOSModules />} />
+        <Route path="/admin-os/compliance" element={<AdminOSCompliance />} />
         <Route path="/admin-login" element={<Navigate to="/admin" replace />} />
         <Route path="/team" element={<TeamPortal />} />
         <Route path="/provider" element={<Navigate to="/team" replace />} />
