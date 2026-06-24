@@ -1,0 +1,85 @@
+{
+  "name": "MessageLog",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms", "phone", "internal_note", "system"],
+      "default": "email"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["outbound", "inbound", "internal"],
+      "default": "outbound"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "queued", "sent", "delivered", "failed", "skipped"],
+      "default": "queued"
+    },
+    "template_key": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body_preview": {
+      "type": "string"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "recipient_email": {
+      "type": "string"
+    },
+    "recipient_phone": {
+      "type": "string"
+    },
+    "booking_id": {
+      "type": "string"
+    },
+    "household_profile_id": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "booking_created, reminder_24h, checkout_sent, provider_assigned, etc."
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": ["channel", "direction", "status"],
+  "rls": {
+    "create": {
+      "$or": [
+        { "user_condition": { "role": "admin" } },
+        { "user_condition": { "role": "provider" } }
+      ]
+    },
+    "read": {
+      "user_condition": { "role": "admin" }
+    },
+    "update": {
+      "user_condition": { "role": "admin" }
+    },
+    "delete": {
+      "user_condition": { "role": "admin" }
+    }
+  }
+}
