@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import BookingActionCenter from '@/components/admin/BookingActionCenter';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
 import CalendarWorkspace from '@/components/admin/CalendarWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
@@ -13,6 +14,7 @@ import SettingsWorkspace from '@/components/admin/SettingsWorkspace';
 const COMMAND_TABS = [
   { key: 'home', label: 'Command', icon: Home },
   { key: 'bookings', label: 'Bookings', icon: ClipboardList },
+  { key: 'booking_actions', label: 'Actions', icon: ClipboardList },
   { key: 'calendar', label: 'Calendar', icon: CalendarDays },
   { key: 'households', label: 'Households', icon: Users },
   { key: 'providers', label: 'Providers', icon: ShieldCheck },
@@ -86,6 +88,7 @@ export default function AdminCommandCenter() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
+        {tab === 'booking_actions' && <BookingActionCenter />}
         {tab === 'calendar' && <CalendarWorkspace />}
         {tab === 'households' && <HouseholdsWorkspace />}
         {tab === 'providers' && <ProvidersWorkspace />}
