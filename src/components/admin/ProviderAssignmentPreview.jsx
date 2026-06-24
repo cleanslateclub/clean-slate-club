@@ -1,10 +1,32 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Search, UserPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { buildProviderAssignmentPatch, canAssignProviderToBooking } from '@/lib/adminProviderAssignmentActions';
 import { getAssignmentCandidates } from '@/lib/providerAssignmentRules';
 
-function ProviderCandidateCard({ candidate }) {
+function ProviderCandidateCard({ candidate, booking, onAssigned }) {
   const provider = candidate.provider || {};
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const canSave = candidate.canAssign && canAssignProviderToBooking({ booking, provider });
+
+  const assignProvider = async () => {
+    if (!canSave) return;
+    setSaving(true);
+    setMessage('');
+    try {
+      const patch = buildProviderAssignmentPatch({ booking, provider, actorName: 'Admin' });
+      const updated = await base44.entities.Booking.update(booking.id, patch);
+      onAssigned?.(updated || patch);
+      setMessage('Provider assigned.');
+    } catch (error) {
+      console.error('Provider assignment failed:', error);
+      setMessage('Provider could not be assigned. Check Base44 permissions and try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="rounded-2xl bg-warm-white border border-taupe/15 p-4">
       <div className="flex items-start justify-between gap-3">
@@ -29,11 +51,20 @@ function ProviderCandidateCard({ candidate }) {
       <p className="font-body text-xs text-charcoal/35 font-light mt-3">
         {(candidate.reasons || []).map(reason => String(reason).replace(/_/g, ' ')).join(', ') || 'No reason shown'}
       </p>
+      <button
+        type="button"
+        disabled={!canSave || saving}
+        onClick={assignProvider}
+        className="mt-4 w-full rounded-full bg-coral px-4 py-2 text-xs font-body text-white disabled:opacity-40 hover:bg-coral/90 transition-colors"
+      >
+        {saving ? 'Assigning...' : 'Assign this provider'}
+      </button>
+      {message && <p className="font-body text-xs text-charcoal/45 font-light mt-2">{message}</p>}
     </div>
   );
 }
 
-export default function ProviderAssignmentPreview({ booking }) {
+export default function ProviderAssignmentPreview({ booking, onAssigned }) {
   const [providers, setProviders] = useState([]);
   const [availability, setAvailability] = useState([]);
   const [blocks, setBlocks] = useState([]);
@@ -83,8 +114,8 @@ export default function ProviderAssignmentPreview({ booking }) {
     <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Provider assignment preview</p>
-          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Preview-only. Admin assignment action is not automatic yet.</p>
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Provider assignment</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Admin-controlled assignment. No automatic assignment is enabled.</p>
         </div>
         {candidates.some(candidate => candidate.canAssign) && <CheckCircle2 className="w-5 h-5 text-sage" />}
       </div>
@@ -105,7 +136,7 @@ export default function ProviderAssignmentPreview({ booking }) {
       ) : (
         <div className="space-y-3 mt-4">
           {candidates.slice(0, 6).map(candidate => (
-            <ProviderCandidateCard key={candidate.provider?.id || candidate.provider?.email || candidate.score} candidate={candidate} />
+            <ProviderCandidateCard key={candidate.provider?.id || candidate.provider?.email || candidate.score} candidate={candidate} booking={booking} onAssigned={onAssigned} />
           ))}
         </div>
       )}
