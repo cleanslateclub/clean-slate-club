@@ -1,17 +1,38 @@
 {
   "name": "Booking",
   "type": "object",
+  "additionalProperties": true,
   "properties": {
     "status": {
       "type": "string",
       "enum": [
+        "draft",
         "pending",
+        "needs_review",
+        "approved",
         "confirmed",
+        "provider_assigned",
+        "in_progress",
         "completed",
         "cancelled",
+        "no_show",
+        "rescheduled",
         "archived"
       ],
       "default": "pending"
+    },
+    "booking_source": {
+      "type": "string",
+      "enum": [
+        "public_booking",
+        "admin_manual",
+        "member_portal",
+        "consult_followup",
+        "provider_request",
+        "imported"
+      ],
+      "default": "public_booking",
+      "description": "Where this booking originated, similar to Vagaro-style online/admin/manual booking sources"
     },
     "client_name": {
       "type": "string"
@@ -25,11 +46,16 @@
     "client_address": {
       "type": "string"
     },
+    "household_profile_id": {
+      "type": "string",
+      "description": "Linked household/guest profile record"
+    },
     "service_category": {
       "type": "string",
       "enum": [
         "home_reset",
         "mothers_helper",
+        "family_support",
         "errands",
         "senior_support",
         "meal_prep",
@@ -37,9 +63,18 @@
         "consult"
       ]
     },
+    "service_label": {
+      "type": "string"
+    },
     "provider_email": {
       "type": "string",
       "description": "Email of the provider assigned to this booking"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string"
     },
     "scheduled_date": {
       "type": "string",
@@ -51,13 +86,41 @@
     "scheduled_end_time": {
       "type": "string"
     },
+    "original_scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "original_scheduled_start_time": {
+      "type": "string"
+    },
+    "rescheduled_from_booking_id": {
+      "type": "string"
+    },
+    "reschedule_count": {
+      "type": "number",
+      "default": 0
+    },
+    "reschedule_fee_due": {
+      "type": "number",
+      "default": 0
+    },
     "base_duration_minutes": {
       "type": "number"
     },
     "total_duration_minutes": {
       "type": "number"
     },
+    "travel_buffer_minutes": {
+      "type": "number",
+      "default": 20
+    },
     "addons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "addon_labels": {
       "type": "array",
       "items": {
         "type": "string"
@@ -70,22 +133,137 @@
     "special_notes": {
       "type": "string"
     },
+    "admin_notes": {
+      "type": "string"
+    },
+    "provider_notes": {
+      "type": "string",
+      "description": "Provider-safe notes only. No sensitive payment or private admin notes."
+    },
     "estimated_price_low": {
       "type": "number"
     },
     "estimated_price_high": {
       "type": "number"
     },
-    "admin_notes": {
-      "type": "string"
+    "final_price": {
+      "type": "number"
+    },
+    "deposit_amount": {
+      "type": "number",
+      "default": 50
+    },
+    "deposit_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "paid",
+        "failed",
+        "refunded",
+        "retained"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "deposit_paid",
+        "checkout_sent",
+        "partially_paid",
+        "paid",
+        "refunded",
+        "disputed",
+        "void"
+      ],
+      "default": "unpaid"
     },
     "payment_intent_id": {
       "type": "string",
-      "description": "Stripe PaymentIntent ID \u2014 used to match webhook events and process refunds"
+      "description": "Stripe PaymentIntent ID — used to match webhook events and process refunds"
+    },
+    "deposit_payment_intent_id": {
+      "type": "string"
+    },
+    "final_payment_intent_id": {
+      "type": "string"
+    },
+    "checkout_link_url": {
+      "type": "string"
+    },
+    "checkout_sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancelled_by": {
+      "type": "string"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    },
+    "cancellation_fee": {
+      "type": "number",
+      "default": 0
+    },
+    "refund_status": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "pending",
+        "completed",
+        "failed",
+        "partial"
+      ],
+      "default": "not_applicable"
+    },
+    "refund_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "member_at_booking": {
+      "type": "boolean",
+      "default": false
+    },
+    "member_id": {
+      "type": "string"
+    },
+    "requires_admin_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "not_required"
+    },
+    "approval_notes": {
+      "type": "string"
     },
     "google_calendar_event_id": {
       "type": "string",
       "description": "Google Calendar event ID for syncing updates and deletions"
+    },
+    "last_notification_sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "audit_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "description": "Lightweight per-booking event log for scheduling/payment/admin changes"
     }
   },
   "required": [
