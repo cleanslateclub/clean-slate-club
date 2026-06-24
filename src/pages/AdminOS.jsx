@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Bell, ClipboardCheck, LayoutDashboard, Settings, ShieldCheck, Sparkles } from 'lucide-react';
+import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
 import { BOOKING_RULES_DEFAULTS, CAMPAIGN_TEMPLATE_SEEDS, PROVIDER_DOCUMENT_REQUIREMENTS, SCHEDULE_NOTIFICATION_RULES } from '@/lib/backendOSConfig';
 
@@ -31,7 +32,12 @@ function OverviewPanel({ onJump }) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        <button type="button" onClick={() => onJump('command')} className="text-left rounded-3xl bg-warm-white border border-taupe/15 p-6 hover:border-coral/25 transition-all">
+          <LayoutDashboard className="w-5 h-5 text-coral mb-4" />
+          <p className="font-heading text-lg font-semibold text-charcoal">Command Center</p>
+          <p className="font-body text-sm text-charcoal/45 font-light mt-2 leading-relaxed">Today, upcoming, review queue, alerts, and owner snapshot.</p>
+        </button>
         <button type="button" onClick={() => onJump('services')} className="text-left rounded-3xl bg-warm-white border border-taupe/15 p-6 hover:border-coral/25 transition-all">
           <Sparkles className="w-5 h-5 text-coral mb-4" />
           <p className="font-heading text-lg font-semibold text-charcoal">Services OS</p>
@@ -129,6 +135,7 @@ function RulesPanel() {
 
 const OS_TABS = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { key: 'command', label: 'Command Center', icon: LayoutDashboard },
   { key: 'services', label: 'Services', icon: Sparkles },
   { key: 'provider-rules', label: 'Provider Rules', icon: ShieldCheck },
   { key: 'notifications', label: 'Notifications', icon: Bell },
@@ -175,6 +182,7 @@ export default function AdminOS() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         {tab === 'overview' && <OverviewPanel onJump={setTab} />}
+        {tab === 'command' && <CommandCenterPreview />}
         {tab === 'services' && <ServicesOSTab />}
         {tab === 'provider-rules' && <ProviderRulesPanel />}
         {tab === 'notifications' && <NotificationPanel />}
