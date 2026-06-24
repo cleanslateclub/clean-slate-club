@@ -1,6 +1,7 @@
 {
   "name": "Provider",
   "type": "object",
+  "additionalProperties": true,
   "properties": {
     "full_name": {
       "type": "string"
@@ -37,15 +38,37 @@
         "on_leave",
         "suspended",
         "inactive",
-        "terminated"
+        "terminated",
+        "draft",
+        "invited",
+        "onboarding",
+        "pending_review",
+        "restricted",
+        "archived"
       ],
-      "default": "applicant"
+      "default": "draft"
     },
     "services": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Approved service keys for provider matching and compliance rules"
+    },
+    "service_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Backend OS mirror of approved service keys"
+    },
+    "access_level": {
+      "type": "string",
+      "description": "Provider/admin portal access level key"
+    },
+    "compliance_overrides": {
+      "type": "string",
+      "description": "Serialized JSON array of temporary admin compliance overrides"
     },
     "tags": {
       "type": "array",
