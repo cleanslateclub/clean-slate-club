@@ -166,6 +166,33 @@ Rollback risk:
 
 - Low to medium. UI is wired into `/admin-os`, but not the live admin dashboard.
 
+## Chunk: admin replacement shell
+
+Commits:
+
+- `4b369f8b5bda761c9804acce2a57f16e3e270b9a`
+- `5ca1eca4bd3b65ea55b19c8c966b93b00eb95009`
+- `7fe5c4c7e318514aa34c138e03f1e1cf2e205d27`
+- `bef31b2a3eb14c48f7b99d0318ac12f6e22a4b23`
+
+Files:
+
+- `docs/admin-replacement-strategy.md`
+- `src/pages/AdminCommandCenter.jsx`
+- `src/pages/AdminPortal.jsx`
+- `docs/legacy-admin-audit.md`
+
+Purpose:
+
+- Documents that the goal is replacement, not cosmetic patching.
+- Adds the new admin command center shell.
+- Switches `/admin` from legacy `AdminDashboard` to `AdminCommandCenter` after login.
+- Documents old admin pieces that should be audited and retired.
+
+Rollback risk:
+
+- Medium. This changes the `/admin` target on this branch. Revert this chunk to restore the legacy dashboard as the default admin portal.
+
 ## Rollback rule
 
 If something breaks after this point, prefer reverting only the affected chunk instead of resetting the full branch.
