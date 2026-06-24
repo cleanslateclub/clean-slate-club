@@ -27,11 +27,11 @@ The branch is being committed in clean chunks, but it should not be treated as m
 | Legacy admin fallback | Available in repo | Old `AdminDashboard` still exists for rollback/reference. |
 | Command Center overview | Started | Preview shows dashboard counts and queues. |
 | Bookings workspace | Partially started | Real queues, search, and detail panel exist. Action flows still needed. |
-| Calendar workspace | Not complete | Placeholder only. Needs real calendar and conflict handling UI. |
+| Calendar workspace | Partially started | Read-only schedule block view exists. Editing still needed. |
 | Households workspace | Not complete | Placeholder only. Connector blocked this area twice. |
 | Providers workspace | Partially started | Real list, filters, search, and detail panel exist. Editing and assignment still needed. |
 | Services workspace | Partially started | Services OS exists. Needs Base44 live save verification. |
-| Payments workspace | Not complete | Math helper exists only. Final checkout not wired. |
+| Payments workspace | Partially started | Read-only invoice view exists but is not wired into the portal yet. |
 | Messages workspace | Partially started | Message log list, filters, search, and detail panel exist. Sending UI not wired. |
 | Settings workspace | Partially started | Rules, saved settings, and feature flag views exist. Editing still needed. |
 | Base44 schema sync | Unknown | Must be verified in live Base44. |
