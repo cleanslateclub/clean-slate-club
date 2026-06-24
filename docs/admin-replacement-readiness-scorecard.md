@@ -4,9 +4,9 @@ This scorecard answers: are we ready to merge the new admin replacement work int
 
 ## Current answer
 
-Not yet.
+Close to review-ready, but not launch-ready.
 
-The branch is being committed in clean chunks, but it should not be treated as merge-ready until the checks below pass.
+The branch now has a passing CI build gate. It still needs Base44 live verification and manual smoke testing before merge or launch.
 
 ## Current GitHub status
 
@@ -14,7 +14,7 @@ The branch is being committed in clean chunks, but it should not be treated as m
 - Branch: `backend-os-foundation`
 - Draft: yes
 - Latest known state: mergeable, but still not launch-ready
-- CI/workflow checks: none detected for latest checked commit
+- CI/workflow checks: latest CI build gate passed
 
 ## Readiness summary
 
@@ -35,9 +35,9 @@ The branch is being committed in clean chunks, but it should not be treated as m
 | Messages workspace | Partially started | Message log list, filters, search, and detail panel exist. Sending UI not wired. |
 | Settings workspace | Partially started | Rules, saved settings, and feature flag views exist. Editing still needed. |
 | Team directions links | Started | Provider-visible booking records now include a Google Maps directions URL. |
+| CI build gate | Passed | Latest GitHub Actions CI run completed successfully. |
 | Base44 schema sync | Unknown | Must be verified in live Base44. |
 | Base44 backend functions | Unknown | Must match function contracts. |
-| Build/typecheck/lint | Unknown | No CI detected and local build was not available. |
 | Owner policy decisions | Pending | Cancellation/reschedule/no-show rules need approval before automation. |
 
 ## Merge readiness levels
@@ -51,24 +51,24 @@ Meaning:
 - It is fine to keep committing changes to the PR branch.
 - Chunks are documented.
 - Rollback checkpoint exists.
+- CI build gate exists and has passed on the current branch.
 
 ### Level 2: PR review-ready
 
-Status: close, but not complete.
+Status: close.
 
 Needed:
 
-- Re-check PR body so it reflects current replacement strategy.
+- Review `docs/pre-merge-handoff-checklist.md`.
 - Confirm no accidental references to the old dashboard as the final plan.
-- Add a focused reviewer/test checklist for the new `/admin` shell.
+- Run or schedule Base44 preview testing using `docs/base44-live-test-script.md`.
 
 ### Level 3: Merge-ready to `main`
 
-Status: no.
+Status: not yet.
 
 Needed:
 
-- Build/preview verification.
 - Base44 live schema verification.
 - Base44 function verification.
 - Manual smoke test of `/admin`, `/admin-os`, `/book`, and `/team`.
@@ -93,11 +93,10 @@ Needed:
 
 ## Recommended next steps before merge
 
-1. Finish the key replacement workspaces enough that `/admin` is useful, not just a shell.
-2. Add a temporary `/admin-legacy` route only if rollback/testing needs it.
-3. Update PR description to reflect the new replacement plan.
-4. Run build/preview checks through Base44 or local environment.
-5. Only then mark the PR ready for review.
+1. Run Base44 preview tests from `docs/base44-live-test-script.md`.
+2. Verify all Base44 schemas and backend functions.
+3. Decide whether to wire Payments later or keep it as a component only for this PR.
+4. Only then mark the PR ready for review.
 
 ## Owner decision
 
