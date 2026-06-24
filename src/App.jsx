@@ -15,16 +15,14 @@ import About from './pages/About.jsx';
 import BookNow from './pages/BookNow';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
-import ProviderDashboard from './pages/ProviderDashboard';
+import TeamPortal from './pages/TeamPortal';
 import MemberDashboard from './pages/MemberDashboard';
-import ProviderLogin from './pages/ProviderLogin';
 import MemberLogin from './pages/MemberLogin';
 import MemberSignup from './pages/MemberSignup';
 import SmsTerms from './pages/SmsTerms';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ClientPortal from './pages/ClientPortal';
-import StaffLogin from './pages/StaffLogin';
 
 
 const AuthenticatedApp = () => {
@@ -70,7 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/book" element={<BookNow />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/team" element={<ProviderDashboard />} />
+        <Route path="/team" element={<TeamPortal />} />
         <Route path="/provider" element={<Navigate to="/team" replace />} />
         <Route path="/dashboard" element={<MemberDashboard />} />
         <Route path="/provider-login" element={<Navigate to="/team" replace />} />
