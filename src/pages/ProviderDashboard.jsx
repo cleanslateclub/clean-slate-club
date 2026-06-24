@@ -7,6 +7,7 @@ import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
 import { LogOut, CheckSquare, CalendarDays, DollarSign } from 'lucide-react';
 import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
+import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
 const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
 
@@ -26,23 +27,24 @@ export default function ProviderDashboard() {
       try {
         const session = localStorage.getItem('providerSession');
         if (!session) {
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
         const parsed = JSON.parse(session);
         const providerId = parsed?.providerId;
+        const expiresAt = parsed?.expiresAt;
 
-        if (!providerId) {
+        if (!providerId || !expiresAt || Date.now() > expiresAt) {
           localStorage.removeItem('providerSession');
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
         const provider = await base44.entities.Provider.get(providerId);
         if (!provider) {
           localStorage.removeItem('providerSession');
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
@@ -50,7 +52,7 @@ export default function ProviderDashboard() {
       } catch (err) {
         console.error('Provider auth check failed:', err);
         localStorage.removeItem('providerSession');
-        navigate('/staff-login');
+        navigate('/team');
       } finally {
         setLoading(false);
       }
@@ -115,8 +117,24 @@ export default function ProviderDashboard() {
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
+      const originalBlock = timeBlocks.find(block => block.id === blockId);
       await base44.entities.TimeBlock.update(blockId, updates);
+      const updatedBlock = { ...originalBlock, ...updates };
       setTimeBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b));
+
+      const relatedBooking = updatedBlock?.booking_id
+        ? bookings.find(booking => booking.id === updatedBlock.booking_id)
+        : null;
+
+      notifyScheduleChange({
+        eventType: 'time_block_updated',
+        source: 'provider',
+        actor: providerData?.full_name || providerData?.email || 'Provider',
+        booking: relatedBooking,
+        timeBlock: updatedBlock,
+        updates,
+        note: 'Provider-side schedule block changed. Admin should be notified for every schedule change.',
+      });
     } catch (error) {
       console.error('Error updating time block:', error);
     }
@@ -128,7 +146,7 @@ export default function ProviderDashboard() {
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      navigate('/staff-login');
+      navigate('/team');
     }
   };
 
