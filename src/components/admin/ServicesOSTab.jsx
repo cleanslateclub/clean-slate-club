@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Clock, DollarSign, Plus, Save, ShieldCheck, Sparkles } from 'lucide-react';
 import { BOOKING_RULES_DEFAULTS, SERVICE_MENU_DEFAULTS } from '@/lib/backendOSConfig';
+import { loadServiceMenuSettings, saveServiceMenuSettings } from '@/lib/serviceMenuSettings';
 import {
   buildServiceMenuPayload,
   calculateServiceEstimateFromMenu,
@@ -111,13 +112,36 @@ function EstimatePreview({ services, service, addonKeys, isMember }) {
 
 export default function ServicesOSTab() {
   const [services, setServices] = useState(() => normalizeServiceMenu(SERVICE_MENU_DEFAULTS));
-  const publicServices = services.filter(service => service.key !== 'consult');
-  const [selectedKey, setSelectedKey] = useState(publicServices[0]?.key || 'home_reset');
+  const [selectedKey, setSelectedKey] = useState('home_reset');
   const [selectedAddonKeys, setSelectedAddonKeys] = useState([]);
   const [isMember, setIsMember] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [payloadOpen, setPayloadOpen] = useState(false);
+  const [loadingMenu, setLoadingMenu] = useState(true);
+  const [savingMenu, setSavingMenu] = useState(false);
+  const [savedMessage, setSavedMessage] = useState('');
+  const [recordId, setRecordId] = useState(null);
+  const [source, setSource] = useState('defaults');
 
+  useEffect(() => {
+    let active = true;
+    const loadMenu = async () => {
+      setLoadingMenu(true);
+      const result = await loadServiceMenuSettings();
+      if (!active) return;
+      setServices(result.services);
+      setRecordId(result.recordId);
+      setSource(result.source);
+      if (!result.services.find(service => service.key === selectedKey)) {
+        setSelectedKey(result.services[0]?.key || 'home_reset');
+      }
+      setLoadingMenu(false);
+    };
+    loadMenu();
+    return () => { active = false; };
+  }, []);
+
+  const publicServices = services.filter(service => service.key !== 'consult');
   const selectedService = services.find(service => service.key === selectedKey) || publicServices[0];
   const payload = useMemo(() => buildServiceMenuPayload(services), [services]);
 
@@ -136,19 +160,48 @@ export default function ServicesOSTab() {
   const updateSelectedService = (updates) => {
     setServices(prev => updateServiceInMenu(prev, selectedService.key, updates));
     setDirty(true);
+    setSavedMessage('');
   };
 
   const updateAddon = (addonKey, updates) => {
     setServices(prev => updateAddonInMenu(prev, selectedService.key, addonKey, updates));
     setDirty(true);
+    setSavedMessage('');
   };
 
   const resetDefaults = () => {
     setServices(normalizeServiceMenu(SERVICE_MENU_DEFAULTS));
     setSelectedAddonKeys([]);
-    setDirty(false);
-    setPayloadOpen(false);
+    setDirty(true);
+    setSource('defaults-preview');
+    setSavedMessage('Defaults loaded as an unsaved preview. Click Save service menu to keep them.');
   };
+
+  const handleSaveMenu = async () => {
+    setSavingMenu(true);
+    setSavedMessage('');
+    try {
+      const result = await saveServiceMenuSettings({ services, recordId });
+      setRecordId(result.record?.id || recordId);
+      setSource('saved');
+      setDirty(false);
+      setPayloadOpen(false);
+      setSavedMessage('Service menu saved. Booking and estimator screens can now use this saved menu source.');
+    } catch (error) {
+      console.error('Failed to save service menu:', error);
+      setSavedMessage('Could not save service menu. The preview still works, but changes may not persist.');
+    } finally {
+      setSavingMenu(false);
+    }
+  };
+
+  if (loadingMenu) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-6 h-6 border-2 border-taupe border-t-coral rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -160,11 +213,25 @@ export default function ServicesOSTab() {
             <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
               Clean Slate Club services are preloaded with starting prices, durations, focus items, add-ons, approval flags, provider permissions, and estimator logic. Edits on this screen update the live estimator immediately across the same service menu data.
             </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <span className="px-3 py-1 rounded-full bg-cream border border-taupe/10 text-[10px] font-body text-charcoal/45">
+                Source: {source === 'saved' ? 'saved service menu' : 'default starter menu'}
+              </span>
+              {recordId && (
+                <span className="px-3 py-1 rounded-full bg-cream border border-taupe/10 text-[10px] font-body text-charcoal/45">
+                  Record connected
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-end">
-            {dirty && <span className="px-3 py-1 rounded-full bg-butter/20 text-[10px] font-body text-charcoal/60">unsaved preview edits</span>}
+            {dirty && <span className="px-3 py-1 rounded-full bg-butter/20 text-[10px] font-body text-charcoal/60">unsaved changes</span>}
+            {savedMessage && <span className="px-3 py-1 rounded-full bg-sage/10 text-[10px] font-body text-charcoal/55 max-w-xs">{savedMessage}</span>}
+            <button type="button" onClick={handleSaveMenu} disabled={savingMenu || !dirty} className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white text-xs font-body hover:bg-coral/90 disabled:opacity-40 transition-colors">
+              <Save className="w-3.5 h-3.5" /> {savingMenu ? 'Saving...' : 'Save service menu'}
+            </button>
             <button type="button" onClick={() => setPayloadOpen(prev => !prev)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body text-charcoal/50 hover:border-coral/30 transition-colors">
-              <Save className="w-3.5 h-3.5" /> {payloadOpen ? 'Hide payload' : 'View save payload'}
+              <Save className="w-3.5 h-3.5" /> {payloadOpen ? 'Hide payload' : 'View payload'}
             </button>
             <button type="button" onClick={resetDefaults} className="px-4 py-2 rounded-full border border-taupe/20 bg-cream text-xs font-body text-charcoal/50 hover:border-coral/30 transition-colors">
               Reset defaults
