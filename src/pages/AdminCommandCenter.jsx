@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
 
@@ -88,14 +89,8 @@ export default function AdminCommandCenter() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         {tab === 'home' && <CommandCenterPreview />}
+        {tab === 'bookings' && <BookingsWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
-        {tab === 'bookings' && (
-          <PlaceholderPanel
-            title="Bookings workspace"
-            description="This will replace the legacy booking tab with queues that match how Clean Slate actually runs."
-            bullets={['Needs review queue', 'Unassigned queue', 'Confirmed visits', 'Completed visits', 'Cancellation/no-show review', 'Booking detail drawer']}
-          />
-        )}
         {tab === 'calendar' && (
           <PlaceholderPanel
             title="Operations calendar"
