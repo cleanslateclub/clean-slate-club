@@ -13,8 +13,7 @@ import Memberships from './pages/Memberships.jsx';
 import FAQ from './pages/FAQ.jsx';
 import About from './pages/About.jsx';
 import BookNow from './pages/BookNow';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminLogin from './pages/AdminLogin';
+import AdminPortal from './pages/AdminPortal';
 import TeamPortal from './pages/TeamPortal';
 import MemberDashboard from './pages/MemberDashboard';
 import MemberLogin from './pages/MemberLogin';
@@ -66,8 +65,8 @@ const AuthenticatedApp = () => {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookNow />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminPortal />} />
+        <Route path="/admin-login" element={<Navigate to="/admin" replace />} />
         <Route path="/team" element={<TeamPortal />} />
         <Route path="/provider" element={<Navigate to="/team" replace />} />
         <Route path="/dashboard" element={<MemberDashboard />} />
