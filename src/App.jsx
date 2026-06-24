@@ -12,7 +12,7 @@ import Services from './pages/Services.jsx';
 import Memberships from './pages/Memberships.jsx';
 import FAQ from './pages/FAQ.jsx';
 import About from './pages/About.jsx';
-import BookNow from './pages/BookNow';
+import BookNowDynamic from './pages/BookNowDynamic';
 import AdminPortal from './pages/AdminPortal';
 import AdminOS from './pages/AdminOS';
 import AdminOSModules from './pages/AdminOSModules';
@@ -68,7 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/memberships" element={<Memberships />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/about" element={<About />} />
-        <Route path="/book" element={<BookNow />} />
+        <Route path="/book" element={<BookNowDynamic />} />
         <Route path="/admin" element={<AdminPortal />} />
         <Route path="/admin-os" element={<AdminOS />} />
         <Route path="/admin-os/modules" element={<AdminOSModules />} />
