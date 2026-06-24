@@ -16,6 +16,7 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - [ ] `/admin-login` redirects to `/admin`.
 - [ ] `/admin-os` opens the Admin OS preview.
 - [ ] `/admin-os/modules` opens the backend feature map.
+- [ ] `/admin-os/compliance` opens the provider compliance center.
 
 ## Admin OS preview
 
@@ -31,6 +32,21 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - [ ] Save service menu creates or updates the `service_menu_v1` AppSettings record.
 - [ ] Refreshing `/admin-os` reloads the saved service menu.
 - [ ] Reset defaults loads the starter menu as an unsaved preview.
+
+## Provider compliance center
+
+- [ ] `/admin-os/compliance` loads provider records.
+- [ ] Provider list shows readiness counts.
+- [ ] Selecting a provider shows their compliance checklist.
+- [ ] Service permissions can be toggled.
+- [ ] Toggling service permissions changes which requirements appear.
+- [ ] Provider status can be changed.
+- [ ] Access level can be changed.
+- [ ] Document requirements can be marked approved.
+- [ ] Approved document state persists after refresh.
+- [ ] Expiration dates can be saved for expiring documents.
+- [ ] Internal notes can be saved on document requirements.
+- [ ] A provider only reads as ready when active and all required items are complete.
 
 ## Public booking dynamic menu
 
@@ -81,3 +97,4 @@ This branch is a foundation build for the Clean Slate Club admin/team backend OS
 - Any Base44 schema limitations for `AppSettings.value` size.
 - Provider session/login redirects.
 - Service key mapping: `family_support` maps to legacy booking key `mothers_helper`.
+- Provider entity schema flexibility for `doc_*` compliance fields.
