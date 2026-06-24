@@ -142,6 +142,30 @@ Rollback risk:
 
 - Low. Math-only helper and documentation.
 
+## Chunk: admin dashboard UI preview
+
+Commits:
+
+- `866d65bf05d5ed186c6c1e9b4fb554d1e69bfda7`
+- `71eb70a7625e0bb62ff6ee339841b70471242b05`
+- `706089ffe19a33b9864a9dcb5e56ead6332d8b5f`
+
+Files:
+
+- `src/components/admin/CommandCenterPreview.jsx`
+- `src/pages/AdminOS.jsx`
+- `docs/admin-dashboard-ui-chunk.md`
+
+Purpose:
+
+- Adds a Command Center preview tab inside `/admin-os`.
+- Shows today, upcoming, review queue, alerts, and core dashboard counts.
+- Keeps this separate from the existing `/admin` dashboard.
+
+Rollback risk:
+
+- Low to medium. UI is wired into `/admin-os`, but not the live admin dashboard.
+
 ## Rollback rule
 
 If something breaks after this point, prefer reverting only the affected chunk instead of resetting the full branch.
