@@ -34,25 +34,23 @@ function FilterButton({ item, active, count, onClick }) {
 
 function HouseholdCard({ household, selected, onSelect }) {
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(household)}
-      className={`w-full text-left rounded-3xl border p-4 transition-all ${selected ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-heading text-lg text-charcoal">{household.guest_name || household.guest_email || 'Household'}</p>
-          <p className="font-body text-xs text-charcoal/40 font-light mt-1">{household.guest_phone || household.guest_email || 'No contact shown'}</p>
+    <div className={`w-full text-left rounded-3xl border p-4 transition-all ${selected ? 'bg-coral/10 border-coral/25' : 'bg-warm-white border-taupe/15 hover:border-coral/20'}`}>
+      <button type="button" onClick={() => onSelect(household)} className="w-full text-left">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-heading text-lg text-charcoal">{household.guest_name || household.guest_email || 'Household'}</p>
+            <p className="font-body text-xs text-charcoal/40 font-light mt-1">{household.guest_phone || household.guest_email || 'No contact shown'}</p>
+          </div>
+          <span className="px-2 py-1 rounded-full bg-cream border border-taupe/10 text-[10px] font-body text-charcoal/45">
+            {household.membership_status || 'none'}
+          </span>
         </div>
-        <span className="px-2 py-1 rounded-full bg-cream border border-taupe/10 text-[10px] font-body text-charcoal/45">
-          {household.membership_status || 'none'}
-        </span>
-      </div>
-      <p className="font-body text-sm text-charcoal/55 font-light mt-3">{household.primary_service_address || 'No address on file'}</p>
-      <div className="mt-3" onClick={(event) => event.stopPropagation()}>
+        <p className="font-body text-sm text-charcoal/55 font-light mt-3">{household.primary_service_address || 'No address on file'}</p>
+      </button>
+      <div className="mt-3">
         <HouseholdMapLink record={household} />
       </div>
-    </button>
+    </div>
   );
 }
 
