@@ -15,6 +15,7 @@ import About from './pages/About.jsx';
 import BookNow from './pages/BookNow';
 import AdminPortal from './pages/AdminPortal';
 import AdminOS from './pages/AdminOS';
+import AdminOSModules from './pages/AdminOSModules';
 import TeamPortal from './pages/TeamPortal';
 import MemberDashboard from './pages/MemberDashboard';
 import MemberLogin from './pages/MemberLogin';
@@ -43,6 +44,7 @@ const AuthenticatedApp = () => {
   const isAdminOrTeamRoute =
     location.pathname === '/admin' ||
     location.pathname === '/admin-os' ||
+    location.pathname === '/admin-os/modules' ||
     location.pathname === '/admin-login' ||
     location.pathname === '/team' ||
     location.pathname === '/provider' ||
@@ -69,6 +71,7 @@ const AuthenticatedApp = () => {
         <Route path="/book" element={<BookNow />} />
         <Route path="/admin" element={<AdminPortal />} />
         <Route path="/admin-os" element={<AdminOS />} />
+        <Route path="/admin-os/modules" element={<AdminOSModules />} />
         <Route path="/admin-login" element={<Navigate to="/admin" replace />} />
         <Route path="/team" element={<TeamPortal />} />
         <Route path="/provider" element={<Navigate to="/team" replace />} />
