@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ClipboardCheck, Search } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BookingActionsPanel from '@/components/admin/BookingActionsPanel';
+import ProviderAssignmentPreview from '@/components/admin/ProviderAssignmentPreview';
 import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 
 const ACTION_FILTERS = [
@@ -91,6 +92,7 @@ function BookingActionDetail({ booking, onUpdated }) {
       </div>
 
       <BookingActionsPanel booking={booking} onUpdated={onUpdated} />
+      <ProviderAssignmentPreview booking={booking} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Status" value={booking.status} />
