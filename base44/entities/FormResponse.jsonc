@@ -1,0 +1,40 @@
+{
+  "name": "FormResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "template_key": { "type": "string" },
+    "template_name": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": ["guest_intake", "service_intake", "visit_completion", "incident", "internal"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "submitted", "reviewed", "needs_followup", "archived"],
+      "default": "submitted"
+    },
+    "guest_email": { "type": "string" },
+    "guest_name": { "type": "string" },
+    "booking_id": { "type": "string" },
+    "household_profile_id": { "type": "string" },
+    "answers": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "submitted_at": { "type": "string", "format": "date-time" },
+    "admin_notes": { "type": "string" }
+  },
+  "required": ["template_key", "category", "answers"],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        { "data.guest_email": "{{user.email}}" },
+        { "user_condition": { "role": "admin" } }
+      ]
+    },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}
