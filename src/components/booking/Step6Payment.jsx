@@ -2,17 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { base44 } from '@/api/base44Client';
+import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 let stripePromise = null;
+
+const getFunctionPayload = (result) => result?.data ?? result ?? {};
+
 const getStripePromise = async () => {
   if (!stripePromise) {
     const res = await base44.functions.invoke('getStripePublishableKey', {});
-    stripePromise = loadStripe(res.data.publishableKey);
+    const payload = getFunctionPayload(res);
+    if (!payload.publishableKey) {
+      throw new Error('Stripe publishable key is missing.');
+    }
+    stripePromise = loadStripe(payload.publishableKey);
   }
   return stripePromise;
 };
 
-function PaymentForm({ onSuccess, onCancel, submitting }) {
+function PaymentForm({ onSuccess, onCancel, submitting, depositAmount }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
@@ -62,32 +70,77 @@ function PaymentForm({ onSuccess, onCancel, submitting }) {
           disabled={!stripe || paying || submitting}
           className="bg-coral text-white font-body text-sm tracking-wide px-10 py-3.5 rounded-full hover:bg-coral/90 disabled:opacity-50 transition-all duration-300"
         >
-          {paying || submitting ? 'Processing...' : 'Pay $50 Card Deposit & Book →'}
+          {paying || submitting ? 'Processing...' : `Pay $${depositAmount} Card Deposit & Book →`}
         </button>
       </div>
     </form>
   );
 }
 
-export default function Step6Payment({ clientName, clientEmail, serviceLabel, onSuccess, onCancel, submitting }) {
+export default function Step6Payment({
+  amount = 50,
+  bookingData = {},
+  clientName,
+  clientEmail,
+  serviceLabel,
+  onSuccess,
+  onCancel,
+  submitting,
+}) {
   const [clientSecret, setClientSecret] = useState(null);
   const [stripe, setStripe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const resolvedClientInfo = bookingData.clientInfo || {};
+  const resolvedServiceKey = bookingData.serviceKey;
+  const resolvedServiceLabel = serviceLabel || SERVICE_CONFIG[resolvedServiceKey]?.label || resolvedServiceKey || 'Clean Slate Club Visit';
+  const resolvedClientName = clientName || resolvedClientInfo.name || '';
+  const resolvedClientEmail = clientEmail || resolvedClientInfo.email || '';
+  const depositAmount = Number(amount) || 50;
+
   useEffect(() => {
-    Promise.all([
-      base44.functions.invoke('createDepositPaymentIntent', { clientName, clientEmail, serviceLabel }),
-      getStripePromise(),
-    ]).then(([res, stripeInstance]) => {
-      setClientSecret(res.data.clientSecret);
-      setStripe(stripeInstance);
-      setLoading(false);
-    }).catch(() => {
-      setError('Could not load payment. Please try again.');
-      setLoading(false);
-    });
-  }, []);
+    let active = true;
+
+    const setupPayment = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [res, stripeInstance] = await Promise.all([
+          base44.functions.invoke('createDepositPaymentIntent', {
+            data: {
+              amount: depositAmount,
+              clientName: resolvedClientName,
+              clientEmail: resolvedClientEmail,
+              serviceLabel: resolvedServiceLabel,
+              bookingData,
+            },
+          }),
+          getStripePromise(),
+        ]);
+
+        const payload = getFunctionPayload(res);
+        if (!payload.clientSecret) {
+          throw new Error('Stripe client secret is missing.');
+        }
+
+        if (active) {
+          setClientSecret(payload.clientSecret);
+          setStripe(stripeInstance);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('Deposit payment setup failed:', err);
+        if (active) {
+          setError('Could not load payment. Please try again.');
+          setLoading(false);
+        }
+      }
+    };
+
+    setupPayment();
+    return () => { active = false; };
+  }, [depositAmount, resolvedClientName, resolvedClientEmail, resolvedServiceLabel]);
 
   if (loading) {
     return (
@@ -106,13 +159,13 @@ export default function Step6Payment({ clientName, clientEmail, serviceLabel, on
     <div>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Secure Your Spot</h2>
       <p className="font-body text-sm text-charcoal/45 font-light mb-8">
-        A <strong>$50 card deposit</strong> holds your booking and is applied to your final balance. Your card also helps keep your appointment secure and makes checkout easier after your visit. No surprise charges, ever.
+        A <strong>${depositAmount} card deposit</strong> holds your booking and is applied to your final balance. Your card also helps keep your appointment secure and makes checkout easier after your visit. No surprise charges, ever.
       </p>
 
       <div className="bg-warm-white rounded-2xl border border-taupe/15 p-6 mb-6" style={{ borderLeft: '3px solid #EB9486' }}>
         <p className="font-body text-xs text-charcoal/40 font-light mb-1">You're reserving</p>
-        <p className="font-heading text-base font-semibold text-charcoal">{serviceLabel}</p>
-        <p className="font-body text-sm text-charcoal/50 font-light mt-1">Deposit: <strong className="text-coral">$50.00</strong> — applied to your balance</p>
+        <p className="font-heading text-base font-semibold text-charcoal">{resolvedServiceLabel}</p>
+        <p className="font-body text-sm text-charcoal/50 font-light mt-1">Deposit: <strong className="text-coral">${depositAmount}.00</strong> — applied to your balance</p>
         <p className="font-body text-xs text-charcoal/35 font-light mt-3">Deposit payments are card-only. Flexible payment options may be available later on your final checkout link.</p>
       </div>
 
@@ -133,7 +186,7 @@ export default function Step6Payment({ clientName, clientEmail, serviceLabel, on
             },
           }}
         >
-          <PaymentForm onSuccess={onSuccess} onCancel={onCancel} submitting={submitting} />
+          <PaymentForm onSuccess={onSuccess} onCancel={onCancel} submitting={submitting} depositAmount={depositAmount} />
         </Elements>
       )}
     </div>
