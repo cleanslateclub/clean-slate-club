@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
+import CalendarWorkspace from '@/components/admin/CalendarWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
 import MessagesWorkspace from '@/components/admin/MessagesWorkspace';
 import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
@@ -84,11 +85,11 @@ export default function AdminCommandCenter() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
+        {tab === 'calendar' && <CalendarWorkspace />}
         {tab === 'providers' && <ProvidersWorkspace />}
         {tab === 'messages' && <MessagesWorkspace />}
         {tab === 'settings' && <SettingsWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
-        {tab === 'calendar' && <PlaceholderPanel title="Operations calendar" description="Calendar workspace coming next." />}
         {tab === 'households' && <PlaceholderPanel title="Households" description="Household workspace is still pending." />}
         {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
       </div>
