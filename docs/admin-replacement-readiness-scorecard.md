@@ -26,14 +26,15 @@ The branch is being committed in clean chunks, but it should not be treated as m
 | New admin replacement shell | Started | `/admin` now points to `AdminCommandCenter` on this branch. |
 | Legacy admin fallback | Available in repo | Old `AdminDashboard` still exists for rollback/reference. |
 | Command Center overview | Started | Preview shows dashboard counts and queues. |
-| Bookings workspace | Partially started | Real queues, search, and detail panel exist. Action flows still needed. |
+| Bookings workspace | Partially started | Real queues, search, detail panel, and admin map links exist. Action flows still needed. |
 | Calendar workspace | Partially started | Read-only schedule block view exists. Editing still needed. |
-| Households workspace | Not complete | Placeholder only. Connector blocked this area twice. |
+| Households workspace | Partially started | Household records and Google Maps direction links are wired into Command Center. |
 | Providers workspace | Partially started | Real list, filters, search, and detail panel exist. Editing and assignment still needed. |
 | Services workspace | Partially started | Services OS exists. Needs Base44 live save verification. |
 | Payments workspace | Partially started | Read-only invoice view exists but is not wired into the portal yet. |
 | Messages workspace | Partially started | Message log list, filters, search, and detail panel exist. Sending UI not wired. |
 | Settings workspace | Partially started | Rules, saved settings, and feature flag views exist. Editing still needed. |
+| Team directions links | Started | Provider-visible booking records now include a Google Maps directions URL. |
 | Base44 schema sync | Unknown | Must be verified in live Base44. |
 | Base44 backend functions | Unknown | Must match function contracts. |
 | Build/typecheck/lint | Unknown | No CI detected and local build was not available. |
