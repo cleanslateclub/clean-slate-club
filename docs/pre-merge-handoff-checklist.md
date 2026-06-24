@@ -19,12 +19,32 @@ Started sections:
 
 - Command overview
 - Bookings
+- Booking Action Center
 - Calendar
 - Households
 - Providers
 - Messages
 - Settings
 - Services
+
+### Booking actions
+
+A separate Booking Action Center now exists because the connector blocked direct edits to the existing Bookings detail panel.
+
+Added:
+
+- Needs Review action queue
+- Unassigned action queue
+- Upcoming action queue
+- All Active action queue
+- Controlled approve action
+- Controlled hold-for-review action
+- Controlled mark-complete action
+- Controlled archive action
+- Provider assignment recommendations
+- Controlled provider assignment save action
+
+These actions are admin-triggered only. Automatic policy actions are still off.
 
 ### Households and directions
 
@@ -51,27 +71,33 @@ Not yet wired into the Command Center because that specific portal update was bl
 1. `/admin` login still opens the Command Center.
 2. Command overview loads without crashing.
 3. Bookings tab loads or fails gracefully.
-4. Calendar tab loads or fails gracefully.
-5. Households tab loads or fails gracefully.
-6. Providers tab loads or fails gracefully.
-7. Messages tab loads or fails gracefully.
-8. Settings tab loads or fails gracefully.
-9. Services tab loads or fails gracefully.
-10. Team/provider login still opens the provider dashboard.
-11. Provider Today's Jobs shows directions when an address exists.
-12. Google Maps links open in a new tab.
+4. Actions tab loads or fails gracefully.
+5. Action queue filters work.
+6. Admin booking action buttons save correctly in Base44.
+7. Provider assignment recommendations load.
+8. Controlled provider assignment saves correctly in Base44.
+9. Calendar tab loads or fails gracefully.
+10. Households tab loads or fails gracefully.
+11. Providers tab loads or fails gracefully.
+12. Messages tab loads or fails gracefully.
+13. Settings tab loads or fails gracefully.
+14. Services tab loads or fails gracefully.
+15. Team/provider login still opens the provider dashboard.
+16. Provider Today's Jobs shows directions when an address exists.
+17. Google Maps links open in a new tab.
 
 ## Must verify in Base44
 
 1. `Booking` schema is present.
 2. `HouseholdProfile` schema is present.
 3. `Provider` schema is present.
-4. `TimeBlock` schema is present.
-5. `MessageLog` schema is present.
-6. `Invoice` schema is present.
-7. `AppSettings` schema is present.
-8. `service_menu_v1` can save and reload.
-9. Backend functions match `docs/backend-function-contracts.md`.
+4. `ProviderAvailability` schema is present.
+5. `TimeBlock` schema is present.
+6. `MessageLog` schema is present.
+7. `Invoice` schema is present.
+8. `AppSettings` schema is present.
+9. `service_menu_v1` can save and reload.
+10. Backend functions match `docs/backend-function-contracts.md`.
 
 ## Do not enable yet
 
@@ -85,9 +111,9 @@ Not yet wired into the Command Center because that specific portal update was bl
 
 1. Wire Payments into the Command Center if the connector allows it later.
 2. Add read-only booking action history.
-3. Add provider assignment preview only.
-4. Add schedule edit preview only.
-5. Add Base44 sync verification notes after live testing.
+3. Add schedule edit preview only.
+4. Add Base44 sync verification notes after live testing.
+5. Add admin message-send actions only after notification contracts are confirmed.
 
 ## Owner approval required before launch
 
