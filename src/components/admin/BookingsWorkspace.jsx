@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, ClipboardList, Clock, Search, UserPlus } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ClipboardList, Clock, ExternalLink, Search, UserPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 
 const QUEUES = [
   { key: 'needs_review', label: 'Needs Review', icon: AlertTriangle },
@@ -95,6 +96,8 @@ function BookingDetailPanel({ booking }) {
   }
 
   const intake = booking.intake_answers || {};
+  const address = booking.client_address || intake.service_address?.formatted || '';
+  const mapUrl = buildGoogleMapsDirectionsUrl(address);
 
   return (
     <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6 space-y-5">
@@ -124,7 +127,18 @@ function BookingDetailPanel({ booking }) {
 
       <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
         <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Address</p>
-        <p className="font-body text-sm text-charcoal/60 font-light mt-1">{booking.client_address || intake.service_address?.formatted || 'Not set'}</p>
+        <p className="font-body text-sm text-charcoal/60 font-light mt-1">{address || 'Not set'}</p>
+        {hasMapAddress(address) && (
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 mt-3 text-xs font-body text-coral hover:text-coral/80 transition-colors"
+          >
+            Open directions in Google Maps
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        )}
       </div>
 
       <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
