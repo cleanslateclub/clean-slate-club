@@ -11,13 +11,20 @@ const attemptAdminLogin = async (username, password) => {
   return result?.data ?? result;
 };
 
-export default function StaffLogin() {
-  const [mode, setMode] = useState(null);
+export default function StaffLogin({ defaultMode = null, providerOnly = false, adminOnly = false }) {
+  const [mode, setMode] = useState(defaultMode);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const portalTitle = providerOnly ? 'Team Portal' : adminOnly ? 'Admin Portal' : 'Team Portal';
+  const portalSubtitle = providerOnly
+    ? 'Sign in with the provider account connected to your Clean Slate Club profile.'
+    : adminOnly
+      ? 'Sign in to manage bookings, providers, payments, campaigns, and settings.'
+      : 'Select your role to continue.';
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
@@ -67,7 +74,7 @@ export default function StaffLogin() {
       const payload = result?.data ?? result;
 
       if (!payload?.success) {
-        setError('Invalid username or password.');
+        setError('Invalid username or password. If you are new to Clean Slate Club, ask admin to create and approve your provider profile first.');
         return;
       }
 
@@ -77,7 +84,7 @@ export default function StaffLogin() {
         providerEmail: payload.providerEmail,
         expiresAt: Date.now() + SESSION_DURATION_MS,
       }));
-      window.location.href = '/provider';
+      window.location.href = '/team';
     } catch {
       setError('Login failed. Please try again.');
     } finally {
@@ -86,14 +93,15 @@ export default function StaffLogin() {
   };
 
   const resetForm = () => {
-    setMode(null);
+    const nextMode = providerOnly ? 'provider' : adminOnly ? 'admin' : null;
+    setMode(nextMode);
     setError(null);
     setUsername('');
     setPassword('');
   };
 
   return (
-    <main className="min-h-screen bg-cream flex items-center justify-center px-6">
+    <main className="min-h-screen bg-cream flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
 
         <div className="text-center mb-10">
@@ -101,11 +109,11 @@ export default function StaffLogin() {
             <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-charcoal/50">Clean Slate</span>
             <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
           </div>
-          <h1 className="font-heading text-2xl font-semibold text-charcoal mb-1">Team Portal</h1>
-          <p className="font-body text-sm text-charcoal/40 font-light">Select your role to continue.</p>
+          <h1 className="font-heading text-2xl font-semibold text-charcoal mb-1">{portalTitle}</h1>
+          <p className="font-body text-sm text-charcoal/40 font-light max-w-xs mx-auto">{portalSubtitle}</p>
         </div>
 
-        {!mode && (
+        {!mode && !providerOnly && !adminOnly && (
           <div className="space-y-3">
             <button
               onClick={() => setMode('admin')}
@@ -183,10 +191,12 @@ export default function StaffLogin() {
                 {loading ? 'Signing in...' : 'Sign In as Admin'}
               </button>
             </form>
-            <button onClick={resetForm}
-              className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
-              ← Back to role selection
-            </button>
+            {!adminOnly && (
+              <button onClick={resetForm}
+                className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
+                ← Back to role selection
+              </button>
+            )}
           </>
         )}
 
@@ -196,6 +206,11 @@ export default function StaffLogin() {
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase className="w-4 h-4 text-charcoal/50" />
                 <p className="font-heading text-sm font-semibold text-charcoal">Provider Sign In</p>
+              </div>
+              <div className="rounded-2xl border border-sage/25 bg-sage/10 px-4 py-3">
+                <p className="font-body text-xs text-charcoal/50 font-light leading-relaxed">
+                  Providers must be created and approved by admin before they can see guest jobs, addresses, or visit notes.
+                </p>
               </div>
               {error && (
                 <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-100">
@@ -236,15 +251,17 @@ export default function StaffLogin() {
                 {loading ? 'Signing in...' : 'Sign In as Provider'}
               </button>
             </form>
-            <button onClick={resetForm}
-              className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
-              ← Back to role selection
-            </button>
+            {!providerOnly && (
+              <button onClick={resetForm}
+                className="w-full mt-4 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors text-center">
+                ← Back to role selection
+              </button>
+            )}
           </>
         )}
 
         <p className="font-body text-xs text-charcoal/25 font-light text-center mt-6">
-          Need help? Contact us at (206) 825-4061
+          Need access? Ask admin to invite or approve your profile first.
         </p>
       </div>
     </main>
