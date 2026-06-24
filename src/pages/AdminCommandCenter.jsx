@@ -3,6 +3,7 @@ import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, 
 import { useNavigate } from 'react-router-dom';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
+import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
 
 const COMMAND_TABS = [
@@ -17,21 +18,12 @@ const COMMAND_TABS = [
   { key: 'settings', label: 'Settings', icon: Settings },
 ];
 
-function PlaceholderPanel({ title, description, bullets = [] }) {
+function PlaceholderPanel({ title, description }) {
   return (
     <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6">
       <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Replacement Portal</p>
       <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">{title}</h2>
       <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">{description}</p>
-      {bullets.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
-          {bullets.map(item => (
-            <div key={item} className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 font-body text-sm text-charcoal/50 font-light">
-              {item}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -90,49 +82,13 @@ export default function AdminCommandCenter() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
+        {tab === 'providers' && <ProvidersWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
-        {tab === 'calendar' && (
-          <PlaceholderPanel
-            title="Operations calendar"
-            description="This will replace the old mixed calendar with booking blocks, travel buffers, provider availability, consults, and admin holds."
-            bullets={['Today schedule', 'Provider schedule overlay', 'Travel buffer blocks', 'Manual holds', 'Conflict warnings', 'Reschedule preview']}
-          />
-        )}
-        {tab === 'households' && (
-          <PlaceholderPanel
-            title="Households"
-            description="This replaces the client/guest split with one household record system."
-            bullets={['Household profile', 'Visit history', 'Private flags', 'Service area status', 'Membership status', 'Provider-safe notes']}
-          />
-        )}
-        {tab === 'providers' && (
-          <PlaceholderPanel
-            title="Providers"
-            description="This replaces scattered provider tools with one provider readiness, schedule, and assignment workspace."
-            bullets={['Compliance readiness', 'Service permissions', 'Availability', 'Assignment recommendations', 'Override log', 'Provider-safe visit list']}
-          />
-        )}
-        {tab === 'payments' && (
-          <PlaceholderPanel
-            title="Payments"
-            description="This will replace scattered payment views with deposits, invoice totals, checkout status, and policy-safe fee handling."
-            bullets={['Deposit status', 'Final checkout', 'Invoice totals', 'Refund review', 'Reschedule fee review', 'Payment issue alerts']}
-          />
-        )}
-        {tab === 'messages' && (
-          <PlaceholderPanel
-            title="Messages"
-            description="This will centralize transactional emails, SMS history, reusable templates, and failed message review."
-            bullets={['Message log', 'Booking templates', 'Follow-up templates', 'Provider alerts', 'Failed sends', 'Opt-in aware messages']}
-          />
-        )}
-        {tab === 'settings' && (
-          <PlaceholderPanel
-            title="Settings"
-            description="This will become the business rules and feature toggle area instead of hiding rules across code."
-            bullets={['Booking rules', 'Service menu', 'Payment settings', 'Provider rules', 'Feature toggles', 'Launch checks']}
-          />
-        )}
+        {tab === 'calendar' && <PlaceholderPanel title="Operations calendar" description="Calendar workspace coming next." />}
+        {tab === 'households' && <PlaceholderPanel title="Households" description="Household workspace is still pending." />}
+        {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
+        {tab === 'messages' && <PlaceholderPanel title="Messages" description="Messages workspace is still pending." />}
+        {tab === 'settings' && <PlaceholderPanel title="Settings" description="Settings workspace is still pending." />}
       </div>
     </main>
   );
