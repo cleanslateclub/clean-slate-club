@@ -33,7 +33,7 @@ The branch is being committed in clean chunks, but it should not be treated as m
 | Services workspace | Partially started | Services OS exists. Needs Base44 live save verification. |
 | Payments workspace | Not complete | Math helper exists only. Final checkout not wired. |
 | Messages workspace | Partially started | Message log list, filters, search, and detail panel exist. Sending UI not wired. |
-| Settings workspace | Not complete | Placeholder only. Needs toggles/rules UI. |
+| Settings workspace | Partially started | Rules, saved settings, and feature flag views exist. Editing still needed. |
 | Base44 schema sync | Unknown | Must be verified in live Base44. |
 | Base44 backend functions | Unknown | Must match function contracts. |
 | Build/typecheck/lint | Unknown | No CI detected and local build was not available. |
