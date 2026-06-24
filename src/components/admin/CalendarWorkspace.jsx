@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Clock, MapPin, Search } from 'lucide-react';
+import { CalendarDays, Clock, Search } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const BLOCK_TYPES = [
