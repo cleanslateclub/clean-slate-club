@@ -3,6 +3,7 @@ import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, 
 import { useNavigate } from 'react-router-dom';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
+import MessagesWorkspace from '@/components/admin/MessagesWorkspace';
 import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
 
@@ -83,11 +84,11 @@ export default function AdminCommandCenter() {
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
         {tab === 'providers' && <ProvidersWorkspace />}
+        {tab === 'messages' && <MessagesWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
         {tab === 'calendar' && <PlaceholderPanel title="Operations calendar" description="Calendar workspace coming next." />}
         {tab === 'households' && <PlaceholderPanel title="Households" description="Household workspace is still pending." />}
         {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
-        {tab === 'messages' && <PlaceholderPanel title="Messages" description="Messages workspace is still pending." />}
         {tab === 'settings' && <PlaceholderPanel title="Settings" description="Settings workspace is still pending." />}
       </div>
     </main>
