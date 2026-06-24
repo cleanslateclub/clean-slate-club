@@ -1,4 +1,12 @@
-import { minutesToTime, timeToMinutes, TRAVEL_BUFFER } from '@/lib/bookingConfig';
+import { TRAVEL_BUFFER } from '@/lib/bookingConfig';
+import { timeToMinutes } from '@/lib/bookingRulesEngine';
+
+const minutesToTime = (totalMinutes = 0) => {
+  const normalized = ((Number(totalMinutes) || 0) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const minutes = normalized % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
 
 export const TIME_BLOCK_TYPES = {
   booking: 'booking',
