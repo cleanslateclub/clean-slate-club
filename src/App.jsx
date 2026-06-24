@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -39,15 +39,18 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Admin and staff routes use their own localStorage session.
+  // Admin and team routes use their own localStorage sessions.
   // Skip the Base44 auth check for these routes so the SDK never
   // intercepts and redirects away from them.
-  const isAdminRoute =
+  const isAdminOrTeamRoute =
     location.pathname === '/admin' ||
     location.pathname === '/admin-login' ||
+    location.pathname === '/team' ||
+    location.pathname === '/provider' ||
+    location.pathname === '/provider-login' ||
     location.pathname === '/staff-login';
 
-  if (!isAdminRoute && authError) {
+  if (!isAdminOrTeamRoute && authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
@@ -67,16 +70,17 @@ const AuthenticatedApp = () => {
         <Route path="/book" element={<BookNow />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/provider" element={<ProviderDashboard />} />
+        <Route path="/team" element={<ProviderDashboard />} />
+        <Route path="/provider" element={<Navigate to="/team" replace />} />
         <Route path="/dashboard" element={<MemberDashboard />} />
-        <Route path="/provider-login" element={<ProviderLogin />} />
+        <Route path="/provider-login" element={<Navigate to="/team" replace />} />
         <Route path="/member-login" element={<MemberLogin />} />
         <Route path="/member-signup" element={<MemberSignup />} />
         <Route path="/sms-terms" element={<SmsTerms />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/portal" element={<ClientPortal />} />
-        <Route path="/staff-login" element={<StaffLogin />} />
+        <Route path="/staff-login" element={<Navigate to="/team" replace />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
