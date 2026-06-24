@@ -5,8 +5,9 @@ import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
-import { LogOut, CheckSquare, CalendarDays, DollarSign } from 'lucide-react';
+import { ExternalLink, LogOut, CheckSquare, CalendarDays, DollarSign, MapPin } from 'lucide-react';
 import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
+import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
 const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
@@ -91,8 +92,6 @@ export default function ProviderDashboard() {
           setBookings(prev => [...prev, event.data]);
         }
       } else if (event.type === 'update') {
-        // FIX: Spread event.data onto existing booking instead of replacing entirely.
-        // Replacing with just event.data could wipe fields missing from a partial update.
         setBookings(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
       } else if (event.type === 'delete') {
         setBookings(prev => prev.filter(b => b.id !== event.id));
@@ -175,7 +174,6 @@ export default function ProviderDashboard() {
       <div className="pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
 
-          {/* Header */}
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
             <div>
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
@@ -193,35 +191,49 @@ export default function ProviderDashboard() {
 
           <ProviderStats bookings={bookings} payouts={payouts} />
 
-          {/* Today's Jobs Banner */}
           {todaysJobs.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
               <div className="bg-coral/5 border border-coral/15 rounded-2xl p-4">
                 <p className="font-body text-xs tracking-widest uppercase text-coral/60 font-light mb-3">Today's Jobs</p>
                 <div className="space-y-2">
-                  {todaysJobs.map(b => (
-                    <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
-                      <div>
-                        <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
-                        <p className="font-body text-xs text-charcoal/40 font-light">
-                          {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
-                        </p>
+                  {todaysJobs.map(b => {
+                    const address = b.client_address || b.intake_answers?.service_address?.formatted || '';
+                    const directionsUrl = buildGoogleMapsDirectionsUrl(address);
+                    return (
+                      <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
+                        <div>
+                          <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
+                          <p className="font-body text-xs text-charcoal/40 font-light">
+                            {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
+                          </p>
+                          {hasMapAddress(address) && (
+                            <a
+                              href={directionsUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 mt-2 text-xs font-body text-coral hover:text-coral/80 transition-colors"
+                            >
+                              <MapPin className="w-3 h-3" />
+                              Directions
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => setActiveVisitBooking(b)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white font-body text-xs tracking-wide hover:bg-coral/90 transition-all shrink-0"
+                        >
+                          <CheckSquare className="w-3.5 h-3.5" />
+                          Complete Visit
+                        </button>
                       </div>
-                      <button
-                        onClick={() => setActiveVisitBooking(b)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white font-body text-xs tracking-wide hover:bg-coral/90 transition-all shrink-0"
-                      >
-                        <CheckSquare className="w-3.5 h-3.5" />
-                        Complete Visit
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Tab switcher */}
           <div className="flex gap-1 bg-warm-white border border-taupe/15 rounded-2xl p-1 mb-6">
             {[
               { id: 'calendar', label: 'My Calendar', icon: CalendarDays },
