@@ -1,4 +1,4 @@
-import { SERVICE_CONFIG } from '@/lib/bookingConfig';
+import { BUFFER_PREP, BUFFER_WRAP, SERVICE_CONFIG, getDynamicEstimate } from '@/lib/bookingConfig';
 import { loadServiceMenuSettings } from '@/lib/serviceMenuSettings';
 import { normalizeServiceMenu } from '@/lib/serviceMenuUtils';
 
@@ -67,6 +67,56 @@ export const loadDynamicBookingConfig = async () => {
   return {
     ...result,
     bookingConfig: buildBookingConfigFromServiceMenu(result.services),
+  };
+};
+
+const addonTotals = (config, selectedAddonIds = []) => {
+  const addons = Array.isArray(config?.addons) ? config.addons : [];
+  return selectedAddonIds.reduce((acc, id) => {
+    const addon = addons.find(item => item.id === id || item.key === id);
+    if (!addon) return acc;
+    return {
+      minutes: acc.minutes + (Number(addon.minutes) || 0),
+      price: acc.price + (Number(addon.price) || 0),
+    };
+  }, { minutes: 0, price: 0 });
+};
+
+export const calculateTotalDurationFromConfig = (serviceKey, selectedAddonIds = [], serviceConfig = SERVICE_CONFIG) => {
+  const config = serviceConfig?.[serviceKey];
+  if (!config) return 0;
+
+  const minimumMinutes = config.minHours ? config.minHours * 60 : config.baseMinutes;
+  const baseMinutes = Math.max(config.baseMinutes || 0, minimumMinutes || 0);
+  const totals = addonTotals(config, selectedAddonIds);
+
+  return BUFFER_PREP + baseMinutes + totals.minutes + BUFFER_WRAP;
+};
+
+export const getDynamicEstimateFromConfig = (serviceKey, intakeAnswers = {}, selectedTasks = [], selectedAddonIds = [], serviceConfig = SERVICE_CONFIG) => {
+  const staticEstimate = getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, []);
+  const config = serviceConfig?.[serviceKey] || SERVICE_CONFIG[serviceKey];
+  if (!config) return { low: 0, high: 0, durationMinutes: 0, flags: [] };
+
+  const minimumMinutes = config.minHours ? config.minHours * 60 : config.baseMinutes;
+  const baseMinutes = Math.max(config.baseMinutes || 0, minimumMinutes || 0);
+  const staticConfig = SERVICE_CONFIG[serviceKey] || {};
+  const staticMinimum = staticConfig.minHours ? staticConfig.minHours * 60 : staticConfig.baseMinutes;
+  const staticBase = Math.max(staticConfig.baseMinutes || 0, staticMinimum || 0);
+  const scopeExtraMinutes = Math.max(0, (staticEstimate?.durationMinutes || 0) - BUFFER_PREP - BUFFER_WRAP - staticBase);
+
+  const totals = addonTotals(config, selectedAddonIds);
+  const billableServiceMinutes = baseMinutes + scopeExtraMinutes;
+  const durationMinutes = BUFFER_PREP + billableServiceMinutes + totals.minutes + BUFFER_WRAP;
+  const hourlyLow = config.hourlyRate?.[0] || 65;
+  const hourlyHigh = config.hourlyRate?.[1] || 75;
+  const baseHours = billableServiceMinutes / 60;
+
+  return {
+    low: Math.round(baseHours * hourlyLow) + totals.price,
+    high: Math.round(baseHours * hourlyHigh) + totals.price,
+    durationMinutes,
+    flags: staticEstimate?.flags || [],
   };
 };
 
