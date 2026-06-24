@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { BarChart3, Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BookingActionCenter from '@/components/admin/BookingActionCenter';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
@@ -8,6 +8,7 @@ import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
 import HouseholdsWorkspace from '@/components/admin/HouseholdsWorkspace';
 import MessagesWorkspace from '@/components/admin/MessagesWorkspace';
 import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
+import ReportsWorkspace from '@/components/admin/ReportsWorkspace';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
 import SettingsWorkspace from '@/components/admin/SettingsWorkspace';
 
@@ -19,6 +20,7 @@ const COMMAND_TABS = [
   { key: 'households', label: 'Households', icon: Users },
   { key: 'providers', label: 'Providers', icon: ShieldCheck },
   { key: 'services', label: 'Services', icon: Sparkles },
+  { key: 'reports', label: 'Reports', icon: BarChart3 },
   { key: 'payments', label: 'Payments', icon: CreditCard },
   { key: 'messages', label: 'Messages', icon: Bell },
   { key: 'settings', label: 'Settings', icon: Settings },
@@ -95,6 +97,7 @@ export default function AdminCommandCenter() {
         {tab === 'messages' && <MessagesWorkspace />}
         {tab === 'settings' && <SettingsWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
+        {tab === 'reports' && <ReportsWorkspace />}
         {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
       </div>
     </main>
