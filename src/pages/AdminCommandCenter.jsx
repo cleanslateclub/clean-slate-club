@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
 import CalendarWorkspace from '@/components/admin/CalendarWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
+import HouseholdsWorkspace from '@/components/admin/HouseholdsWorkspace';
 import MessagesWorkspace from '@/components/admin/MessagesWorkspace';
 import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
@@ -86,11 +87,11 @@ export default function AdminCommandCenter() {
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
         {tab === 'calendar' && <CalendarWorkspace />}
+        {tab === 'households' && <HouseholdsWorkspace />}
         {tab === 'providers' && <ProvidersWorkspace />}
         {tab === 'messages' && <MessagesWorkspace />}
         {tab === 'settings' && <SettingsWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
-        {tab === 'households' && <PlaceholderPanel title="Households" description="Household workspace is still pending." />}
         {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
       </div>
     </main>
