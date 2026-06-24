@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminDashboard from './AdminDashboard';
+import AdminCommandCenter from './AdminCommandCenter';
 import StaffLogin from './StaffLogin';
 
 const hasValidAdminSession = () => {
@@ -16,5 +16,5 @@ export default function AdminPortal() {
     return <StaffLogin defaultMode="admin" adminOnly />;
   }
 
-  return <AdminDashboard />;
+  return <AdminCommandCenter />;
 }
