@@ -99,6 +99,15 @@ const PASS_FAIL_NOTES = [
   'Fail means the view crashes, saves unexpectedly, sends unexpectedly, charges unexpectedly, or exposes a launch-sensitive action.',
 ];
 
+const COMPLETION_REQUIREMENTS = [
+  'All critical smoke-test sections pass or have documented fixes.',
+  'No locked automation appears in the live preview UI.',
+  'Schema Check required entities and functions are verified in Base44.',
+  'Policy Decisions are approved by the owner before policy-based automation is enabled.',
+  'Stripe behavior is verified before final checkout sends are enabled.',
+  'Provider login and admin login are tested with live Base44 functions.',
+];
+
 const priorityStyles = {
   Critical: 'text-coral bg-coral/10 border-coral/20',
   High: 'text-charcoal/55 bg-cream border-taupe/15',
@@ -177,6 +186,21 @@ export default function Base44SmokeTestPanel() {
         {SMOKE_TEST_SECTIONS.map((section, index) => (
           <SmokeTestSection key={section.key} section={section} index={index} />
         ))}
+      </div>
+
+      <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <FileCheck2 className="w-4 h-4 text-sage" />
+          <p className="font-heading text-lg text-charcoal">Before this can be considered complete</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {COMPLETION_REQUIREMENTS.map(item => (
+            <div key={item} className="rounded-2xl bg-cream border border-taupe/10 px-3 py-2 flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-sage mt-0.5 shrink-0" />
+              <p className="font-body text-xs text-charcoal/50 font-light leading-relaxed">{item}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
