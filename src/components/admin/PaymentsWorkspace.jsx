@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, CreditCard, FileText, Search, Send, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import CheckoutPreviewPanel from '@/components/admin/CheckoutPreviewPanel';
 
 const FILTERS = [
   { key: 'all', label: 'All Records', icon: FileText },
@@ -183,6 +184,8 @@ export default function PaymentsWorkspace() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading records...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <CheckoutPreviewPanel invoice={selectedInvoice} />
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {FILTERS.map(item => (
