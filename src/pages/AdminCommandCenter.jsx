@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Search, ChevronDown, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Home, MoreHorizontal, Package, FileText, Zap } from 'lucide-react';
+import { LogOut, Bell, Search, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Zap, Menu, X, ChevronLeft } from 'lucide-react';
 import AdminSidebar from '@/components/admin/os/AdminSidebar';
 import AdminCalendarOS from '@/components/admin/os/AdminCalendarOS';
-import AdminBookingsOS from '@/components/admin/os/AdminBookingsOS';
 import AdminHouseholdsOS from '@/components/admin/os/AdminHouseholdsOS';
 import AdminProvidersOS from '@/components/admin/os/AdminProvidersOS';
 import AdminPaymentsOS from '@/components/admin/os/AdminPaymentsOS';
@@ -21,11 +20,43 @@ const TOP_NAV = [
   { key: 'settings', label: 'Settings', icon: Settings },
 ];
 
+// Mobile bottom nav (5 key sections)
+const MOBILE_NAV = [
+  { key: 'calendar', label: 'Calendar', icon: Calendar },
+  { key: 'households', label: 'Clients', icon: Users },
+  { key: 'checkout', label: 'Payments', icon: CreditCard },
+  { key: 'marketing', label: 'Marketing', icon: Zap },
+  { key: 'settings', label: 'Settings', icon: Settings },
+];
+
+function renderSection(topSection, sidebarItem) {
+  if (sidebarItem) {
+    const s = sidebarItem.section;
+    if (s === 'schedule' || s === 'bookings') return <AdminCalendarOS sidebarItem={sidebarItem} />;
+    if (s === 'services' || s === 'packages' || s === 'addons' || s === 'appt_templates') return <AdminServicesOS sidebarItem={sidebarItem} />;
+    if (s === 'households') return <AdminHouseholdsOS sidebarItem={sidebarItem} />;
+    if (s === 'providers') return <AdminProvidersOS sidebarItem={sidebarItem} />;
+    if (s === 'payments') return <AdminPaymentsOS sidebarItem={sidebarItem} />;
+    if (s === 'marketing') return <AdminMarketingOS sidebarItem={sidebarItem} />;
+    if (s === 'reports') return <AdminReportsOS sidebarItem={sidebarItem} />;
+    if (s === 'settings') return <AdminSettingsOS sidebarItem={sidebarItem} />;
+  }
+  switch (topSection) {
+    case 'calendar':   return <AdminCalendarOS sidebarItem={null} />;
+    case 'checkout':   return <AdminPaymentsOS sidebarItem={null} />;
+    case 'households': return <AdminHouseholdsOS sidebarItem={null} />;
+    case 'marketing':  return <AdminMarketingOS sidebarItem={null} />;
+    case 'reports':    return <AdminReportsOS sidebarItem={null} />;
+    case 'settings':   return <AdminSettingsOS sidebarItem={null} />;
+    default:           return <AdminCalendarOS sidebarItem={null} />;
+  }
+}
+
 export default function AdminCommandCenter() {
   const navigate = useNavigate();
   const [topSection, setTopSection] = useState('calendar');
   const [sidebarItem, setSidebarItem] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('adminSession');
@@ -35,43 +66,21 @@ export default function AdminCommandCenter() {
   const handleTopNav = (key) => {
     setTopSection(key);
     setSidebarItem(null);
+    setMobileSidebarOpen(false);
   };
 
   const handleSidebarNav = (item) => {
     setSidebarItem(item);
+    setMobileSidebarOpen(false);
   };
 
-  const renderMain = () => {
-    // Sidebar item takes priority
-    if (sidebarItem) {
-      const section = sidebarItem.section;
-      if (section === 'schedule' || section === 'bookings') return <AdminCalendarOS sidebarItem={sidebarItem} />;
-      if (section === 'services' || section === 'packages' || section === 'addons' || section === 'appt_templates') return <AdminServicesOS sidebarItem={sidebarItem} />;
-      if (section === 'households') return <AdminHouseholdsOS sidebarItem={sidebarItem} />;
-      if (section === 'providers') return <AdminProvidersOS sidebarItem={sidebarItem} />;
-      if (section === 'payments') return <AdminPaymentsOS sidebarItem={sidebarItem} />;
-      if (section === 'marketing') return <AdminMarketingOS sidebarItem={sidebarItem} />;
-      if (section === 'reports') return <AdminReportsOS sidebarItem={sidebarItem} />;
-      if (section === 'settings') return <AdminSettingsOS sidebarItem={sidebarItem} />;
-    }
-
-    // Top nav fallback
-    switch (topSection) {
-      case 'calendar': return <AdminCalendarOS sidebarItem={null} />;
-      case 'checkout': return <AdminPaymentsOS sidebarItem={null} />;
-      case 'households': return <AdminHouseholdsOS sidebarItem={null} />;
-      case 'marketing': return <AdminMarketingOS sidebarItem={null} />;
-      case 'reports': return <AdminReportsOS sidebarItem={null} />;
-      case 'settings': return <AdminSettingsOS sidebarItem={null} />;
-      default: return <AdminCalendarOS sidebarItem={null} />;
-    }
-  };
+  const sectionLabel = sidebarItem?.label || TOP_NAV.find(n => n.key === topSection)?.label || 'Admin';
 
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#1a1a2e' }}>
-      {/* ── Dark Top Navigation ── */}
-      <header className="shrink-0 flex items-center justify-between px-4 h-12 border-b border-white/10" style={{ background: '#1a1a2e' }}>
-        {/* Left: brand + nav */}
+
+      {/* ── Desktop Top Navigation ── */}
+      <header className="hidden md:flex shrink-0 items-center justify-between px-4 h-12 border-b border-white/10" style={{ background: '#1a1a2e' }}>
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-2 mr-4 pr-4 border-r border-white/10">
             <span className="font-logo text-lg text-coral leading-none">Clean Slate</span>
@@ -95,19 +104,7 @@ export default function AdminCommandCenter() {
             );
           })}
         </div>
-
-        {/* Right: search + actions */}
         <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
-            <input
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search bookings, households..."
-              className="bg-white/8 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs font-body text-white/70 placeholder-white/25 focus:outline-none focus:border-coral/40 w-56"
-              style={{ background: 'rgba(255,255,255,0.06)' }}
-            />
-          </div>
           <button className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
             <Plus className="w-3.5 h-3.5" />
             New Booking
@@ -115,26 +112,86 @@ export default function AdminCommandCenter() {
           <button className="p-1.5 text-white/40 hover:text-white/70 transition-colors">
             <Bell className="w-4 h-4" />
           </button>
-          <button
-            onClick={handleLogout}
-            className="p-1.5 text-white/40 hover:text-coral transition-colors"
-          >
+          <button onClick={handleLogout} className="p-1.5 text-white/40 hover:text-coral transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
       </header>
 
-      {/* ── Body: Sidebar + Main ── */}
+      {/* ── Mobile Top Bar ── */}
+      <header className="md:hidden shrink-0 flex items-center justify-between px-4 h-12 border-b border-white/10" style={{ background: '#1a1a2e' }}>
+        <button onClick={() => setMobileSidebarOpen(true)} className="p-2 text-white/60 hover:text-white transition-colors">
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-2">
+          <span className="font-logo text-base text-coral leading-none">Clean Slate</span>
+          <span className="font-body text-[9px] text-white/40 uppercase tracking-widest">Club™</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button className="p-2 text-white/40 hover:text-white/70">
+            <Bell className="w-4 h-4" />
+          </button>
+          <button onClick={handleLogout} className="p-2 text-white/40 hover:text-coral">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* ── Body ── */}
       <div className="flex flex-1 overflow-hidden">
-        <AdminSidebar
-          topSection={topSection}
-          activeItem={sidebarItem}
-          onNavigate={handleSidebarNav}
-        />
+
+        {/* Desktop Sidebar */}
+        <div className="hidden md:block">
+          <AdminSidebar
+            topSection={topSection}
+            activeItem={sidebarItem}
+            onNavigate={handleSidebarNav}
+          />
+        </div>
+
+        {/* Mobile Sidebar Drawer */}
+        {mobileSidebarOpen && (
+          <div className="md:hidden fixed inset-0 z-50 flex">
+            <div className="flex-1 bg-black/50" onClick={() => setMobileSidebarOpen(false)} />
+            <div className="w-72 h-full overflow-y-auto flex flex-col" style={{ background: '#1a1a2e' }}>
+              <div className="flex items-center justify-between px-4 h-12 border-b border-white/10 shrink-0">
+                <span className="font-body text-xs text-white/40 uppercase tracking-widest">Menu</span>
+                <button onClick={() => setMobileSidebarOpen(false)} className="p-1.5 text-white/40 hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <AdminSidebar
+                topSection={topSection}
+                activeItem={sidebarItem}
+                onNavigate={handleSidebarNav}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Main content */}
         <main className="flex-1 overflow-auto bg-[#f8f5f2]">
-          {renderMain()}
+          {renderSection(topSection, sidebarItem)}
         </main>
       </div>
+
+      {/* ── Mobile Bottom Navigation ── */}
+      <nav className="md:hidden shrink-0 flex items-center border-t border-white/10" style={{ background: '#1a1a2e', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        {MOBILE_NAV.map(item => {
+          const Icon = item.icon;
+          const isActive = topSection === item.key && !sidebarItem;
+          return (
+            <button
+              key={item.key}
+              onClick={() => handleTopNav(item.key)}
+              className={`flex-1 flex flex-col items-center justify-center py-2.5 gap-1 transition-colors ${isActive ? 'text-coral' : 'text-white/35 hover:text-white/60'}`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="font-body text-[9px] uppercase tracking-wider">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 }

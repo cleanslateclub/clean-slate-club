@@ -27,12 +27,19 @@ function BrandColorBar() {
   );
 }
 
+const ADMIN_PATHS = ['/admin', '/admin-os', '/team'];
+
 export default function Layout() {
   const { pathname, search } = useLocation();
+  const isAdminRoute = ADMIN_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'));
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (!isAdminRoute) window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname, search]);
+
+  if (isAdminRoute) {
+    return <Outlet />;
+  }
 
   return (
     <div className="min-h-screen bg-cream">
