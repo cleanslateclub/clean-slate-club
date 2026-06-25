@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck, Search, Settings, ShieldAlert, SlidersHorizontal, ToggleLeft } from 'lucide-react';
+import { ClipboardCheck, Search, Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, ToggleLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import LaunchGuardsPanel from '@/components/admin/LaunchGuardsPanel';
 import { BOOKING_RULES_DEFAULTS } from '@/lib/backendOSConfig';
@@ -34,6 +34,23 @@ function DetailTile({ label, value, helper }) {
       <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
       <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
       {helper && <p className="font-body text-xs text-charcoal/35 font-light mt-2">{helper}</p>}
+    </div>
+  );
+}
+
+function SettingsScopeNotice({ activeFilter }) {
+  return (
+    <div className="rounded-3xl bg-cream border border-taupe/15 p-4 flex items-start gap-3">
+      <div className="w-9 h-9 rounded-2xl bg-warm-white border border-taupe/10 flex items-center justify-center shrink-0">
+        <ShieldCheck className="w-4 h-4 text-coral" />
+      </div>
+      <div>
+        <p className="font-heading text-base text-charcoal">Read-only settings review</p>
+        <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
+          This view is for checking default rules, saved AppSettings, feature flags, and launch guardrails. It does not update business rules, enable features, unlock automations, or publish launch settings.
+        </p>
+        <p className="font-body text-[11px] uppercase tracking-widest text-charcoal/30 mt-2">Current view: {activeFilter.replace(/_/g, ' ')}</p>
+      </div>
     </div>
   );
 }
@@ -119,6 +136,8 @@ export default function SettingsWorkspace() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading settings...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <SettingsScopeNotice activeFilter={filter} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         {FILTERS.map(item => (
