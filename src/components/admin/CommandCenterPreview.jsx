@@ -58,6 +58,72 @@ function BookingList({ title, bookings }) {
   );
 }
 
+function ReadinessStrip({ records, snapshot }) {
+  const rows = [
+    {
+      key: 'bookings',
+      label: 'Bookings source',
+      ready: Array.isArray(records.bookings),
+      value: `${records.bookings.length} loaded`,
+    },
+    {
+      key: 'providers',
+      label: 'Providers source',
+      ready: Array.isArray(records.providers),
+      value: `${records.providers.length} loaded`,
+    },
+    {
+      key: 'households',
+      label: 'Households source',
+      ready: Array.isArray(records.households),
+      value: `${records.households.length} loaded`,
+    },
+    {
+      key: 'critical_alerts',
+      label: 'Critical alerts',
+      ready: !snapshot.alerts.some(alert => alert.priority === 'critical'),
+      value: `${snapshot.alerts.filter(alert => alert.priority === 'critical').length} critical`,
+    },
+    {
+      key: 'manual_review',
+      label: 'Manual review',
+      ready: Number(snapshot.bookingSummary?.needsReview || 0) === 0,
+      value: `${snapshot.bookingSummary?.needsReview || 0} booking(s)`,
+    },
+    {
+      key: 'unassigned',
+      label: 'Unassigned',
+      ready: Number(snapshot.bookingSummary?.unassigned || 0) === 0,
+      value: `${snapshot.bookingSummary?.unassigned || 0} booking(s)`,
+    },
+  ];
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Command readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Preview data health</h3>
+        </div>
+        <span className="px-3 py-1 rounded-full bg-cream border border-taupe/10 text-[10px] font-body text-charcoal/45">
+          Generated {snapshot.generatedAt ? new Date(snapshot.generatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'now'}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        {rows.map(row => (
+          <div key={row.key} className="rounded-2xl bg-cream border border-taupe/10 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{row.label}</p>
+              {row.ready ? <CheckCircle2 className="w-3.5 h-3.5 text-sage" /> : <AlertTriangle className="w-3.5 h-3.5 text-coral" />}
+            </div>
+            <p className="font-body text-xs text-charcoal/55 font-light mt-2">{row.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CommandCenterPreview() {
   const [records, setRecords] = useState({ bookings: [], providers: [], households: [] });
   const [loading, setLoading] = useState(true);
@@ -102,6 +168,8 @@ export default function CommandCenterPreview() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading live records...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <ReadinessStrip records={records} snapshot={snapshot} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard label="Today" value={snapshot.today.length} helper="Active visits today" icon={CalendarDays} />
