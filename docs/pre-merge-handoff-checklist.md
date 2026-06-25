@@ -50,6 +50,20 @@ Added:
 
 These actions are admin-triggered only. Automatic policy actions are still off. Schedule preview inputs do not save record changes.
 
+### Messages
+
+Messages workspace remains read-only for actual communication history.
+
+Added:
+
+- MessageLog list and detail view
+- Sent, failed, queued, and all-message filters
+- Search by subject, template, recipient, status, channel, or preview
+- Preview-only message draft composer
+- Token replacement preview for guest name, service label, and balance due
+
+Message sending is still intentionally locked. The draft preview does not send email/SMS, create MessageLog records, or check opt-in status yet.
+
 ### Households and directions
 
 Households are now important and active, not deferred.
@@ -109,14 +123,15 @@ It keeps these launch blockers visible inside the admin portal:
 13. Households tab loads or fails gracefully.
 14. Providers tab loads or fails gracefully.
 15. Messages tab loads or fails gracefully.
-16. Settings tab loads or fails gracefully.
-17. Launch Guards view loads inside Settings.
-18. Services tab loads or fails gracefully.
-19. Reports tab loads or fails gracefully.
-20. Payments tab loads or fails gracefully.
-21. Team/provider login still opens the provider dashboard.
-22. Provider Today's Jobs shows directions when an address exists.
-23. Google Maps links open in a new tab.
+16. Message draft preview updates copy without sending.
+17. Settings tab loads or fails gracefully.
+18. Launch Guards view loads inside Settings.
+19. Services tab loads or fails gracefully.
+20. Reports tab loads or fails gracefully.
+21. Payments tab loads or fails gracefully.
+22. Team/provider login still opens the provider dashboard.
+23. Provider Today's Jobs shows directions when an address exists.
+24. Google Maps links open in a new tab.
 
 ## Must verify in Base44
 
@@ -141,14 +156,15 @@ It keeps these launch blockers visible inside the admin portal:
 - Provider auto-assignment.
 - Schedule edit saves.
 - Guest/provider schedule-change messages.
+- Admin message sending.
 - Removing legacy admin files.
 
 ## Safe next code chunks
 
-1. Add admin message-send actions only after notification contracts are confirmed.
-2. Add final checkout actions only after Stripe checkout behavior and owner policies are confirmed.
+1. Add final checkout preview only, not send actions.
+2. Add launch-readiness completion toggles only after live Base44 smoke testing begins.
 3. Add schedule edit saves only after Base44 TimeBlock behavior is verified.
-4. Add launch-readiness completion toggles only after live Base44 smoke testing begins.
+4. Add admin message-send actions only after notification contracts are confirmed.
 
 ## Owner approval required before launch
 
