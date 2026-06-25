@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Clock, Search } from 'lucide-react';
+import { AlertTriangle, CalendarDays, CheckCircle2, Clock, Search, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const BLOCK_TYPES = [
@@ -16,6 +16,66 @@ const getFilteredBlocks = (blocks = [], type = 'all') => {
   if (type === 'all') return blocks;
   return blocks.filter(block => block.block_type === type);
 };
+
+const getCalendarReadinessRows = (block = {}) => [
+  {
+    key: 'date',
+    label: 'Date',
+    ready: Boolean(block.date),
+    value: block.date || 'Missing',
+    helper: 'Needed for upcoming calendar sorting and schedule previews.',
+  },
+  {
+    key: 'time',
+    label: 'Start and end time',
+    ready: Boolean(block.start_time && block.end_time),
+    value: `${block.start_time || 'No start'} · ${block.end_time || 'No end'}`,
+    helper: 'Needed for conflict detection and provider calendar visibility.',
+  },
+  {
+    key: 'type',
+    label: 'Block type',
+    ready: Boolean(block.block_type),
+    value: (block.block_type || 'Missing').replace(/_/g, ' '),
+    helper: 'Needed to separate visits, travel, consults, and admin holds.',
+  },
+  {
+    key: 'provider',
+    label: 'Provider',
+    ready: Boolean(block.provider_email || block.provider_name) || ['admin_hold', 'consult'].includes(block.block_type),
+    value: block.provider_name || block.provider_email || 'Not assigned',
+    helper: 'Visit and travel blocks should usually identify the assigned provider.',
+  },
+  {
+    key: 'booking_link',
+    label: 'Linked booking',
+    ready: Boolean(block.booking_id || block.bookingId) || ['admin_hold', 'consult'].includes(block.block_type),
+    value: block.booking_id || block.bookingId || 'No booking link',
+    helper: 'Linked booking helps admin trace schedule blocks back to booking records.',
+  },
+  {
+    key: 'location',
+    label: 'Location',
+    ready: Boolean(block.location_address) || ['travel', 'admin_hold'].includes(block.block_type),
+    value: block.location_address || 'Not set',
+    helper: 'Visit blocks should include enough location detail for provider review.',
+  },
+  {
+    key: 'travel',
+    label: 'Travel buffer',
+    ready: block.block_type !== 'travel' || Number(block.travel_minutes || 0) > 0,
+    value: block.travel_minutes ? `${block.travel_minutes} minutes` : 'None shown',
+    helper: 'Travel blocks should show travel minutes when generated.',
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    ready: !['cancelled', 'conflict', 'error'].includes(block.status),
+    warning: ['conflict', 'error'].includes(block.status),
+    value: (block.status || 'active').replace(/_/g, ' '),
+    helper: 'Conflict or error statuses need review before launch testing continues.',
+  },
+];
 
 function TypeButton({ item, active, count, onClick }) {
   return (
@@ -63,7 +123,58 @@ function DetailTile({ label, value }) {
   return (
     <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
       <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
-      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
+      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words whitespace-pre-wrap">{value || 'Not set'}</p>
+    </div>
+  );
+}
+
+function ReadinessItem({ item }) {
+  const Icon = item.ready ? CheckCircle2 : item.warning ? AlertTriangle : XCircle;
+  const tone = item.ready
+    ? 'text-sage bg-sage/10 border-sage/20'
+    : item.warning
+      ? 'text-coral bg-coral/10 border-coral/20'
+      : 'text-charcoal/55 bg-cream border-taupe/15';
+
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-body text-sm text-charcoal/65 font-light">{item.label}</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1 break-words">{item.value || 'Not set'}</p>
+          <p className="font-body text-[11px] text-charcoal/30 font-light mt-2 leading-relaxed">{item.helper}</p>
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest shrink-0 ${tone}`}>
+          <Icon className="w-3 h-3" />
+          {item.ready ? 'Ready' : item.warning ? 'Review' : 'Missing'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function CalendarReadinessPanel({ block }) {
+  const rows = getCalendarReadinessRows(block);
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Calendar readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Schedule block checklist</h3>
+          <p className="font-body text-sm text-charcoal/40 font-light mt-2 max-w-2xl leading-relaxed">
+            Read-only checklist for the fields most likely to affect schedule preview, conflict checks, and provider visibility.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 text-right">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Review items</p>
+          <p className="font-heading text-2xl text-charcoal mt-1">{reviewCount}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 mt-4">
+        {rows.map(item => <ReadinessItem key={item.key} item={item} />)}
+      </div>
     </div>
   );
 }
@@ -87,6 +198,8 @@ function BlockDetailPanel({ block }) {
         <p className="font-body text-sm text-charcoal/40 font-light mt-1">{block.date || 'No date'}</p>
       </div>
 
+      <CalendarReadinessPanel block={block} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Type" value={(block.block_type || 'block').replace(/_/g, ' ')} />
         <DetailTile label="Status" value={(block.status || 'active').replace(/_/g, ' ')} />
@@ -94,10 +207,13 @@ function BlockDetailPanel({ block }) {
         <DetailTile label="End" value={block.end_time} />
         <DetailTile label="Provider" value={block.provider_name || block.provider_email} />
         <DetailTile label="Travel minutes" value={block.travel_minutes} />
+        <DetailTile label="Booking ID" value={block.booking_id || block.bookingId} />
+        <DetailTile label="Provider ID" value={block.provider_id || block.providerId} />
       </div>
 
       <DetailTile label="Location" value={block.location_address} />
       <DetailTile label="Reason" value={block.change_reason} />
+      <DetailTile label="Notes" value={block.notes || block.admin_notes} />
     </div>
   );
 }
@@ -146,6 +262,8 @@ export default function CalendarWorkspace() {
       block.provider_name,
       block.provider_email,
       block.location_address,
+      block.booking_id,
+      block.bookingId,
     ].some(value => String(value || '').toLowerCase().includes(q))) : pool;
 
     return searched.sort((a, b) => `${a.date || ''} ${a.start_time || ''}`.localeCompare(`${b.date || ''} ${b.start_time || ''}`));
