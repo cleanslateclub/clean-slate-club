@@ -5,6 +5,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'admin_shell',
     title: 'Admin shell',
+    priority: 'Critical',
     intent: 'Confirm the Command Center loads and stays clearly marked as draft-only.',
     checks: [
       'Log in through /admin and confirm the Command Center shell opens.',
@@ -17,6 +18,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'booking_flow',
     title: 'Booking records',
+    priority: 'Critical',
     intent: 'Confirm booking records can be reviewed without triggering live automation.',
     checks: [
       'Open Bookings and select a booking with as much real-looking test data as possible.',
@@ -29,6 +31,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'provider_flow',
     title: 'Provider flow',
+    priority: 'High',
     intent: 'Confirm provider records and provider dashboard are visible without enabling auto-assignment.',
     checks: [
       'Open Providers and confirm the readiness panel flags status, compliance, service permissions, notifications, and auto-assign.',
@@ -41,6 +44,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'schedule_flow',
     title: 'Schedule preview',
+    priority: 'High',
     intent: 'Confirm calendar visibility and conflict preview before any schedule-save behavior is built.',
     checks: [
       'Open Calendar and select a block.',
@@ -53,6 +57,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'payments_messages',
     title: 'Payments and messages',
+    priority: 'Critical',
     intent: 'Confirm financial/message previews are visible but cannot send or collect anything.',
     checks: [
       'Open Payments and select an invoice/payment record.',
@@ -65,6 +70,7 @@ const SMOKE_TEST_SECTIONS = [
   {
     key: 'launch_locks',
     title: 'Launch locks',
+    priority: 'Critical',
     intent: 'Confirm the do-not-launch items remain visible before any real workflow is enabled.',
     checks: [
       'Open Settings and confirm the Settings Scope notice is visible.',
@@ -93,12 +99,22 @@ const PASS_FAIL_NOTES = [
   'Fail means the view crashes, saves unexpectedly, sends unexpectedly, charges unexpectedly, or exposes a launch-sensitive action.',
 ];
 
+const priorityStyles = {
+  Critical: 'text-coral bg-coral/10 border-coral/20',
+  High: 'text-charcoal/55 bg-cream border-taupe/15',
+};
+
 function SmokeTestSection({ section, index }) {
   return (
     <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Step {index + 1}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Step {index + 1}</p>
+            <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest ${priorityStyles[section.priority] || priorityStyles.High}`}>
+              {section.priority}
+            </span>
+          </div>
           <h4 className="font-heading text-xl text-charcoal mt-1">{section.title}</h4>
           <p className="font-body text-sm text-charcoal/45 font-light mt-2 leading-relaxed">{section.intent}</p>
         </div>
