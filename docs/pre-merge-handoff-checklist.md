@@ -77,6 +77,21 @@ Added:
 
 Payment automation is still intentionally off. Do not enable final checkout sends, cancellation fee collection, reschedule fee collection, refunds, or provider-facing payment tools until Stripe behavior and owner policies are confirmed.
 
+### Launch guards
+
+A read-only Launch Guards view is now wired into the Settings workspace.
+
+It keeps these launch blockers visible inside the admin portal:
+
+- Base44 schema verification
+- Backend function contract verification
+- Payment automation lock
+- Schedule save lock
+- Message sending lock
+- Provider auto-assignment lock
+- Legacy admin removal lock
+- Owner policy approval requirements
+
 ## Must verify before merge
 
 1. `/admin` login still opens the Command Center.
@@ -95,12 +110,13 @@ Payment automation is still intentionally off. Do not enable final checkout send
 14. Providers tab loads or fails gracefully.
 15. Messages tab loads or fails gracefully.
 16. Settings tab loads or fails gracefully.
-17. Services tab loads or fails gracefully.
-18. Reports tab loads or fails gracefully.
-19. Payments tab loads or fails gracefully.
-20. Team/provider login still opens the provider dashboard.
-21. Provider Today's Jobs shows directions when an address exists.
-22. Google Maps links open in a new tab.
+17. Launch Guards view loads inside Settings.
+18. Services tab loads or fails gracefully.
+19. Reports tab loads or fails gracefully.
+20. Payments tab loads or fails gracefully.
+21. Team/provider login still opens the provider dashboard.
+22. Provider Today's Jobs shows directions when an address exists.
+23. Google Maps links open in a new tab.
 
 ## Must verify in Base44
 
@@ -129,10 +145,10 @@ Payment automation is still intentionally off. Do not enable final checkout send
 
 ## Safe next code chunks
 
-1. Add Base44 sync verification notes after live testing.
-2. Add admin message-send actions only after notification contracts are confirmed.
-3. Add final checkout actions only after Stripe checkout behavior and owner policies are confirmed.
-4. Add schedule edit saves only after Base44 TimeBlock behavior is verified.
+1. Add admin message-send actions only after notification contracts are confirmed.
+2. Add final checkout actions only after Stripe checkout behavior and owner policies are confirmed.
+3. Add schedule edit saves only after Base44 TimeBlock behavior is verified.
+4. Add launch-readiness completion toggles only after live Base44 smoke testing begins.
 
 ## Owner approval required before launch
 
