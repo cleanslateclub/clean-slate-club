@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck, Search } from 'lucide-react';
+import { AlertTriangle, ClipboardCheck, Search, ShieldCheck } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BookingActionsPanel from '@/components/admin/BookingActionsPanel';
 import BookingAuditTrail from '@/components/admin/BookingAuditTrail';
@@ -26,6 +26,22 @@ const filterBookings = (bookings = [], filter = 'review') => {
   }
   return active;
 };
+
+function ActionSafetyNotice() {
+  return (
+    <div className="rounded-3xl bg-butter/15 border border-butter/30 p-4 flex items-start gap-3">
+      <div className="w-9 h-9 rounded-2xl bg-warm-white border border-taupe/10 flex items-center justify-center shrink-0">
+        <ShieldCheck className="w-4 h-4 text-coral" />
+      </div>
+      <div>
+        <p className="font-heading text-base text-charcoal">Controlled actions only</p>
+        <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
+          Use this screen for manual review, controlled status updates, assignment preview, assignment save, and schedule preview. Fees, refunds, checkout sends, schedule-save automation, and message sending stay locked.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function ActionFilterButton({ item, active, count, onClick }) {
   return (
@@ -169,6 +185,8 @@ export default function BookingActionCenter() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading bookings...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <ActionSafetyNotice />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {ACTION_FILTERS.map(item => (
