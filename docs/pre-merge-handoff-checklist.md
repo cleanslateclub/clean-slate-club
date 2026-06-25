@@ -43,10 +43,12 @@ Added:
 - Controlled hold-for-review action
 - Controlled mark-complete action
 - Controlled archive action
+- Read-only booking audit/history panel
 - Provider assignment recommendations
 - Controlled provider assignment save action
+- Preview-only schedule change tester with conflict detection
 
-These actions are admin-triggered only. Automatic policy actions are still off.
+These actions are admin-triggered only. Automatic policy actions are still off. Schedule preview inputs do not save record changes.
 
 ### Households and directions
 
@@ -83,19 +85,22 @@ Payment automation is still intentionally off. Do not enable final checkout send
 4. Actions tab loads or fails gracefully.
 5. Action queue filters work.
 6. Admin booking action buttons save correctly in Base44.
-7. Provider assignment recommendations load.
-8. Controlled provider assignment saves correctly in Base44.
-9. Calendar tab loads or fails gracefully.
-10. Households tab loads or fails gracefully.
-11. Providers tab loads or fails gracefully.
-12. Messages tab loads or fails gracefully.
-13. Settings tab loads or fails gracefully.
-14. Services tab loads or fails gracefully.
-15. Reports tab loads or fails gracefully.
-16. Payments tab loads or fails gracefully.
-17. Team/provider login still opens the provider dashboard.
-18. Provider Today's Jobs shows directions when an address exists.
-19. Google Maps links open in a new tab.
+7. Booking audit/history panel loads or shows empty state.
+8. Provider assignment recommendations load.
+9. Controlled provider assignment saves correctly in Base44.
+10. Schedule preview loads existing blocks or fails gracefully.
+11. Preview-only date/time inputs update conflict preview without saving.
+12. Calendar tab loads or fails gracefully.
+13. Households tab loads or fails gracefully.
+14. Providers tab loads or fails gracefully.
+15. Messages tab loads or fails gracefully.
+16. Settings tab loads or fails gracefully.
+17. Services tab loads or fails gracefully.
+18. Reports tab loads or fails gracefully.
+19. Payments tab loads or fails gracefully.
+20. Team/provider login still opens the provider dashboard.
+21. Provider Today's Jobs shows directions when an address exists.
+22. Google Maps links open in a new tab.
 
 ## Must verify in Base44
 
@@ -118,15 +123,16 @@ Payment automation is still intentionally off. Do not enable final checkout send
 - Reschedule fee automation.
 - Refund automation.
 - Provider auto-assignment.
+- Schedule edit saves.
+- Guest/provider schedule-change messages.
 - Removing legacy admin files.
 
 ## Safe next code chunks
 
-1. Add read-only booking action history.
-2. Add schedule edit preview only.
-3. Add Base44 sync verification notes after live testing.
-4. Add admin message-send actions only after notification contracts are confirmed.
-5. Add final checkout actions only after Stripe checkout behavior and owner policies are confirmed.
+1. Add Base44 sync verification notes after live testing.
+2. Add admin message-send actions only after notification contracts are confirmed.
+3. Add final checkout actions only after Stripe checkout behavior and owner policies are confirmed.
+4. Add schedule edit saves only after Base44 TimeBlock behavior is verified.
 
 ## Owner approval required before launch
 
