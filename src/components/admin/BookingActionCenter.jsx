@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ClipboardCheck, Search } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BookingActionsPanel from '@/components/admin/BookingActionsPanel';
+import BookingAuditTrail from '@/components/admin/BookingAuditTrail';
 import ProviderAssignmentPreview from '@/components/admin/ProviderAssignmentPreview';
 import SchedulePreviewPanel from '@/components/admin/SchedulePreviewPanel';
 import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
@@ -87,6 +88,7 @@ function BookingActionDetail({ booking, onUpdated }) {
       <BookingActionsPanel booking={booking} onUpdated={onUpdated} />
       <ProviderAssignmentPreview booking={booking} onAssigned={onUpdated} />
       <SchedulePreviewPanel booking={booking} />
+      <BookingAuditTrail booking={booking} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Status" value={booking.status} />
