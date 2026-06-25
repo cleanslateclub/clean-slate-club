@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Home, Search, Star, Users } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Home, Search, Star, Users, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import HouseholdMapLink from '@/components/admin/HouseholdMapLink';
 
@@ -14,6 +14,60 @@ const getFilteredHouseholds = (records = [], filter = 'all') => {
   if (filter === 'outside_area') return records.filter(item => item.service_area_status === 'outside_area');
   return records;
 };
+
+const getHouseholdReadinessRows = (household = {}) => [
+  {
+    key: 'contact',
+    label: 'Guest contact',
+    ready: Boolean(household.guest_email || household.guest_phone),
+    value: household.guest_email || household.guest_phone || 'Missing',
+    helper: 'Needed for booking follow-up, member records, and message testing.',
+  },
+  {
+    key: 'address',
+    label: 'Service address',
+    ready: Boolean(household.primary_service_address),
+    value: household.primary_service_address || 'Missing',
+    helper: 'Needed for map links, provider job cards, service area review, and travel rules.',
+  },
+  {
+    key: 'service_area',
+    label: 'Service area status',
+    ready: Boolean(household.service_area_status && household.service_area_status !== 'unknown'),
+    warning: household.service_area_status === 'outside_area',
+    value: household.service_area_status || 'Unknown',
+    helper: 'Outside-area and unknown-area households should stay in manual review.',
+  },
+  {
+    key: 'membership',
+    label: 'Membership status',
+    ready: Boolean(household.membership_status),
+    value: household.membership_status || 'None shown',
+    helper: 'Needed for priority booking, member rules, and reporting.',
+  },
+  {
+    key: 'booking_history',
+    label: 'Booking history',
+    ready: Number(household.booking_count || 0) > 0 || Boolean(household.last_booking_date),
+    value: `${household.booking_count || 0} bookings${household.last_booking_date ? ` · last ${household.last_booking_date}` : ''}`,
+    helper: 'Helpful for support context and retargeting logic.',
+  },
+  {
+    key: 'provider_notes',
+    label: 'Provider-safe notes',
+    ready: Boolean(household.provider_safe_notes || household.parking_notes || household.access_notes),
+    value: household.provider_safe_notes || household.parking_notes || household.access_notes || 'None shown',
+    helper: 'Helpful for provider job cards without exposing sensitive admin-only notes.',
+  },
+  {
+    key: 'review_flags',
+    label: 'Review flags',
+    ready: !household.no_show_count && !household.manual_review_required,
+    warning: Number(household.no_show_count || 0) > 0 || Boolean(household.manual_review_required),
+    value: household.manual_review_required ? 'Manual review required' : Number(household.no_show_count || 0) > 0 ? `${household.no_show_count} no-show flag(s)` : 'No flags shown',
+    helper: 'Manual review keeps sensitive household decisions out of automation.',
+  },
+];
 
 function FilterButton({ item, active, count, onClick }) {
   const Icon = item.icon;
@@ -58,7 +112,58 @@ function DetailTile({ label, value }) {
   return (
     <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
       <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
-      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
+      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words whitespace-pre-wrap">{value || 'Not set'}</p>
+    </div>
+  );
+}
+
+function ReadinessItem({ item }) {
+  const Icon = item.ready ? CheckCircle2 : item.warning ? AlertTriangle : XCircle;
+  const tone = item.ready
+    ? 'text-sage bg-sage/10 border-sage/20'
+    : item.warning
+      ? 'text-coral bg-coral/10 border-coral/20'
+      : 'text-charcoal/55 bg-cream border-taupe/15';
+
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-body text-sm text-charcoal/65 font-light">{item.label}</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1 break-words">{item.value || 'Not set'}</p>
+          <p className="font-body text-[11px] text-charcoal/30 font-light mt-2 leading-relaxed">{item.helper}</p>
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest shrink-0 ${tone}`}>
+          <Icon className="w-3 h-3" />
+          {item.ready ? 'Ready' : item.warning ? 'Review' : 'Missing'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function HouseholdReadinessPanel({ household }) {
+  const rows = getHouseholdReadinessRows(household);
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Household readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Record quality checklist</h3>
+          <p className="font-body text-sm text-charcoal/40 font-light mt-2 max-w-2xl leading-relaxed">
+            Read-only checklist for contact, address, service area, membership, notes, and review flags before live testing.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 text-right">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Review items</p>
+          <p className="font-heading text-2xl text-charcoal mt-1">{reviewCount}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 mt-4">
+        {rows.map(item => <ReadinessItem key={item.key} item={item} />)}
+      </div>
     </div>
   );
 }
@@ -83,6 +188,8 @@ function HouseholdDetail({ household }) {
         <div className="mt-3"><HouseholdMapLink record={household} /></div>
       </div>
 
+      <HouseholdReadinessPanel household={household} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Email" value={household.guest_email} />
         <DetailTile label="Phone" value={household.guest_phone} />
@@ -90,10 +197,14 @@ function HouseholdDetail({ household }) {
         <DetailTile label="Service area" value={household.service_area_status || 'Unknown'} />
         <DetailTile label="Booking count" value={household.booking_count} />
         <DetailTile label="Last booking" value={household.last_booking_date} />
+        <DetailTile label="Preferred provider" value={household.preferred_provider_name || household.preferred_provider_email} />
+        <DetailTile label="No-show count" value={household.no_show_count} />
       </div>
 
       <DetailTile label="Provider-safe notes" value={household.provider_safe_notes} />
       <DetailTile label="Parking notes" value={household.parking_notes} />
+      <DetailTile label="Access notes" value={household.access_notes} />
+      <DetailTile label="Admin notes" value={household.admin_notes || household.internal_notes} />
     </div>
   );
 }
@@ -144,7 +255,7 @@ export default function HouseholdsWorkspace() {
         <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Households workspace</p>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">Household records and directions</h2>
         <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
-          One place to view guest household records, service address, and Google Maps directions.
+          One place to view guest household records, service address, Google Maps directions, and record readiness.
         </p>
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading households...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
