@@ -1,0 +1,47 @@
+{
+  "name": "ProviderAvailability",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "provider_id": { "type": "string" },
+    "provider_email": { "type": "string" },
+    "provider_name": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "archived"],
+      "default": "active"
+    },
+    "day_of_week": {
+      "type": "string",
+      "enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    },
+    "start_time": { "type": "string" },
+    "end_time": { "type": "string" },
+    "service_permissions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "service_areas": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "admin_notes": { "type": "string" }
+  },
+  "required": ["provider_email", "day_of_week", "start_time", "end_time"],
+  "rls": {
+    "create": {
+      "$or": [
+        { "data.provider_email": "{{user.email}}" },
+        { "user_condition": { "role": "admin" } }
+      ]
+    },
+    "read": {},
+    "update": {
+      "$or": [
+        { "data.provider_email": "{{user.email}}" },
+        { "user_condition": { "role": "admin" } }
+      ]
+    },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

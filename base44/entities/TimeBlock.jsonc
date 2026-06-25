@@ -1,6 +1,7 @@
 {
   "name": "TimeBlock",
   "type": "object",
+  "additionalProperties": true,
   "properties": {
     "date": {
       "type": "string",
@@ -15,6 +16,15 @@
     "booking_id": {
       "type": "string"
     },
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
     "block_type": {
       "type": "string",
       "enum": [
@@ -22,11 +32,54 @@
         "travel",
         "prep",
         "wrap",
-        "manual_block"
+        "manual_block",
+        "provider_unavailable",
+        "admin_hold",
+        "consult",
+        "holiday_blackout",
+        "premium_holiday",
+        "waitlist_hold"
       ],
       "default": "booking"
     },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "tentative",
+        "held",
+        "cancelled",
+        "completed"
+      ],
+      "default": "active"
+    },
     "label": {
+      "type": "string"
+    },
+    "location_address": {
+      "type": "string"
+    },
+    "travel_minutes": {
+      "type": "number"
+    },
+    "is_publicly_bookable": {
+      "type": "boolean",
+      "default": false
+    },
+    "created_by_role": {
+      "type": "string"
+    },
+    "last_changed_by": {
+      "type": "string"
+    },
+    "last_changed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "change_reason": {
+      "type": "string"
+    },
+    "google_calendar_event_id": {
       "type": "string"
     }
   },

@@ -23,7 +23,8 @@
         "booking_constraints",
         "territory",
         "notifications",
-        "payments"
+        "payments",
+        "services"
       ],
       "default": "feature_toggles"
     },
@@ -32,7 +33,8 @@
       "enum": [
         "boolean",
         "number",
-        "string"
+        "string",
+        "json"
       ],
       "default": "boolean"
     }

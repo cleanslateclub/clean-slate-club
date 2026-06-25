@@ -1,0 +1,33 @@
+{
+  "name": "FormTemplate",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "key": { "type": "string" },
+    "name": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": ["guest_intake", "service_intake", "provider_onboarding", "visit_completion", "incident", "internal"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "paused", "archived"],
+      "default": "draft"
+    },
+    "service_category": { "type": "string" },
+    "description": { "type": "string" },
+    "fields": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "requires_admin_review": { "type": "boolean", "default": false },
+    "admin_notes": { "type": "string" }
+  },
+  "required": ["key", "name", "category"],
+  "rls": {
+    "create": { "user_condition": { "role": "admin" } },
+    "read": {},
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

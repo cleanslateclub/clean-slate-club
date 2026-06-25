@@ -1,0 +1,74 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Example: booking_created, booking_rescheduled, payment_recorded, provider_compliance_updated"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Booking, Provider, HouseholdProfile, Invoice, TimeBlock, AppSettings, etc."
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_role": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "before": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "after": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "event_type",
+    "entity_type",
+    "summary"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        { "user_condition": { "role": "admin" } },
+        { "user_condition": { "role": "provider" } }
+      ]
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

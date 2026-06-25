@@ -5,10 +5,84 @@ import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
-import { LogOut, CheckSquare, CalendarDays, DollarSign } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ExternalLink, LogOut, CheckSquare, CalendarDays, DollarSign, MapPin } from 'lucide-react';
 import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
+import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
+import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
 const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
+
+const getProviderDashboardReadiness = ({ providerData, bookings, timeBlocks, todaysJobs }) => [
+  {
+    key: 'profile',
+    label: 'Profile loaded',
+    ready: Boolean(providerData?.id && providerData?.email),
+    value: providerData?.email || 'Missing email',
+  },
+  {
+    key: 'status',
+    label: 'Provider status',
+    ready: providerData?.status === 'active',
+    value: (providerData?.status || 'draft').replace(/_/g, ' '),
+  },
+  {
+    key: 'service_permissions',
+    label: 'Service permissions',
+    ready: Array.isArray(providerData?.service_permissions) && providerData.service_permissions.length > 0,
+    value: Array.isArray(providerData?.service_permissions) ? `${providerData.service_permissions.length} permission(s)` : 'None shown',
+  },
+  {
+    key: 'bookings',
+    label: 'Assigned visits',
+    ready: Array.isArray(bookings),
+    value: `${bookings.length} visible`,
+  },
+  {
+    key: 'calendar',
+    label: 'Calendar blocks',
+    ready: Array.isArray(timeBlocks),
+    value: `${timeBlocks.length} loaded`,
+  },
+  {
+    key: 'today',
+    label: "Today's jobs",
+    ready: Array.isArray(todaysJobs),
+    value: `${todaysJobs.length} today`,
+  },
+];
+
+function ProviderReadinessStrip({ providerData, bookings, timeBlocks, todaysJobs }) {
+  const rows = getProviderDashboardReadiness({ providerData, bookings, timeBlocks, todaysJobs });
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+      <div className="bg-warm-white border border-taupe/15 rounded-3xl p-5">
+        <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Provider readiness</p>
+            <p className="font-heading text-xl text-charcoal mt-1">Today’s working snapshot</p>
+          </div>
+          <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-[10px] font-body uppercase tracking-widest ${reviewCount ? 'bg-coral/10 border-coral/20 text-coral' : 'bg-sage/10 border-sage/20 text-sage'}`}>
+            {reviewCount ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3" />}
+            {reviewCount ? `${reviewCount} review` : 'ready'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          {rows.map(row => (
+            <div key={row.key} className="rounded-2xl bg-cream border border-taupe/10 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{row.label}</p>
+                {row.ready ? <CheckCircle2 className="w-3.5 h-3.5 text-sage" /> : <AlertTriangle className="w-3.5 h-3.5 text-coral" />}
+              </div>
+              <p className="font-body text-xs text-charcoal/55 font-light mt-2">{row.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
@@ -26,23 +100,24 @@ export default function ProviderDashboard() {
       try {
         const session = localStorage.getItem('providerSession');
         if (!session) {
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
         const parsed = JSON.parse(session);
         const providerId = parsed?.providerId;
+        const expiresAt = parsed?.expiresAt;
 
-        if (!providerId) {
+        if (!providerId || !expiresAt || Date.now() > expiresAt) {
           localStorage.removeItem('providerSession');
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
         const provider = await base44.entities.Provider.get(providerId);
         if (!provider) {
           localStorage.removeItem('providerSession');
-          navigate('/staff-login');
+          navigate('/team');
           return;
         }
 
@@ -50,7 +125,7 @@ export default function ProviderDashboard() {
       } catch (err) {
         console.error('Provider auth check failed:', err);
         localStorage.removeItem('providerSession');
-        navigate('/staff-login');
+        navigate('/team');
       } finally {
         setLoading(false);
       }
@@ -89,8 +164,6 @@ export default function ProviderDashboard() {
           setBookings(prev => [...prev, event.data]);
         }
       } else if (event.type === 'update') {
-        // FIX: Spread event.data onto existing booking instead of replacing entirely.
-        // Replacing with just event.data could wipe fields missing from a partial update.
         setBookings(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
       } else if (event.type === 'delete') {
         setBookings(prev => prev.filter(b => b.id !== event.id));
@@ -115,8 +188,24 @@ export default function ProviderDashboard() {
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
+      const originalBlock = timeBlocks.find(block => block.id === blockId);
       await base44.entities.TimeBlock.update(blockId, updates);
+      const updatedBlock = { ...originalBlock, ...updates };
       setTimeBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b));
+
+      const relatedBooking = updatedBlock?.booking_id
+        ? bookings.find(booking => booking.id === updatedBlock.booking_id)
+        : null;
+
+      notifyScheduleChange({
+        eventType: 'time_block_updated',
+        source: 'provider',
+        actor: providerData?.full_name || providerData?.email || 'Provider',
+        booking: relatedBooking,
+        timeBlock: updatedBlock,
+        updates,
+        note: 'Provider-side schedule block changed. Admin should be notified for every schedule change.',
+      });
     } catch (error) {
       console.error('Error updating time block:', error);
     }
@@ -128,7 +217,7 @@ export default function ProviderDashboard() {
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      navigate('/staff-login');
+      navigate('/team');
     }
   };
 
@@ -157,7 +246,6 @@ export default function ProviderDashboard() {
       <div className="pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
 
-          {/* Header */}
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-start justify-between gap-6">
             <div>
               <p className="font-body text-xs tracking-[0.25em] uppercase font-light text-charcoal/40 mb-2">Welcome back</p>
@@ -173,37 +261,53 @@ export default function ProviderDashboard() {
             </button>
           </motion.div>
 
+          <ProviderReadinessStrip providerData={providerData} bookings={bookings} timeBlocks={timeBlocks} todaysJobs={todaysJobs} />
+
           <ProviderStats bookings={bookings} payouts={payouts} />
 
-          {/* Today's Jobs Banner */}
           {todaysJobs.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
               <div className="bg-coral/5 border border-coral/15 rounded-2xl p-4">
                 <p className="font-body text-xs tracking-widest uppercase text-coral/60 font-light mb-3">Today's Jobs</p>
                 <div className="space-y-2">
-                  {todaysJobs.map(b => (
-                    <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
-                      <div>
-                        <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
-                        <p className="font-body text-xs text-charcoal/40 font-light">
-                          {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
-                        </p>
+                  {todaysJobs.map(b => {
+                    const address = b.client_address || b.intake_answers?.service_address?.formatted || '';
+                    const directionsUrl = buildGoogleMapsDirectionsUrl(address);
+                    return (
+                      <div key={b.id} className="flex items-center justify-between gap-3 bg-warm-white rounded-xl border border-taupe/15 px-4 py-3">
+                        <div>
+                          <p className="font-body text-sm text-charcoal font-light">{b.client_name}</p>
+                          <p className="font-body text-xs text-charcoal/40 font-light">
+                            {b.scheduled_start_time} · {b.service_category?.replace(/_/g, ' ')}
+                          </p>
+                          {hasMapAddress(address) && (
+                            <a
+                              href={directionsUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 mt-2 text-xs font-body text-coral hover:text-coral/80 transition-colors"
+                            >
+                              <MapPin className="w-3 h-3" />
+                              Directions
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => setActiveVisitBooking(b)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white font-body text-xs tracking-wide hover:bg-coral/90 transition-all shrink-0"
+                        >
+                          <CheckSquare className="w-3.5 h-3.5" />
+                          Complete Visit
+                        </button>
                       </div>
-                      <button
-                        onClick={() => setActiveVisitBooking(b)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral text-white font-body text-xs tracking-wide hover:bg-coral/90 transition-all shrink-0"
-                      >
-                        <CheckSquare className="w-3.5 h-3.5" />
-                        Complete Visit
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Tab switcher */}
           <div className="flex gap-1 bg-warm-white border border-taupe/15 rounded-2xl p-1 mb-6">
             {[
               { id: 'calendar', label: 'My Calendar', icon: CalendarDays },

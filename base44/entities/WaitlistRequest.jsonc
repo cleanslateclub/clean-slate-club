@@ -1,0 +1,49 @@
+{
+  "name": "WaitlistRequest",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["active", "offered", "booked", "expired", "cancelled", "archived"],
+      "default": "active"
+    },
+    "guest_name": { "type": "string" },
+    "guest_email": { "type": "string" },
+    "guest_phone": { "type": "string" },
+    "household_profile_id": { "type": "string" },
+    "service_category": { "type": "string" },
+    "service_label": { "type": "string" },
+    "preferred_dates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "preferred_time_windows": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "member_at_request": { "type": "boolean", "default": false },
+    "service_address": { "type": "string" },
+    "service_area_status": {
+      "type": "string",
+      "enum": ["inside_area", "outside_area", "manual_review"]
+    },
+    "priority_score": { "type": "number", "default": 0 },
+    "offered_booking_id": { "type": "string" },
+    "offered_at": { "type": "string", "format": "date-time" },
+    "offer_expires_at": { "type": "string", "format": "date-time" },
+    "admin_notes": { "type": "string" }
+  },
+  "required": ["guest_email", "service_category"],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        { "data.guest_email": "{{user.email}}" },
+        { "user_condition": { "role": "admin" } }
+      ]
+    },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

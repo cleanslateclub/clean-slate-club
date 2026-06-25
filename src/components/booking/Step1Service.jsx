@@ -26,7 +26,8 @@ const SERVICE_ACCENTS = {
   meal_prep: '#7E7F9A',
 };
 
-export default function Step1Service({ selected, serviceKey, onSelect, setServiceKey, onContinue, onNext }) {
+export default function Step1Service({ selected, serviceKey, onSelect, setServiceKey, onContinue, onNext, serviceConfig }) {
+  const services = serviceConfig || SERVICE_CONFIG;
   const selectedService = selected ?? serviceKey;
   const handleSelect = onSelect || setServiceKey || (() => {});
   const handleContinue = onContinue || onNext || (() => {});
@@ -43,7 +44,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
 
       <div className="space-y-3">
         {SERVICE_ORDER.map(key => {
-          const config = SERVICE_CONFIG[key];
+          const config = services[key];
           if (!config) return null;
           const isSelected = selectedService === key;
           const isConsult = key === 'consult';
@@ -85,7 +86,7 @@ export default function Step1Service({ selected, serviceKey, onSelect, setServic
                     )}
                     {!isConsult && config.priceRange && (
                       <p className="font-body text-xs mt-1 font-light text-charcoal">
-                        starting around ${config.priceRange[0]} · {config.baseMinutes / 60}hr base
+                        starting around ${config.priceRange[0]} · {Math.round((config.baseMinutes / 60) * 10) / 10}hr base
                       </p>
                     )}
                   </div>

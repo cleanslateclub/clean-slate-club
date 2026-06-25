@@ -1,0 +1,38 @@
+{
+  "name": "CampaignTemplate",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "key": { "type": "string" },
+    "name": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": ["booking", "membership", "followup", "marketing", "provider", "admin"]
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms", "both"],
+      "default": "email"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "paused", "archived"],
+      "default": "draft"
+    },
+    "subject": { "type": "string" },
+    "body": { "type": "string" },
+    "sms_body": { "type": "string" },
+    "trigger_event": { "type": "string" },
+    "delay_minutes": { "type": "number", "default": 0 },
+    "audience": { "type": "string" },
+    "requires_opt_in": { "type": "boolean", "default": true },
+    "admin_notes": { "type": "string" }
+  },
+  "required": ["key", "name", "category", "channel"],
+  "rls": {
+    "create": { "user_condition": { "role": "admin" } },
+    "read": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

@@ -1,0 +1,137 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, CalendarDays, Clock } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { buildSchedulePreview } from '@/lib/adminScheduleActions';
+
+function PreviewTile({ label, value }) {
+  return (
+    <div className="rounded-xl bg-warm-white border border-taupe/15 p-3">
+      <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
+      <p className="font-body text-sm text-charcoal/60 font-light mt-1">{value || 'Not set'}</p>
+    </div>
+  );
+}
+
+function PreviewInput({ label, value, type = 'text', onChange }) {
+  return (
+    <label className="block">
+      <span className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</span>
+      <input
+        type={type}
+        value={value || ''}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-1 w-full rounded-2xl border border-taupe/15 bg-warm-white px-3 py-2 font-body text-sm text-charcoal/60 outline-none focus:border-coral/30"
+      />
+    </label>
+  );
+}
+
+export default function SchedulePreviewPanel({ booking }) {
+  const [blocks, setBlocks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
+  const [previewDate, setPreviewDate] = useState('');
+  const [previewStartTime, setPreviewStartTime] = useState('');
+
+  useEffect(() => {
+    setPreviewDate(booking?.scheduled_date || '');
+    setPreviewStartTime(booking?.scheduled_start_time || '');
+  }, [booking?.id, booking?.scheduled_date, booking?.scheduled_start_time]);
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      if (!booking?.id) return;
+      setLoading(true);
+      setLoadError('');
+      try {
+        const records = await base44.entities.TimeBlock.list('-date', 300);
+        if (!active) return;
+        setBlocks(records || []);
+      } catch (error) {
+        console.error('Schedule preview failed:', error);
+        if (active) setLoadError('Could not load schedule blocks from Base44.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    load();
+    return () => { active = false; };
+  }, [booking?.id]);
+
+  const previewBooking = useMemo(() => ({
+    ...booking,
+    scheduled_date: previewDate || booking?.scheduled_date,
+    scheduled_start_time: previewStartTime || booking?.scheduled_start_time,
+  }), [booking, previewDate, previewStartTime]);
+
+  const preview = useMemo(() => buildSchedulePreview({ booking: previewBooking, existingBlocks: blocks }), [previewBooking, blocks]);
+  const isTestingChange = previewDate !== (booking?.scheduled_date || '') || previewStartTime !== (booking?.scheduled_start_time || '');
+
+  if (!booking?.id) return null;
+
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Schedule preview</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1">Preview-only. Schedule changes are not saved from this panel yet.</p>
+        </div>
+        {preview.conflicts.length > 0 ? <AlertTriangle className="w-5 h-5 text-coral" /> : <CalendarDays className="w-5 h-5 text-sage" />}
+      </div>
+
+      {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading schedule...</p>}
+      {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
+
+      <div className="rounded-2xl bg-warm-white border border-taupe/15 p-4 mt-4">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <p className="font-heading text-base text-charcoal">Test a schedule change</p>
+            <p className="font-body text-xs text-charcoal/35 font-light mt-1">Use this to preview conflicts before schedule editing is enabled.</p>
+          </div>
+          {isTestingChange && (
+            <button
+              type="button"
+              onClick={() => {
+                setPreviewDate(booking.scheduled_date || '');
+                setPreviewStartTime(booking.scheduled_start_time || '');
+              }}
+              className="text-xs font-body text-coral hover:text-coral/80 transition-colors"
+            >
+              Reset preview
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+          <PreviewInput label="Preview date" type="date" value={previewDate} onChange={setPreviewDate} />
+          <PreviewInput label="Preview start time" type="time" value={previewStartTime} onChange={setPreviewStartTime} />
+        </div>
+        <p className="font-body text-[11px] text-charcoal/35 font-light mt-3">
+          This does not update the booking, provider calendar, Google Calendar, payment status, or guest/provider messages.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+        {(preview.candidateBlocks || []).map((block, index) => (
+          <div key={`${block.block_type}-${index}`} className="rounded-2xl bg-warm-white border border-taupe/15 p-4">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-coral/70" />
+              <p className="font-heading text-base text-charcoal">{(block.block_type || 'block').replace(/_/g, ' ')}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <PreviewTile label="Date" value={block.date} />
+              <PreviewTile label="Time" value={`${block.start_time || ''}${block.end_time ? ` - ${block.end_time}` : ''}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {preview.conflicts.length > 0 && (
+        <div className="rounded-2xl bg-warm-white border border-coral/20 p-4 mt-4">
+          <p className="font-body text-xs uppercase tracking-widest text-coral/70">Conflicts found</p>
+          <p className="font-body text-sm text-charcoal/45 font-light mt-1">This booking should be reviewed before schedule blocks are created.</p>
+        </div>
+      )}
+    </div>
+  );
+}
