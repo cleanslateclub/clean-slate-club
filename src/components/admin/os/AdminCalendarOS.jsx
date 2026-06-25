@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { ChevronLeft, ChevronRight, Plus, Search, CalendarDays, List, Grid3X3, AlertTriangle, X, Coffee, Lock, Pencil, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Search, CalendarDays, List, Grid3X3, AlertTriangle, X, Coffee, Lock, Pencil, Check, Trash2, BanIcon } from 'lucide-react';
 import BookingDrawer from '@/components/admin/os/BookingDrawer';
 import CalendarNewBookingModal from '@/components/admin/os/CalendarNewBookingModal';
 
@@ -63,12 +63,13 @@ const TIME_OPTS = Array.from({ length: 26 }, (_, i) => {
   return minutesToTimeStr(mins);
 });
 
-function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, providers, onClose, onCreate }) {
+function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, defaultAllDay, providers, onClose, onCreate }) {
   const [form, setForm] = useState({
     date: defaultDate || '',
     start_time: defaultTime || '12:00 PM',
     duration: BLOCK_TYPES.find(t => t.key === defaultBlockType)?.defaultDur || 60,
     block_type: defaultBlockType || 'lunch',
+    all_day: defaultAllDay || false,
     label: '',
     provider_id: '',
   });
@@ -78,17 +79,16 @@ function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, providers,
 
   const handleCreate = async () => {
     setSaving(true);
-    const startMins = parseTimeToMinutes(form.start_time);
-    const endMins = startMins + parseInt(form.duration);
     const block = {
       date: form.date,
-      start_time: form.start_time,
-      end_time: minutesToTimeStr(endMins),
       block_type: form.block_type,
       label: form.label || selectedType.label,
       provider_id: form.provider_id || null,
       status: 'active',
       created_by_role: 'admin',
+      all_day: form.all_day,
+      start_time: form.all_day ? '7:00 AM' : form.start_time,
+      end_time: form.all_day ? '7:00 PM' : minutesToTimeStr(parseTimeToMinutes(form.start_time) + parseInt(form.duration)),
     };
     const created = await base44.entities.TimeBlock.create(block);
     onCreate(created);
@@ -122,27 +122,50 @@ function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, providers,
             <input value={form.label} onChange={e => set('label', e.target.value)} placeholder={selectedType.label}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral" />
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          {/* All-day toggle */}
+          <label className="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer">
+            <div>
+              <p className="font-body text-sm font-semibold text-gray-800">All-Day Block</p>
+              <p className="font-body text-xs text-gray-500">Marks entire day unavailable — nothing can be booked</p>
+            </div>
+            <div onClick={() => set('all_day', !form.all_day)}
+              className={`w-10 h-5 rounded-full transition-all relative cursor-pointer ${form.all_day ? 'bg-coral' : 'bg-gray-300'}`}>
+              <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-all shadow ${form.all_day ? 'left-5' : 'left-0.5'}`} />
+            </div>
+          </label>
+
+          {!form.all_day && (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Date</label>
+                <input type="date" value={form.date} onChange={e => set('date', e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral" />
+              </div>
+              <div>
+                <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Start Time</label>
+                <select value={form.start_time} onChange={e => set('start_time', e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral">
+                  {TIME_OPTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
+          {form.all_day && (
             <div>
               <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Date</label>
               <input type="date" value={form.date} onChange={e => set('date', e.target.value)}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral" />
             </div>
+          )}
+          {!form.all_day && (
             <div>
-              <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Start Time</label>
-              <select value={form.start_time} onChange={e => set('start_time', e.target.value)}
+              <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Duration</label>
+              <select value={form.duration} onChange={e => set('duration', e.target.value)}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral">
-                {TIME_OPTS.map(t => <option key={t} value={t}>{t}</option>)}
+                {[15, 30, 45, 60, 90, 120, 180, 240].map(d => <option key={d} value={d}>{d} min</option>)}
               </select>
             </div>
-          </div>
-          <div>
-            <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Duration</label>
-            <select value={form.duration} onChange={e => set('duration', e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-coral">
-              {[15, 30, 45, 60, 90, 120, 180, 240].map(d => <option key={d} value={d}>{d} min</option>)}
-            </select>
-          </div>
+          )}
           {providers.length > 0 && (
             <div>
               <label className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1 block">Provider (optional)</label>
@@ -316,8 +339,13 @@ function BookingBlock({ booking, onDragEnd, onClick, travelBuffer }) {
 }
 
 // ── TIME BLOCK (lunch/personal) ───────────────────────────────────────────────
-function TimeBlockDisplay({ block }) {
+function TimeBlockDisplay({ block, onDelete }) {
   const t = BLOCK_TYPES.find(t => t.key === block.block_type) || { color: '#ccc', label: 'Block' };
+  const [hovered, setHovered] = useState(false);
+
+  // All-day blocks are rendered in the day header, not here
+  if (block.all_day) return null;
+
   const startMins = parseTimeToMinutes(block.start_time);
   const endMins = parseTimeToMinutes(block.end_time);
   const dur = endMins - startMins;
@@ -325,15 +353,54 @@ function TimeBlockDisplay({ block }) {
   const height = Math.max((dur / 60) * SLOT_HEIGHT - 2, 20);
 
   return (
-    <div className="absolute left-0 right-0 z-[8] pointer-events-none"
-      style={{ top, height }}>
-      <div className="mx-0.5 h-full rounded-lg border-2 border-dashed flex items-center px-2"
+    <div className="absolute left-0 right-0 z-[8]"
+      style={{ top, height }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="mx-0.5 h-full rounded-lg border-2 border-dashed flex items-center justify-between px-2"
         style={{ borderColor: t.color + '88', background: t.color + '18' }}>
         <span className="font-body text-[10px] font-bold truncate" style={{ color: t.color }}>
           {block.label || t.label}
-          {block.provider_id ? '' : ''}
         </span>
+        {hovered && (
+          <button
+            data-no-drag="true"
+            onClick={e => { e.stopPropagation(); onDelete(block.id); }}
+            className="shrink-0 w-5 h-5 rounded flex items-center justify-center hover:bg-red-100 transition-colors"
+            style={{ color: t.color }}
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
+        )}
       </div>
+    </div>
+  );
+}
+
+// ── ALL-DAY BLOCK BANNER ───────────────────────────────────────────────────────
+function AllDayBlockBanner({ block, onDelete }) {
+  const t = BLOCK_TYPES.find(t => t.key === block.block_type) || { color: '#bbb', label: 'Unavailable' };
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="mx-0.5 mb-0.5 rounded px-2 py-0.5 flex items-center justify-between gap-1 border border-dashed"
+      style={{ borderColor: t.color + '99', background: t.color + '22' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span className="font-body text-[9px] font-bold truncate" style={{ color: t.color }}>
+        🚫 {block.label || t.label}
+      </span>
+      {hovered && (
+        <button
+          onClick={e => { e.stopPropagation(); onDelete(block.id); }}
+          className="shrink-0 hover:text-red-500 transition-colors"
+          style={{ color: t.color }}
+        >
+          <Trash2 className="w-2.5 h-2.5" />
+        </button>
+      )}
     </div>
   );
 }
@@ -355,8 +422,9 @@ function TimeColumn() {
 }
 
 // ── DAY COLUMN ────────────────────────────────────────────────────────────────
-function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onBlockClick, onDragEnd, travelBuffer }) {
+function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onBlockClick, onDeleteBlock, onDragEnd, travelBuffer }) {
   const [slotMenu, setSlotMenu] = useState(null); // { time, x, y }
+  const allDayBlocks = (dayBlocks || []).filter(b => b.all_day);
 
   const handleSlotClick = (e) => {
     if (e.target.closest('[data-no-drag]')) return;
@@ -374,14 +442,23 @@ function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingCl
       style={{ minWidth: 90, cursor: 'crosshair' }}
       onClick={handleSlotClick}
     >
-      <div className={`h-12 border-b flex items-center justify-center gap-1.5 sticky top-0 z-20 ${isToday ? 'bg-coral/15 border-coral/40' : 'bg-cream/60 border-gray-300'}`}>
-        <span className="font-body text-xs font-bold text-gray-500 uppercase">{DAY_LABELS[date.getDay()]}</span>
-        <span className={`font-heading text-sm font-bold ${isToday ? 'text-coral' : 'text-gray-800'}`}>{date.getDate()}</span>
+      <div className={`border-b sticky top-0 z-20 ${isToday ? 'bg-coral/15 border-coral/40' : 'bg-cream/60 border-gray-300'}`}>
+        <div className="h-10 flex items-center justify-center gap-1.5">
+          <span className="font-body text-xs font-bold text-gray-500 uppercase">{DAY_LABELS[date.getDay()]}</span>
+          <span className={`font-heading text-sm font-bold ${isToday ? 'text-coral' : 'text-gray-800'}`}>{date.getDate()}</span>
+        </div>
+        {allDayBlocks.length > 0 && (
+          <div className="px-0.5 pb-1">
+            {allDayBlocks.map(bl => (
+              <AllDayBlockBanner key={bl.id} block={bl} onDelete={onDeleteBlock} />
+            ))}
+          </div>
+        )}
       </div>
       {HOUR_SLOTS.map(h => (
         <div key={h} className={`h-16 border-b hover:bg-coral/5 transition-colors ${h === 12 ? 'border-coral/30 bg-amber-50/20' : 'border-gray-300'}`} />
       ))}
-      {(dayBlocks || []).map(bl => <TimeBlockDisplay key={bl.id} block={bl} />)}
+      {(dayBlocks || []).map(bl => <TimeBlockDisplay key={bl.id} block={bl} onDelete={onDeleteBlock} />)}
       {dayBookings.map(b => (
         <BookingBlock key={b.id} booking={b} onClick={onBookingClick} onDragEnd={onDragEnd} travelBuffer={travelBuffer} />
       ))}
@@ -407,13 +484,22 @@ function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingCl
             {BLOCK_TYPES.slice(0, 3).map(bt => (
               <button
                 key={bt.key}
-                onClick={() => { setSlotMenu(null); onBlockClick(dateStr, slotMenu.time, bt.key); }}
+                onClick={() => { setSlotMenu(null); onBlockClick(dateStr, slotMenu.time, bt.key, false); }}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-body font-semibold text-gray-700 hover:bg-gray-50 transition-colors text-left"
               >
                 <span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style={{ background: bt.color + '25', color: bt.color }}>☕</span>
                 {bt.label}
               </button>
             ))}
+            <div className="border-t border-gray-100 mt-1">
+              <button
+                onClick={() => { setSlotMenu(null); onBlockClick(dateStr, null, 'provider_unavailable', true); }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-body font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left"
+              >
+                <span className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-xs">🚫</span>
+                All-Day Unavailable
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -538,8 +624,13 @@ export default function AdminCalendarOS({ sidebarItem }) {
     setCurrentDate(d);
   };
 
-  const handleBlockClick = useCallback((date, time, block_type) => {
-    setBlockModal({ date, time, block_type });
+  const handleBlockClick = useCallback((date, time, block_type, all_day = false) => {
+    setBlockModal({ date, time, block_type, all_day });
+  }, []);
+
+  const handleDeleteBlock = useCallback(async (blockId) => {
+    await base44.entities.TimeBlock.delete(blockId);
+    setTimeBlocks(prev => prev.filter(b => b.id !== blockId));
   }, []);
 
   const handleDragEnd = useCallback(async (booking, newStartMins) => {
@@ -678,6 +769,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
                   onBookingClick={setSelectedBooking}
                   onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
                   onBlockClick={handleBlockClick}
+                  onDeleteBlock={handleDeleteBlock}
                   onDragEnd={handleDragEnd}
                   travelBuffer={travelBuffer}
                 />
@@ -697,6 +789,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
               onBookingClick={setSelectedBooking}
               onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
               onBlockClick={handleBlockClick}
+              onDeleteBlock={handleDeleteBlock}
               onDragEnd={handleDragEnd}
               travelBuffer={travelBuffer}
             />
@@ -755,6 +848,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
           defaultDate={blockModal.date}
           defaultTime={blockModal.time}
           defaultBlockType={blockModal.block_type}
+          defaultAllDay={blockModal.all_day}
           providers={providers}
           onClose={() => setBlockModal(null)}
           onCreate={(block) => {
