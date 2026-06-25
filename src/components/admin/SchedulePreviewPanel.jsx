@@ -12,10 +12,31 @@ function PreviewTile({ label, value }) {
   );
 }
 
+function PreviewInput({ label, value, type = 'text', onChange }) {
+  return (
+    <label className="block">
+      <span className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</span>
+      <input
+        type={type}
+        value={value || ''}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-1 w-full rounded-2xl border border-taupe/15 bg-warm-white px-3 py-2 font-body text-sm text-charcoal/60 outline-none focus:border-coral/30"
+      />
+    </label>
+  );
+}
+
 export default function SchedulePreviewPanel({ booking }) {
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
+  const [previewDate, setPreviewDate] = useState('');
+  const [previewStartTime, setPreviewStartTime] = useState('');
+
+  useEffect(() => {
+    setPreviewDate(booking?.scheduled_date || '');
+    setPreviewStartTime(booking?.scheduled_start_time || '');
+  }, [booking?.id, booking?.scheduled_date, booking?.scheduled_start_time]);
 
   useEffect(() => {
     let active = true;
@@ -38,7 +59,14 @@ export default function SchedulePreviewPanel({ booking }) {
     return () => { active = false; };
   }, [booking?.id]);
 
-  const preview = useMemo(() => buildSchedulePreview({ booking, existingBlocks: blocks }), [booking, blocks]);
+  const previewBooking = useMemo(() => ({
+    ...booking,
+    scheduled_date: previewDate || booking?.scheduled_date,
+    scheduled_start_time: previewStartTime || booking?.scheduled_start_time,
+  }), [booking, previewDate, previewStartTime]);
+
+  const preview = useMemo(() => buildSchedulePreview({ booking: previewBooking, existingBlocks: blocks }), [previewBooking, blocks]);
+  const isTestingChange = previewDate !== (booking?.scheduled_date || '') || previewStartTime !== (booking?.scheduled_start_time || '');
 
   if (!booking?.id) return null;
 
@@ -54,6 +82,34 @@ export default function SchedulePreviewPanel({ booking }) {
 
       {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading schedule...</p>}
       {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
+
+      <div className="rounded-2xl bg-warm-white border border-taupe/15 p-4 mt-4">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <p className="font-heading text-base text-charcoal">Test a schedule change</p>
+            <p className="font-body text-xs text-charcoal/35 font-light mt-1">Use this to preview conflicts before schedule editing is enabled.</p>
+          </div>
+          {isTestingChange && (
+            <button
+              type="button"
+              onClick={() => {
+                setPreviewDate(booking.scheduled_date || '');
+                setPreviewStartTime(booking.scheduled_start_time || '');
+              }}
+              className="text-xs font-body text-coral hover:text-coral/80 transition-colors"
+            >
+              Reset preview
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+          <PreviewInput label="Preview date" type="date" value={previewDate} onChange={setPreviewDate} />
+          <PreviewInput label="Preview start time" type="time" value={previewStartTime} onChange={setPreviewStartTime} />
+        </div>
+        <p className="font-body text-[11px] text-charcoal/35 font-light mt-3">
+          This does not update the booking, provider calendar, Google Calendar, payment status, or guest/provider messages.
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
         {(preview.candidateBlocks || []).map((block, index) => (
