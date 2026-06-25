@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, CheckCircle2, ClipboardCheck, LockKeyhole } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ClipboardCheck, FileCheck2, LockKeyhole } from 'lucide-react';
 
 const SMOKE_TEST_SECTIONS = [
   {
@@ -12,6 +12,7 @@ const SMOKE_TEST_SECTIONS = [
       'Open Command, Bookings, Actions, Calendar, Households, Providers, Services, Reports, Payments, Messages, and Settings tabs.',
       'Confirm each tab either loads records or shows a graceful empty/error state.',
     ],
+    evidence: 'Capture which tabs loaded, which tabs had empty states, and any Base44 console errors.',
   },
   {
     key: 'booking_flow',
@@ -23,6 +24,7 @@ const SMOKE_TEST_SECTIONS = [
       'Open Booking Action Center and check Needs Review, Unassigned, Upcoming, and All Active filters.',
       'Confirm controlled status actions still require an admin click and do not run policy fees or messages.',
     ],
+    evidence: 'Record the test booking used, readiness gaps found, and whether controlled actions saved only when clicked.',
   },
   {
     key: 'provider_flow',
@@ -34,6 +36,7 @@ const SMOKE_TEST_SECTIONS = [
       'Log in through /team with a test provider and confirm the provider dashboard loads.',
       'Confirm provider dashboard readiness summary and Today’s Jobs directions display without changing records.',
     ],
+    evidence: 'Record which provider was tested, assignment recommendation behavior, and whether provider dashboard data matched admin records.',
   },
   {
     key: 'schedule_flow',
@@ -45,6 +48,7 @@ const SMOKE_TEST_SECTIONS = [
       'Use Schedule Preview from the Action Center to test a date/time change.',
       'Confirm conflict feedback updates but no Booking or TimeBlock schedule save is made.',
     ],
+    evidence: 'Record the TimeBlock/booking tested, proposed date/time, conflict result, and confirmation that no schedule save occurred.',
   },
   {
     key: 'payments_messages',
@@ -56,6 +60,7 @@ const SMOKE_TEST_SECTIONS = [
       'Confirm Checkout Preview recalculates without creating a Stripe link or sending checkout.',
       'Open Messages and confirm Message Readiness plus draft preview are visible without sending email/SMS.',
     ],
+    evidence: 'Record invoice/message examples used, preview output, and confirmation that no Stripe link, email, or SMS was created.',
   },
   {
     key: 'launch_locks',
@@ -63,10 +68,12 @@ const SMOKE_TEST_SECTIONS = [
     intent: 'Confirm the do-not-launch items remain visible before any real workflow is enabled.',
     checks: [
       'Open Settings and confirm the Settings Scope notice is visible.',
+      'Open Schema Check and confirm required entities/functions are listed.',
+      'Open Policy Decisions and confirm unresolved owner policies are listed.',
       'Open Launch Guards and review every locked or required item.',
-      'Confirm next verification steps are visible for each guard.',
       'Confirm no UI offers live final checkout sends, schedule saves, message sending, provider auto-assignment, or legacy admin removal.',
     ],
+    evidence: 'Record any missing schema/function/policy items and confirm all launch-sensitive controls stayed locked.',
   },
 ];
 
@@ -78,6 +85,12 @@ const LOCKED_ITEMS = [
   'Admin or schedule-change message sends',
   'Provider auto-assignment',
   'Legacy admin removal',
+];
+
+const PASS_FAIL_NOTES = [
+  'Pass means the view loads, the expected data appears, and no locked automation is exposed.',
+  'Watch means the view loads but has missing data, unclear labels, or test records that need cleanup.',
+  'Fail means the view crashes, saves unexpectedly, sends unexpectedly, charges unexpectedly, or exposes a launch-sensitive action.',
 ];
 
 function SmokeTestSection({ section, index }) {
@@ -98,6 +111,13 @@ function SmokeTestSection({ section, index }) {
             <p className="font-body text-xs text-charcoal/55 font-light leading-relaxed">{check}</p>
           </div>
         ))}
+      </div>
+      <div className="rounded-2xl bg-butter/10 border border-butter/25 px-3 py-2 mt-4 flex items-start gap-2">
+        <FileCheck2 className="w-3.5 h-3.5 text-coral mt-0.5 shrink-0" />
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Evidence to record</p>
+          <p className="font-body text-xs text-charcoal/50 font-light mt-1 leading-relaxed">{section.evidence}</p>
+        </div>
       </div>
     </div>
   );
@@ -123,6 +143,17 @@ export default function Base44SmokeTestPanel() {
           <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
             This checklist is a practical first pass only. Launch still requires Base44 schema verification, backend function verification, Stripe behavior confirmation, owner policy approval, and manual smoke testing with real test data.
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+        <p className="font-heading text-lg text-charcoal">Pass, watch, fail notes</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+          {PASS_FAIL_NOTES.map(note => (
+            <div key={note} className="rounded-2xl bg-cream border border-taupe/10 px-3 py-2">
+              <p className="font-body text-xs text-charcoal/50 font-light leading-relaxed">{note}</p>
+            </div>
+          ))}
         </div>
       </div>
 
