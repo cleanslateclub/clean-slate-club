@@ -190,7 +190,8 @@ function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, defaultAll
 }
 
 // ── BOOKING BLOCK with travel buffers + drag ──────────────────────────────────
-function BookingBlock({ booking, onDragEnd, onClick, travelBuffer }) {
+function BookingBlock({ booking, onDragEnd, onClick, onDelete, travelBuffer }) {
+  const [hovered, setHovered] = useState(false);
   const sc = STATUS_COLORS[booking.status] || STATUS_COLORS.pending;
   const startMins = parseTimeToMinutes(booking.scheduled_start_time);
   const dur = booking.total_duration_minutes || 120;
@@ -274,14 +275,26 @@ function BookingBlock({ booking, onDragEnd, onClick, travelBuffer }) {
         }}
         onMouseDown={handleMouseDown}
         onClick={e => { if (!dragging) { e.stopPropagation(); onClick(booking); } }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
       >
         <div className="px-2 py-1 h-full flex flex-col">
-          {/* Name + status dot */}
+          {/* Name + status dot + delete */}
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-2 h-2 rounded-full shrink-0" style={{ background: sc.dot }} />
             <p className="font-body text-xs font-bold leading-tight truncate flex-1" style={{ color: sc.text }}>
               {booking.client_name}
             </p>
+            {hovered && onDelete && (
+              <button
+                data-no-drag="true"
+                onClick={e => { e.stopPropagation(); onDelete(booking.id); }}
+                className="shrink-0 w-4 h-4 rounded flex items-center justify-center bg-black/10 hover:bg-red-500 hover:text-white transition-colors"
+                style={{ color: sc.text }}
+              >
+                <X className="w-2.5 h-2.5" />
+              </button>
+            )}
           </div>
           {/* Service */}
           {height > 36 && (
@@ -422,7 +435,7 @@ function TimeColumn() {
 }
 
 // ── DAY COLUMN ────────────────────────────────────────────────────────────────
-function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onBlockClick, onDeleteBlock, onDragEnd, travelBuffer }) {
+function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onBlockClick, onDeleteBlock, onDeleteBooking, onDragEnd, travelBuffer }) {
   const [slotMenu, setSlotMenu] = useState(null); // { time, x, y }
   const allDayBlocks = (dayBlocks || []).filter(b => b.all_day);
 
@@ -460,7 +473,7 @@ function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingCl
       ))}
       {(dayBlocks || []).map(bl => <TimeBlockDisplay key={bl.id} block={bl} onDelete={onDeleteBlock} />)}
       {dayBookings.map(b => (
-        <BookingBlock key={b.id} booking={b} onClick={onBookingClick} onDragEnd={onDragEnd} travelBuffer={travelBuffer} />
+        <BookingBlock key={b.id} booking={b} onClick={onBookingClick} onDragEnd={onDragEnd} onDelete={onDeleteBooking} travelBuffer={travelBuffer} />
       ))}
 
       {/* Slot context menu */}
@@ -633,6 +646,12 @@ export default function AdminCalendarOS({ sidebarItem }) {
     setTimeBlocks(prev => prev.filter(b => b.id !== blockId));
   }, []);
 
+  const handleDeleteBooking = useCallback(async (bookingId) => {
+    await base44.entities.Booking.delete(bookingId);
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+    setSelectedBooking(null);
+  }, []);
+
   const handleDragEnd = useCallback(async (booking, newStartMins) => {
     const newStartTime = minutesToTimeStr(newStartMins);
     const dur = booking.total_duration_minutes || 120;
@@ -770,6 +789,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
                   onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
                   onBlockClick={handleBlockClick}
                   onDeleteBlock={handleDeleteBlock}
+                  onDeleteBooking={handleDeleteBooking}
                   onDragEnd={handleDragEnd}
                   travelBuffer={travelBuffer}
                 />
@@ -790,6 +810,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
               onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
               onBlockClick={handleBlockClick}
               onDeleteBlock={handleDeleteBlock}
+              onDeleteBooking={handleDeleteBooking}
               onDragEnd={handleDragEnd}
               travelBuffer={travelBuffer}
             />
@@ -827,9 +848,16 @@ export default function AdminCalendarOS({ sidebarItem }) {
         <BookingDrawer
           booking={selectedBooking}
           onClose={() => setSelectedBooking(null)}
+          onDelete={handleDeleteBooking}
           onUpdate={(id, updates) => {
-            setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
-            setSelectedBooking(prev => ({ ...prev, ...updates }));
+            // Auto-remove cancelled/no-show/archived bookings from the calendar
+            if (['cancelled', 'no_show', 'archived'].includes(updates.status)) {
+              setBookings(prev => prev.filter(b => b.id !== id));
+              setSelectedBooking(null);
+            } else {
+              setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+              setSelectedBooking(prev => ({ ...prev, ...updates }));
+            }
           }}
         />
       )}

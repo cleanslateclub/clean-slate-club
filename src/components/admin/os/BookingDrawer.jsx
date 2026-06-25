@@ -530,7 +530,7 @@ function QuoteTab({ booking }) {
 }
 
 // ── ACTIONS TAB ───────────────────────────────────────────────────────────────
-function ActionsTab({ booking, onStatusChange, onSendSms, saving }) {
+function ActionsTab({ booking, onStatusChange, onSendSms, onDelete, saving }) {
   const quickStatuses = [
     { key: 'approved', label: 'Approve', icon: CheckCircle, variant: 'success' },
     { key: 'confirmed', label: 'Confirm', icon: CheckSquare, variant: 'success' },
@@ -593,6 +593,19 @@ function ActionsTab({ booking, onStatusChange, onSendSms, saving }) {
       </div>
 
       {/* Meta */}
+      {onDelete && (
+        <div className="border-t border-taupe/10 pt-4">
+          <p className="font-body text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2">Danger Zone</p>
+          <button
+            onClick={() => { if (window.confirm('Permanently delete this booking? This cannot be undone.')) onDelete(); }}
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-body font-semibold border border-red-200 text-red-500 hover:bg-red-50 transition-all"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete Booking Permanently
+          </button>
+        </div>
+      )}
+
       <div className="border-t border-taupe/10 pt-4">
         <p className="font-body text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2">Booking Info</p>
         <div className="space-y-1 font-body text-xs text-gray-600">
@@ -606,7 +619,7 @@ function ActionsTab({ booking, onStatusChange, onSendSms, saving }) {
 }
 
 // ── MAIN DRAWER ───────────────────────────────────────────────────────────────
-export default function BookingDrawer({ booking, onClose, onUpdate }) {
+export default function BookingDrawer({ booking, onClose, onUpdate, onDelete }) {
   const [tab, setTab] = useState('edit');
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
@@ -741,7 +754,7 @@ export default function BookingDrawer({ booking, onClose, onUpdate }) {
           {tab === 'edit' && <EditTab booking={currentBooking} onSave={handleSave} saving={saving} />}
           {tab === 'checkout' && <CheckoutTab booking={currentBooking} onSave={handleSave} saving={saving} showToast={showToast} />}
           {tab === 'quote' && <QuoteTab booking={currentBooking} />}
-          {tab === 'actions' && <ActionsTab booking={currentBooking} onStatusChange={handleStatusChange} onSendSms={handleSendSms} saving={saving} />}
+          {tab === 'actions' && <ActionsTab booking={currentBooking} onStatusChange={handleStatusChange} onSendSms={handleSendSms} onDelete={onDelete ? () => onDelete(currentBooking.id) : null} saving={saving} />}
         </div>
       </motion.div>
     </div>
