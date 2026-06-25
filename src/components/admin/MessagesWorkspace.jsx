@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Bell, CheckCircle2, Mail, MessageSquare, Search, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import MessageDraftPreview from '@/components/admin/MessageDraftPreview';
 
 const FILTERS = [
   { key: 'all', label: 'All Messages', icon: MessageSquare },
@@ -162,6 +163,8 @@ export default function MessagesWorkspace() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading messages...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <MessageDraftPreview />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {FILTERS.map(item => (
