@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClient } from 'npm:@base44/sdk@0.8.31';
 
 const TEAM_EMAIL = 'cleanslateclubpa@gmail.com';
 
@@ -23,7 +23,7 @@ const emailFooter = `
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
+    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
     const body = await req.json();
     const booking = body.data;
 
