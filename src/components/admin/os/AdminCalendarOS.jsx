@@ -63,12 +63,12 @@ const TIME_OPTS = Array.from({ length: 26 }, (_, i) => {
   return minutesToTimeStr(mins);
 });
 
-function BlockTimeModal({ defaultDate, defaultTime, providers, onClose, onCreate }) {
+function BlockTimeModal({ defaultDate, defaultTime, defaultBlockType, providers, onClose, onCreate }) {
   const [form, setForm] = useState({
     date: defaultDate || '',
     start_time: defaultTime || '12:00 PM',
-    duration: 60,
-    block_type: 'lunch',
+    duration: BLOCK_TYPES.find(t => t.key === defaultBlockType)?.defaultDur || 60,
+    block_type: defaultBlockType || 'lunch',
     label: '',
     provider_id: '',
   });
@@ -171,7 +171,8 @@ function BookingBlock({ booking, onDragEnd, onClick, travelBuffer }) {
   const sc = STATUS_COLORS[booking.status] || STATUS_COLORS.pending;
   const startMins = parseTimeToMinutes(booking.scheduled_start_time);
   const dur = booking.total_duration_minutes || 120;
-  const buffer = travelBuffer ?? (booking.travel_buffer_minutes ?? 20);
+  const isConsult = booking.service_category === 'consult' || booking.service_label?.toLowerCase().includes('consult');
+  const buffer = isConsult ? 0 : (travelBuffer ?? (booking.travel_buffer_minutes ?? 20));
   const top = minutesToTopPx(startMins);
   const height = Math.max((dur / 60) * SLOT_HEIGHT - 2, 28);
   const bufferPx = (buffer / 60) * SLOT_HEIGHT;
@@ -340,11 +341,11 @@ function TimeBlockDisplay({ block }) {
 // ── TIME COLUMN ───────────────────────────────────────────────────────────────
 function TimeColumn() {
   return (
-    <div className="w-16 shrink-0 border-r border-gray-200 bg-white">
-      <div className="h-12 border-b border-gray-100" />
+    <div className="w-16 shrink-0 border-r border-gray-300" style={{ background: '#f8f4f0' }}>
+      <div className="h-12 border-b border-gray-300" />
       {HOUR_SLOTS.map(h => (
-        <div key={h} className="h-16 border-b border-gray-100 flex items-start justify-end pr-2 pt-1">
-          <span className="font-body text-xs font-bold text-gray-600">
+        <div key={h} className="h-16 border-b border-gray-300 flex items-start justify-end pr-2 pt-1">
+          <span className="font-body text-xs font-bold text-gray-700">
             {h === 12 ? '12pm' : h < 12 ? `${h}am` : `${h - 12}pm`}
           </span>
         </div>
@@ -354,33 +355,68 @@ function TimeColumn() {
 }
 
 // ── DAY COLUMN ────────────────────────────────────────────────────────────────
-function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onDragEnd, travelBuffer }) {
+function DayColumn({ date, dateStr, isToday, dayBookings, dayBlocks, onBookingClick, onSlotClick, onBlockClick, onDragEnd, travelBuffer }) {
+  const [slotMenu, setSlotMenu] = useState(null); // { time, x, y }
+
   const handleSlotClick = (e) => {
     if (e.target.closest('[data-no-drag]')) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const relY = e.clientY - rect.top - 48;
     const totalMins = Math.max(7 * 60, Math.round((relY / SLOT_HEIGHT) * 60) + 7 * 60);
     const snapped = Math.round(totalMins / 30) * 30;
-    onSlotClick(dateStr, minutesToTimeStr(snapped));
+    const time = minutesToTimeStr(snapped);
+    setSlotMenu({ time, x: e.clientX, y: e.clientY });
   };
 
   return (
     <div
-      className={`flex-1 border-r border-gray-100 relative ${isToday ? 'bg-coral/[0.02]' : 'bg-white'}`}
+      className={`flex-1 border-r border-gray-300 relative ${isToday ? 'bg-coral/[0.04]' : 'bg-white'}`}
       style={{ minWidth: 90, cursor: 'crosshair' }}
       onClick={handleSlotClick}
     >
-      <div className={`h-12 border-b flex items-center justify-center gap-1.5 sticky top-0 z-20 ${isToday ? 'bg-coral/10 border-coral/20' : 'bg-white border-gray-100'}`}>
+      <div className={`h-12 border-b flex items-center justify-center gap-1.5 sticky top-0 z-20 ${isToday ? 'bg-coral/15 border-coral/40' : 'bg-cream/60 border-gray-300'}`}>
         <span className="font-body text-xs font-bold text-gray-500 uppercase">{DAY_LABELS[date.getDay()]}</span>
         <span className={`font-heading text-sm font-bold ${isToday ? 'text-coral' : 'text-gray-800'}`}>{date.getDate()}</span>
       </div>
       {HOUR_SLOTS.map(h => (
-        <div key={h} className="h-16 border-b border-gray-100 hover:bg-blue-50/20 transition-colors" />
+        <div key={h} className={`h-16 border-b hover:bg-coral/5 transition-colors ${h === 12 ? 'border-coral/30 bg-amber-50/20' : 'border-gray-300'}`} />
       ))}
       {(dayBlocks || []).map(bl => <TimeBlockDisplay key={bl.id} block={bl} />)}
       {dayBookings.map(b => (
         <BookingBlock key={b.id} booking={b} onClick={onBookingClick} onDragEnd={onDragEnd} travelBuffer={travelBuffer} />
       ))}
+
+      {/* Slot context menu */}
+      {slotMenu && (
+        <div
+          className="fixed z-50"
+          style={{ left: slotMenu.x, top: slotMenu.y }}
+          onMouseLeave={() => setSlotMenu(null)}
+        >
+          <div className="bg-white rounded-xl border border-gray-200 shadow-2xl overflow-hidden w-52 mt-1">
+            <div className="px-3 py-2 bg-gray-50 border-b border-gray-100">
+              <p className="font-body text-xs font-bold text-gray-500 uppercase tracking-wider">{slotMenu.time} · {dateStr}</p>
+            </div>
+            <button
+              onClick={() => { setSlotMenu(null); onSlotClick(dateStr, slotMenu.time); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-body font-semibold text-gray-800 hover:bg-coral/5 hover:text-coral transition-colors text-left"
+            >
+              <span className="w-7 h-7 rounded-lg bg-coral/10 flex items-center justify-center text-coral">+</span>
+              New Booking
+            </button>
+            {BLOCK_TYPES.slice(0, 3).map(bt => (
+              <button
+                key={bt.key}
+                onClick={() => { setSlotMenu(null); onBlockClick(dateStr, slotMenu.time, bt.key); }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-body font-semibold text-gray-700 hover:bg-gray-50 transition-colors text-left"
+              >
+                <span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style={{ background: bt.color + '25', color: bt.color }}>☕</span>
+                {bt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -428,7 +464,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
   const [providers, setProviders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [newBooking, setNewBooking] = useState(null);
-  const [blockModal, setBlockModal] = useState(null); // { date, time }
+  const [blockModal, setBlockModal] = useState(null); // { date, time, block_type }
   const [travelBuffer, setTravelBuffer] = useState(20);
 
   useEffect(() => {
@@ -502,6 +538,10 @@ export default function AdminCalendarOS({ sidebarItem }) {
     setCurrentDate(d);
   };
 
+  const handleBlockClick = useCallback((date, time, block_type) => {
+    setBlockModal({ date, time, block_type });
+  }, []);
+
   const handleDragEnd = useCallback(async (booking, newStartMins) => {
     const newStartTime = minutesToTimeStr(newStartMins);
     const dur = booking.total_duration_minutes || 120;
@@ -523,7 +563,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
   const dayViewDate = currentDate.toISOString().split('T')[0];
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full" style={{ background: '#fdfcfb' }}>
       {/* Attention strip */}
       {(newCount > 0 || reviewCount > 0) && (
         <div className="flex items-center gap-3 px-4 py-2 bg-white border-b border-gray-200 text-xs font-body">
@@ -547,7 +587,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-white border-b border-gray-200 flex-wrap">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-300 flex-wrap" style={{ background: '#f8f4f0' }}>
         <div className="flex items-center gap-1">
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <ChevronLeft className="w-4 h-4 text-gray-700" />
@@ -637,6 +677,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
                   dayBlocks={blocksByDate[dateStr] || []}
                   onBookingClick={setSelectedBooking}
                   onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
+                  onBlockClick={handleBlockClick}
                   onDragEnd={handleDragEnd}
                   travelBuffer={travelBuffer}
                 />
@@ -655,6 +696,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
               dayBlocks={blocksByDate[dayViewDate] || []}
               onBookingClick={setSelectedBooking}
               onSlotClick={(d, t) => setNewBooking({ date: d, time: t })}
+              onBlockClick={handleBlockClick}
               onDragEnd={handleDragEnd}
               travelBuffer={travelBuffer}
             />
@@ -673,7 +715,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
       </div>
 
       {/* Legend */}
-      <div className="px-4 py-2 bg-white border-t border-gray-200 flex items-center gap-4 overflow-x-auto shrink-0">
+      <div className="px-4 py-2 border-t border-gray-300 flex items-center gap-4 overflow-x-auto shrink-0" style={{ background: '#f8f4f0' }}>
         <span className="font-body text-xs font-semibold text-gray-500 shrink-0">Click to book · Drag to reschedule</span>
         <div className="flex items-center gap-1.5 shrink-0">
           <div className="w-6 h-3 rounded-sm" style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(235,148,134,0.3) 2px, rgba(235,148,134,0.3) 4px)', border: '1px dashed rgba(235,148,134,0.5)' }} />
@@ -712,6 +754,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
         <BlockTimeModal
           defaultDate={blockModal.date}
           defaultTime={blockModal.time}
+          defaultBlockType={blockModal.block_type}
           providers={providers}
           onClose={() => setBlockModal(null)}
           onCreate={(block) => {
