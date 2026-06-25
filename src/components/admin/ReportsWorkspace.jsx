@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BarChart3, ClipboardList, DollarSign, Search, Users } from 'lucide-react';
+import { AlertTriangle, BarChart3, CheckCircle2, ClipboardList, DollarSign, Search, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
+  getOperationalReadinessRows,
   summarizeBookings,
   summarizePaymentStatus,
   summarizeProviderLoad,
@@ -36,6 +37,55 @@ function RankingList({ title, rows = [], emptyText }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function ReadinessRow({ item }) {
+  const tone = item.severity === 'clear'
+    ? 'bg-sage/10 border-sage/20 text-sage'
+    : item.severity === 'high'
+      ? 'bg-coral/10 border-coral/20 text-coral'
+      : 'bg-cream border-taupe/15 text-charcoal/55';
+  const Icon = item.severity === 'clear' ? CheckCircle2 : AlertTriangle;
+
+  return (
+    <div className="rounded-2xl bg-warm-white border border-taupe/15 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-heading text-base text-charcoal">{item.label}</p>
+          <p className="font-body text-xs text-charcoal/40 font-light mt-1 leading-relaxed">{item.helper}</p>
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest ${tone}`}>
+          <Icon className="w-3 h-3" />
+          {item.count}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function OperationalReadiness({ rows = [] }) {
+  const flagged = rows.reduce((total, row) => total + Number(row.count || 0), 0);
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Operational readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Live-testing cleanup list</h3>
+          <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
+            Read-only checks for records that could slow down Base44 testing. These do not block admin use automatically.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 text-right">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Flagged items</p>
+          <p className="font-heading text-2xl text-charcoal mt-1">{flagged}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
+        {rows.map(item => <ReadinessRow key={item.key} item={item} />)}
+      </div>
     </div>
   );
 }
@@ -77,6 +127,7 @@ export default function ReportsWorkspace() {
   const serviceMix = useMemo(() => summarizeServiceMix(visibleBookings), [visibleBookings]);
   const providerLoad = useMemo(() => summarizeProviderLoad(visibleBookings), [visibleBookings]);
   const paymentStatus = useMemo(() => summarizePaymentStatus(visibleBookings), [visibleBookings]);
+  const readinessRows = useMemo(() => getOperationalReadinessRows(visibleBookings), [visibleBookings]);
 
   return (
     <div className="space-y-6">
@@ -84,7 +135,7 @@ export default function ReportsWorkspace() {
         <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Reports workspace</p>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">Owner visibility</h2>
         <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
-          Early reporting view for bookings, service mix, provider load, payment status, and estimated revenue.
+          Early reporting view for bookings, service mix, provider load, payment status, estimated revenue, and operational readiness.
         </p>
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading reports...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
@@ -102,6 +153,8 @@ export default function ReportsWorkspace() {
         <StatCard label="Unassigned" value={summary.unassigned} icon={Users} />
         <StatCard label="Est. revenue" value={`$${Math.round(summary.revenue || 0).toLocaleString()}`} icon={DollarSign} />
       </div>
+
+      <OperationalReadiness rows={readinessRows} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <RankingList title="Service mix" rows={serviceMix} emptyText="No service data yet." />
