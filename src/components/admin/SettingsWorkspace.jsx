@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck, Database, Search, Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, TestTube2, ToggleLeft } from 'lucide-react';
+import { ClipboardCheck, Database, FileWarning, Search, Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, TestTube2, ToggleLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Base44SchemaVerificationPanel from '@/components/admin/Base44SchemaVerificationPanel';
 import Base44SmokeTestPanel from '@/components/admin/Base44SmokeTestPanel';
 import LaunchGuardsPanel from '@/components/admin/LaunchGuardsPanel';
+import OwnerPolicyDecisionPanel from '@/components/admin/OwnerPolicyDecisionPanel';
 import { BOOKING_RULES_DEFAULTS } from '@/lib/backendOSConfig';
 
 const FILTERS = [
@@ -11,6 +12,7 @@ const FILTERS = [
   { key: 'settings', label: 'Saved Settings', icon: Settings },
   { key: 'features', label: 'Feature Flags', icon: ToggleLeft },
   { key: 'schema', label: 'Schema Check', icon: Database },
+  { key: 'policies', label: 'Policy Decisions', icon: FileWarning },
   { key: 'guards', label: 'Launch Guards', icon: ShieldAlert },
   { key: 'smoke_test', label: 'Smoke Test', icon: TestTube2 },
 ];
@@ -51,7 +53,7 @@ function SettingsScopeNotice({ activeFilter }) {
       <div>
         <p className="font-heading text-base text-charcoal">Read-only settings review</p>
         <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
-          This view is for checking default rules, saved AppSettings, feature flags, schema/function requirements, launch guardrails, and smoke-test guidance. It does not update business rules, enable features, unlock automations, or publish launch settings.
+          This view is for checking default rules, saved AppSettings, feature flags, schema/function requirements, owner policy decisions, launch guardrails, and smoke-test guidance. It does not update business rules, enable features, unlock automations, or publish launch settings.
         </p>
         <p className="font-body text-[11px] uppercase tracking-widest text-charcoal/30 mt-2">Current view: {activeFilter.replace(/_/g, ' ')}</p>
       </div>
@@ -112,7 +114,7 @@ export default function SettingsWorkspace() {
   const rows = useMemo(() => {
     if (filter === 'settings') return getSettingRows(settings);
     if (filter === 'features') return getFeatureRows(settings);
-    if (filter === 'guards' || filter === 'smoke_test' || filter === 'schema') return [];
+    if (filter === 'guards' || filter === 'smoke_test' || filter === 'schema' || filter === 'policies') return [];
     return getRuleRows();
   }, [filter, settings]);
 
@@ -121,6 +123,7 @@ export default function SettingsWorkspace() {
     settings: getSettingRows(settings).length,
     features: getFeatureRows(settings).length,
     schema: 22,
+    policies: 8,
     guards: 8,
     smoke_test: 6,
   }), [settings]);
@@ -137,7 +140,7 @@ export default function SettingsWorkspace() {
         <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Settings workspace</p>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">Business rules and settings</h2>
         <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
-          Centralizes default rules, saved settings, feature flags, schema verification, launch guardrails, and smoke-test guidance so the backend OS is not hidden across random files.
+          Centralizes default rules, saved settings, feature flags, schema verification, policy decisions, launch guardrails, and smoke-test guidance so the backend OS is not hidden across random files.
         </p>
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading settings...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
@@ -145,7 +148,7 @@ export default function SettingsWorkspace() {
 
       <SettingsScopeNotice activeFilter={filter} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-7 gap-3">
         {FILTERS.map(item => (
           <FilterButton key={item.key} item={item} active={filter === item.key} count={counts[item.key] || 0} onClick={() => setFilter(item.key)} />
         ))}
@@ -157,6 +160,8 @@ export default function SettingsWorkspace() {
         <Base44SmokeTestPanel />
       ) : filter === 'schema' ? (
         <Base44SchemaVerificationPanel />
+      ) : filter === 'policies' ? (
+        <OwnerPolicyDecisionPanel />
       ) : (
         <>
           <div className="rounded-3xl bg-warm-white border border-taupe/15 p-4 flex items-center gap-3">
