@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck, Search, Settings, SlidersHorizontal, ToggleLeft } from 'lucide-react';
+import { ClipboardCheck, Search, Settings, ShieldAlert, SlidersHorizontal, ToggleLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import LaunchGuardsPanel from '@/components/admin/LaunchGuardsPanel';
 import { BOOKING_RULES_DEFAULTS } from '@/lib/backendOSConfig';
 
 const FILTERS = [
   { key: 'rules', label: 'Booking Rules', icon: ClipboardCheck },
   { key: 'settings', label: 'Saved Settings', icon: Settings },
   { key: 'features', label: 'Feature Flags', icon: ToggleLeft },
+  { key: 'guards', label: 'Launch Guards', icon: ShieldAlert },
 ];
 
 function FilterButton({ item, active, count, onClick }) {
@@ -89,6 +91,7 @@ export default function SettingsWorkspace() {
   const rows = useMemo(() => {
     if (filter === 'settings') return getSettingRows(settings);
     if (filter === 'features') return getFeatureRows(settings);
+    if (filter === 'guards') return [];
     return getRuleRows();
   }, [filter, settings]);
 
@@ -96,6 +99,7 @@ export default function SettingsWorkspace() {
     rules: getRuleRows().length,
     settings: getSettingRows(settings).length,
     features: getFeatureRows(settings).length,
+    guards: 8,
   }), [settings]);
 
   const filteredRows = useMemo(() => {
@@ -110,39 +114,45 @@ export default function SettingsWorkspace() {
         <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Settings workspace</p>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">Business rules and settings</h2>
         <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
-          Centralizes default rules, saved settings, and feature flags so the backend OS is not hidden across random files.
+          Centralizes default rules, saved settings, feature flags, and launch guardrails so the backend OS is not hidden across random files.
         </p>
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading settings...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         {FILTERS.map(item => (
           <FilterButton key={item.key} item={item} active={filter === item.key} count={counts[item.key] || 0} onClick={() => setFilter(item.key)} />
         ))}
       </div>
 
-      <div className="rounded-3xl bg-warm-white border border-taupe/15 p-4 flex items-center gap-3">
-        <Search className="w-4 h-4 text-charcoal/30" />
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search settings..."
-          className="w-full bg-transparent outline-none font-body text-sm text-charcoal/60 placeholder:text-charcoal/25"
-        />
-      </div>
-
-      {filteredRows.length === 0 ? (
-        <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6 text-center">
-          <SlidersHorizontal className="w-5 h-5 text-sage mx-auto mb-2" />
-          <p className="font-body text-sm text-charcoal/40 font-light">No settings in this view.</p>
-        </div>
+      {filter === 'guards' ? (
+        <LaunchGuardsPanel />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filteredRows.map(row => (
-            <DetailTile key={row.id} label={row.label} value={row.value} helper={row.helper} />
-          ))}
-        </div>
+        <>
+          <div className="rounded-3xl bg-warm-white border border-taupe/15 p-4 flex items-center gap-3">
+            <Search className="w-4 h-4 text-charcoal/30" />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search settings..."
+              className="w-full bg-transparent outline-none font-body text-sm text-charcoal/60 placeholder:text-charcoal/25"
+            />
+          </div>
+
+          {filteredRows.length === 0 ? (
+            <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6 text-center">
+              <SlidersHorizontal className="w-5 h-5 text-sage mx-auto mb-2" />
+              <p className="font-body text-sm text-charcoal/40 font-light">No settings in this view.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {filteredRows.map(row => (
+                <DetailTile key={row.id} label={row.label} value={row.value} helper={row.helper} />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
