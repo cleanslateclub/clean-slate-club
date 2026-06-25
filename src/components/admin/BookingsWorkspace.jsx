@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, ClipboardList, Clock, ExternalLink, Search, UserPlus } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ClipboardList, Clock, ExternalLink, Search, UserPlus, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 
@@ -36,6 +36,93 @@ const getQueueBookings = (bookings = [], queue = 'needs_review') => {
   }
 
   return active;
+};
+
+const getBookingAddress = (booking = {}) => {
+  const intake = booking.intake_answers || {};
+  return booking.client_address || intake.service_address?.formatted || intake.address?.formatted || '';
+};
+
+const getBookingReadinessRows = (booking = {}) => {
+  const address = getBookingAddress(booking);
+  const intake = booking.intake_answers || {};
+  const focusItems = booking.focus_items || intake.focus_items || intake.selected_focus_items || [];
+  const addons = booking.addons || booking.selected_addons || intake.addons || [];
+
+  return [
+    {
+      key: 'guest_contact',
+      label: 'Guest contact',
+      ready: Boolean(booking.client_email || booking.client_phone),
+      value: booking.client_email || booking.client_phone || 'Missing',
+      helper: 'Needed for confirmations, admin follow-up, and message testing.',
+    },
+    {
+      key: 'service',
+      label: 'Service selected',
+      ready: Boolean(booking.service_label || booking.service_category || booking.service_key),
+      value: booking.service_label || booking.service_category || booking.service_key || 'Missing',
+      helper: 'Needed for pricing, provider matching, and reports.',
+    },
+    {
+      key: 'schedule',
+      label: 'Scheduled date/time',
+      ready: Boolean(booking.scheduled_date && booking.scheduled_start_time),
+      value: `${booking.scheduled_date || 'No date'} · ${booking.scheduled_start_time || 'No start time'}`,
+      helper: 'Needed for schedule preview, TimeBlock testing, and calendar sync.',
+    },
+    {
+      key: 'address',
+      label: 'Service address',
+      ready: Boolean(address),
+      value: address || 'Missing',
+      helper: 'Needed for service area checks, directions, provider job cards, and mileage/travel review.',
+    },
+    {
+      key: 'service_area',
+      label: 'Service area status',
+      ready: Boolean(intake.service_area?.status || booking.service_area_status),
+      warning: intake.service_area?.status === 'outside_area' || booking.service_area_status === 'outside_area',
+      value: intake.service_area?.status || booking.service_area_status || 'Unknown',
+      helper: 'Outside-area and unknown-area requests need manual review before launch.',
+    },
+    {
+      key: 'provider',
+      label: 'Provider assignment',
+      ready: Boolean(booking.provider_email || booking.provider_name) || ['draft', 'consult'].includes(booking.status),
+      value: booking.provider_name || booking.provider_email || 'Unassigned',
+      helper: 'Unassigned active bookings should appear in the Action Center.',
+    },
+    {
+      key: 'duration',
+      label: 'Duration estimate',
+      ready: Boolean(booking.total_duration_minutes || booking.estimated_minutes || booking.duration_minutes),
+      value: booking.total_duration_minutes || booking.estimated_minutes || booking.duration_minutes ? `${booking.total_duration_minutes || booking.estimated_minutes || booking.duration_minutes} minutes` : 'Missing',
+      helper: 'Needed for scheduling, pricing, and two-provider recommendations.',
+    },
+    {
+      key: 'pricing',
+      label: 'Price estimate',
+      ready: Boolean(booking.final_price || booking.estimated_price_high || booking.estimated_price_low || booking.total_price),
+      value: booking.final_price || booking.total_price || booking.estimated_price_high || booking.estimated_price_low ? `$${booking.final_price || booking.total_price || booking.estimated_price_high || booking.estimated_price_low}` : 'Missing',
+      helper: 'Needed for payment review and final checkout testing.',
+    },
+    {
+      key: 'deposit',
+      label: 'Deposit status',
+      ready: !['failed', 'requires_review'].includes(booking.deposit_status) && Boolean(booking.deposit_status || booking.payment_status),
+      warning: ['failed', 'requires_review'].includes(booking.deposit_status) || ['failed', 'disputed', 'requires_review'].includes(booking.payment_status),
+      value: booking.deposit_status || booking.payment_status || 'Unknown',
+      helper: 'Deposit behavior should be verified in Stripe test mode before launch.',
+    },
+    {
+      key: 'focus_items',
+      label: 'Focus items / add-ons',
+      ready: (Array.isArray(focusItems) && focusItems.length > 0) || (Array.isArray(addons) && addons.length > 0),
+      value: [Array.isArray(focusItems) ? `${focusItems.length} focus` : '', Array.isArray(addons) ? `${addons.length} add-ons` : ''].filter(Boolean).join(' · ') || 'None shown',
+      helper: 'Helpful for confirming the intake form captured the real work requested.',
+    },
+  ];
 };
 
 function QueueButton({ item, active, count, onClick }) {
@@ -84,6 +171,66 @@ function BookingCard({ booking, selected, onSelect }) {
   );
 }
 
+function ReadinessItem({ item }) {
+  const Icon = item.ready ? CheckCircle2 : item.warning ? AlertTriangle : XCircle;
+  const tone = item.ready
+    ? 'text-sage bg-sage/10 border-sage/20'
+    : item.warning
+      ? 'text-coral bg-coral/10 border-coral/20'
+      : 'text-charcoal/55 bg-cream border-taupe/15';
+
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-body text-sm text-charcoal/65 font-light">{item.label}</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1 break-words">{item.value || 'Not set'}</p>
+          <p className="font-body text-[11px] text-charcoal/30 font-light mt-2 leading-relaxed">{item.helper}</p>
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest shrink-0 ${tone}`}>
+          <Icon className="w-3 h-3" />
+          {item.ready ? 'Ready' : item.warning ? 'Review' : 'Missing'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function BookingReadinessPanel({ booking }) {
+  const rows = getBookingReadinessRows(booking);
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Booking readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Testing and operations checklist</h3>
+          <p className="font-body text-sm text-charcoal/40 font-light mt-2 max-w-2xl leading-relaxed">
+            Read-only checklist for the fields most likely to affect Base44 smoke testing, provider assignment, scheduling, payments, and messages.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 text-right">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Review items</p>
+          <p className="font-heading text-2xl text-charcoal mt-1">{reviewCount}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 mt-4">
+        {rows.map(item => <ReadinessItem key={item.key} item={item} />)}
+      </div>
+    </div>
+  );
+}
+
+function DetailTile({ label, value }) {
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
+      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
+    </div>
+  );
+}
+
 function BookingDetailPanel({ booking }) {
   if (!booking) {
     return (
@@ -96,8 +243,10 @@ function BookingDetailPanel({ booking }) {
   }
 
   const intake = booking.intake_answers || {};
-  const address = booking.client_address || intake.service_address?.formatted || '';
+  const address = getBookingAddress(booking);
   const mapUrl = buildGoogleMapsDirectionsUrl(address);
+  const focusItems = booking.focus_items || intake.focus_items || intake.selected_focus_items || [];
+  const addons = booking.addons || booking.selected_addons || intake.addons || [];
 
   return (
     <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6 space-y-5">
@@ -106,6 +255,8 @@ function BookingDetailPanel({ booking }) {
         <h2 className="font-heading text-2xl text-charcoal mt-1">{booking.client_name || 'Guest'}</h2>
         <p className="font-body text-sm text-charcoal/40 font-light mt-1">{booking.service_label || booking.service_category || 'Service'}</p>
       </div>
+
+      <BookingReadinessPanel booking={booking} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {[
@@ -117,12 +268,9 @@ function BookingDetailPanel({ booking }) {
           ['Service area', intake.service_area?.status || booking.service_area_status || 'Unknown'],
           ['Deposit', booking.deposit_status || 'Unknown'],
           ['Payment', booking.payment_status || 'Unknown'],
-        ].map(([label, value]) => (
-          <div key={label} className="rounded-2xl bg-cream border border-taupe/10 p-4">
-            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
-            <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
-          </div>
-        ))}
+          ['Duration', booking.total_duration_minutes || booking.estimated_minutes || booking.duration_minutes ? `${booking.total_duration_minutes || booking.estimated_minutes || booking.duration_minutes} minutes` : 'Not set'],
+          ['Estimated price', booking.final_price || booking.total_price || booking.estimated_price_high || booking.estimated_price_low ? `$${booking.final_price || booking.total_price || booking.estimated_price_high || booking.estimated_price_low}` : 'Not set'],
+        ].map(([label, value]) => <DetailTile key={label} label={label} value={value} />)}
       </div>
 
       <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
@@ -141,9 +289,19 @@ function BookingDetailPanel({ booking }) {
         )}
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <DetailTile label="Focus items" value={Array.isArray(focusItems) ? focusItems.join(', ') : focusItems} />
+        <DetailTile label="Add-ons" value={Array.isArray(addons) ? addons.map(item => item.label || item.name || item).join(', ') : addons} />
+      </div>
+
       <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
         <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Provider-safe notes</p>
         <p className="font-body text-sm text-charcoal/60 font-light mt-1 whitespace-pre-wrap">{booking.provider_notes || booking.special_notes || 'No notes yet.'}</p>
+      </div>
+
+      <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+        <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Admin notes</p>
+        <p className="font-body text-sm text-charcoal/60 font-light mt-1 whitespace-pre-wrap">{booking.admin_notes || booking.internal_notes || 'No admin notes yet.'}</p>
       </div>
     </div>
   );
