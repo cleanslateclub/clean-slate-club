@@ -5,12 +5,84 @@ import ProviderCalendar from '@/components/provider/ProviderCalendar';
 import ProviderStats from '@/components/provider/ProviderStats';
 import CompleteVisitWizard from '@/components/provider/CompleteVisitWizard';
 import { motion } from 'framer-motion';
-import { ExternalLink, LogOut, CheckSquare, CalendarDays, DollarSign, MapPin } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ExternalLink, LogOut, CheckSquare, CalendarDays, DollarSign, MapPin } from 'lucide-react';
 import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
 import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
 const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
+
+const getProviderDashboardReadiness = ({ providerData, bookings, timeBlocks, todaysJobs }) => [
+  {
+    key: 'profile',
+    label: 'Profile loaded',
+    ready: Boolean(providerData?.id && providerData?.email),
+    value: providerData?.email || 'Missing email',
+  },
+  {
+    key: 'status',
+    label: 'Provider status',
+    ready: providerData?.status === 'active',
+    value: (providerData?.status || 'draft').replace(/_/g, ' '),
+  },
+  {
+    key: 'service_permissions',
+    label: 'Service permissions',
+    ready: Array.isArray(providerData?.service_permissions) && providerData.service_permissions.length > 0,
+    value: Array.isArray(providerData?.service_permissions) ? `${providerData.service_permissions.length} permission(s)` : 'None shown',
+  },
+  {
+    key: 'bookings',
+    label: 'Assigned visits',
+    ready: Array.isArray(bookings),
+    value: `${bookings.length} visible`,
+  },
+  {
+    key: 'calendar',
+    label: 'Calendar blocks',
+    ready: Array.isArray(timeBlocks),
+    value: `${timeBlocks.length} loaded`,
+  },
+  {
+    key: 'today',
+    label: "Today's jobs",
+    ready: Array.isArray(todaysJobs),
+    value: `${todaysJobs.length} today`,
+  },
+];
+
+function ProviderReadinessStrip({ providerData, bookings, timeBlocks, todaysJobs }) {
+  const rows = getProviderDashboardReadiness({ providerData, bookings, timeBlocks, todaysJobs });
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+      <div className="bg-warm-white border border-taupe/15 rounded-3xl p-5">
+        <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Provider readiness</p>
+            <p className="font-heading text-xl text-charcoal mt-1">Today’s working snapshot</p>
+          </div>
+          <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-[10px] font-body uppercase tracking-widest ${reviewCount ? 'bg-coral/10 border-coral/20 text-coral' : 'bg-sage/10 border-sage/20 text-sage'}`}>
+            {reviewCount ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3" />}
+            {reviewCount ? `${reviewCount} review` : 'ready'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          {rows.map(row => (
+            <div key={row.key} className="rounded-2xl bg-cream border border-taupe/10 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{row.label}</p>
+                {row.ready ? <CheckCircle2 className="w-3.5 h-3.5 text-sage" /> : <AlertTriangle className="w-3.5 h-3.5 text-coral" />}
+              </div>
+              <p className="font-body text-xs text-charcoal/55 font-light mt-2">{row.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
@@ -188,6 +260,8 @@ export default function ProviderDashboard() {
               Sign Out
             </button>
           </motion.div>
+
+          <ProviderReadinessStrip providerData={providerData} bookings={bookings} timeBlocks={timeBlocks} todaysJobs={todaysJobs} />
 
           <ProviderStats bookings={bookings} payouts={payouts} />
 
