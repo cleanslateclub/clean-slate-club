@@ -566,11 +566,27 @@ export default function AdminCalendarOS({ sidebarItem }) {
   const [blockModal, setBlockModal] = useState(null); // { date, time, block_type }
   const [travelBuffer, setTravelBuffer] = useState(20);
 
+  const SIDEBAR_STATUS_MAP = {
+    new_requests:    'pending',
+    needs_review:    'needs_review',
+    pending_deposit: 'pending',
+    confirmed:       'confirmed',
+    assigned:        'provider_assigned',
+    in_progress:     'in_progress',
+    completed:       'completed',
+    cancelled:       'cancelled',
+    no_show:         'no_show',
+    archived_bookings: 'archived',
+  };
+
   useEffect(() => {
-    if (sidebarItem?.key === 'day_view') setView('day');
-    else if (sidebarItem?.key === 'week_view') setView('week');
-    else if (sidebarItem?.key === 'month_view') setView('month');
-    else if (sidebarItem?.key === 'today') { setView('day'); setCurrentDate(new Date()); }
+    if (!sidebarItem) return;
+    const { key } = sidebarItem;
+    if (key === 'day_view') setView('day');
+    else if (key === 'week_view') setView('week');
+    else if (key === 'month_view') setView('month');
+    else if (key === 'today') { setView('day'); setCurrentDate(new Date()); }
+    else if (SIDEBAR_STATUS_MAP[key]) setFilterStatus(SIDEBAR_STATUS_MAP[key]);
   }, [sidebarItem]);
 
   const loadData = () => {
