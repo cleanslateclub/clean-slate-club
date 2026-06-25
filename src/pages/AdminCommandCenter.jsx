@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { AlertTriangle, BarChart3, Bell, CalendarDays, ClipboardList, CreditCard, Home, LogOut, Settings, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BookingActionCenter from '@/components/admin/BookingActionCenter';
 import BookingsWorkspace from '@/components/admin/BookingsWorkspace';
@@ -26,6 +26,22 @@ const COMMAND_TABS = [
   { key: 'messages', label: 'Messages', icon: Bell },
   { key: 'settings', label: 'Settings', icon: Settings },
 ];
+
+function DraftStatusBanner() {
+  return (
+    <div className="rounded-3xl bg-butter/15 border border-butter/30 p-4 mb-6 flex items-start gap-3">
+      <div className="w-9 h-9 rounded-2xl bg-warm-white border border-taupe/10 flex items-center justify-center shrink-0">
+        <AlertTriangle className="w-4 h-4 text-coral" />
+      </div>
+      <div>
+        <p className="font-heading text-base text-charcoal">Draft backend OS</p>
+        <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
+          This command center is for Base44 preview testing. Real launch actions stay locked until schema checks, backend functions, Stripe behavior, and owner policies are verified.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminCommandCenter() {
   const navigate = useNavigate();
@@ -79,6 +95,7 @@ export default function AdminCommandCenter() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        <DraftStatusBanner />
         {tab === 'home' && <CommandCenterPreview />}
         {tab === 'bookings' && <BookingsWorkspace />}
         {tab === 'booking_actions' && <BookingActionCenter />}
