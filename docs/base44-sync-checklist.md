@@ -61,12 +61,21 @@ Critical launch path:
 
 - `/admin` opens login path.
 - Admin login function exists.
+- Command Center loads instead of the legacy dashboard.
+- Command overview cards load or show safe empty states.
 - Admin can see bookings.
 - Admin can see guest/household details.
 - Admin can see service-area status.
 - Admin can see payment/deposit status.
+- Admin can open the read-only Payments workspace.
+- Payments workspace can list `Invoice` records or show a safe empty state.
 - Admin can see provider assignment fields.
 - Admin can manually review outside-area or approval-required bookings.
+- Booking Action Center queues load or show safe empty states.
+- Booking action buttons save only the intended controlled status changes.
+- Booking audit/history panel loads or shows a safe empty state.
+- Schedule preview loads existing `TimeBlock` records or fails gracefully.
+- Preview-only date/time inputs update candidate blocks and conflict warnings without saving.
 - Admin can see provider compliance.
 - Admin can save service menu settings.
 
@@ -79,6 +88,20 @@ Critical launch path:
 - Provider cannot see sensitive admin notes.
 - Provider schedule changes notify admin.
 - Provider cannot be assigned unless active and compliant, unless admin override is active.
+- Provider Today's Jobs directions link appears when a service address exists.
+
+## Negative checks
+
+These should remain disabled until explicitly approved:
+
+- Final checkout send automation.
+- Cancellation fee collection.
+- Reschedule fee collection.
+- Refund automation.
+- Provider auto-assignment.
+- Schedule edit saves from the preview panel.
+- Guest/provider schedule-change messages from preview-only actions.
+- Legacy admin file removal.
 
 ## Do not merge PR #6 until
 
