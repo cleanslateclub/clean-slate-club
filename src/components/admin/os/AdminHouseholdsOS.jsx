@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Search, Plus, User, Phone, Mail, MapPin, Heart, ChevronRight, X, StickyNote, History, Star } from 'lucide-react';
+import { Search, Plus, User, MapPin, ChevronRight, X, History } from 'lucide-react';
 
 const MEMBERSHIP_BADGE = {
   active:    'bg-sage/20 border-sage/60 text-green-700',
@@ -173,6 +173,40 @@ function HouseholdDetail({ profile, bookings, onClose, onUpdate }) {
   );
 }
 
+function NewHouseholdModal({ onClose, onCreate }) {
+  const [form, setForm] = useState({ guest_name: '', guest_email: '', guest_phone: '' });
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const submit = async () => {
+    if (!form.guest_email) return;
+    setSaving(true);
+    const created = await base44.entities.HouseholdProfile.create(form);
+    onCreate(created);
+    onClose();
+  };
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl border border-taupe/15 shadow-2xl w-full max-w-sm p-6">
+        <h3 className="font-heading text-base font-semibold text-charcoal mb-4">New Household</h3>
+        <div className="space-y-3">
+          <input placeholder="Full name" value={form.guest_name} onChange={e => set('guest_name', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+          <input placeholder="Email *" value={form.guest_email} onChange={e => set('guest_email', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+          <input placeholder="Phone" value={form.guest_phone} onChange={e => set('guest_phone', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button onClick={submit} disabled={saving || !form.guest_email} className="flex-1 py-2.5 bg-coral text-white rounded-xl text-sm font-body hover:bg-coral/90 disabled:opacity-50">
+            {saving ? 'Creating...' : 'Create Household'}
+          </button>
+          <button onClick={onClose} className="px-4 py-2.5 border border-taupe/20 rounded-xl text-sm font-body text-charcoal/50 hover:bg-cream">Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminHouseholdsOS({ sidebarItem }) {
   const [profiles, setProfiles] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -180,6 +214,7 @@ export default function AdminHouseholdsOS({ sidebarItem }) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [filterMember, setFilterMember] = useState(false);
+  const [showNew, setShowNew] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -206,7 +241,7 @@ export default function AdminHouseholdsOS({ sidebarItem }) {
         <div className="p-3 border-b border-taupe/10 space-y-2 bg-white">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-base font-semibold text-charcoal">Households</h2>
-            <button className="flex items-center gap-1 bg-coral text-white px-2.5 py-1.5 rounded-lg text-xs font-body hover:bg-coral/90">
+            <button onClick={() => setShowNew(true)} className="flex items-center gap-1 bg-coral text-white px-2.5 py-1.5 rounded-lg text-xs font-body hover:bg-coral/90">
               <Plus className="w-3.5 h-3.5" /> New
             </button>
           </div>
@@ -237,6 +272,13 @@ export default function AdminHouseholdsOS({ sidebarItem }) {
           ))}
         </div>
       </div>
+
+      {showNew && (
+        <NewHouseholdModal
+          onClose={() => setShowNew(false)}
+          onCreate={p => setProfiles(prev => [p, ...prev])}
+        />
+      )}
 
       {/* Detail */}
       {selected ? (

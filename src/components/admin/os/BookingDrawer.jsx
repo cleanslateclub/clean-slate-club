@@ -96,6 +96,8 @@ export default function BookingDrawer({ booking, onClose, onUpdate, statusColors
   const [adminNotes, setAdminNotes] = useState(booking.admin_notes || '');
   const [editingNotes, setEditingNotes] = useState(false);
   const [toast, setToast] = useState(null);
+  const [assignProvider, setAssignProvider] = useState(booking.provider_name || '');
+  const [editingProvider, setEditingProvider] = useState(false);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -122,6 +124,41 @@ export default function BookingDrawer({ booking, onClose, onUpdate, statusColors
       onUpdate(booking.id, { admin_notes: adminNotes });
       setEditingNotes(false);
       showToast('Notes saved');
+    } catch (e) {
+      showToast('Save failed', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSendSms = async () => {
+    if (!booking.client_phone) { showToast('No phone number on file', 'error'); return; }
+    setSaving(true);
+    try {
+      const dateStr = booking.scheduled_date
+        ? new Date(booking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        : 'TBD';
+      await base44.functions.invoke('sendClientSmsConfirmation', {
+        clientPhone: booking.client_phone,
+        clientName: booking.client_name,
+        message: `Hi ${booking.client_name?.split(' ')[0]}! ✨ This is a reminder from Clean Slate Club — your ${booking.service_label || booking.service_category?.replace(/_/g, ' ')} is confirmed for ${dateStr} at ${booking.scheduled_start_time || 'TBD'}. Questions? Text us at (215) 500-3758. Reply STOP to opt out.`,
+      });
+      showToast('SMS sent!');
+    } catch (e) {
+      showToast('SMS failed: ' + e.message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAssignProvider = async () => {
+    if (!assignProvider.trim()) return;
+    setSaving(true);
+    try {
+      await base44.entities.Booking.update(booking.id, { provider_name: assignProvider, status: 'provider_assigned' });
+      onUpdate(booking.id, { provider_name: assignProvider, status: 'provider_assigned' });
+      setEditingProvider(false);
+      showToast('Provider assigned');
     } catch (e) {
       showToast('Save failed', 'error');
     } finally {
@@ -278,6 +315,28 @@ export default function BookingDrawer({ booking, onClose, onUpdate, statusColors
             )}
           </Section>
 
+          {/* Assign Provider */}
+          <Section title="Provider Assignment">
+            {editingProvider ? (
+              <div className="space-y-2">
+                <input value={assignProvider} onChange={e => setAssignProvider(e.target.value)}
+                  placeholder="Provider name..."
+                  className="w-full border border-taupe/20 rounded-lg px-3 py-2 text-xs font-body focus:outline-none focus:border-coral/40" />
+                <div className="flex gap-2">
+                  <button onClick={handleAssignProvider} className="px-3 py-1.5 bg-coral text-white rounded-lg text-xs font-body hover:bg-coral/90">Assign</button>
+                  <button onClick={() => setEditingProvider(false)} className="px-3 py-1.5 border border-taupe/20 rounded-lg text-xs font-body text-charcoal/50">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <span className="font-body text-xs text-charcoal/60">{booking.provider_name || 'Unassigned'}</span>
+                <button onClick={() => setEditingProvider(true)} className="px-2.5 py-1 rounded-lg border border-taupe/20 text-xs font-body text-charcoal/50 hover:bg-cream hover:border-coral/30 hover:text-coral transition-colors">
+                  {booking.provider_name ? 'Change' : 'Assign'}
+                </button>
+              </div>
+            )}
+          </Section>
+
           {/* Actions */}
           <Section title="Actions">
             <div className="space-y-1.5">
@@ -289,11 +348,12 @@ export default function BookingDrawer({ booking, onClose, onUpdate, statusColors
               <ActionButton label="Mark Cancelled" icon={X} onClick={() => handleStatusChange('cancelled')} variant="danger" />
               <ActionButton label="Mark No Show" icon={AlertTriangle} onClick={() => handleStatusChange('no_show')} variant="danger" />
               <div className="border-t border-taupe/10 pt-2 mt-2">
-                <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/25 mb-1.5">Locked — Requires Backend Verification</p>
-                <ActionButton label="Send SMS Confirmation" icon={MessageSquare} locked />
+                <ActionButton label="Send SMS Reminder" icon={MessageSquare} onClick={handleSendSms} variant="default" />
+              </div>
+              <div className="border-t border-taupe/10 pt-2 mt-2">
+                <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/25 mb-1.5">Requires Backend Integration</p>
                 <ActionButton label="Charge Final Balance" icon={DollarSign} locked />
                 <ActionButton label="Issue Refund" icon={DollarSign} locked />
-                <ActionButton label="Auto-Assign Provider" icon={User} locked />
               </div>
             </div>
           </Section>

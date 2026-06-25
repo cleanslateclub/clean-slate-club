@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { ChevronLeft, ChevronRight, Plus, Filter, Search, CalendarDays, List, Grid3X3, AlertTriangle, Clock, DollarSign, User, MapPin, Phone, Mail, CheckSquare, X, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Search, CalendarDays, List, Grid3X3, AlertTriangle, DollarSign, X } from 'lucide-react';
 import BookingDrawer from '@/components/admin/os/BookingDrawer';
+import QuickBookingModal from '@/components/admin/QuickBookingModal';
 
 const STATUS_COLORS = {
   pending:          { bg: '#EB948615', border: '#EB948640', text: '#EB9486', label: 'New Request', dot: '#EB9486' },
@@ -49,10 +50,26 @@ function TimeColumn() {
   );
 }
 
+function parseTimeToMinutes(timeStr) {
+  if (!timeStr) return 10 * 60;
+  const ampm = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (ampm) {
+    let h = parseInt(ampm[1]);
+    const m = parseInt(ampm[2]);
+    const period = ampm[3].toUpperCase();
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    return h * 60 + m;
+  }
+  const parts = timeStr.split(':');
+  return parseInt(parts[0] || 10) * 60 + parseInt(parts[1] || 0);
+}
+
 function BookingBlock({ booking, onClick }) {
   const sc = STATUS_COLORS[booking.status] || STATUS_COLORS.pending;
-  const startH = parseInt(booking.scheduled_start_time?.split(':')[0] || '10');
-  const startM = parseInt(booking.scheduled_start_time?.split(':')[1] || '0');
+  const totalMins = parseTimeToMinutes(booking.scheduled_start_time);
+  const startH = Math.floor(totalMins / 60);
+  const startM = totalMins % 60;
   const top = (startH - 8) * 64 + (startM / 60) * 64 + 40;
   const dur = Math.max((booking.total_duration_minutes || 120) / 60, 0.5);
   const height = Math.max(dur * 64 - 4, 28);
@@ -92,6 +109,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
   const [filterProvider, setFilterProvider] = useState('all');
   const [providers, setProviders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showNewBooking, setShowNewBooking] = useState(false);
 
   useEffect(() => {
     if (sidebarItem?.key === 'day_view') setView('day');
@@ -100,7 +118,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
     else if (sidebarItem?.key === 'today') { setView('day'); setCurrentDate(new Date()); }
   }, [sidebarItem]);
 
-  useEffect(() => {
+  const loadData = () => {
     Promise.all([
       base44.entities.Booking.list('-scheduled_date', 200),
       base44.entities.Provider.filter({ status: 'active' }),
@@ -109,7 +127,9 @@ export default function AdminCalendarOS({ sidebarItem }) {
       setProviders(p || []);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { loadData(); }, []);
 
   // Week dates
   const weekDates = useMemo(() => {
@@ -262,7 +282,7 @@ export default function AdminCalendarOS({ sidebarItem }) {
             ))}
           </div>
 
-          <button className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
+          <button onClick={() => setShowNewBooking(true)} className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
             <Plus className="w-3.5 h-3.5" /> New Booking
           </button>
         </div>
@@ -345,7 +365,6 @@ export default function AdminCalendarOS({ sidebarItem }) {
         ))}
       </div>
 
-      {/* Booking drawer */}
       {selectedBooking && (
         <BookingDrawer
           booking={selectedBooking}
@@ -355,6 +374,13 @@ export default function AdminCalendarOS({ sidebarItem }) {
             setSelectedBooking(prev => ({ ...prev, ...updates }));
           }}
           statusColors={STATUS_BADGE_STYLES}
+        />
+      )}
+
+      {showNewBooking && (
+        <QuickBookingModal
+          onClose={() => setShowNewBooking(false)}
+          onSuccess={() => { setShowNewBooking(false); loadData(); }}
         />
       )}
     </div>

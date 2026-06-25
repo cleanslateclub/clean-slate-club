@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { DollarSign, AlertTriangle, Lock, CreditCard, FileText, RefreshCw, Heart, CheckCircle } from 'lucide-react';
+import { DollarSign, AlertTriangle, Lock, FileText, RefreshCw, Heart } from 'lucide-react';
+import BookingDrawer from '@/components/admin/os/BookingDrawer';
 
 const TABS = [
   { key: 'deposits', label: 'Deposits', icon: DollarSign },
@@ -25,6 +26,7 @@ export default function AdminPaymentsOS({ sidebarItem }) {
   const [payouts, setPayouts] = useState([]);
   const [memberships, setMemberships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
     if (sidebarItem?.key) {
@@ -89,22 +91,34 @@ export default function AdminPaymentsOS({ sidebarItem }) {
         {loading ? (
           <div className="flex justify-center py-16"><div className="w-6 h-6 border-2 border-coral border-t-transparent rounded-full animate-spin" /></div>
         ) : tab === 'deposits' ? (
-          <BookingPaymentTable bookings={pendingDeposits} title="Pending Deposits" emptyMsg="No pending deposits." />
+          <BookingPaymentTable bookings={pendingDeposits} title="Pending Deposits" emptyMsg="No pending deposits." onViewBooking={setSelectedBooking} />
         ) : tab === 'balances' ? (
-          <BookingPaymentTable bookings={balancesDue} title="Balances Due" emptyMsg="No outstanding balances." />
+          <BookingPaymentTable bookings={balancesDue} title="Balances Due" emptyMsg="No outstanding balances." onViewBooking={setSelectedBooking} />
         ) : tab === 'invoices' ? (
-          <BookingPaymentTable bookings={bookings.filter(b => b.status === 'completed')} title="Completed Bookings / Invoices" emptyMsg="No completed bookings." />
+          <BookingPaymentTable bookings={bookings.filter(b => b.status === 'completed')} title="Completed Bookings / Invoices" emptyMsg="No completed bookings." onViewBooking={setSelectedBooking} />
         ) : tab === 'payouts' ? (
           <PayoutsTable payouts={payouts} />
         ) : tab === 'membership' ? (
           <MembershipTable memberships={memberships} />
         ) : null}
       </div>
+
+      {selectedBooking && (
+        <BookingDrawer
+          booking={selectedBooking}
+          onClose={() => setSelectedBooking(null)}
+          onUpdate={(id, updates) => {
+            setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+            setSelectedBooking(prev => ({ ...prev, ...updates }));
+          }}
+          statusColors={{}}
+        />
+      )}
     </div>
   );
 }
 
-function BookingPaymentTable({ bookings, title, emptyMsg }) {
+function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking }) {
   return (
     <div>
       <h3 className="font-heading text-base font-semibold text-charcoal mb-3">{title} <span className="font-body text-sm text-charcoal/40 font-light">({bookings.length})</span></h3>
@@ -148,7 +162,7 @@ function BookingPaymentTable({ bookings, title, emptyMsg }) {
                   </td>
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-1">
-                      <button className="px-2 py-1 rounded-lg border border-taupe/20 text-[10px] font-body text-charcoal/50 hover:bg-cream">View</button>
+                      <button onClick={() => onViewBooking(b)} className="px-2 py-1 rounded-lg border border-coral/30 text-[10px] font-body text-coral hover:bg-coral/5 transition-colors">View</button>
                       <button className="flex items-center gap-1 px-2 py-1 rounded-lg border border-taupe/15 text-[10px] font-body text-charcoal/30 cursor-not-allowed opacity-50">
                         <Lock className="w-2.5 h-2.5" /> Charge
                       </button>

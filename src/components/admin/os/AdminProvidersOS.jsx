@@ -131,25 +131,39 @@ function ProviderDetail({ provider, onClose, onUpdate }) {
             {COMPLIANCE_FIELDS.map(f => (
               <div key={f.key} className="flex items-center justify-between p-3 rounded-xl border border-taupe/10 bg-cream">
                 <div className="flex items-center gap-3">
-                  {provider[f.key]
+                  {form[f.key]
                     ? <CheckCircle className="w-4 h-4 text-sage" />
                     : <AlertTriangle className="w-4 h-4 text-butter" />}
                   <p className="font-body text-xs text-charcoal/70 font-light">{f.label}</p>
                 </div>
                 <button
                   onClick={async () => {
-                    const updates = { [f.key]: !provider[f.key] };
+                    const updates = { [f.key]: !form[f.key] };
                     await base44.entities.Provider.update(provider.id, updates);
-                    onUpdate(provider.id, { ...provider, ...updates });
+                    setForm(prev => ({ ...prev, ...updates }));
+                    onUpdate(provider.id, updates);
                   }}
                   className={`px-2.5 py-1 rounded-lg text-xs font-body transition-colors ${
-                    provider[f.key] ? 'bg-sage/15 text-green-700 hover:bg-sage/25' : 'bg-cream border border-taupe/20 text-charcoal/50 hover:bg-taupe/10'
+                    form[f.key] ? 'bg-sage/15 text-green-700 hover:bg-sage/25' : 'bg-cream border border-taupe/20 text-charcoal/50 hover:bg-taupe/10'
                   }`}
                 >
-                  {provider[f.key] ? 'On file ✓' : 'Mark on file'}
+                  {form[f.key] ? 'On file ✓' : 'Mark on file'}
                 </button>
               </div>
             ))}
+            <div className="pt-2">
+              <label className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 mb-1 block">Provider Status</label>
+              <select value={form.status || 'draft'} onChange={async e => {
+                const updates = { status: e.target.value };
+                await base44.entities.Provider.update(provider.id, updates);
+                setForm(prev => ({ ...prev, ...updates }));
+                onUpdate(provider.id, updates);
+              }} className="w-full border border-taupe/20 rounded-xl px-3 py-2 text-sm font-body focus:outline-none focus:border-coral/40">
+                {['draft','onboarding','active','on_leave','suspended','inactive','terminated'].map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
           </div>
         )}
 
@@ -202,12 +216,53 @@ function ProviderDetail({ provider, onClose, onUpdate }) {
   );
 }
 
+function NewProviderModal({ onClose, onCreate }) {
+  const [form, setForm] = useState({ full_name: '', email: '', phone: '', role: 'provider' });
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const submit = async () => {
+    if (!form.full_name || !form.email) return;
+    setSaving(true);
+    const created = await base44.entities.Provider.create({ ...form, status: 'draft' });
+    onCreate(created);
+    onClose();
+  };
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl border border-taupe/15 shadow-2xl w-full max-w-sm p-6">
+        <h3 className="font-heading text-base font-semibold text-charcoal mb-4">New Provider</h3>
+        <div className="space-y-3">
+          <input placeholder="Full name *" value={form.full_name} onChange={e => set('full_name', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+          <input placeholder="Email *" value={form.email} onChange={e => set('email', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+          <input placeholder="Phone" value={form.phone} onChange={e => set('phone', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40" />
+          <select value={form.role} onChange={e => set('role', e.target.value)}
+            className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-coral/40">
+            <option value="provider">Provider</option>
+            <option value="assistant">Assistant</option>
+            <option value="owner">Owner</option>
+          </select>
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button onClick={submit} disabled={saving || !form.full_name || !form.email} className="flex-1 py-2.5 bg-coral text-white rounded-xl text-sm font-body hover:bg-coral/90 disabled:opacity-50">
+            {saving ? 'Creating...' : 'Create Provider'}
+          </button>
+          <button onClick={onClose} className="px-4 py-2.5 border border-taupe/20 rounded-xl text-sm font-body text-charcoal/50 hover:bg-cream">Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminProvidersOS({ sidebarItem }) {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showNew, setShowNew] = useState(false);
 
   useEffect(() => {
     base44.entities.Provider.list('-created_date', 100)
@@ -228,7 +283,7 @@ export default function AdminProvidersOS({ sidebarItem }) {
         <div className="p-3 border-b border-taupe/10 space-y-2 bg-white">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-base font-semibold text-charcoal">Providers</h2>
-            <button className="flex items-center gap-1 bg-coral text-white px-2.5 py-1.5 rounded-lg text-xs font-body hover:bg-coral/90">
+            <button onClick={() => setShowNew(true)} className="flex items-center gap-1 bg-coral text-white px-2.5 py-1.5 rounded-lg text-xs font-body hover:bg-coral/90">
               <Plus className="w-3.5 h-3.5" /> New
             </button>
           </div>
@@ -251,6 +306,12 @@ export default function AdminProvidersOS({ sidebarItem }) {
           ))}
         </div>
       </div>
+      {showNew && (
+        <NewProviderModal
+          onClose={() => setShowNew(false)}
+          onCreate={p => { setProviders(prev => [p, ...prev]); setSelected(p); }}
+        />
+      )}
       {selected ? (
         <div className="flex-1 overflow-hidden">
           <ProviderDetail
