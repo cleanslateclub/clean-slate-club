@@ -13,13 +13,14 @@ import ServicesOSTab from '@/components/admin/ServicesOSTab';
 import SettingsWorkspace from '@/components/admin/SettingsWorkspace';
 
 const TOP_NAV = [
+  { key: 'home', label: 'Home', icon: Home },
   { key: 'calendar', label: 'Calendar', icon: CalendarDays },
-  { key: 'bookings', label: 'Bookings', icon: ClipboardList },
-  { key: 'households', label: 'Households', icon: Users },
-  { key: 'providers', label: 'Providers', icon: ShieldCheck },
-  { key: 'payments', label: 'Payments', icon: CreditCard },
+  { key: 'checkout', label: 'Checkout', icon: CreditCard },
+  { key: 'customers', label: 'Customers', icon: Users },
+  { key: 'marketing', label: 'Marketing', icon: Bell },
   { key: 'reports', label: 'Reports', icon: BarChart3 },
   { key: 'settings', label: 'Settings', icon: Settings },
+  { key: 'more', label: 'More', icon: ClipboardList },
 ];
 
 const MENU = [
@@ -163,6 +164,10 @@ function Field({ label, value }) {
 
 function Workspace({ active, section, selected }) {
   if (['Services', 'Packages', 'Appointments'].includes(section)) return <ManageView selected={selected} />;
+  if (active === 'checkout') return <PaymentsWorkspace />;
+  if (active === 'customers') return <HouseholdsWorkspace />;
+  if (active === 'marketing') return <MessagesWorkspace />;
+  if (active === 'more') return <SettingsWorkspace />;
   if (active === 'bookings') return <BookingsWorkspace />;
   if (active === 'households') return <HouseholdsWorkspace />;
   if (active === 'providers') return <ProvidersWorkspace />;
@@ -178,6 +183,13 @@ export default function AdminCommandCenter() {
   const [section, setSection] = useState('Schedule');
   const [selected, setSelected] = useState('Today');
   const logout = () => { localStorage.removeItem('adminSession'); navigate('/admin'); };
-  const selectMenu = (nextSection, nextSelected) => { setSection(nextSection); setSelected(nextSelected); if (nextSection === 'Schedule') setActive('calendar'); if (['Services','Packages','Appointments'].includes(nextSection)) setActive('services'); if (nextSection === 'People' && nextSelected === 'Providers') setActive('providers'); if (nextSection === 'People' && nextSelected !== 'Providers') setActive('households'); };
-  return <main className="min-h-screen bg-cream"><TopNav active={active} onSelect={setActive} onLogout={logout} /><div className="flex"><LeftMenu selected={selected} onSelect={selectMenu} /><section className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto"><div className="sticky top-0 z-20 bg-cream/90 backdrop-blur border-b border-taupe/10 px-5 py-3 flex items-center justify-between gap-3 flex-wrap"><div className="flex items-center gap-2 flex-wrap"><span className="rounded-full bg-coral/10 border border-coral/20 px-3 py-1 text-xs text-coral font-body">Vagaro-style admin rebuild</span><span className="rounded-full bg-sage/15 border border-sage/25 px-3 py-1 text-xs text-charcoal/60 font-body">{section}</span><span className="rounded-full bg-dusty-blue/15 border border-dusty-blue/25 px-3 py-1 text-xs text-charcoal/60 font-body">{selected}</span></div><p className="font-body text-xs text-charcoal/40">Calendar-forward operations for a lifestyle support business.</p></div><div className="p-5 max-w-[1500px] mx-auto space-y-4"><Workspace active={active} section={section} selected={selected} />{active === 'services' && <ServicesOSTab />}{active === 'calendar' && <CalendarWorkspace />}{active === 'bookings' && <BookingActionCenter />}{active === 'messages' && <MessagesWorkspace />}</div></section></div></main>;
+  const selectTopNav = next => {
+    setActive(next);
+    if (next === 'home' || next === 'calendar') { setSection('Schedule'); setSelected('Today'); }
+    if (next === 'checkout') { setSection('Payments'); setSelected('Checkout'); }
+    if (next === 'customers') { setSection('People'); setSelected('Households'); }
+    if (next === 'marketing') { setSection('Marketing'); setSelected('Campaigns'); }
+  };
+  const selectMenu = (nextSection, nextSelected) => { setSection(nextSection); setSelected(nextSelected); if (nextSection === 'Schedule') setActive('calendar'); if (['Services','Packages','Appointments'].includes(nextSection)) setActive('more'); if (nextSection === 'People' && nextSelected === 'Providers') setActive('providers'); if (nextSection === 'People' && nextSelected !== 'Providers') setActive('customers'); };
+  return <main className="min-h-screen bg-cream"><TopNav active={active} onSelect={selectTopNav} onLogout={logout} /><div className="flex"><LeftMenu selected={selected} onSelect={selectMenu} /><section className="flex-1 h-[calc(100vh-4rem)] overflow-y-auto"><div className="sticky top-0 z-20 bg-cream/90 backdrop-blur border-b border-taupe/10 px-5 py-3 flex items-center justify-between gap-3 flex-wrap"><div className="flex items-center gap-2 flex-wrap"><span className="rounded-full bg-coral/10 border border-coral/20 px-3 py-1 text-xs text-coral font-body">Vagaro-style admin rebuild</span><span className="rounded-full bg-sage/15 border border-sage/25 px-3 py-1 text-xs text-charcoal/60 font-body">{section}</span><span className="rounded-full bg-dusty-blue/15 border border-dusty-blue/25 px-3 py-1 text-xs text-charcoal/60 font-body">{selected}</span></div><p className="font-body text-xs text-charcoal/40">Calendar-forward operations for a lifestyle support business.</p></div><div className="p-5 max-w-[1500px] mx-auto space-y-4"><Workspace active={active} section={section} selected={selected} />{['Services','Packages','Appointments'].includes(section) && <ServicesOSTab />}{active === 'calendar' && <CalendarWorkspace />}{active === 'bookings' && <BookingActionCenter />}{active === 'marketing' && <MessagesWorkspace />}</div></section></div></main>;
 }
