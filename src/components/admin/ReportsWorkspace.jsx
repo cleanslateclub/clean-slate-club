@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, BarChart3, CheckCircle2, ClipboardList, DollarSign, Search, Users } from 'lucide-react';
+import { AlertTriangle, BarChart3, CheckCircle2, ClipboardList, DollarSign, Search, ShieldCheck, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   getOperationalReadinessRows,
@@ -37,6 +37,22 @@ function RankingList({ title, rows = [], emptyText }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function ReportsScopeNotice({ total, filtered }) {
+  return (
+    <div className="rounded-3xl bg-cream border border-taupe/15 p-4 flex items-start gap-3">
+      <div className="w-9 h-9 rounded-2xl bg-warm-white border border-taupe/10 flex items-center justify-center shrink-0">
+        <ShieldCheck className="w-4 h-4 text-coral" />
+      </div>
+      <div>
+        <p className="font-heading text-base text-charcoal">Read-only reporting</p>
+        <p className="font-body text-sm text-charcoal/45 font-light mt-1 leading-relaxed">
+          Reports are calculated from loaded Booking records only. Current view includes {filtered} of {total} booking records and does not update bookings, collect payments, assign providers, or send messages.
+        </p>
+      </div>
     </div>
   );
 }
@@ -140,6 +156,8 @@ export default function ReportsWorkspace() {
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading reports...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
       </div>
+
+      <ReportsScopeNotice total={bookings.length} filtered={visibleBookings.length} />
 
       <div className="rounded-3xl bg-warm-white border border-taupe/15 p-4 flex items-center gap-3">
         <Search className="w-4 h-4 text-charcoal/30" />
