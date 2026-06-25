@@ -142,7 +142,7 @@ function SettingTextField({ settingKey, label, defaultValue, multiline = false }
   const { value, setValue, save, saving, saved } = useAppSetting(settingKey, defaultValue);
   return (
     <div>
-      <label className="font-body text-xs uppercase tracking-widest text-charcoal/40 mb-1 block">{label}</label>
+      <label className="font-body text-xs uppercase tracking-wider font-bold text-gray-600 mb-1 block">{label}</label>
       {multiline ? (
         <textarea value={value} onChange={e => setValue(e.target.value)} rows={6}
           className="w-full border border-taupe/20 rounded-xl px-3 py-2.5 text-sm font-body text-charcoal focus:outline-none focus:border-coral/40 bg-white resize-none leading-relaxed" />
@@ -179,8 +179,8 @@ function SettingToggle({ settingKey, label, description, defaultValue = true }) 
   return (
     <div className="flex items-start justify-between p-4 bg-white rounded-xl border border-taupe/15">
       <div className="flex-1 pr-4">
-        <p className="font-body text-sm text-charcoal">{label}</p>
-        {description && <p className="font-body text-xs text-charcoal/40 font-light mt-0.5">{description}</p>}
+        <p className="font-body text-sm font-semibold text-gray-900">{label}</p>
+        {description && <p className="font-body text-xs text-gray-600 font-medium mt-0.5">{description}</p>}
       </div>
       <button
         onClick={() => save(String(!isOn))}
@@ -215,7 +215,7 @@ function ServiceAreasSettings() {
 
   return (
     <div className="max-w-lg">
-      <p className="font-body text-sm text-charcoal/50 font-light mb-4">Active service territories. Bookings outside these areas trigger a manual review flag.</p>
+      <p className="font-body text-sm text-gray-700 font-medium mb-4">Active service territories. Bookings outside these areas trigger a manual review flag.</p>
       <div className="flex gap-2 mb-3">
         <input value={newArea} onChange={e => setNewArea(e.target.value)} onKeyDown={e => e.key === 'Enter' && addArea()}
           placeholder="Add town or area..." className="flex-1 border border-taupe/20 rounded-lg px-3 py-2 text-sm font-body text-charcoal focus:outline-none focus:border-coral/40 bg-white" />
@@ -254,7 +254,7 @@ function BookingRulesSettings() {
   ];
   return (
     <div className="max-w-lg space-y-3">
-      <p className="font-body text-sm text-charcoal/50 font-light mb-4">These rules govern online booking availability and scheduling constraints. Changes apply immediately.</p>
+      <p className="font-body text-sm text-gray-700 font-medium mb-4">These rules govern online booking availability and scheduling constraints. Changes apply immediately.</p>
       {rules.map(r => <SettingNumberField key={r.key} settingKey={r.key} label={r.label} defaultValue={r.defaultValue} suffix={r.suffix} />)}
       <div className="space-y-2 mt-4">
         {toggles.map(t => <SettingToggle key={t.key} settingKey={t.key} label={t.label} description={t.description} defaultValue={t.defaultValue} />)}
@@ -304,7 +304,7 @@ function LaunchGuardsSettings() {
           <div key={guard.key} className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-taupe/15">
             <div className="flex items-center gap-2.5">
               <Lock className="w-3.5 h-3.5 text-coral/60 shrink-0" />
-              <p className="font-body text-sm text-charcoal">{guard.label}</p>
+              <p className="font-body text-sm font-semibold text-gray-900">{guard.label}</p>
             </div>
             <span className="font-body text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-full border bg-coral/8 border-coral/25 text-coral">🔒 Locked</span>
           </div>
@@ -378,7 +378,7 @@ function PolicySettings({ settingKey, title, defaultText }) {
 function PricingSettings() {
   return (
     <div className="max-w-lg space-y-3">
-      <p className="font-body text-sm text-charcoal/50 font-light mb-2">Base pricing by service. These are used as defaults in the booking estimator.</p>
+      <p className="font-body text-sm text-gray-700 font-medium mb-2">Base pricing by service. These are used as defaults in the booking estimator.</p>
       {[
         { key: 'price_home_reset_low', label: 'Home Reset — Low ($)', defaultValue: '145' },
         { key: 'price_home_reset_high', label: 'Home Reset — High ($)', defaultValue: '275' },

@@ -41,17 +41,17 @@ function ProviderCard({ provider, isSelected, onClick }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <p className="font-body text-sm text-charcoal font-light">{provider.full_name}</p>
-            <span className={`px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body ${STATUS_COLORS[provider.status] || STATUS_COLORS.draft}`}>
+            <p className="font-body text-sm font-semibold text-gray-900">{provider.full_name}</p>
+            <span className={`px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body font-bold ${STATUS_COLORS[provider.status] || STATUS_COLORS.draft}`}>
               {provider.status || 'draft'}
             </span>
           </div>
-          <p className="font-body text-xs text-charcoal/40 font-light">{provider.role}</p>
+          <p className="font-body text-xs font-medium text-gray-600">{provider.role}</p>
           <div className="flex items-center gap-1 mt-1.5">
             {COMPLIANCE_FIELDS.map(f => (
               <ComplianceDot key={f.key} value={provider[f.key]} />
             ))}
-            <span className="font-body text-[10px] text-charcoal/30 ml-1">{score}/6</span>
+            <span className="font-body text-xs font-bold text-gray-600 ml-1">{score}/6</span>
           </div>
         </div>
       </div>
@@ -102,27 +102,29 @@ function ProviderDetail({ provider, onClose, onUpdate }) {
       <div className="flex-1 overflow-y-auto p-5">
         {tab === 'profile' && (
           <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                ['Phone', provider.phone],
-                ['Email', provider.email],
-                ['Territory', provider.territory],
-                ['Payout Rate', provider.payout_rate ? `${(provider.payout_rate * 100).toFixed(0)}%` : null],
-                ['Jobs Completed', provider.jobs_completed],
-                ['Rating', provider.rating_average?.toFixed(1)],
-              ].map(([label, val]) => val != null ? (
-                <div key={label} className="bg-cream rounded-xl p-3 border border-taupe/10">
-                  <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 mb-1">{label}</p>
-                  <p className="font-body text-xs text-charcoal/70 font-light">{val}</p>
-                </div>
-              ) : null)}
-            </div>
-            {provider.notes && (
-              <div className="bg-cream rounded-xl p-3 border border-taupe/10">
-                <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 mb-1">Notes</p>
-                <p className="font-body text-xs text-charcoal/70 font-light">{provider.notes}</p>
+            {[
+              { label: 'Full Name', key: 'full_name', type: 'text' },
+              { label: 'Email', key: 'email', type: 'email' },
+              { label: 'Phone', key: 'phone', type: 'tel' },
+              { label: 'Territory', key: 'territory', type: 'text' },
+              { label: 'Payout Rate (e.g. 0.5)', key: 'payout_rate', type: 'number' },
+              { label: 'Calendar Color (hex)', key: 'calendar_color', type: 'text' },
+            ].map(f => (
+              <div key={f.key}>
+                <label className="font-body text-xs font-bold uppercase tracking-wider text-gray-600 mb-1 block">{f.label}</label>
+                <input type={f.type} value={form[f.key] || ''} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                  className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm font-body text-gray-900 focus:outline-none focus:border-coral" />
               </div>
-            )}
+            ))}
+            <div>
+              <label className="font-body text-xs font-bold uppercase tracking-wider text-gray-600 mb-1 block">Notes</label>
+              <textarea value={form.notes || ''} onChange={e => setForm(prev => ({ ...prev, notes: e.target.value }))} rows={3}
+                className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm font-body text-gray-700 focus:outline-none focus:border-coral resize-none" />
+            </div>
+            <button onClick={save} disabled={saving}
+              className="w-full py-3 bg-coral text-white rounded-xl text-sm font-body font-bold hover:bg-coral/90 disabled:opacity-50">
+              {saving ? 'Saving...' : 'Save Profile'}
+            </button>
           </div>
         )}
 
@@ -134,7 +136,7 @@ function ProviderDetail({ provider, onClose, onUpdate }) {
                   {form[f.key]
                     ? <CheckCircle className="w-4 h-4 text-sage" />
                     : <AlertTriangle className="w-4 h-4 text-butter" />}
-                  <p className="font-body text-xs text-charcoal/70 font-light">{f.label}</p>
+                  <p className="font-body text-sm font-semibold text-gray-800">{f.label}</p>
                 </div>
                 <button
                   onClick={async () => {
@@ -196,7 +198,7 @@ function ProviderDetail({ provider, onClose, onUpdate }) {
               { key: 'email_notifications_enabled', label: 'Email notifications' },
             ].map(setting => (
               <label key={setting.key} className="flex items-center justify-between p-3 rounded-xl border border-taupe/10 bg-cream cursor-pointer">
-                <p className="font-body text-xs text-charcoal/70 font-light">{setting.label}</p>
+                <p className="font-body text-sm font-semibold text-gray-800">{setting.label}</p>
                 <div
                   onClick={() => setForm(f => ({ ...f, [setting.key]: !f[setting.key] }))}
                   className={`w-9 h-5 rounded-full transition-all relative cursor-pointer ${form[setting.key] !== false ? 'bg-sage' : 'bg-taupe/30'}`}

@@ -180,7 +180,7 @@ const SIDEBAR_SECTIONS = {
 };
 
 function SidebarGroup({ group, activeItem, onNavigate }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const Icon = group.icon;
 
   return (
@@ -190,8 +190,8 @@ function SidebarGroup({ group, activeItem, onNavigate }) {
         className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-white/5 rounded-lg transition-colors group"
       >
         <div className="flex items-center gap-2">
-          <Icon className="w-3.5 h-3.5 text-white/40 group-hover:text-white/60" />
-          <span className="font-body text-xs font-semibold uppercase tracking-[0.14em] text-white/40 group-hover:text-white/60">{group.label}</span>
+          <Icon className="w-3.5 h-3.5 text-white/70 group-hover:text-white" />
+          <span className="font-body text-xs font-bold uppercase tracking-wider text-white/70 group-hover:text-white">{group.label}</span>
         </div>
         {open
           ? <ChevronDown className="w-3 h-3 text-white/25" />
@@ -210,11 +210,11 @@ function SidebarGroup({ group, activeItem, onNavigate }) {
                 className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-left transition-all ${
                   isActive
                     ? 'bg-coral/20 text-coral border-l-2 border-coral pl-[10px]'
-                    : 'text-white/55 hover:text-white/85 hover:bg-white/5 border-l-2 border-transparent pl-[10px]'
+                    : 'text-white/75 hover:text-white hover:bg-white/8 border-l-2 border-transparent pl-[10px]'
                 }`}
               >
-                <ItemIcon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-coral' : 'text-white/30'}`} />
-                <span className="font-body text-xs font-light truncate">{item.label}</span>
+                <ItemIcon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-coral' : 'text-white/50'}`} />
+                <span className="font-body text-xs font-semibold truncate">{item.label}</span>
                 {item.badge === 'new' && (
                   <span className="ml-auto w-2 h-2 rounded-full bg-coral shrink-0" />
                 )}

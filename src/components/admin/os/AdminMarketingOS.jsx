@@ -156,7 +156,7 @@ function ReviewsPanel({ reviews }) {
           <div key={r.id} className="bg-white rounded-xl border border-taupe/15 p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-body text-sm text-charcoal">{r.client_name}</p>
+                <p className="font-body text-sm font-semibold text-gray-900">{r.client_name}</p>
                 <div className="flex items-center gap-0.5 mt-1">
                   {Array.from({ length: 5 }, (_, i) => (
                     <Star key={i} className={`w-3.5 h-3.5 ${i < r.rating ? 'text-butter fill-butter' : 'text-taupe/30'}`} />
@@ -167,7 +167,7 @@ function ReviewsPanel({ reviews }) {
                 {r.status?.replace(/_/g, ' ')}
               </span>
             </div>
-            {r.comment && <p className="font-body text-xs text-charcoal/60 font-light mt-2">{r.comment}</p>}
+            {r.comment && <p className="font-body text-sm font-medium text-gray-700 mt-2">{r.comment}</p>}
           </div>
         ))}
       </div>
@@ -194,15 +194,15 @@ function ReferralsPanel({ referrals }) {
             <tbody>
               {referrals.map(r => (
                 <tr key={r.id} className="border-b border-taupe/6 hover:bg-cream/30">
-                  <td className="px-3 py-2.5 font-body text-xs text-charcoal">{r.referrer_email}</td>
-                  <td className="px-3 py-2.5 font-body text-xs text-charcoal/70">{r.referred_name}</td>
+                  <td className="px-3 py-2.5 font-body text-sm font-semibold text-gray-900">{r.referrer_email}</td>
+                  <td className="px-3 py-2.5 font-body text-sm font-medium text-gray-700">{r.referred_name}</td>
                   <td className="px-3 py-2.5 font-mono text-xs text-coral">{r.referral_code}</td>
                   <td className="px-3 py-2.5">
                     <span className={`px-1.5 py-0.5 rounded-full border text-[9px] uppercase font-body ${r.status === 'credited' ? 'bg-sage/15 border-sage/40 text-green-700' : 'bg-butter/15 border-butter/40 text-amber-700'}`}>
                       {r.status}
                     </span>
                   </td>
-                  <td className="px-3 py-2.5 font-body text-xs text-charcoal/60">${r.referrer_credit_amount}</td>
+                  <td className="px-3 py-2.5 font-body text-sm font-semibold text-gray-800">${r.referrer_credit_amount}</td>
                 </tr>
               ))}
             </tbody>
@@ -224,8 +224,8 @@ function WaitlistPanel({ waitlist }) {
           {waitlist.map(w => (
             <div key={w.id} className="bg-white rounded-xl border border-taupe/15 p-3 flex items-center justify-between">
               <div>
-                <p className="font-body text-sm text-charcoal">{w.guest_name || w.guest_email}</p>
-                <p className="font-body text-xs text-charcoal/40 font-light">{w.service_category?.replace(/_/g, ' ')} · {w.preferred_date}</p>
+                <p className="font-body text-sm font-semibold text-gray-900">{w.guest_name || w.guest_email}</p>
+                <p className="font-body text-xs font-medium text-gray-600">{w.service_category?.replace(/_/g, ' ')} · {w.preferred_date}</p>
               </div>
               <span className={`px-2 py-1 rounded-full border text-[9px] uppercase font-body ${w.status === 'notified' ? 'bg-sage/15 border-sage/40 text-green-700' : 'bg-butter/15 border-butter/40 text-amber-700'}`}>
                 {w.status}
@@ -255,14 +255,14 @@ function CampaignsPanel({ campaigns, onNew }) {
             <div key={c.id} className="bg-white rounded-xl border border-taupe/15 p-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-body text-sm text-charcoal">{c.name}</p>
-                  <p className="font-body text-xs text-charcoal/40 font-light">{c.category} · {c.channel}</p>
+                  <p className="font-body text-sm font-semibold text-gray-900">{c.name}</p>
+                     <p className="font-body text-xs font-medium text-gray-600">{c.category} · {c.channel}</p>
                 </div>
                 <span className={`px-2 py-0.5 rounded-full border text-[9px] uppercase font-body ${c.status === 'active' ? 'bg-sage/15 border-sage/40 text-green-700' : 'bg-taupe/10 border-taupe/30 text-charcoal/40'}`}>
                   {c.status}
                 </span>
               </div>
-              {c.subject && <p className="font-body text-xs text-charcoal/60 font-light mt-1">Subject: {c.subject}</p>}
+              {c.subject && <p className="font-body text-xs font-medium text-gray-600 mt-1">Subject: {c.subject}</p>}
             </div>
           ))}
         </div>

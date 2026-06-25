@@ -65,9 +65,9 @@ export default function AdminPaymentsOS({ sidebarItem }) {
       <div className="p-4 bg-white border-b border-taupe/10 grid grid-cols-4 gap-3">
         {stats.map(s => (
           <div key={s.label} className={`rounded-xl border p-3 ${s.color}`}>
-            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/40">{s.label}</p>
-            <p className="font-heading text-2xl font-semibold text-charcoal mt-1">{s.value}</p>
-            <p className="font-body text-xs text-charcoal/50">${s.amount.toLocaleString()}</p>
+            <p className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-600">{s.label}</p>
+            <p className="font-heading text-2xl font-bold text-gray-900 mt-1">{s.value}</p>
+            <p className="font-body text-sm font-semibold text-gray-700">${s.amount.toLocaleString()}</p>
           </div>
         ))}
       </div>
@@ -138,17 +138,17 @@ function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking }) {
               {bookings.map(b => (
                 <tr key={b.id} className="border-b border-taupe/6 hover:bg-cream/30 transition-colors">
                   <td className="px-3 py-2.5">
-                    <p className="font-body text-xs text-charcoal">{b.client_name}</p>
-                    <p className="font-body text-[10px] text-charcoal/40">{b.client_phone}</p>
+                    <p className="font-body text-sm font-semibold text-gray-900">{b.client_name}</p>
+                    <p className="font-body text-xs font-medium text-gray-600">{b.client_phone}</p>
                   </td>
                   <td className="px-3 py-2.5">
-                    <p className="font-body text-xs text-charcoal/70">{b.service_label || b.service_category?.replace(/_/g, ' ')}</p>
+                    <p className="font-body text-sm font-medium text-gray-800">{b.service_label || b.service_category?.replace(/_/g, ' ')}</p>
                   </td>
                   <td className="px-3 py-2.5">
-                    <p className="font-body text-xs text-charcoal/60">{b.scheduled_date || '—'}</p>
+                    <p className="font-body text-sm font-medium text-gray-700">{b.scheduled_date || '—'}</p>
                   </td>
                   <td className="px-3 py-2.5">
-                    <p className="font-body text-xs text-charcoal/70">${b.estimated_price_low}–${b.estimated_price_high}</p>
+                    <p className="font-body text-sm font-semibold text-gray-800">${b.estimated_price_low}–${b.estimated_price_high}</p>
                   </td>
                   <td className="px-3 py-2.5">
                     <span className="px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body bg-taupe/10 border-taupe/30 text-charcoal/50">

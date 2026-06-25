@@ -23,13 +23,13 @@ function HouseholdCard({ profile, bookings, onClick, isSelected }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-body text-sm text-charcoal font-light truncate">{profile.guest_name || profile.guest_email}</p>
-            <span className={`px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body ${MEMBERSHIP_BADGE[profile.membership_status || 'none']}`}>
+            <p className="font-body text-sm font-semibold text-gray-900 truncate">{profile.guest_name || profile.guest_email}</p>
+            <span className={`px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body font-bold ${MEMBERSHIP_BADGE[profile.membership_status || 'none']}`}>
               {profile.membership_status === 'active' ? '✦ Member' : profile.membership_status || 'No membership'}
             </span>
           </div>
-          <p className="font-body text-xs text-charcoal/40 font-light mt-0.5">{profile.guest_email}</p>
-          <div className="flex items-center gap-3 mt-1.5 text-xs font-body text-charcoal/30">
+          <p className="font-body text-xs text-gray-600 font-medium mt-0.5">{profile.guest_email}</p>
+          <div className="flex items-center gap-3 mt-1.5 text-xs font-body font-medium text-gray-500">
             {profile.primary_service_address && (
               <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{profile.primary_service_address.split(',')[0]}</span>
             )}
@@ -96,8 +96,8 @@ function HouseholdDetail({ profile, bookings, onClose, onUpdate }) {
                 ['Lead Source', profile.lead_source],
               ].map(([label, value]) => value ? (
                 <div key={label} className="bg-cream rounded-xl p-3 border border-taupe/10">
-                  <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 mb-1">{label}</p>
-                  <p className="font-body text-xs text-charcoal/70 font-light">{value}</p>
+                  <p className="font-body text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-1">{label}</p>
+                  <p className="font-body text-sm text-gray-800 font-medium">{value}</p>
                 </div>
               ) : null)}
             </div>
@@ -123,7 +123,7 @@ function HouseholdDetail({ profile, bookings, onClose, onUpdate }) {
             ) : hbookings.sort((a, b) => b.scheduled_date?.localeCompare(a.scheduled_date)).map(b => (
               <div key={b.id} className="bg-cream rounded-xl p-3 border border-taupe/10">
                 <p className="font-body text-sm text-charcoal">{b.service_label || b.service_category?.replace(/_/g, ' ')}</p>
-                <p className="font-body text-xs text-charcoal/40 font-light">{b.scheduled_date} · {b.status?.replace(/_/g, ' ')}</p>
+                <p className="font-body text-xs text-gray-600 font-medium">{b.scheduled_date} · {b.status?.replace(/_/g, ' ')}</p>
               </div>
             ))}
           </div>
