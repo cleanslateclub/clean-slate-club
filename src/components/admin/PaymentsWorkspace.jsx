@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, CreditCard, FileText, Search, Send, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CreditCard, FileText, Search, Send, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import CheckoutPreviewPanel from '@/components/admin/CheckoutPreviewPanel';
 
@@ -19,6 +19,76 @@ const getFilteredInvoices = (invoices = [], filter = 'all') => {
   if (filter === 'paid') return invoices.filter(item => item.status === 'paid');
   if (filter === 'failed') return invoices.filter(item => ['failed', 'void'].includes(item.status));
   return invoices;
+};
+
+const getPaymentReadinessRows = (invoice = {}) => {
+  const total = Number(invoice.total_cents || 0);
+  const paid = Number(invoice.amount_paid_cents || 0);
+  const balance = Number(invoice.balance_due_cents || 0);
+  const deposit = Number(invoice.deposit_cents || 0);
+  const lineItems = Array.isArray(invoice.line_items) ? invoice.line_items : [];
+
+  return [
+    {
+      key: 'guest',
+      label: 'Guest contact',
+      ready: Boolean(invoice.client_email || invoice.client_phone),
+      value: invoice.client_email || invoice.client_phone || 'Missing',
+      helper: 'Needed before any checkout or receipt workflow can be tested.',
+    },
+    {
+      key: 'service',
+      label: 'Service label',
+      ready: Boolean(invoice.service_label || invoice.service_category),
+      value: invoice.service_label || invoice.service_category || 'Missing',
+      helper: 'Needed so payment records can be traced back to the visit.',
+    },
+    {
+      key: 'line_items',
+      label: 'Line items',
+      ready: lineItems.length > 0,
+      value: `${lineItems.length} item(s)`,
+      helper: 'Line items help verify the invoice total before checkout actions are enabled.',
+    },
+    {
+      key: 'total',
+      label: 'Total amount',
+      ready: total > 0,
+      value: centsToDollars(total),
+      helper: 'Invoice should have a positive total before any payment workflow is tested.',
+    },
+    {
+      key: 'deposit',
+      label: 'Deposit applied',
+      ready: deposit >= 0,
+      value: centsToDollars(deposit),
+      helper: 'Deposit should remain visible for final balance review.',
+    },
+    {
+      key: 'balance',
+      label: 'Balance due',
+      ready: balance >= 0 && balance <= Math.max(total, total - paid + deposit),
+      warning: balance < 0,
+      value: centsToDollars(balance),
+      helper: 'Negative or inconsistent balances need review before checkout links are ever enabled.',
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      ready: Boolean(invoice.status) && !['failed', 'void', 'error'].includes(invoice.status),
+      warning: ['failed', 'void', 'error'].includes(invoice.status),
+      value: (invoice.status || 'draft').replace(/_/g, ' '),
+      helper: 'Failed, void, or error records should stay visible for admin review.',
+    },
+    {
+      key: 'checkout_lock',
+      label: 'Checkout lock',
+      ready: invoice.checkout_send_enabled !== true,
+      warning: invoice.checkout_send_enabled === true,
+      value: invoice.checkout_send_enabled ? 'Checkout send flag appears enabled' : 'No checkout send flag shown',
+      helper: 'Checkout sending should stay off until Stripe behavior and owner policies are verified.',
+    },
+  ];
 };
 
 function FilterButton({ item, active, count, onClick }) {
@@ -68,7 +138,58 @@ function DetailTile({ label, value }) {
   return (
     <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
       <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">{label}</p>
-      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words">{value || 'Not set'}</p>
+      <p className="font-body text-sm text-charcoal/60 font-light mt-1 break-words whitespace-pre-wrap">{value || 'Not set'}</p>
+    </div>
+  );
+}
+
+function ReadinessItem({ item }) {
+  const Icon = item.ready ? CheckCircle2 : item.warning ? AlertTriangle : XCircle;
+  const tone = item.ready
+    ? 'text-sage bg-sage/10 border-sage/20'
+    : item.warning
+      ? 'text-coral bg-coral/10 border-coral/20'
+      : 'text-charcoal/55 bg-cream border-taupe/15';
+
+  return (
+    <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-body text-sm text-charcoal/65 font-light">{item.label}</p>
+          <p className="font-body text-xs text-charcoal/35 font-light mt-1 break-words">{item.value || 'Not set'}</p>
+          <p className="font-body text-[11px] text-charcoal/30 font-light mt-2 leading-relaxed">{item.helper}</p>
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest shrink-0 ${tone}`}>
+          <Icon className="w-3 h-3" />
+          {item.ready ? 'Ready' : item.warning ? 'Review' : 'Missing'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function PaymentReadinessPanel({ invoice }) {
+  const rows = getPaymentReadinessRows(invoice);
+  const reviewCount = rows.filter(row => !row.ready).length;
+
+  return (
+    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Payment readiness</p>
+          <h3 className="font-heading text-xl text-charcoal mt-1">Invoice review checklist</h3>
+          <p className="font-body text-sm text-charcoal/40 font-light mt-2 max-w-2xl leading-relaxed">
+            Read-only checklist for invoice quality before checkout, fees, refunds, or payment-link actions are enabled.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-cream border border-taupe/10 px-4 py-3 text-right">
+          <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Review items</p>
+          <p className="font-heading text-2xl text-charcoal mt-1">{reviewCount}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 mt-4">
+        {rows.map(item => <ReadinessItem key={item.key} item={item} />)}
+      </div>
     </div>
   );
 }
@@ -94,6 +215,8 @@ function InvoiceDetailPanel({ invoice }) {
         <p className="font-body text-sm text-charcoal/40 font-light mt-1">{invoice.service_label || 'Service not set'}</p>
       </div>
 
+      <PaymentReadinessPanel invoice={invoice} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DetailTile label="Status" value={(invoice.status || 'draft').replace(/_/g, ' ')} />
         <DetailTile label="Client email" value={invoice.client_email} />
@@ -103,6 +226,8 @@ function InvoiceDetailPanel({ invoice }) {
         <DetailTile label="Tip" value={centsToDollars(invoice.tip_cents)} />
         <DetailTile label="Total" value={centsToDollars(invoice.total_cents)} />
         <DetailTile label="Balance due" value={centsToDollars(invoice.balance_due_cents)} />
+        <DetailTile label="Booking ID" value={invoice.booking_id || invoice.bookingId} />
+        <DetailTile label="Stripe reference" value={invoice.stripe_payment_intent_id || invoice.stripe_checkout_session_id} />
       </div>
 
       <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
@@ -165,9 +290,12 @@ export default function PaymentsWorkspace() {
     return pool.filter(invoice => [
       invoice.client_name,
       invoice.client_email,
+      invoice.client_phone,
       invoice.service_label,
       invoice.status,
       invoice.admin_notes,
+      invoice.booking_id,
+      invoice.bookingId,
     ].some(value => String(value || '').toLowerCase().includes(q)));
   }, [invoices, filter, search]);
 
@@ -179,7 +307,7 @@ export default function PaymentsWorkspace() {
         <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Payments workspace</p>
         <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">Invoices and balances</h2>
         <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">
-          Read-only view for invoice totals, deposits applied, paid amounts, and balances before checkout automation is enabled.
+          Read-only view for invoice totals, deposits applied, paid amounts, balances, and payment readiness before checkout automation is enabled.
         </p>
         {loading && <p className="font-body text-xs text-charcoal/35 font-light mt-3">Loading records...</p>}
         {loadError && <p className="font-body text-xs text-coral font-light mt-3">{loadError}</p>}
