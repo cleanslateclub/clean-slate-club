@@ -7,48 +7,56 @@ const LAUNCH_GUARDS = [
     label: 'Base44 schema verification',
     status: 'required',
     detail: 'Booking, TimeBlock, HouseholdProfile, Provider, Invoice, MessageLog, AuditLog, AppSettings, ProviderAvailability, CampaignTemplate, and WaitlistRequest must exist in live Base44.',
+    nextStep: 'Open Base44 data tables and confirm each required schema exists before smoke testing workflows.',
   },
   {
     key: 'backend_function_contracts',
     label: 'Backend function contracts',
     status: 'required',
     detail: 'adminLogin, verifyProviderLogin, scheduleConsultSlot, Stripe deposit, calendar, SMS, team notification, and schedule notification functions must match documented contracts.',
+    nextStep: 'Compare live Base44 functions against docs/backend-function-contracts.md before enabling workflow actions.',
   },
   {
     key: 'payment_automation',
     label: 'Payment automation',
     status: 'locked',
     detail: 'Final checkout sends, refunds, cancellation fees, and reschedule fees stay off until Stripe behavior and owner policies are confirmed.',
+    nextStep: 'Keep checkout preview-only until Stripe mode and owner policy decisions are confirmed.',
   },
   {
     key: 'schedule_saves',
     label: 'Schedule edit saves',
     status: 'locked',
     detail: 'Schedule preview can test date/time conflicts, but it must not save TimeBlock or Booking changes until Base44 TimeBlock behavior is verified.',
+    nextStep: 'Use preview to test conflicts only; do not save schedule changes until TimeBlock behavior is verified.',
   },
   {
     key: 'message_sending',
     label: 'Message sending actions',
     status: 'locked',
     detail: 'Admin message sends and guest/provider schedule-change messages stay off until notification contracts and opt-in handling are confirmed.',
+    nextStep: 'Use draft previews only until SMS/email contracts and opt-in handling are confirmed.',
   },
   {
     key: 'provider_auto_assignment',
     label: 'Provider auto-assignment',
     status: 'locked',
     detail: 'Provider matching can recommend, but assignments must remain controlled/admin-triggered until compliance and override behavior are verified.',
+    nextStep: 'Review recommendations manually; do not enable auto-assign until provider compliance behavior is verified.',
   },
   {
     key: 'legacy_admin_removal',
     label: 'Legacy admin removal',
     status: 'locked',
     detail: 'Legacy admin files stay in the repo until the Command Center passes live Base44 smoke testing.',
+    nextStep: 'Keep rollback path available until the new Command Center passes live smoke testing.',
   },
   {
     key: 'owner_policy_approval',
     label: 'Owner policy approval',
     status: 'required',
     detail: 'Cancellation, rescheduling, no-show, member reschedules, non-member fees, final checkout timing, and outside-area handling must be finalized before launch.',
+    nextStep: 'Finalize owner policy decisions before turning any fee, message, or checkout automation on.',
   },
 ];
 
@@ -104,6 +112,10 @@ export default function LaunchGuardsPanel() {
                 <div>
                   <p className="font-heading text-lg text-charcoal">{item.label}</p>
                   <p className="font-body text-sm text-charcoal/45 font-light mt-2 leading-relaxed">{item.detail}</p>
+                  <div className="rounded-2xl bg-cream border border-taupe/10 px-3 py-2 mt-3">
+                    <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Next verification step</p>
+                    <p className="font-body text-xs text-charcoal/45 font-light mt-1 leading-relaxed">{item.nextStep}</p>
+                  </div>
                 </div>
                 <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-body uppercase tracking-widest ${meta.className}`}>
                   <Icon className="w-3 h-3" />
