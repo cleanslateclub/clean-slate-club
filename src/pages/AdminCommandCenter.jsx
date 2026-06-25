@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Search, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Zap, Menu, X, ChevronLeft } from 'lucide-react';
+import { LogOut, Bell, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Zap, Menu, X } from 'lucide-react';
+import QuickBookingModal from '@/components/admin/QuickBookingModal';
 import AdminSidebar from '@/components/admin/os/AdminSidebar';
 import AdminCalendarOS from '@/components/admin/os/AdminCalendarOS';
 import AdminHouseholdsOS from '@/components/admin/os/AdminHouseholdsOS';
@@ -57,6 +58,7 @@ export default function AdminCommandCenter() {
   const [topSection, setTopSection] = useState('calendar');
   const [sidebarItem, setSidebarItem] = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [showNewBooking, setShowNewBooking] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('adminSession');
@@ -83,8 +85,8 @@ export default function AdminCommandCenter() {
       <header className="hidden md:flex shrink-0 items-center justify-between px-4 h-12 border-b border-white/10" style={{ background: '#1a1a2e' }}>
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-2 mr-4 pr-4 border-r border-white/10">
-            <span className="font-logo text-lg text-coral leading-none">Clean Slate</span>
-            <span className="font-body text-[10px] text-white/40 uppercase tracking-widest">Club™</span>
+            <span className="font-heading text-xs font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
+            <span className="font-logo text-lg text-coral leading-none">Club</span>
           </div>
           {TOP_NAV.map(item => {
             const Icon = item.icon;
@@ -105,7 +107,7 @@ export default function AdminCommandCenter() {
           })}
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
+          <button onClick={() => setShowNewBooking(true)} className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
             <Plus className="w-3.5 h-3.5" />
             New Booking
           </button>
@@ -123,9 +125,9 @@ export default function AdminCommandCenter() {
         <button onClick={() => setMobileSidebarOpen(true)} className="p-2 text-white/60 hover:text-white transition-colors">
           <Menu className="w-5 h-5" />
         </button>
-        <div className="flex items-center gap-2">
-          <span className="font-logo text-base text-coral leading-none">Clean Slate</span>
-          <span className="font-body text-[9px] text-white/40 uppercase tracking-widest">Club™</span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-heading text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">Clean Slate</span>
+          <span className="font-logo text-base text-coral leading-none">Club</span>
         </div>
         <div className="flex items-center gap-1">
           <button className="p-2 text-white/40 hover:text-white/70">
@@ -174,6 +176,13 @@ export default function AdminCommandCenter() {
           {renderSection(topSection, sidebarItem)}
         </main>
       </div>
+
+      {showNewBooking && (
+        <QuickBookingModal
+          onClose={() => setShowNewBooking(false)}
+          onSuccess={() => setShowNewBooking(false)}
+        />
+      )}
 
       {/* ── Mobile Bottom Navigation ── */}
       <nav className="md:hidden shrink-0 flex items-center border-t border-white/10" style={{ background: '#1a1a2e', paddingBottom: 'env(safe-area-inset-bottom)' }}>
