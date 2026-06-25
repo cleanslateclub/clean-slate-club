@@ -7,6 +7,7 @@ import CalendarWorkspace from '@/components/admin/CalendarWorkspace';
 import CommandCenterPreview from '@/components/admin/CommandCenterPreview';
 import HouseholdsWorkspace from '@/components/admin/HouseholdsWorkspace';
 import MessagesWorkspace from '@/components/admin/MessagesWorkspace';
+import PaymentsWorkspace from '@/components/admin/PaymentsWorkspace';
 import ProvidersWorkspace from '@/components/admin/ProvidersWorkspace';
 import ReportsWorkspace from '@/components/admin/ReportsWorkspace';
 import ServicesOSTab from '@/components/admin/ServicesOSTab';
@@ -25,16 +26,6 @@ const COMMAND_TABS = [
   { key: 'messages', label: 'Messages', icon: Bell },
   { key: 'settings', label: 'Settings', icon: Settings },
 ];
-
-function PlaceholderPanel({ title, description }) {
-  return (
-    <div className="rounded-3xl bg-warm-white border border-taupe/15 p-6">
-      <p className="font-body text-[10px] uppercase tracking-[0.22em] text-coral/60 font-light">Replacement Portal</p>
-      <h2 className="font-heading text-2xl font-semibold text-charcoal mt-1">{title}</h2>
-      <p className="font-body text-sm text-charcoal/45 font-light mt-2 max-w-3xl leading-relaxed">{description}</p>
-    </div>
-  );
-}
 
 export default function AdminCommandCenter() {
   const navigate = useNavigate();
@@ -98,7 +89,7 @@ export default function AdminCommandCenter() {
         {tab === 'settings' && <SettingsWorkspace />}
         {tab === 'services' && <ServicesOSTab />}
         {tab === 'reports' && <ReportsWorkspace />}
-        {tab === 'payments' && <PlaceholderPanel title="Payments" description="Payments workspace is still pending." />}
+        {tab === 'payments' && <PaymentsWorkspace />}
       </div>
     </main>
   );
