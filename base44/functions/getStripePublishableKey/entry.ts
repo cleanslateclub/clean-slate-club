@@ -1,10 +1,15 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-
-Deno.serve(async (req) => {
+Deno.serve(async () => {
   try {
-    const base44 = createClientFromRequest(req);
-    return Response.json({ publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY') });
+    const publishableKey = Deno.env.get('STRIPE_PUBLISHABLE_KEY');
+
+    if (!publishableKey || !publishableKey.startsWith('pk_')) {
+      console.error('getStripePublishableKey: STRIPE_PUBLISHABLE_KEY env var is missing or invalid.');
+      return Response.json({ error: 'Stripe publishable key is not configured.' }, { status: 500 });
+    }
+
+    return Response.json({ publishableKey });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('getStripePublishableKey error:', error);
+    return Response.json({ error: error.message || 'Could not load Stripe publishable key.' }, { status: 500 });
   }
 });
