@@ -32,11 +32,11 @@ These must exist in Base44 and match the documented request/response contracts b
 
 ## First stabilization concern found
 
-The public booking page creates the `Booking` record first, then attempts operational side effects such as `TimeBlock` creation, email, calendar sync, SMS, and team notifications.
+The public booking page created the `Booking` record first, then attempted operational side effects such as `TimeBlock` creation, email, calendar sync, SMS, and team notifications.
 
-This is mostly the correct order because the booking record is the source of truth, but TimeBlock creation currently runs inside the same main submit try/catch. If `TimeBlock.bulkCreate` fails after a Stripe deposit succeeds, the guest can be shown the generic booking failure even though a paid booking record may already exist.
+This is mostly the correct order because the booking record is the source of truth, but `TimeBlock.bulkCreate` was previously inside the same main submit try/catch. If `TimeBlock.bulkCreate` failed after a Stripe deposit succeeded, the guest could be shown the generic booking failure even though a paid booking record may already exist.
 
-That creates a dangerous launch-state problem:
+That created a dangerous launch-state problem:
 
 - guest may pay deposit
 - Booking may exist
@@ -44,26 +44,49 @@ That creates a dangerous launch-state problem:
 - guest may see failure message
 - admin may not know the booking needs schedule repair
 
-## Stabilization direction
+## Stabilization completed
 
-Post-booking operational side effects should be handled as guarded follow-up actions:
+`src/pages/BookNow.jsx` now treats Booking creation as the source-of-truth blocking step, then attempts TimeBlock creation as a guarded operational side effect.
 
-- Booking creation remains blocking.
-- Payment confirmation remains blocking before booking submission.
-- TimeBlock creation should be attempted immediately, but failure should not erase the guest success state after payment.
-- Calendar sync should remain non-blocking.
-- Email/SMS/admin notifications should remain non-blocking where possible.
-- Any operational follow-up failure should be logged clearly and surfaced to admin for repair.
+If TimeBlock creation fails after the Booking exists:
 
-## Next implementation target
+- the failure is logged clearly
+- the Booking is flagged with `backend_repair_needed: true`
+- the Booking gets `backend_repair_reason: 'timeblock_creation_failed'`
+- admin notes are appended with a repair warning
+- team/admin notification is triggered with repair context
+- the guest can still move to the success screen because the Booking exists
 
-Create a small helper pattern in `BookNow.jsx` for guarded post-booking tasks, beginning with TimeBlock creation. Then continue with a live Base44 verification checklist pass.
+Additional backend function hardening completed in this pass:
+
+- `/team` and portal home escape link added in `src/pages/StaffLogin.jsx`
+- `getStripePublishableKey` validates Stripe env setup
+- `createDepositPaymentIntent` accepts the frontend `{ data: ... }` payload contract
+- `scheduleConsultSlot` uses 15-minute Monday slots from 10am to 12pm
+- `verifyProviderLogin` backend function added
+- `notifyTeamNewBooking` resolves `bookingId` before emailing admin
+- `sendClientSmsConfirmation` resolves `bookingId` and enforces `intake_answers.sms_opt_in === true`
+
+## Next verification target
+
+Run a Base44 smoke test for the public booking path:
+
+1. Booking enabled setting works.
+2. Guest can complete service, intake, add-ons, schedule, policy acknowledgements, and deposit.
+3. Stripe PaymentIntent succeeds in test mode.
+4. Booking record is created with deposit/payment fields.
+5. TimeBlock records are created.
+6. If TimeBlock fails, Booking remains successful and admin sees repair flag.
+7. Admin email sends.
+8. Guest email sends.
+9. SMS sends only with opt-in.
+10. Calendar sync failure does not block booking success.
 
 ## Do not unlock yet
 
 Keep these locked until owner policy and live Base44 behavior are verified:
 
-- Final checkout send automation
+- Final checkout links or sends
 - Cancellation fee collection
 - Reschedule fee collection
 - Refund automation
