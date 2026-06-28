@@ -100,11 +100,28 @@ Deno.serve(async (req) => {
     const service = booking.service_label || booking.service_category || 'Clean Slate Club Visit';
     const subject = `New Booking Request - ${booking.client_name || service}`;
 
-    await base44.integrations.Core.SendEmail({
-      to: TEAM_EMAIL,
-      subject,
-      body: buildEmail(booking, payload),
+    const resendKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendKey) throw new Error('RESEND_API_KEY is not configured.');
+
+    const emailRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Clean Slate Club <onboarding@resend.dev>',
+        to: [TEAM_EMAIL],
+        subject,
+        html: buildEmail(booking, payload),
+      }),
     });
+
+    if (!emailRes.ok) {
+      const errText = await emailRes.text();
+      console.error('Resend error:', errText);
+      throw new Error(`Resend failed: ${errText}`);
+    }
 
     return Response.json({ success: true });
   } catch (error) {
