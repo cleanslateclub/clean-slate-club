@@ -1,165 +1,114 @@
-import { createClient } from 'npm:@base44/sdk@0.8.31';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const TEAM_EMAIL = 'cleanslateclubpa@gmail.com';
 
-const emailHeader = (title, subtitle) => `
-  <div style="background:linear-gradient(135deg,#EB9486 0%,#EFB988 40%,#CAE7B9 100%);padding:40px 32px 32px;text-align:center;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
-      <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.9);">CLEAN SLATE</span>
-      <span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-style:italic;color:#fff;margin-left:6px;font-weight:400;">Club</span>
-    </td></tr></table>
-    <div style="height:1px;background:rgba(255,255,255,0.25);margin:14px auto;max-width:200px;"></div>
-    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:0.02em;">${title}</p>
-    ${subtitle ? `<p style="margin:6px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:rgba(255,255,255,0.85);">${subtitle}</p>` : ''}
-  </div>
-`;
+const escapeHtml = (value: unknown) => String(value || '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#039;');
 
-const emailFooter = `
-  <div style="background:#f9f4f2;padding:20px 32px;text-align:center;border-top:1px solid #f0e8e4;">
-    <p style="font-family:Arial,sans-serif;font-size:11px;color:#aaa;margin:0 0 4px;">Clean Slate Club™ · cleanslateclubpa@gmail.com · (206) 825-4061</p>
-    <p style="font-family:Arial,sans-serif;font-size:11px;color:#bbb;margin:0;">cleanslateclub.co</p>
+const getPayload = async (req: Request) => {
+  try {
+    const body = await req.json();
+    return body?.data ?? body ?? {};
+  } catch {
+    return {};
+  }
+};
+
+const formatDate = (date: string) => {
+  if (!date) return 'TBD';
+  try {
+    return new Date(`${date}T00:00:00`).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return date;
+  }
+};
+
+const moneyRange = (booking: Record<string, unknown>) => {
+  const low = booking.estimated_price_low ?? 0;
+  const high = booking.estimated_price_high ?? 0;
+  if (!low && !high) return 'Not estimated';
+  return `$${low} - $${high}`;
+};
+
+const mapsUrl = (address: string) => address
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+  : '';
+
+const buildEmail = (booking: Record<string, unknown>, context: Record<string, unknown>) => {
+  const address = String(booking.client_address || '');
+  const service = booking.service_label || booking.service_category || 'Clean Slate Club Visit';
+  const date = formatDate(String(booking.scheduled_date || ''));
+  const start = booking.scheduled_start_time || 'TBD';
+  const end = booking.scheduled_end_time || 'TBD';
+  const addons = Array.isArray(booking.addons) ? booking.addons.join(', ') : String(booking.addons || 'None');
+  const intake = booking.intake_answers || {};
+  const smsOptIn = typeof intake === 'object' && intake !== null ? (intake as Record<string, unknown>).sms_opt_in : undefined;
+  const mapLink = mapsUrl(address);
+
+  return `<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#fdfcfb;font-family:Arial,Helvetica,sans-serif;color:#333;">
+  <div style="max-width:640px;margin:0 auto;background:#fff;">
+    <div style="background:linear-gradient(135deg,#EB9486 0%,#EFB988 45%,#CAE7B9 100%);padding:34px 28px;text-align:center;color:#fff;">
+      <p style="margin:0;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;">Clean Slate Club</p>
+      <h1 style="margin:10px 0 0;font-size:24px;">New booking needs review</h1>
+      <p style="margin:8px 0 0;font-size:13px;opacity:.9;">${escapeHtml(String(service))}</p>
+    </div>
+    <div style="padding:28px;">
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">A booking-related event was received from <strong>${escapeHtml(context.source || 'public_booking')}</strong>.</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Guest</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${escapeHtml(booking.client_name)}</td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Phone</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;"><a href="tel:${escapeHtml(booking.client_phone)}">${escapeHtml(booking.client_phone)}</a></td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Email</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;"><a href="mailto:${escapeHtml(booking.client_email)}">${escapeHtml(booking.client_email)}</a></td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Address</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${mapLink ? `<a href="${mapLink}">${escapeHtml(address)}</a>` : escapeHtml(address || 'None')}</td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Date/time</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${escapeHtml(date)} · ${escapeHtml(start)} - ${escapeHtml(end)}</td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Estimate</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${escapeHtml(moneyRange(booking))}</td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Status</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${escapeHtml(booking.status)} / ${escapeHtml(booking.payment_status)}</td></tr>
+        <tr><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;color:#888;font-size:12px;">Add-ons</td><td style="padding:10px 0;border-bottom:1px solid #f0e8e4;font-size:14px;">${escapeHtml(addons || 'None')}</td></tr>
+        <tr><td style="padding:10px 0;color:#888;font-size:12px;">SMS opt-in</td><td style="padding:10px 0;font-size:14px;">${smsOptIn === undefined ? 'Not shown' : smsOptIn ? 'Yes' : 'No'}</td></tr>
+      </table>
+      ${context.note ? `<div style="margin-top:18px;padding:14px;border-radius:14px;background:#f9f4f2;"><strong>Note:</strong> ${escapeHtml(context.note)}</div>` : ''}
+      <div style="margin-top:24px;text-align:center;"><a href="https://cleanslateclub.co/admin" style="display:inline-block;background:#EB9486;color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-size:13px;font-weight:700;">Open admin dashboard</a></div>
+    </div>
   </div>
-`;
+</body></html>`;
+};
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
-    const body = await req.json();
-    const booking = body.data;
+    const base44 = createClientFromRequest(req);
+    const payload = await getPayload(req);
+    const bookingId = payload.bookingId || payload.id;
 
-    if (!booking) {
-      return Response.json({ skipped: 'no booking data' });
+    let booking = payload.booking || payload;
+    if (bookingId) {
+      booking = await base44.asServiceRole.entities.Booking.get(bookingId);
     }
 
-    const serviceLabel = booking.service_category
-      ?.replace(/_/g, ' ')
-      .replace(/\b\w/g, c => c.toUpperCase()) || 'Unknown Service';
+    if (!booking?.id) {
+      return Response.json({ success: false, error: 'Booking not found.' }, { status: 404 });
+    }
 
-    const isConsult = !booking.scheduled_date || booking.scheduled_start_time === 'TBD';
-    const tasks = booking.intake_answers?._tasks || [];
-    const addons = booking.addons || [];
-
-    const dateStr = isConsult
-      ? 'Date TBD (Consult Request)'
-      : new Date(booking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', {
-          weekday: 'long', month: 'long', day: 'numeric'
-        });
-
-    const timeStr = isConsult
-      ? 'Time TBD'
-      : `${booking.scheduled_start_time} – ${booking.scheduled_end_time || 'TBD'}`;
-
-    const emailSubject = isConsult
-      ? `🌿 New Consult Request — ${booking.client_name}`
-      : `✨ New Booking: ${serviceLabel} — ${booking.client_name} on ${dateStr}`;
-
-    const serviceColors = {
-      home_reset: '#EB9486',
-      mothers_helper: '#EFB988',
-      errands: '#CAE7B9',
-      senior_support: '#B58A90',
-      meal_prep: '#F3DE8A',
-      organization: '#7E7F9A',
-    };
-    const accentColor = serviceColors[booking.service_category] || '#EB9486';
-
-    const emailBody = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#fdfcfb;">
-<div style="max-width:580px;margin:0 auto;background:#fdfcfb;font-family:Arial,Helvetica,sans-serif;">
-  ${emailHeader(isConsult ? '🌿 New Consult Request' : '✨ New Booking', `${serviceLabel}${!isConsult ? ` · ${dateStr}` : ''}`)}
-
-  <div style="padding:32px;">
-    <!-- Status badge -->
-    <div style="display:inline-block;background:${accentColor}22;border:1px solid ${accentColor}55;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${accentColor};margin-bottom:20px;">
-      ${booking.status?.toUpperCase() || 'PENDING'}
-    </div>
-
-    <!-- Client info grid -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
-      <tr>
-        <td width="50%" style="padding:0 8px 16px 0;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Client</p>
-          <p style="margin:0;font-size:15px;color:#333;font-weight:600;">${booking.client_name}</p>
-        </td>
-        <td width="50%" style="padding:0 0 16px 8px;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Service</p>
-          <p style="margin:0;font-size:15px;color:#333;font-weight:600;">${serviceLabel}</p>
-        </td>
-      </tr>
-      <tr>
-        <td width="50%" style="padding:0 8px 16px 0;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Email</p>
-          <p style="margin:0;font-size:13px;color:#666;">${booking.client_email}</p>
-        </td>
-        <td width="50%" style="padding:0 0 16px 8px;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Phone</p>
-          <p style="margin:0;font-size:13px;color:#666;">${booking.client_phone || '—'}</p>
-        </td>
-      </tr>
-      ${!isConsult ? `
-      <tr>
-        <td width="50%" style="padding:0 8px 0 0;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Date & Time</p>
-          <p style="margin:0;font-size:14px;color:#333;font-weight:600;">${dateStr}</p>
-          <p style="margin:2px 0 0;font-size:13px;color:#666;">${timeStr}</p>
-        </td>
-        <td width="50%" style="padding:0 0 0 8px;vertical-align:top;">
-          <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Quoted Cost</p>
-          <p style="margin:0;font-size:18px;font-weight:700;color:${accentColor};">$${booking.estimated_price_low || 0}–$${booking.estimated_price_high || 0}</p>
-        </td>
-      </tr>` : ''}
-    </table>
-
-    ${booking.client_address ? `
-    <div style="background:#fff;border:1px solid #f0e8e4;border-left:3px solid ${accentColor};border-radius:0 12px 12px 0;padding:14px 18px;margin-bottom:16px;">
-      <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Address</p>
-      <p style="margin:0;font-size:14px;color:#555;">${booking.client_address}</p>
-    </div>` : ''}
-
-    ${tasks.length > 0 ? `
-    <div style="background:#fff;border:1px solid #f0e8e4;border-left:3px solid ${accentColor};border-radius:0 12px 12px 0;padding:14px 18px;margin-bottom:16px;">
-      <p style="margin:0 0 8px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Tasks Requested</p>
-      <p style="margin:0;font-size:13px;color:#666;line-height:1.6;">${tasks.join(' · ')}</p>
-    </div>` : ''}
-
-    ${addons.length > 0 ? `
-    <div style="background:#fff;border:1px solid #f0e8e4;border-left:3px solid ${accentColor};border-radius:0 12px 12px 0;padding:14px 18px;margin-bottom:16px;">
-      <p style="margin:0 0 8px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Add-ons</p>
-      <p style="margin:0;font-size:13px;color:#666;">${addons.join(', ')}</p>
-    </div>` : ''}
-
-    ${booking.special_notes ? `
-    <div style="background:#fff;border:1px solid #f0e8e4;border-left:3px solid ${accentColor};border-radius:0 12px 12px 0;padding:14px 18px;margin-bottom:16px;">
-      <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Notes</p>
-      <p style="margin:0;font-size:13px;color:#666;">${booking.special_notes}</p>
-    </div>` : ''}
-
-    ${isConsult && booking.intake_answers ? `
-    <div style="background:#fff;border:1px solid #f0e8e4;border-left:3px solid ${accentColor};border-radius:0 12px 12px 0;padding:14px 18px;margin-bottom:16px;">
-      <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Preferred Contact</p>
-      <p style="margin:0;font-size:13px;color:#666;">${booking.intake_answers.preferred_contact || '—'}</p>
-      <p style="margin:8px 0 4px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:${accentColor};">Availability</p>
-      <p style="margin:0;font-size:13px;color:#666;">${booking.intake_answers.availability_notes || '—'}</p>
-    </div>` : ''}
-
-    <div style="margin-top:24px;text-align:center;">
-      <a href="https://cleanslateclub.co/admin" style="display:inline-block;background:${accentColor};color:#fff;font-size:13px;font-weight:700;letter-spacing:0.08em;padding:13px 28px;border-radius:50px;text-decoration:none;">
-        View in Dashboard →
-      </a>
-    </div>
-  </div>
-  ${emailFooter}
-</div></body></html>`;
+    const service = booking.service_label || booking.service_category || 'Clean Slate Club Visit';
+    const subject = `New Booking Request - ${booking.client_name || service}`;
 
     await base44.asServiceRole.integrations.Core.SendEmail({
       to: TEAM_EMAIL,
-      subject: emailSubject,
-      body: emailBody,
+      subject,
+      body: buildEmail(booking, payload),
     });
 
     return Response.json({ success: true });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('notifyTeamNewBooking error:', error);
+    return Response.json({ success: false, error: error.message || 'Team notification failed.' }, { status: 500 });
   }
 });
