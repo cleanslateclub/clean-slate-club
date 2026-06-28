@@ -105,6 +105,14 @@ export default function StaffLogin({ defaultMode = null, providerOnly = false, a
       <div className="w-full max-w-md">
 
         <div className="text-center mb-10">
+          <div className="mb-6 text-left">
+            <a
+              href="/"
+              className="inline-flex items-center gap-1.5 font-body text-xs text-charcoal/40 font-light hover:text-coral transition-colors"
+            >
+              ← Back to home
+            </a>
+          </div>
           <div className="flex items-baseline gap-1.5 justify-center mb-4">
             <span className="font-heading text-sm font-semibold tracking-[0.18em] uppercase text-charcoal/50">Clean Slate</span>
             <span className="font-logo text-lg text-coral" style={{ lineHeight: 1 }}>Club</span>
