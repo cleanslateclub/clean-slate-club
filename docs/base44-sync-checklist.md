@@ -40,6 +40,19 @@ Critical launch path:
 - `notifyTeamNewBooking`
 - `notifyScheduleChange`
 
+## GitHub stabilization status
+
+These backend-path items now exist or have been hardened in GitHub and must be synced/verified in live Base44:
+
+- `src/pages/BookNow.jsx` guards TimeBlock creation after Booking creation.
+- `src/pages/StaffLogin.jsx` includes a home escape link for `/team` and portal misclicks.
+- `getStripePublishableKey` validates Stripe env setup.
+- `createDepositPaymentIntent` accepts the frontend `{ data: ... }` payload contract.
+- `scheduleConsultSlot` uses 15-minute Monday consult slots from 10am to 12pm.
+- `verifyProviderLogin` has been added.
+- `notifyTeamNewBooking` resolves `bookingId` before emailing admin.
+- `sendClientSmsConfirmation` resolves `bookingId` and sends only when `intake_answers.sms_opt_in === true`.
+
 ## Public booking flow must be checked
 
 - Booking enabled setting works.
@@ -52,6 +65,7 @@ Critical launch path:
 - Deposit payment receives name, email, service, date, time, and amount.
 - Booking creates with correct status and payment status.
 - TimeBlock records are created.
+- If TimeBlock creation fails after Booking creation, the guest still sees success and admin sees a repair flag.
 - Admin email is sent.
 - Guest email is sent.
 - SMS does not send unless allowed by opt-in rules.
@@ -82,6 +96,7 @@ Critical launch path:
 ## Provider portal checks
 
 - `/team` opens provider login path.
+- `/team` has a clear back/home escape if a public visitor misclicks.
 - Provider login function exists.
 - Provider cannot self-register publicly.
 - Provider only sees provider-safe job details.
@@ -104,6 +119,8 @@ These should remain disabled until explicitly approved:
 - Legacy admin file removal.
 
 ## Do not merge PR #6 until
+
+PR #6 has been merged. Keep this section as historical context. The equivalent current rule is: do not launch publicly until the following are verified in live Base44.
 
 - Live Base44 schemas match the branch.
 - Live Base44 functions match contracts.
