@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
     const service = booking.service_label || booking.service_category || 'Clean Slate Club Visit';
     const subject = `New Booking Request - ${booking.client_name || service}`;
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
+    await base44.integrations.Core.SendEmail({
       to: TEAM_EMAIL,
       subject,
       body: buildEmail(booking, payload),
