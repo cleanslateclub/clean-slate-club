@@ -25,8 +25,19 @@ const buildServiceAddress = (info = {}) => {
 };
 
 const getAddonId = (addon = {}) => addon.id || addon.key;
-
 const getFunctionPayload = (result) => result?.data ?? result ?? {};
+
+const sendNonBlockingEmail = (payload, label) => {
+  base44.integrations.Core.SendEmail(payload).catch(err => console.error(`${label} email failed:`, err));
+};
+
+const notifyTeamNonBlocking = (payload) => {
+  base44.functions.invoke('notifyTeamNewBooking', { data: payload }).catch(err => console.error('Team notification failed:', err));
+};
+
+const invokeNonBlocking = (functionName, payload, label) => {
+  base44.functions.invoke(functionName, { data: payload }).catch(err => console.error(`${label || functionName} failed:`, err));
+};
 
 export default function BookNow() {
   const { getBool, loading: settingsLoading } = useAppSettings();
@@ -58,8 +69,6 @@ export default function BookNow() {
   const [error, setError] = useState(null);
   const [smsOptIn, setSmsOptIn] = useState(true);
   const [skipDeposit, setSkipDeposit] = useState(false);
-  // FIX: Replaced PolicyModal popup with inline acknowledgements on Step 5.
-  // allAcknowledged is set true by Step5Confirm once every checkbox is checked.
   const [allAcknowledged, setAllAcknowledged] = useState(false);
 
   useEffect(() => {
@@ -86,14 +95,12 @@ export default function BookNow() {
   }, [isConsult]);
 
   const selectedTasks = intakeAnswers._tasks || [];
-
   const dynamicEstimate = serviceKey && serviceKey !== 'consult'
     ? getDynamicEstimate(serviceKey, intakeAnswers, selectedTasks, selectedAddons)
     : null;
   const totalDuration = dynamicEstimate
     ? dynamicEstimate.durationMinutes
     : serviceKey ? calculateTotalDuration(serviceKey, selectedAddons) : 0;
-
   const config = serviceKey && SERVICE_CONFIG[serviceKey] ? SERVICE_CONFIG[serviceKey] : null;
   const normalizedClientAddress = clientInfo.address || buildServiceAddress(clientInfo);
   const serviceAreaResult = detectServiceArea(normalizedClientAddress);
@@ -113,7 +120,6 @@ export default function BookNow() {
 
   const validateBeforePaymentOrSubmit = () => {
     setError(null);
-
     if (!isConsult && !serviceAreaResult.status.includes('inside_area')) {
       setError(getOutsideAreaMessage());
       return false;
@@ -183,9 +189,74 @@ export default function BookNow() {
   const totalSteps = isConsult ? 2 : (skipDeposit ? 5 : 6);
   const displayStep = step;
 
+  const createBookingTimeBlocks = async ({ booking, endTime, normalizedAddress }) => {
+    if (isConsult || !selectedDate || !selectedTime) return true;
+
+    try {
+      const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
+      await base44.entities.TimeBlock.bulkCreate([
+        {
+          date: selectedDate,
+          start_time: selectedTime,
+          end_time: endTime,
+          booking_id: booking.id,
+          block_type: 'booking',
+          status: 'active',
+          label: `${config?.label} - ${clientInfo.name}`,
+          location_address: normalizedAddress,
+          is_publicly_bookable: false,
+        },
+        {
+          date: selectedDate,
+          start_time: endTime,
+          end_time: blockEnd,
+          booking_id: booking.id,
+          block_type: 'travel',
+          status: 'active',
+          label: 'Travel buffer',
+          travel_minutes: TRAVEL_BUFFER,
+        },
+      ]);
+      return true;
+    } catch (timeBlockError) {
+      console.error('TimeBlock creation failed after booking was created:', timeBlockError);
+
+      const adminNote = [
+        booking.admin_notes || '',
+        `BACKEND_REPAIR_NEEDED: timeblock_creation_failed for booking ${booking.id}. Guest may have paid deposit. Error: ${timeBlockError?.message || 'Unknown TimeBlock error'}`,
+      ].filter(Boolean).join('\n\n');
+
+      base44.entities.Booking.update(booking.id, {
+        admin_notes: adminNote,
+        backend_repair_needed: true,
+        backend_repair_reason: 'timeblock_creation_failed',
+      }).catch(err => console.error('Could not flag booking for TimeBlock repair:', err));
+
+      notifyTeamNonBlocking({
+        bookingId: booking.id,
+        source: 'public_booking_timeblock_failure',
+        note: 'Booking was created, but TimeBlock creation failed. Review and manually repair schedule blocks before launch/confirmation.',
+      });
+
+      return false;
+    }
+  };
+
+  const sendBookingEmails = ({ booking, displayDate, endTime, estimateLow, estimateHigh, addonLabels, normalizedAddress, serviceAddressParts, currentServiceArea, emergencyContact, stripePaymentIntentId }) => {
+    const subject = isConsult ? 'We got your consult request - Clean Slate Club' : 'We got your request - Clean Slate Club';
+    const serviceLabel = isConsult ? 'Free Consult Call' : config?.label;
+    const clientBody = `Hi ${clientInfo.name},<br><br>Thank you for reaching out to Clean Slate Club. ${isConsult ? 'Your free consult request has been received.' : 'Your booking request has been received and your details are being reviewed.'}<br><br><strong>${serviceLabel}</strong><br>${displayDate} at ${selectedTime || 'TBD'}${!isConsult ? ` to ${endTime}` : ''}<br><br>${!isConsult ? `Estimated range: $${estimateLow} - $${estimateHigh}<br>Your deposit will be applied to your final balance.<br><br>` : ''}Questions? Reply to this email or text us at (215) 500-3758.`;
+
+    const adminBody = `New ${isConsult ? 'consult' : 'booking'} request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${normalizedAddress || 'N/A'}\nCity: ${serviceAddressParts.city || 'N/A'}\nZIP: ${serviceAddressParts.zip || 'N/A'}\nService area status: ${currentServiceArea.status}${currentServiceArea.matchedTown ? ` (${currentServiceArea.matchedTown})` : ''}\n\nService: ${serviceLabel}\nDate: ${displayDate}\nTime: ${selectedTime || 'TBD'} - ${isConsult ? 'TBD' : endTime}\nDuration: ${isConsult ? 15 : totalDuration} minutes\nEstimate: $${estimateLow} - $${estimateHigh}\n\nTasks: ${selectedTasks.join(', ') || 'None selected'}\nAdd-ons: ${addonLabels.join(', ') || 'None'}\nEmergency contact: ${emergencyContact.formatted || 'N/A'}\nSpecial notes: ${intakeAnswers.special_notes || intakeAnswers.situation || 'N/A'}\n\nSMS opt-in: ${smsOptIn ? 'Yes' : 'No'}\nStripe Payment Intent: ${stripePaymentIntentId || 'N/A'}\nBooking ID: ${booking.id}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`;
+
+    sendNonBlockingEmail({ to: clientInfo.email, subject, body: clientBody }, 'Client booking');
+    sendNonBlockingEmail({ to: 'cleanslateclubpa@gmail.com', subject: `New ${isConsult ? 'Consult' : 'Booking'} Request - ${clientInfo.name}`, body: adminBody }, 'Admin booking');
+  };
+
   const handleSubmit = useCallback(async (stripePaymentIntentId = null) => {
     setSubmitting(true);
     setError(null);
+
     try {
       const normalizedAddress = clientInfo.address || buildServiceAddress(clientInfo);
       const currentServiceArea = detectServiceArea(normalizedAddress);
@@ -204,11 +275,9 @@ export default function BookNow() {
         formatted: intakeAnswers.emergency_contact || '',
       };
       const endTime = selectedTime ? minutesToTime(timeToMinutes(selectedTime) + totalDuration) : 'TBD';
-
       const displayDate = selectedDate
         ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
         : 'TBD';
-
       const addonPrice = selectedAddons.reduce((sum, id) => {
         const addon = config?.addons?.find(a => getAddonId(a) === id);
         return sum + (Number(addon?.price) || 0);
@@ -216,6 +285,9 @@ export default function BookNow() {
       const estimateLow = dynamicEstimate ? dynamicEstimate.low : (config?.priceRange?.[0] || 0) + addonPrice;
       const estimateHigh = dynamicEstimate ? dynamicEstimate.high : (config?.priceRange?.[1] || 0) + addonPrice;
       const requiresApproval = Boolean(config?.requiresApproval || currentServiceArea.requiresManualReview);
+      const addonLabels = selectedAddons
+        .map(id => config?.addons?.find(a => getAddonId(a) === id)?.label)
+        .filter(Boolean);
 
       const booking = await base44.entities.Booking.create({
         status: requiresApproval ? 'needs_review' : 'pending',
@@ -256,7 +328,6 @@ export default function BookNow() {
           : `Deposit paid - Stripe ID: ${stripePaymentIntentId || 'N/A'}`,
       });
 
-      // Referral code (non-blocking)
       const referralCode = intakeAnswers.referral_code?.trim().toUpperCase();
       if (referralCode && !isConsult) {
         try {
@@ -279,152 +350,45 @@ export default function BookNow() {
         }
       }
 
-      // Time blocks (non-consult only)
-      if (!isConsult && selectedDate && selectedTime) {
-        const blockEnd = minutesToTime(timeToMinutes(endTime) + TRAVEL_BUFFER);
-        await base44.entities.TimeBlock.bulkCreate([
-          {
-            date: selectedDate,
-            start_time: selectedTime,
-            end_time: endTime,
-            booking_id: booking.id,
-            block_type: 'booking',
-            status: 'active',
-            label: `${config?.label} - ${clientInfo.name}`,
-            location_address: normalizedAddress,
-            is_publicly_bookable: false,
-          },
-          {
-            date: selectedDate,
-            start_time: endTime,
-            end_time: blockEnd,
-            booking_id: booking.id,
-            block_type: 'travel',
-            status: 'active',
-            label: 'Travel buffer',
-            travel_minutes: TRAVEL_BUFFER,
-          },
-        ]);
+      await createBookingTimeBlocks({ booking, endTime, normalizedAddress });
+
+      sendBookingEmails({
+        booking,
+        displayDate,
+        endTime,
+        estimateLow,
+        estimateHigh,
+        addonLabels,
+        normalizedAddress,
+        serviceAddressParts,
+        currentServiceArea,
+        emergencyContact,
+        stripePaymentIntentId,
+      });
+
+      if (selectedDate && selectedTime) {
+        invokeNonBlocking('addBookingToCalendar', {
+          clientName: clientInfo.name,
+          clientEmail: clientInfo.email,
+          clientPhone: clientInfo.phone,
+          clientAddress: isConsult ? '' : normalizedAddress,
+          serviceLabel: isConsult ? 'Free Consult Call' : config?.label,
+          addonLabels,
+          selectedDate,
+          startTime: selectedTime,
+          endTime: isConsult ? minutesToTime(timeToMinutes(selectedTime) + 15) : endTime,
+          totalDuration: isConsult ? 15 : totalDuration,
+          estimateLow: isConsult ? 0 : estimateLow,
+          estimateHigh: isConsult ? 0 : estimateHigh,
+          specialNotes: intakeAnswers.special_notes || intakeAnswers.situation || '',
+          tasks: selectedTasks,
+          sendInviteToClient: true,
+          isConsult,
+        }, 'Calendar sync');
       }
 
-      const emailWrapper = (innerHtml) => `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Lato:wght@300;400;700&family=Sarina&display=swap" rel="stylesheet">
-<style>
-  body{margin:0;padding:0;background:#fdfcfb;font-family:'Lato',sans-serif;color:#333333;}
-  .wrapper{max-width:600px;margin:0 auto;background:#fdfcfb;}
-  .header{background:linear-gradient(135deg,#EB9486 0%,#EFB988 35%,#CAE7B9 70%,#ece4db 100%);padding:44px 40px 36px;text-align:center;}
-  .brand-name{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.9);margin:0;display:inline;}
-  .brand-sub{font-family:'Sarina',cursive;font-size:26px;font-weight:400;color:#fff;margin:0 0 0 8px;letter-spacing:0.02em;display:inline;}
-  .body{padding:36px 40px;}
-  .greeting{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:600;color:#333;margin:0 0 12px;}
-  p{font-family:'Lato',sans-serif;font-size:15px;font-weight:300;color:#555;line-height:1.7;margin:0 0 16px;}
-  .card{background:#fff;border:1px solid #f0e8e4;border-radius:16px;padding:22px 24px;margin:20px 0;}
-  .card-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#EB9486;margin:0 0 10px;}
-  .card-value{font-family:'Lato',sans-serif;font-size:15px;font-weight:400;color:#333;margin:0 0 6px;line-height:1.6;}
-  .card-value.light{color:#777;font-weight:300;}
-  .price-card{background:linear-gradient(135deg,#fef0ee,#fdfcfb);border:1px solid #fcd5ce;border-radius:16px;padding:22px 24px;margin:20px 0;}
-  .price-amount{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:600;color:#EB9486;margin:4px 0;}
-  .price-note{font-size:12px;font-weight:300;color:#aaa;}
-  .footer{background:#f9f4f2;padding:28px 40px;text-align:center;border-top:1px solid #f0e8e4;}
-  .footer p{font-size:12px;font-weight:300;color:#aaa;margin:0 0 4px;}
-</style></head>
-<body><div class="wrapper">
-  <div class="header">
-    <div style="margin-bottom:14px;"><span class="brand-name">CLEAN SLATE</span><span class="brand-sub">Club</span></div>
-    <div style="height:1px;background:rgba(255,255,255,0.3);margin:0 auto 16px;max-width:160px;"></div>
-  </div>
-  <div class="body">${innerHtml}</div>
-  <div class="footer">
-    <p>Questions? Reply to this email or text us at (215) 500-3758</p>
-    <p>cleanslateclubpa@gmail.com &middot; cleanslateclub.co</p>
-  </div>
-</div></body></html>`;
-
-      const addonLabels = selectedAddons
-        .map(id => config?.addons?.find(a => getAddonId(a) === id)?.label)
-        .filter(Boolean);
-
-      if (isConsult && selectedDate && selectedTime) {
-        const consultEnd = minutesToTime(timeToMinutes(selectedTime) + 15);
-        const clientBody = emailWrapper(`
-          <p class="greeting">You're on the calendar, ${clientInfo.name}!</p>
-          <p>Your free 15-minute consult is officially scheduled. We can't wait to connect.</p>
-          <div class="card">
-            <p class="card-label">Your Consult</p>
-            <p class="card-value"><strong>${displayDate}</strong> at <strong>${selectedTime || 'TBD'}</strong></p>
-            <p class="card-value light">We'll call you at ${clientInfo.phone} at the time above.</p>
-            ${intakeAnswers.availability_notes ? `<p class="card-value light">Your availability notes: ${intakeAnswers.availability_notes}</p>` : ''}
-          </div>
-          <p style="font-size:13px;color:#aaa;font-weight:300;">100% free. Zero commitment. Just a conversation. You'll get a reminder 24 hours before.</p>
-        `);
-        Promise.all([
-          base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: 'We got your consult request - Clean Slate Club', body: clientBody }),
-          base44.integrations.Core.SendEmail({
-            to: 'cleanslateclubpa@gmail.com',
-            subject: `New Consult Request - ${clientInfo.name}`,
-            body: `New free consult request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nPreferred contact: ${intakeAnswers.preferred_contact || 'N/A'}\nAvailability: ${intakeAnswers.availability_notes || 'N/A'}\n\nSituation:\n${intakeAnswers.situation || 'N/A'}\n\nBiggest pain point: ${intakeAnswers.biggest_pain_point || 'N/A'}\nIdeal outcome: ${intakeAnswers.ideal_outcome || 'N/A'}\nWish list: ${intakeAnswers.wish_list_notes || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`,
-          }),
-        ]).catch(err => console.error('Consult email send failed (non-blocking):', err));
-
-        base44.functions.invoke('addBookingToCalendar', {
-          data: {
-            clientName: clientInfo.name, clientEmail: clientInfo.email, clientPhone: clientInfo.phone,
-            clientAddress: '', serviceLabel: 'Free Consult Call', addonLabels: [],
-            selectedDate, startTime: selectedTime, endTime: consultEnd, totalDuration: 15,
-            estimateLow: 0, estimateHigh: 0,
-            specialNotes: `Preferred contact: ${intakeAnswers.preferred_contact || 'N/A'} | Availability: ${intakeAnswers.availability_notes || 'N/A'}`,
-            tasks: [], sendInviteToClient: true, isConsult: true,
-          },
-        }).catch(err => console.error('Calendar sync failed (non-blocking):', err));
-
-        await base44.functions.invoke('sendClientSmsConfirmation', { data: { bookingId: booking.id } }).catch(err => console.error('Client SMS failed:', err));
-        await base44.functions.invoke('notifyTeamNewBooking', { data: { bookingId: booking.id } }).catch(err => console.error('Team notification failed:', err));
-        setSubmitted(true);
-        return;
-      }
-
-      // Normal booking emails
-      const clientBody = emailWrapper(`
-        <p class="greeting">Thank you, ${clientInfo.name}!</p>
-        <p>Your Clean Slate Club request has been received. We'll review the details and confirm availability shortly.</p>
-        <div class="card">
-          <p class="card-label">Requested Service</p>
-          <p class="card-value"><strong>${config?.label}</strong></p>
-          <p class="card-value light">${displayDate} from ${selectedTime || 'TBD'} to ${endTime}</p>
-          ${addonLabels.length ? `<p class="card-value light">Add-ons: ${addonLabels.join(', ')}</p>` : ''}
-        </div>
-        <div class="price-card">
-          <p class="card-label">Estimated Range</p>
-          <p class="price-amount">$${estimateLow} - $${estimateHigh}</p>
-          <p class="price-note">Final amount is based on actual time and approved add-ons. Your deposit will be applied.</p>
-        </div>
-        <p>Next, we'll review your request, confirm details, and reach out if anything needs clarification.</p>
-      `);
-      const errandDetails = serviceKey === 'errands'
-        ? `\nErrand locations/stops: ${intakeAnswers.errand_locations || 'N/A'}\nStart point: ${intakeAnswers.errand_start_point || 'N/A'}\nPickup/dropoff notes: ${intakeAnswers.pickup_dropoff_notes || 'N/A'}\n`
-        : '';
-      const emergencyDetails = emergencyContact.formatted
-        ? `\nEmergency contact: ${emergencyContact.formatted}\n`
-        : '';
-      const adminBody = `New booking request!\n\nClient: ${clientInfo.name}\nEmail: ${clientInfo.email}\nPhone: ${clientInfo.phone}\nAddress: ${normalizedAddress}\nCity: ${serviceAddressParts.city}\nZIP: ${serviceAddressParts.zip}\nService area status: ${currentServiceArea.status}${currentServiceArea.matchedTown ? ` (${currentServiceArea.matchedTown})` : ''}\n\nService: ${config?.label}\nDate: ${displayDate}\nTime: ${selectedTime} - ${endTime}\nDuration: ${totalDuration} minutes\nEstimate: $${estimateLow} - $${estimateHigh}\n\nTasks: ${selectedTasks.join(', ') || 'None selected'}\nAdd-ons: ${addonLabels.join(', ') || 'None'}\n${errandDetails}${emergencyDetails}\nSpecial notes: ${intakeAnswers.special_notes || intakeAnswers.situation || 'N/A'}\n\nSMS opt-in: ${smsOptIn ? 'Yes' : 'No'}\nStripe Payment Intent: ${stripePaymentIntentId || 'N/A'}\n${uploadedPhotos.length > 0 ? `\nUploaded photos:\n${uploadedPhotos.join('\n')}` : ''}\n\nView in dashboard: https://cleanslateclub.co/admin`;
-      Promise.all([
-        base44.integrations.Core.SendEmail({ to: clientInfo.email, subject: 'We got your request - Clean Slate Club', body: clientBody }),
-        base44.integrations.Core.SendEmail({ to: 'cleanslateclubpa@gmail.com', subject: `New Booking Request - ${clientInfo.name}`, body: adminBody }),
-      ]).catch(err => console.error('Email send failed (non-blocking):', err));
-
-      base44.functions.invoke('addBookingToCalendar', {
-        data: {
-          clientName: clientInfo.name, clientEmail: clientInfo.email, clientPhone: clientInfo.phone,
-          clientAddress: normalizedAddress, serviceLabel: config?.label, addonLabels,
-          selectedDate, startTime: selectedTime, endTime, totalDuration,
-          estimateLow, estimateHigh, specialNotes: intakeAnswers.special_notes || intakeAnswers.situation || '',
-          tasks: selectedTasks, sendInviteToClient: true, isConsult: false,
-        },
-      }).catch(err => console.error('Calendar sync failed (non-blocking):', err));
-
-      await base44.functions.invoke('sendClientSmsConfirmation', { data: { bookingId: booking.id } }).catch(err => console.error('Client SMS failed:', err));
-      await base44.functions.invoke('notifyTeamNewBooking', { data: { bookingId: booking.id } }).catch(err => console.error('Team notification failed:', err));
+      invokeNonBlocking('sendClientSmsConfirmation', { bookingId: booking.id }, 'Client SMS');
+      notifyTeamNonBlocking({ bookingId: booking.id, source: 'public_booking_submit' });
 
       setSubmitted(true);
     } catch (err) {
