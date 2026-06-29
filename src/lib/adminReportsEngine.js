@@ -1,8 +1,13 @@
 export const money = (value = 0) => Number(value || 0);
 
-export const getBookingRevenueValue = (booking = {}) => (
-  money(booking.final_price) || money(booking.estimated_price_high) || money(booking.estimated_price_low)
-);
+const INACTIVE_REVENUE_STATUSES = ['cancelled', 'archived'];
+
+export const getBookingRevenueValue = (booking = {}) => {
+  const finalPrice = money(booking.final_price);
+  if (finalPrice > 0) return finalPrice;
+  if (INACTIVE_REVENUE_STATUSES.includes(booking.status)) return 0;
+  return money(booking.estimated_price_high) || money(booking.estimated_price_low);
+};
 
 export const summarizeBookings = (bookings = []) => {
   const active = bookings.filter(item => !['cancelled', 'archived'].includes(item.status));
