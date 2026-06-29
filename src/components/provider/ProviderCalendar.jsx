@@ -198,7 +198,7 @@ export default function ProviderCalendar({
         {isAdmin ? 'Drag appointments to reschedule · Hover over a booking for details' : 'Hover over a booking for details'}
       </p>
 
-      {selectedBooking && <BookingDetailPopup booking={selectedBooking} onClose={() => setSelectedBooking(null)} />}
+      {selectedBooking && <BookingDetailPopup booking={selectedBooking} onClose={() => setSelectedBooking(null)} isAdmin={isAdmin} />}
 
       {hoveredBooking && (() => {
         const b = hoveredBooking;
