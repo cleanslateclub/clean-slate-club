@@ -14,10 +14,6 @@ import FAQ from './pages/FAQ.jsx';
 import About from './pages/About.jsx';
 import BookNowDynamic from './pages/BookNowDynamic';
 import AdminPortal from './pages/AdminPortal';
-import AdminOS from './pages/AdminOS';
-import AdminOSModules from './pages/AdminOSModules';
-import AdminOSCompliance from './pages/AdminOSCompliance';
-import AdminOSOverrides from './pages/AdminOSOverrides';
 import TeamPortal from './pages/TeamPortal';
 import MemberDashboard from './pages/MemberDashboard';
 import MemberLogin from './pages/MemberLogin';
@@ -26,7 +22,6 @@ import SmsTerms from './pages/SmsTerms';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ClientPortal from './pages/ClientPortal';
-
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,10 +40,7 @@ const AuthenticatedApp = () => {
   // intercepts and redirects away from them.
   const isAdminOrTeamRoute =
     location.pathname === '/admin' ||
-    location.pathname === '/admin-os' ||
-    location.pathname === '/admin-os/modules' ||
-    location.pathname === '/admin-os/compliance' ||
-    location.pathname === '/admin-os/overrides' ||
+    location.pathname.startsWith('/admin-os') ||
     location.pathname === '/admin-login' ||
     location.pathname === '/team' ||
     location.pathname === '/provider' ||
@@ -74,10 +66,10 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookNowDynamic />} />
         <Route path="/admin" element={<AdminPortal />} />
-        <Route path="/admin-os" element={<AdminOS />} />
-        <Route path="/admin-os/modules" element={<AdminOSModules />} />
-        <Route path="/admin-os/compliance" element={<AdminOSCompliance />} />
-        <Route path="/admin-os/overrides" element={<AdminOSOverrides />} />
+        <Route path="/admin-os" element={<Navigate to="/admin" replace />} />
+        <Route path="/admin-os/modules" element={<Navigate to="/admin" replace />} />
+        <Route path="/admin-os/compliance" element={<Navigate to="/admin" replace />} />
+        <Route path="/admin-os/overrides" element={<Navigate to="/admin" replace />} />
         <Route path="/admin-login" element={<Navigate to="/admin" replace />} />
         <Route path="/team" element={<TeamPortal />} />
         <Route path="/provider" element={<Navigate to="/team" replace />} />
