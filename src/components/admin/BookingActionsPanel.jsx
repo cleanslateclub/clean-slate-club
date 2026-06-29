@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Archive, CheckCircle2, ClipboardCheck, PauseCircle } from 'lucide-react';
+import { Archive, CheckCircle2, ClipboardCheck, PauseCircle, XCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   buildApproveBookingPatch,
   buildArchiveBookingPatch,
+  buildCancelBookingPatch,
   buildCompleteBookingPatch,
   buildReviewHoldPatch,
 } from '@/lib/adminBookingActions';
@@ -26,14 +27,21 @@ const ACTIONS = [
   {
     key: 'complete',
     label: 'Mark Complete',
-    helper: 'Marks the visit complete after service is done.',
+    helper: 'Marks the visit complete after service is done. Payment still needs checkout review.',
     icon: CheckCircle2,
     buildPatch: (booking) => buildCompleteBookingPatch({ booking, actorName: 'Admin' }),
   },
   {
+    key: 'cancel',
+    label: 'Cancel Safely',
+    helper: 'Cancels without auto-refund, auto-fee, or automatic guest/provider messages.',
+    icon: XCircle,
+    buildPatch: (booking) => buildCancelBookingPatch({ booking, actorName: 'Admin' }),
+  },
+  {
     key: 'archive',
     label: 'Archive',
-    helper: 'Moves this record out of active queues.',
+    helper: 'Moves this record out of active queues without deleting it.',
     icon: Archive,
     buildPatch: (booking) => buildArchiveBookingPatch({ booking, actorName: 'Admin' }),
   },
@@ -46,6 +54,11 @@ export default function BookingActionsPanel({ booking, onUpdated }) {
   if (!booking?.id) return null;
 
   const runAction = async (action) => {
+    const requiresConfirm = ['cancel', 'archive'].includes(action.key);
+    if (requiresConfirm && !window.confirm(`${action.label} this booking? This will not send payment, refund, or message automation.`)) {
+      return;
+    }
+
     setPendingAction(action.key);
     setMessage('');
     try {
