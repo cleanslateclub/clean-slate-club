@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       currency: 'usd',
       receipt_email: clientEmail,
       description: `$${(amountCents / 100).toFixed(0)} deposit — ${serviceLabel} booking for ${clientName}`,
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: ['card'],
       setup_future_usage: 'off_session',
       metadata: {
         client_name: String(clientName).slice(0, 500),
