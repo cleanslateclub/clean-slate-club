@@ -3,12 +3,16 @@ export const toMoneyNumber = (value, fallback = 0) => {
   return Number.isFinite(parsed) ? parsed : fallback;
 };
 
+const toWholeQuantity = (value, fallback = 1) => (
+  Math.max(1, Math.round(toMoneyNumber(value, fallback)))
+);
+
 export const normalizeCheckoutLineItems = (lineItems = []) => (
   lineItems
     .map((item, index) => ({
       id: item.id ?? index + 1,
       description: String(item.description || 'Service').trim() || 'Service',
-      qty: Math.max(1, toMoneyNumber(item.qty, 1)),
+      qty: toWholeQuantity(item.qty, 1),
       rate: Math.max(0, toMoneyNumber(item.rate, 0)),
     }))
     .filter(item => item.description || item.rate > 0)
