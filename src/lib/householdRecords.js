@@ -1,3 +1,5 @@
+const normalize = (value = '') => String(value || '').trim().toLowerCase();
+
 export const buildHouseholdProfileFromBooking = (booking = {}) => {
   const intake = booking.intake_answers || {};
   const address = intake.service_address || {};
@@ -8,7 +10,7 @@ export const buildHouseholdProfileFromBooking = (booking = {}) => {
     guest_phone: booking.client_phone,
     primary_service_address: booking.client_address || address.formatted || '',
     saved_addresses: booking.client_address || address.formatted || '',
-    service_area_status: intake.service_area?.status || 'manual_review',
+    service_area_status: normalize(intake.service_area?.status) || 'manual_review',
     access_notes: intake.access_notes || intake.entry_notes || '',
     parking_notes: intake.parking_notes || '',
     pets: intake.pets || intake.pet_notes || '',
@@ -29,16 +31,16 @@ export const buildHouseholdProfileFromBooking = (booking = {}) => {
 
 export const mergeBookingIntoHouseholdProfile = (profile = {}, booking = {}) => {
   const intake = booking.intake_answers || {};
+  const bookingStatus = normalize(booking.status);
   const bookingCount = Number(profile.booking_count || 0) + 1;
-  const cancelledCount = Number(profile.cancelled_booking_count || 0) + (booking.status === 'cancelled' ? 1 : 0);
-  const noShowCount = Number(profile.no_show_count || 0) + (booking.status === 'no_show' ? 1 : 0);
+  const cancelledCount = Number(profile.cancelled_booking_count || 0) + (bookingStatus === 'cancelled' ? 1 : 0);
+  const noShowCount = Number(profile.no_show_count || 0) + (bookingStatus === 'no_show' ? 1 : 0);
 
   return {
-    ...profile,
     guest_name: profile.guest_name || booking.client_name,
     guest_phone: profile.guest_phone || booking.client_phone,
     primary_service_address: profile.primary_service_address || booking.client_address,
-    service_area_status: profile.service_area_status || intake.service_area?.status,
+    service_area_status: normalize(profile.service_area_status || intake.service_area?.status),
     last_booking_date: booking.scheduled_date || profile.last_booking_date,
     booking_count: bookingCount,
     cancelled_booking_count: cancelledCount,
@@ -50,7 +52,7 @@ export const getHouseholdRiskFlags = (profile = {}) => {
   const flags = [];
   if (Number(profile.no_show_count || 0) > 0) flags.push('Prior no-show');
   if (Number(profile.cancelled_booking_count || 0) >= 2) flags.push('Repeated cancellations');
-  if (profile.service_area_status === 'outside_area') flags.push('Outside service area');
+  if (normalize(profile.service_area_status) === 'outside_area') flags.push('Outside service area');
   if (Array.isArray(profile.private_flags)) flags.push(...profile.private_flags);
   return [...new Set(flags)];
 };
