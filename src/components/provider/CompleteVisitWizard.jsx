@@ -1,19 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { X, AlertTriangle, CheckCircle2, DollarSign, FileText } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { getDepositCredit, toMoneyNumber } from '@/lib/checkoutMath';
 
-const toNumber = (value, fallback = 0) => {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : fallback;
-};
-
-const money = (value) => `$${toNumber(value).toFixed(2)}`;
+const money = (value) => `$${toMoneyNumber(value).toFixed(2)}`;
 
 export default function CompleteVisitWizard({ booking, providerData = null, onComplete, onClose }) {
-  const depositPaid = toNumber(booking?.deposit_amount, 50);
-  const estimatedLow = toNumber(booking?.estimated_price_low, 0);
-  const estimatedHigh = toNumber(booking?.estimated_price_high, estimatedLow);
-  const startingFinalPrice = toNumber(booking?.final_price, estimatedHigh || estimatedLow || depositPaid);
+  const depositCredit = getDepositCredit(booking);
+  const estimatedLow = toMoneyNumber(booking?.estimated_price_low, 0);
+  const estimatedHigh = toMoneyNumber(booking?.estimated_price_high, estimatedLow);
+  const startingFinalPrice = toMoneyNumber(booking?.final_price, estimatedHigh || estimatedLow || depositCredit);
 
   const [finalPrice, setFinalPrice] = useState(String(startingFinalPrice || ''));
   const [providerNotes, setProviderNotes] = useState(booking?.provider_notes || '');
@@ -22,8 +18,8 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  const finalPriceNumber = toNumber(finalPrice, 0);
-  const balanceDue = useMemo(() => Math.max(0, finalPriceNumber - depositPaid), [finalPriceNumber, depositPaid]);
+  const finalPriceNumber = toMoneyNumber(finalPrice, 0);
+  const balanceDue = useMemo(() => Math.max(0, finalPriceNumber - depositCredit), [finalPriceNumber, depositCredit]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,6 +51,7 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
         completed_by_provider_name: providerData?.full_name || booking.provider_name || '',
         final_price: finalPriceNumber,
         final_balance_due: balanceDue,
+        final_deposit_credit: depositCredit,
         provider_notes: providerNotes.trim(),
         incident_occurred: incidentOccurred,
         incident_notes: incidentOccurred ? incidentNotes.trim() : '',
@@ -62,7 +59,7 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
         checkout_status: balanceDue > 0 ? 'ready_for_admin_checkout' : 'not_required',
         admin_notes: [
           booking.admin_notes || '',
-          `VISIT_COMPLETED: Provider marked visit completed at ${completedAt}. Final price ${money(finalPriceNumber)}. Deposit credit ${money(depositPaid)}. Final balance due ${money(balanceDue)}. Payment collection still requires admin checkout action.`,
+          `VISIT_COMPLETED: Provider marked visit completed at ${completedAt}. Final price ${money(finalPriceNumber)}. Deposit credit ${money(depositCredit)}. Final balance due ${money(balanceDue)}. Admin checkout review is still required when a balance remains.`,
         ].filter(Boolean).join('\n\n'),
       };
 
@@ -75,7 +72,7 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
           actor: providerData?.full_name || providerData?.email || 'Provider',
           booking: { ...booking, ...updates },
           updates,
-          note: 'Provider completed the visit. Admin should review final balance and send checkout if needed.',
+          note: 'Provider completed the visit. Admin should review final balance and prepare checkout if needed.',
         }
       }).catch(err => console.error('Completion notification failed:', err));
 
@@ -121,7 +118,10 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
             </div>
             <div className="rounded-2xl bg-cream border border-taupe/10 p-4">
               <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30">Deposit Credit</p>
-              <p className="font-heading text-xl text-charcoal mt-2">-{money(depositPaid)}</p>
+              <p className="font-heading text-xl text-charcoal mt-2">-{money(depositCredit)}</p>
+              {booking?.deposit_status !== 'paid' && (
+                <p className="font-body text-[10px] text-charcoal/35 mt-1">No paid deposit on file</p>
+              )}
             </div>
             <div className="rounded-2xl bg-coral/5 border border-coral/15 p-4">
               <p className="font-body text-[10px] uppercase tracking-widest text-coral/60">Balance Due</p>
