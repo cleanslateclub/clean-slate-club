@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Zap, Menu, X } from 'lucide-react';
-import QuickBookingModal from '@/components/admin/QuickBookingModal';
+import { LogOut, Bell, Plus, Calendar, Users, CreditCard, BarChart3, Settings, Zap, Menu, X, LockKeyhole } from 'lucide-react';
 import AdminSidebar from '@/components/admin/os/AdminSidebar';
 import AdminCalendarOS from '@/components/admin/os/AdminCalendarOS';
 import AdminHouseholdsOS from '@/components/admin/os/AdminHouseholdsOS';
@@ -53,6 +52,29 @@ function renderSection(topSection, sidebarItem) {
   }
 }
 
+function LockedBookingNotice({ onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-2xl w-full max-w-md p-6">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-coral/10 border border-coral/20 flex items-center justify-center shrink-0">
+            <LockKeyhole className="w-5 h-5 text-coral" />
+          </div>
+          <div>
+            <p className="font-heading text-lg text-charcoal">New booking is locked</p>
+            <p className="font-body text-sm text-charcoal/45 font-light mt-2 leading-relaxed">
+              The legacy quick-booking modal can create bookings, time blocks, payment links, and confirmation messages. It is locked until Base44 booking, payment, schedule, and notification behavior are verified.
+            </p>
+          </div>
+        </div>
+        <button onClick={onClose} className="mt-5 w-full py-3 rounded-2xl bg-coral text-white font-body text-sm tracking-wide hover:opacity-90 transition-all">
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminCommandCenter() {
   const navigate = useNavigate();
   const [topSection, setTopSection] = useState('calendar');
@@ -75,8 +97,6 @@ export default function AdminCommandCenter() {
     setSidebarItem(item);
     setMobileSidebarOpen(false);
   };
-
-  const sectionLabel = sidebarItem?.label || TOP_NAV.find(n => n.key === topSection)?.label || 'Admin';
 
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#1a1a2e' }}>
@@ -107,9 +127,9 @@ export default function AdminCommandCenter() {
           })}
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setShowNewBooking(true)} className="flex items-center gap-1.5 bg-coral text-white px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-coral/90 transition-colors">
-            <Plus className="w-3.5 h-3.5" />
-            New Booking
+          <button onClick={() => setShowNewBooking(true)} className="flex items-center gap-1.5 bg-white/10 text-white/60 px-3 py-1.5 rounded-lg text-xs font-body font-semibold hover:bg-white/15 transition-colors">
+            <LockKeyhole className="w-3.5 h-3.5" />
+            New Booking Locked
           </button>
           <button className="p-1.5 text-white/40 hover:text-white/70 transition-colors">
             <Bell className="w-4 h-4" />
@@ -177,12 +197,7 @@ export default function AdminCommandCenter() {
         </main>
       </div>
 
-      {showNewBooking && (
-        <QuickBookingModal
-          onClose={() => setShowNewBooking(false)}
-          onSuccess={() => setShowNewBooking(false)}
-        />
-      )}
+      {showNewBooking && <LockedBookingNotice onClose={() => setShowNewBooking(false)} />}
 
       {/* ── Mobile Bottom Navigation ── */}
       <nav className="md:hidden shrink-0 flex items-center border-t border-white/10" style={{ background: '#1a1a2e', paddingBottom: 'env(safe-area-inset-bottom)' }}>
