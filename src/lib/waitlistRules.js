@@ -1,5 +1,11 @@
 import { detectServiceArea } from '@/lib/serviceAreaRules';
 
+const normalize = (value = '') => String(value || '').trim().toLowerCase();
+const safeDateMs = (value) => {
+  const parsed = new Date(value || 0).getTime();
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
 export const WAITLIST_STATUSES = {
   active: 'active',
   offered: 'offered',
@@ -30,6 +36,7 @@ export const buildWaitlistRequest = ({
   adminNotes = '',
 } = {}) => {
   const serviceArea = detectServiceArea(serviceAddress);
+  const serviceAreaStatus = normalize(serviceArea.status) || 'manual_review';
   return {
     status: WAITLIST_STATUSES.active,
     guest_name: guestName,
@@ -42,20 +49,22 @@ export const buildWaitlistRequest = ({
     preferred_time_windows: preferredTimeWindows,
     member_at_request: memberAtRequest,
     service_address: serviceAddress,
-    service_area_status: serviceArea.status,
-    priority_score: calculateWaitlistPriority({ memberAtRequest, serviceAreaStatus: serviceArea.status }),
+    service_area_status: serviceAreaStatus,
+    priority_score: calculateWaitlistPriority({ memberAtRequest, serviceAreaStatus }),
     admin_notes: adminNotes,
   };
 };
 
 export const calculateWaitlistPriority = ({ memberAtRequest = false, serviceAreaStatus = 'inside_area', createdAt } = {}) => {
+  const normalizedServiceAreaStatus = normalize(serviceAreaStatus);
   let score = 0;
   if (memberAtRequest) score += 50;
-  if (serviceAreaStatus === 'inside_area') score += 25;
-  if (serviceAreaStatus === 'manual_review') score += 5;
+  if (normalizedServiceAreaStatus === 'inside_area') score += 25;
+  if (normalizedServiceAreaStatus === 'manual_review') score += 5;
 
   if (createdAt) {
-    const ageHours = Math.max(0, (Date.now() - new Date(createdAt).getTime()) / (60 * 60 * 1000));
+    const createdMs = safeDateMs(createdAt);
+    const ageHours = Math.max(0, (Date.now() - createdMs) / (60 * 60 * 1000));
     score += Math.min(25, Math.floor(ageHours / 24));
   }
 
@@ -63,10 +72,10 @@ export const calculateWaitlistPriority = ({ memberAtRequest = false, serviceArea
 };
 
 export const rankWaitlistRequests = (requests = [], mode = WAITLIST_MODES.manualPick) => {
-  const active = requests.filter(item => item.status === WAITLIST_STATUSES.active);
+  const active = requests.filter(item => normalize(item.status) === WAITLIST_STATUSES.active);
 
   if (mode === WAITLIST_MODES.firstInLine) {
-    return [...active].sort((a, b) => new Date(a.created_date || a.created_at || 0) - new Date(b.created_date || b.created_at || 0));
+    return [...active].sort((a, b) => safeDateMs(a.created_date || a.created_at) - safeDateMs(b.created_date || b.created_at));
   }
 
   if (mode === WAITLIST_MODES.priorityMembers) {
@@ -80,10 +89,12 @@ export const rankWaitlistRequests = (requests = [], mode = WAITLIST_MODES.manual
   return active;
 };
 
-export const applyWaitlistOffer = ({ request = {}, bookingId = '', offerMinutes = 120 } = {}) => ({
-  ...request,
-  status: WAITLIST_STATUSES.offered,
-  offered_booking_id: bookingId,
-  offered_at: new Date().toISOString(),
-  offer_expires_at: new Date(Date.now() + offerMinutes * 60 * 1000).toISOString(),
-});
+export const applyWaitlistOffer = ({ request = {}, bookingId = '', offerMinutes = 120 } = {}) => {
+  const minutes = Math.max(15, Number(offerMinutes) || 120);
+  return {
+    status: WAITLIST_STATUSES.offered,
+    offered_booking_id: bookingId,
+    offered_at: new Date().toISOString(),
+    offer_expires_at: new Date(Date.now() + minutes * 60 * 1000).toISOString(),
+  };
+};
