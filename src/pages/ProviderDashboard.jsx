@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import ProviderCalendar from '@/components/provider/ProviderCalendar';
@@ -102,12 +102,17 @@ export default function ProviderDashboard() {
   const navigate = useNavigate();
   const [providerData, setProviderData] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const bookingsRef = useRef([]);
   const [timeBlocks, setTimeBlocks] = useState([]);
   const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedWeek, setSelectedWeek] = useState(new Date());
   const [activeVisitBooking, setActiveVisitBooking] = useState(null);
   const [providerTab, setProviderTab] = useState('calendar');
+
+  useEffect(() => {
+    bookingsRef.current = bookings;
+  }, [bookings]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -162,6 +167,7 @@ export default function ProviderDashboard() {
           base44.entities.ProviderPayout.filter({ provider_email: providerData.email }),
         ]);
         const providerBookings = allBookings || [];
+        bookingsRef.current = providerBookings;
         setBookings(providerBookings);
         setTimeBlocks(getProviderScopedTimeBlocks(blocks || [], providerBookings, providerData));
         setPayouts(myPayouts || []);
@@ -198,14 +204,14 @@ export default function ProviderDashboard() {
     const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
       if (event.type === 'create') {
         setTimeBlocks(prev => {
-          if (!getProviderScopedTimeBlocks([event.data], [], providerData).length) return prev;
+          if (!getProviderScopedTimeBlocks([event.data], bookingsRef.current, providerData).length) return prev;
           return [...prev, event.data];
         });
       } else if (event.type === 'update') {
         setTimeBlocks(prev => {
           const existing = prev.find(b => b.id === event.id);
           const nextBlock = { ...(existing || {}), id: event.id, ...event.data };
-          const isProviderBlock = getProviderScopedTimeBlocks([nextBlock], bookings, providerData).length > 0;
+          const isProviderBlock = getProviderScopedTimeBlocks([nextBlock], bookingsRef.current, providerData).length > 0;
           if (!isProviderBlock) return prev.filter(b => b.id !== event.id);
           if (!existing) return [...prev, nextBlock];
           return prev.map(b => b.id === event.id ? nextBlock : b);
@@ -219,7 +225,7 @@ export default function ProviderDashboard() {
       unsubBookings();
       unsubBlocks();
     };
-  }, [providerData, bookings]);
+  }, [providerData]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
