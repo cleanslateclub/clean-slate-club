@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { X, Phone, Mail, MapPin, Clock, Trash2 } from 'lucide-react';
+import { X, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
 export default function BookingDetailPopup({ booking, onClose, isAdmin = false }) {
   const [updatingStatus, setUpdatingStatus] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   if (!booking) return null;
 
@@ -24,18 +22,6 @@ export default function BookingDetailPopup({ booking, onClose, isAdmin = false }
     setUpdatingStatus(true);
     await base44.entities.Booking.update(booking.id, { status: newStatus });
     setUpdatingStatus(false);
-    onClose();
-  };
-
-  const handleDelete = async () => {
-    if (!isAdmin) return;
-    setDeleting(true);
-    try {
-      await base44.entities.Booking.delete(booking.id);
-    } catch (error) {
-      console.error('Error deleting booking:', error);
-    }
-    setDeleting(false);
     onClose();
   };
 
@@ -141,26 +127,6 @@ export default function BookingDetailPopup({ booking, onClose, isAdmin = false }
             <div className="px-4 py-3 rounded-2xl bg-butter/15 border border-butter/30">
               <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-1">Notes</p>
               <p className="font-body text-sm text-charcoal/70 font-light">{booking.special_notes}</p>
-            </div>
-          )}
-
-          {isAdmin && (
-            <div className="pt-3 border-t border-taupe/10">
-              {!confirmDelete ? (
-                <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-1.5 text-xs font-body font-light text-charcoal/30 hover:text-red-400 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" /> Delete booking
-                </button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <p className="font-body text-xs text-charcoal/50 font-light">Delete permanently?</p>
-                  <button onClick={handleDelete} disabled={deleting} className="px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-400 text-xs font-body font-light hover:bg-red-100 transition-colors disabled:opacity-50">
-                    {deleting ? 'Deleting...' : 'Yes'}
-                  </button>
-                  <button onClick={() => setConfirmDelete(false)} className="text-xs font-body font-light text-charcoal/40 hover:text-charcoal transition-colors">
-                    Cancel
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
