@@ -3,11 +3,11 @@ import { X, Phone, Mail, MapPin, Clock, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
 
-export default function BookingDetailPopup({ booking, onClose }) {
+export default function BookingDetailPopup({ booking, onClose, isAdmin = false }) {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  
+
   if (!booking) return null;
 
   const cfg = SERVICE_CONFIG[booking.service_category];
@@ -20,6 +20,7 @@ export default function BookingDetailPopup({ booking, onClose }) {
     .filter(Boolean);
 
   const handleStatusChange = async (newStatus) => {
+    if (!isAdmin) return;
     setUpdatingStatus(true);
     await base44.entities.Booking.update(booking.id, { status: newStatus });
     setUpdatingStatus(false);
@@ -27,6 +28,7 @@ export default function BookingDetailPopup({ booking, onClose }) {
   };
 
   const handleDelete = async () => {
+    if (!isAdmin) return;
     setDeleting(true);
     try {
       await base44.entities.Booking.delete(booking.id);
@@ -40,7 +42,6 @@ export default function BookingDetailPopup({ booking, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
       <div className="bg-warm-white rounded-3xl border border-taupe/15 shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="sticky top-0 bg-warm-white border-b border-taupe/10 px-6 py-4 flex items-start justify-between">
           <div>
             <h2 className="font-heading text-lg font-semibold text-charcoal">{booking.client_name}</h2>
@@ -52,7 +53,6 @@ export default function BookingDetailPopup({ booking, onClose }) {
         </div>
 
         <div className="p-6 space-y-5">
-          {/* Schedule */}
           <div className="bg-cream rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-3.5 h-3.5 text-charcoal/30" />
@@ -69,7 +69,6 @@ export default function BookingDetailPopup({ booking, onClose }) {
             )}
           </div>
 
-          {/* Contact */}
           <div className="space-y-2">
             {booking.client_phone && (
               <a href={`tel:${booking.client_phone}`} className="flex items-center gap-3 p-3 rounded-xl border border-taupe/15 hover:border-coral/30 hover:bg-cream transition-colors">
@@ -91,8 +90,7 @@ export default function BookingDetailPopup({ booking, onClose }) {
             )}
           </div>
 
-          {/* Service & Add-ons */}
-          {(addonLabels.length > 0) && (
+          {addonLabels.length > 0 && (
             <div className="bg-cream rounded-2xl p-4">
               <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Add-ons</p>
               <div className="space-y-1">
@@ -103,7 +101,6 @@ export default function BookingDetailPopup({ booking, onClose }) {
             </div>
           )}
 
-          {/* Pricing */}
           <div className="bg-cream rounded-2xl p-4">
             <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Estimate</p>
             <p className="font-body text-xl font-semibold text-coral">
@@ -111,28 +108,35 @@ export default function BookingDetailPopup({ booking, onClose }) {
             </p>
           </div>
 
-          {/* Status */}
           <div className="bg-cream rounded-2xl p-4">
-            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-3">Status</p>
-            <div className="flex gap-2 flex-wrap">
-              {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
-                <button
-                  key={s}
-                  disabled={booking.status === s || updatingStatus}
-                  onClick={() => handleStatusChange(s)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-body font-light border transition-all disabled:cursor-default capitalize ${
-                    booking.status === s
-                      ? 'bg-coral/20 border-coral/40 text-charcoal'
-                      : 'border-taupe/20 bg-white text-charcoal/50 hover:border-coral/30'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+            <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-2">Status</p>
+            <span className="inline-flex px-3 py-1.5 rounded-full text-xs font-body font-light border capitalize bg-coral/10 border-coral/25 text-charcoal/70">
+              {booking.status || 'pending'}
+            </span>
           </div>
 
-          {/* Special notes */}
+          {isAdmin && (
+            <div className="bg-cream rounded-2xl p-4">
+              <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-3">Admin Status Controls</p>
+              <div className="flex gap-2 flex-wrap">
+                {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
+                  <button
+                    key={s}
+                    disabled={booking.status === s || updatingStatus}
+                    onClick={() => handleStatusChange(s)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-body font-light border transition-all disabled:cursor-default capitalize ${
+                      booking.status === s
+                        ? 'bg-coral/20 border-coral/40 text-charcoal'
+                        : 'border-taupe/20 bg-white text-charcoal/50 hover:border-coral/30'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {booking.special_notes && (
             <div className="px-4 py-3 rounded-2xl bg-butter/15 border border-butter/30">
               <p className="font-body text-[10px] uppercase tracking-widest text-charcoal/30 font-light mb-1">Notes</p>
@@ -140,36 +144,27 @@ export default function BookingDetailPopup({ booking, onClose }) {
             </div>
           )}
 
-          {/* Delete */}
-          <div className="pt-3 border-t border-taupe/10">
-            {!confirmDelete ? (
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-1.5 text-xs font-body font-light text-charcoal/30 hover:text-red-400 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" /> Delete booking
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <p className="font-body text-xs text-charcoal/50 font-light">Delete permanently?</p>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-400 text-xs font-body font-light hover:bg-red-100 transition-colors disabled:opacity-50"
-                >
-                  {deleting ? 'Deleting...' : 'Yes'}
+          {isAdmin && (
+            <div className="pt-3 border-t border-taupe/10">
+              {!confirmDelete ? (
+                <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-1.5 text-xs font-body font-light text-charcoal/30 hover:text-red-400 transition-colors">
+                  <Trash2 className="w-3.5 h-3.5" /> Delete booking
                 </button>
-                <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="text-xs font-body font-light text-charcoal/40 hover:text-charcoal transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
-          </div>
-          </div>
-          </div>
-          );
-          }
+              ) : (
+                <div className="flex items-center gap-2">
+                  <p className="font-body text-xs text-charcoal/50 font-light">Delete permanently?</p>
+                  <button onClick={handleDelete} disabled={deleting} className="px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-400 text-xs font-body font-light hover:bg-red-100 transition-colors disabled:opacity-50">
+                    {deleting ? 'Deleting...' : 'Yes'}
+                  </button>
+                  <button onClick={() => setConfirmDelete(false)} className="text-xs font-body font-light text-charcoal/40 hover:text-charcoal transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
