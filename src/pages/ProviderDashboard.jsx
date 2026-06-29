@@ -12,6 +12,20 @@ import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
 const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
 
+const getProviderScopedTimeBlocks = (blocks = [], bookings = [], providerData = {}) => {
+  const providerEmail = providerData?.email;
+  const providerId = providerData?.id;
+  const bookingIds = new Set((bookings || []).map(booking => booking.id).filter(Boolean));
+
+  return (blocks || []).filter(block => {
+    if (!block) return false;
+    if (providerEmail && block.provider_email === providerEmail) return true;
+    if (providerId && block.provider_id === providerId) return true;
+    if (block.booking_id && bookingIds.has(block.booking_id)) return true;
+    return false;
+  });
+};
+
 const getProviderDashboardReadiness = ({ providerData, bookings, timeBlocks, todaysJobs }) => [
   {
     key: 'profile',
@@ -146,8 +160,9 @@ export default function ProviderDashboard() {
           base44.entities.TimeBlock.list(),
           base44.entities.ProviderPayout.filter({ provider_email: providerData.email }),
         ]);
-        setBookings(allBookings || []);
-        setTimeBlocks(blocks || []);
+        const providerBookings = allBookings || [];
+        setBookings(providerBookings);
+        setTimeBlocks(getProviderScopedTimeBlocks(blocks || [], providerBookings, providerData));
         setPayouts(myPayouts || []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -172,7 +187,10 @@ export default function ProviderDashboard() {
 
     const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
       if (event.type === 'create') {
-        setTimeBlocks(prev => [...prev, event.data]);
+        setTimeBlocks(prev => {
+          if (!getProviderScopedTimeBlocks([event.data], bookings, providerData).length) return prev;
+          return [...prev, event.data];
+        });
       } else if (event.type === 'update') {
         setTimeBlocks(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
       } else if (event.type === 'delete') {
@@ -184,7 +202,7 @@ export default function ProviderDashboard() {
       unsubBookings();
       unsubBlocks();
     };
-  }, [providerData]);
+  }, [providerData, bookings]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
