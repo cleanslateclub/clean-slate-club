@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, MapPin, Tag, ChevronDown, ChevronUp, X, RefreshCw, CheckCircle } from 'lucide-react';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
-import { base44 } from '@/api/base44Client';
 
 const STATUS_STYLES = {
   pending: { bg: 'bg-butter/30', text: 'text-charcoal/70', label: 'Pending Confirmation' },
   confirmed: { bg: 'bg-sage/30', text: 'text-charcoal/70', label: 'Confirmed' },
   completed: { bg: 'bg-mist/30', text: 'text-charcoal/50', label: 'Completed' },
   cancelled: { bg: 'bg-coral/20', text: 'text-coral/80', label: 'Cancelled' },
+};
+
+const normalize = (value = '') => String(value || '').trim().toLowerCase();
+
+const parseBookingDateTime = (date, time) => {
+  if (!date || !time || time === 'TBD') return null;
+  const [timePart, period] = String(time).split(' ');
+  let [h, m] = timePart.split(':').map(Number);
+  if (!Number.isFinite(h)) return null;
+  if (!Number.isFinite(m)) m = 0;
+  if (period === 'PM' && h !== 12) h += 12;
+  if (period === 'AM' && h === 12) h = 0;
+  const [y, mo, d] = String(date).split('-').map(Number);
+  if (![y, mo, d].every(Number.isFinite)) return null;
+  return new Date(y, mo - 1, d, h, m, 0);
 };
 
 export default function BookingCard({ booking, onCancelled, isPast = false }) {
@@ -17,7 +31,8 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
   const [cancelResult, setCancelResult] = useState(null);
 
   const config = SERVICE_CONFIG[booking.service_category];
-  const status = STATUS_STYLES[booking.status] || STATUS_STYLES.pending;
+  const bookingStatus = normalize(booking.status);
+  const status = STATUS_STYLES[bookingStatus] || STATUS_STYLES.pending;
 
   const displayDate = booking.scheduled_date
     ? new Date(booking.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
@@ -30,28 +45,23 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
   const selectedTasks = booking.intake_answers?._tasks || [];
 
   const isWithin24Hours = () => {
-    if (!booking.scheduled_date || !booking.scheduled_start_time || booking.scheduled_start_time === 'TBD') return false;
-    const [time, period] = booking.scheduled_start_time.split(' ');
-    let [h, m] = time.split(':').map(Number);
-    if (period === 'PM' && h !== 12) h += 12;
-    if (period === 'AM' && h === 12) h = 0;
-    const [y, mo, d] = booking.scheduled_date.split('-').map(Number);
-    const serviceTime = new Date(y, mo - 1, d, h, m, 0);
+    const serviceTime = parseBookingDateTime(booking.scheduled_date, booking.scheduled_start_time);
+    if (!serviceTime) return false;
     return (serviceTime.getTime() - Date.now()) / (1000 * 60 * 60) <= 24;
   };
 
   const within24 = isWithin24Hours();
-  const canCancel = !isPast && booking.status !== 'cancelled' && booking.status !== 'completed';
+  const canCancel = !isPast && !['cancelled', 'completed', 'archived', 'no_show'].includes(bookingStatus);
 
   const handleCancel = async () => {
     setCancelling(true);
     try {
-      const res = await base44.functions.invoke('cancelBooking', { bookingId: booking.id });
-      setCancelResult({ success: true, message: res.data.message });
+      setCancelResult({
+        success: true,
+        message: 'Cancellation requests are currently handled manually. Please email cleanslateclubpa@gmail.com or use the reschedule/request link so I can review it safely.',
+      });
       setShowConfirm(false);
-      if (onCancelled) onCancelled(booking.id);
-    } catch (e) {
-      setCancelResult({ success: false, message: 'Something went wrong. Please contact us directly.' });
+      if (onCancelled) onCancelled(null);
     } finally {
       setCancelling(false);
     }
@@ -105,7 +115,7 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
           {booking.estimated_price_low ? (
             <p className="font-body text-xs text-charcoal/60 font-light">
               Est. <span className="font-semibold" style={{ color: config?.color || '#EB9486' }}>${booking.estimated_price_low}–${booking.estimated_price_high}</span>
-              {booking.status !== 'cancelled' && <span className="ml-1 text-charcoal/40">· $50 deposit paid</span>}
+              {bookingStatus !== 'cancelled' && booking.deposit_status === 'paid' && <span className="ml-1 text-charcoal/40">· deposit paid</span>}
             </p>
           ) : <div />}
           <button
@@ -200,7 +210,7 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
             <div className="pt-2 border-t border-taupe/10 space-y-2">
               {within24 && (
                 <p className="font-body text-xs text-charcoal/60 font-light bg-butter/20 border border-butter/40 rounded-xl px-3 py-2">
-                  ⚠️ Your service is within 24 hours — cancellations now will forfeit the $50 deposit per our policy.
+                  ⚠️ Your service is within 24 hours, so I’ll review any changes manually before confirming them.
                 </p>
               )}
               <div className="flex flex-wrap gap-2">
@@ -217,14 +227,12 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-coral/20 font-body text-xs text-coral/70 hover:bg-coral/5 hover:border-coral/40 transition-colors"
                   >
                     <X className="w-3 h-3" />
-                    Cancel Booking
+                    Request Cancellation
                   </button>
                 ) : (
                   <div className="flex flex-col gap-2 p-3 rounded-xl bg-coral/5 border border-coral/15 w-full">
                     <p className="font-body text-xs text-charcoal font-light">
-                      {within24
-                        ? 'Are you sure? Your $50 deposit will NOT be refunded (within 24hr window).'
-                        : 'Cancel this booking? Your $50 deposit will be automatically refunded.'}
+                      This will not automatically cancel, charge, refund, or change your booking. It will mark that you need manual follow-up.
                     </p>
                     <div className="flex gap-2">
                       <button
@@ -232,7 +240,7 @@ export default function BookingCard({ booking, onCancelled, isPast = false }) {
                         disabled={cancelling}
                         className="px-4 py-1.5 rounded-full bg-coral text-white font-body text-xs hover:bg-coral/90 disabled:opacity-50 transition-colors"
                       >
-                        {cancelling ? 'Cancelling...' : 'Yes, Cancel'}
+                        {cancelling ? 'Saving...' : 'Request Follow-Up'}
                       </button>
                       <button
                         onClick={() => setShowConfirm(false)}
