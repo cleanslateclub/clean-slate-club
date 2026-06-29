@@ -74,7 +74,7 @@ export default function ProviderCalendar({
   }, [filteredBlocks, weekDates]);
 
   const handleDragEnd = ({ destination, draggableId }) => {
-    if (!destination) return;
+    if (!isAdmin || !destination) return;
     const blockId = draggableId.split('-')[1];
     const block = timeBlocks.find(b => b.id === blockId);
     if (!block) return;
@@ -152,23 +152,25 @@ export default function ProviderCalendar({
                   <p className={`font-heading text-lg font-semibold leading-tight ${isToday ? 'text-coral' : 'text-charcoal'}`}>{date.getDate()}</p>
                 </div>
 
-                <button onClick={() => handleBook?.(dateStr, '10:00 AM')} className="mb-2 w-full py-2 rounded-lg border-2 border-dashed border-coral/50 bg-coral/5 text-coral text-xs font-body font-bold hover:border-coral hover:bg-coral/10 active:scale-95 transition-all flex items-center justify-center gap-1">
-                  <Plus className="w-3.5 h-3.5" /> Book+
-                </button>
+                {isAdmin && (
+                  <button onClick={() => handleBook?.(dateStr, '10:00 AM')} className="mb-2 w-full py-2 rounded-lg border-2 border-dashed border-coral/50 bg-coral/5 text-coral text-xs font-body font-bold hover:border-coral hover:bg-coral/10 active:scale-95 transition-all flex items-center justify-center gap-1">
+                    <Plus className="w-3.5 h-3.5" /> Book+
+                  </button>
+                )}
 
-                <Droppable droppableId={dayIdx.toString()}>
+                <Droppable droppableId={dayIdx.toString()} isDropDisabled={!isAdmin}>
                   {(provided, snapshot) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps} className={`space-y-1.5 min-h-[400px] rounded-lg transition-colors ${snapshot.isDraggingOver ? 'bg-coral/5 p-1' : ''}`}>
+                    <div ref={provided.innerRef} {...provided.droppableProps} className={`space-y-1.5 min-h-[400px] rounded-lg transition-colors ${snapshot.isDraggingOver && isAdmin ? 'bg-coral/5 p-1' : ''}`}>
                       {dayBlocks.map((block, idx) => {
                         const booking = bookings.find(b => b.id === block.booking_id);
                         return (
-                          <Draggable key={block.id} draggableId={`block-${block.id}`} index={idx}>
+                          <Draggable key={block.id} draggableId={`block-${block.id}`} index={idx} isDragDisabled={!isAdmin}>
                             {(provided, snapshot) => (
-                              <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className={snapshot.isDragging ? 'opacity-60' : ''} onMouseEnter={e => booking && showHover(e, booking)} onMouseLeave={hideHover}>
+                              <div ref={provided.innerRef} {...provided.draggableProps} {...(isAdmin ? provided.dragHandleProps : {})} className={snapshot.isDragging ? 'opacity-60' : ''} onMouseEnter={e => booking && showHover(e, booking)} onMouseLeave={hideHover}>
                                 <CalendarEvent
                                   block={block}
                                   booking={booking}
-                                  onUpdate={onTimeBlockUpdate}
+                                  onUpdate={isAdmin ? onTimeBlockUpdate : undefined}
                                   onClick={() => {
                                     if (booking) {
                                       setSelectedBooking(booking);
@@ -192,7 +194,9 @@ export default function ProviderCalendar({
         </div>
       </DragDropContext>
 
-      <p className="text-xs font-body text-charcoal/25 font-light mt-4 text-center">Drag appointments to reschedule · Hover over a booking for details</p>
+      <p className="text-xs font-body text-charcoal/25 font-light mt-4 text-center">
+        {isAdmin ? 'Drag appointments to reschedule · Hover over a booking for details' : 'Hover over a booking for details'}
+      </p>
 
       {selectedBooking && <BookingDetailPopup booking={selectedBooking} onClose={() => setSelectedBooking(null)} />}
 
