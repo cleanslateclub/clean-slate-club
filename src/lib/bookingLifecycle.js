@@ -1,6 +1,8 @@
 import { AUDIT_EVENTS, appendInlineAuditEvent } from '@/lib/auditLog';
 import { BOOKING_RULES_DEFAULTS } from '@/lib/backendOSConfig';
 
+const normalizeEmail = (value = '') => String(value || '').trim().toLowerCase();
+
 export const BOOKING_STATUSES = {
   draft: 'draft',
   pending: 'pending',
@@ -64,22 +66,20 @@ export const canSendFinalCheckout = (booking = {}) => {
 };
 
 export const applyProviderAssignment = (booking = {}, provider = {}, actorName = 'Admin') => ({
-  ...booking,
   status: BOOKING_STATUSES.providerAssigned,
   provider_id: provider.id || booking.provider_id || '',
   provider_name: provider.full_name || provider.name || booking.provider_name || '',
-  provider_email: provider.email || booking.provider_email || '',
+  provider_email: normalizeEmail(provider.email || booking.provider_email || ''),
   audit_log: appendInlineAuditEvent(booking.audit_log, {
     eventType: AUDIT_EVENTS.providerAssigned,
     summary: `Provider assigned: ${provider.full_name || provider.email || 'Provider'}`,
     actorName,
     actorRole: 'admin',
-    metadata: { provider_id: provider.id, provider_email: provider.email },
+    metadata: { provider_id: provider.id, provider_email: normalizeEmail(provider.email || '') },
   }),
 });
 
 export const applyCancellation = ({ booking = {}, reason = '', actorName = 'Admin', retainDeposit = false } = {}) => ({
-  ...booking,
   status: BOOKING_STATUSES.cancelled,
   cancelled_at: new Date().toISOString(),
   cancelled_by: actorName,
@@ -104,7 +104,6 @@ export const applyReschedule = ({ booking = {}, date, startTime, endTime, actorN
     : 0;
 
   return {
-    ...booking,
     status: BOOKING_STATUSES.rescheduled,
     original_scheduled_date: booking.original_scheduled_date || booking.scheduled_date,
     original_scheduled_start_time: booking.original_scheduled_start_time || booking.scheduled_start_time,
@@ -124,7 +123,6 @@ export const applyReschedule = ({ booking = {}, date, startTime, endTime, actorN
 };
 
 export const applyCheckoutSent = ({ booking = {}, checkoutUrl = '', actorName = 'Admin' } = {}) => ({
-  ...booking,
   payment_status: PAYMENT_STATUSES.checkoutSent,
   checkout_link_url: checkoutUrl || booking.checkout_link_url,
   checkout_sent_at: new Date().toISOString(),
