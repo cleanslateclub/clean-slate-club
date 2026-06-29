@@ -11,13 +11,13 @@ const getProviderUsernameValues = (provider: Record<string, unknown>) => [
 
 const providerCanAccessPortal = (provider: Record<string, unknown>) => {
   const status = normalize(provider.status || 'draft');
-  const accessLevel = normalize(provider.access_level || 'provider_basic');
   const explicitAccess = provider.portal_access_enabled === true || provider.team_portal_access === true;
 
   if (provider.portal_access_enabled === false || provider.team_portal_access === false) return false;
   if (['inactive', 'suspended', 'terminated', 'rejected', 'draft'].includes(status)) return false;
+  if (status !== 'active' && !explicitAccess) return false;
 
-  return explicitAccess || status === 'active' || accessLevel.startsWith('provider');
+  return true;
 };
 
 const passwordMatches = (provider: Record<string, unknown>, password: string) => {
