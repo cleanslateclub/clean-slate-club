@@ -8,6 +8,15 @@ const minutesToTime = (totalMinutes = 0) => {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 
+const toSafeMinutes = (value, fallback = 0) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const toSafeTravelMinutes = (value = TRAVEL_BUFFER) => (
+  Math.max(0, Math.min(120, Math.round(toSafeMinutes(value, TRAVEL_BUFFER))))
+);
+
 export const TIME_BLOCK_TYPES = {
   booking: 'booking',
   travel: 'travel',
@@ -30,11 +39,13 @@ export const BLOCK_STATUSES = {
 };
 
 export const buildBookingBlocks = ({ bookingId, date, startTime, durationMinutes, label = 'Visit', travelMinutes = TRAVEL_BUFFER } = {}) => {
-  if (!date || !startTime || !durationMinutes) return [];
-  const endTime = minutesToTime(timeToMinutes(startTime) + Number(durationMinutes));
-  const travelEnd = minutesToTime(timeToMinutes(endTime) + Number(travelMinutes || 0));
+  const startMinutes = timeToMinutes(startTime);
+  const duration = toSafeMinutes(durationMinutes, 0);
 
-  return [
+  if (!date || !startTime || !Number.isFinite(startMinutes) || duration <= 0) return [];
+
+  const endTime = minutesToTime(startMinutes + duration);
+  const blocks = [
     {
       date,
       start_time: startTime,
@@ -44,25 +55,32 @@ export const buildBookingBlocks = ({ bookingId, date, startTime, durationMinutes
       status: BLOCK_STATUSES.active,
       label,
     },
-    {
+  ];
+
+  const travel = toSafeTravelMinutes(travelMinutes);
+  if (travel > 0) {
+    blocks.push({
       date,
       start_time: endTime,
-      end_time: travelEnd,
+      end_time: minutesToTime(timeToMinutes(endTime) + travel),
       booking_id: bookingId,
       block_type: TIME_BLOCK_TYPES.travel,
       status: BLOCK_STATUSES.active,
       label: 'Travel buffer',
-      travel_minutes: Number(travelMinutes || 0),
-    },
-  ];
+      travel_minutes: travel,
+    });
+  }
+
+  return blocks;
 };
 
 export const buildConsultBlock = ({ bookingId, date, startTime, label = 'Consult' } = {}) => {
-  if (!date || !startTime) return null;
+  const startMinutes = timeToMinutes(startTime);
+  if (!date || !startTime || !Number.isFinite(startMinutes)) return null;
   return {
     date,
     start_time: startTime,
-    end_time: minutesToTime(timeToMinutes(startTime) + 15),
+    end_time: minutesToTime(startMinutes + 15),
     booking_id: bookingId,
     block_type: TIME_BLOCK_TYPES.consult,
     status: BLOCK_STATUSES.active,
@@ -76,6 +94,7 @@ export const blocksOverlap = (a = {}, b = {}) => {
   const aEnd = timeToMinutes(a.end_time);
   const bStart = timeToMinutes(b.start_time);
   const bEnd = timeToMinutes(b.end_time);
+  if (![aStart, aEnd, bStart, bEnd].every(Number.isFinite)) return false;
   return aStart < bEnd && bStart < aEnd;
 };
 
