@@ -5,9 +5,37 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export const BLACKOUT_HOLIDAY_KEYS = ['jan_1', 'thanksgiving', 'dec_25'];
 export const PREMIUM_HOLIDAY_KEYS = ['easter_weekend', 'memorial_day_weekend', 'july_4', 'labor_day', 'dec_24', 'dec_31'];
 
+export const timeToMinutes = (time = '00:00') => {
+  const value = String(time || '00:00').trim();
+  const match12h = value.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
+
+  if (match12h) {
+    let hours = Number(match12h[1]);
+    const minutes = Number(match12h[2] || 0);
+    const meridiem = match12h[3].toUpperCase();
+    if (meridiem === 'PM' && hours !== 12) hours += 12;
+    if (meridiem === 'AM' && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  }
+
+  const [hours, minutes] = value.split(':').map(Number);
+  if (!Number.isFinite(hours)) return NaN;
+  return hours * 60 + (Number.isFinite(minutes) ? minutes : 0);
+};
+
+const minutesToTime24 = (minutes = 0) => {
+  if (!Number.isFinite(minutes)) return '00:00';
+  const normalized = ((minutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const mins = normalized % 60;
+  return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+};
+
 export const parseBookingDateTime = (date, time = '00:00') => {
   if (!date) return null;
-  return new Date(`${date}T${time || '00:00'}:00`);
+  const minutes = timeToMinutes(time || '00:00');
+  if (!Number.isFinite(minutes)) return null;
+  return new Date(`${date}T${minutesToTime24(minutes)}:00`);
 };
 
 export const getLeadTimeHours = ({ date, time, now = new Date() } = {}) => {
@@ -21,16 +49,12 @@ export const isSunday = (date) => {
   return target ? target.getDay() === 0 : false;
 };
 
-export const timeToMinutes = (time = '00:00') => {
-  const [hours, minutes] = String(time).split(':').map(Number);
-  return (Number(hours) || 0) * 60 + (Number(minutes) || 0);
-};
-
 export const isInsidePublicHours = ({ startTime, endTime, rules = BOOKING_RULES_DEFAULTS } = {}) => {
   const start = timeToMinutes(startTime);
   const end = timeToMinutes(endTime || startTime);
   const publicStart = timeToMinutes(rules.publicHours?.start || '10:00');
   const publicEnd = timeToMinutes(rules.publicHours?.end || '18:00');
+  if (![start, end, publicStart, publicEnd].every(Number.isFinite)) return false;
   return start >= publicStart && end <= publicEnd;
 };
 
@@ -39,6 +63,7 @@ export const isConsultWindow = ({ date, startTime } = {}) => {
   if (!target) return false;
   const day = target.getDay();
   const start = timeToMinutes(startTime);
+  if (!Number.isFinite(start)) return false;
   return day === 1 && start >= timeToMinutes('10:00') && start < timeToMinutes('12:00');
 };
 
