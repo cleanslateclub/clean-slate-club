@@ -1,4 +1,13 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+
+const getPayload = async (req: Request) => {
+  try {
+    const body = await req.json();
+    return body?.data ?? body ?? {};
+  } catch {
+    return {};
+  }
+};
 
 // Convert "9:00 AM" / "2:30 PM" → "09:00" / "14:30" for Google Calendar
 function to24h(timeStr: string): string {
@@ -6,24 +15,46 @@ function to24h(timeStr: string): string {
   const [time, meridiem] = timeStr.split(' ');
   if (!meridiem) return timeStr;
   let [hours, minutes] = time.split(':').map(Number);
+  if (Number.isNaN(hours)) return '09:00';
+  if (Number.isNaN(minutes)) minutes = 0;
   if (meridiem === 'PM' && hours !== 12) hours += 12;
   if (meridiem === 'AM' && hours === 12) hours = 0;
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
+function timeToMinutes(timeStr: string): number | null {
+  if (!timeStr || timeStr === 'TBD') return null;
+  const [time, meridiem] = timeStr.split(' ');
+  let [hours, minutes] = time.split(':').map(Number);
+  if (Number.isNaN(hours)) return null;
+  if (Number.isNaN(minutes)) minutes = 0;
+  if (meridiem === 'PM' && hours !== 12) hours += 12;
+  if (meridiem === 'AM' && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+}
+
+function minutesToTime(totalMinutes: number): string {
+  const minutesInDay = ((totalMinutes % 1440) + 1440) % 1440;
+  const hours24 = Math.floor(minutesInDay / 60);
+  const minutes = minutesInDay % 60;
+  const meridiem = hours24 >= 12 ? 'PM' : 'AM';
+  const hours12 = hours24 % 12 || 12;
+  return `${hours12}:${String(minutes).padStart(2, '0')} ${meridiem}`;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-
+    const payload = await getPayload(req);
     const {
       bookingId,
-      newDate,         // YYYY-MM-DD
-      newStartTime,    // e.g. "10:00 AM"
-      newEndTime,      // e.g. "2:00 PM"
-      reason,          // optional string
-      rescheduledBy,   // provider name or "Admin"
-      notifyClient,    // boolean — provider chose Yes or No before submitting
-    } = await req.json();
+      newDate,
+      newStartTime,
+      newEndTime,
+      reason,
+      rescheduledBy,
+      notifyClient,
+    } = payload;
 
     // --- Validate ---
     if (!bookingId || !newDate || !newStartTime || !newEndTime) {
@@ -31,6 +62,12 @@ Deno.serve(async (req) => {
         { success: false, error: 'Missing required fields: bookingId, newDate, newStartTime, newEndTime.' },
         { status: 400 }
       );
+    }
+
+    const newStartMinutes = timeToMinutes(newStartTime);
+    const newEndMinutes = timeToMinutes(newEndTime);
+    if (newStartMinutes === null || newEndMinutes === null || newEndMinutes <= newStartMinutes) {
+      return Response.json({ success: false, error: 'New schedule time range is invalid.' }, { status: 400 });
     }
 
     // --- Load booking ---
@@ -41,14 +78,17 @@ Deno.serve(async (req) => {
 
     const oldDate = booking.scheduled_date;
     const oldStart = booking.scheduled_start_time;
+    const oldEnd = booking.scheduled_end_time;
+    const changedAt = new Date().toISOString();
+    const actor = rescheduledBy || 'Provider';
 
     // --- Build admin note ---
     const rescheduleNote = [
-      `\n➩ Rescheduled by ${rescheduledBy || 'Provider'} on ${new Date().toLocaleDateString('en-US')}`,
-      `   From: ${oldDate} at ${oldStart}`,
-      `   To:   ${newDate} at ${newStartTime}`,
+      `\n➩ Rescheduled by ${actor} at ${changedAt}`,
+      `   From: ${oldDate} ${oldStart || ''}${oldEnd ? ` - ${oldEnd}` : ''}`,
+      `   To:   ${newDate} ${newStartTime} - ${newEndTime}`,
       reason ? `   Reason: ${reason}` : null,
-      `   Client notified: ${notifyClient ? 'Yes' : 'No'}`,
+      `   Guest notified: ${notifyClient ? 'Yes' : 'No'}`,
     ].filter(Boolean).join('\n');
 
     // --- Update booking ---
@@ -56,6 +96,11 @@ Deno.serve(async (req) => {
       scheduled_date: newDate,
       scheduled_start_time: newStartTime,
       scheduled_end_time: newEndTime,
+      previous_scheduled_date: oldDate || '',
+      previous_scheduled_start_time: oldStart || '',
+      previous_scheduled_end_time: oldEnd || '',
+      rescheduled_at: changedAt,
+      rescheduled_by: actor,
       admin_notes: (booking.admin_notes || '') + rescheduleNote,
     });
 
@@ -64,10 +109,13 @@ Deno.serve(async (req) => {
       const blocks = await base44.asServiceRole.entities.TimeBlock.filter({ booking_id: bookingId });
       for (const block of blocks || []) {
         const isTravel = block.block_type === 'travel';
+        const travelMinutes = Number.isFinite(Number(block.travel_minutes)) ? Number(block.travel_minutes) : Number(booking.travel_buffer_minutes ?? 20);
         await base44.asServiceRole.entities.TimeBlock.update(block.id, {
           date: newDate,
           start_time: isTravel ? newEndTime : newStartTime,
-          end_time: isTravel ? block.end_time : newEndTime,
+          end_time: isTravel ? minutesToTime(newEndMinutes + Math.max(0, travelMinutes)) : newEndTime,
+          last_changed_by: 'rescheduleBooking',
+          last_changed_at: changedAt,
         });
       }
     } catch (blockErr) {
@@ -94,7 +142,7 @@ Deno.serve(async (req) => {
               end: { dateTime: endDateTime, timeZone: 'America/New_York' },
               description: [
                 booking.client_address ? `Address: ${booking.client_address}` : null,
-                reason ? `Reschedule reason: ${reason}` : null,
+                reason ? `Schedule note: ${reason}` : null,
               ].filter(Boolean).join('\n'),
             }),
           }
@@ -114,11 +162,13 @@ Deno.serve(async (req) => {
       month: 'long',
       day: 'numeric',
     });
-    const oldDisplayDate = new Date(oldDate + 'T00:00:00').toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    });
+    const oldDisplayDate = oldDate
+      ? new Date(oldDate + 'T00:00:00').toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+        })
+      : 'Previous date';
 
     // --- Notify client (only if provider said Yes) ---
     if (notifyClient) {
@@ -131,8 +181,8 @@ Deno.serve(async (req) => {
           const fromNumber = Deno.env.get('TWILIO_PHONE_NUMBER');
 
           const smsBody = reason
-            ? `Hi ${booking.client_name}! Your Clean Slate Club visit has been rescheduled to ${displayDate} at ${newStartTime}. Reason: ${reason}. Questions? Text us at (206) 825-4061. Reply STOP to opt out.`
-            : `Hi ${booking.client_name}! Your Clean Slate Club visit has been rescheduled to ${displayDate} at ${newStartTime}. Questions? Text us at (206) 825-4061. Reply STOP to opt out.`;
+            ? `Hi ${booking.client_name}! Your Clean Slate Club visit has been moved to ${displayDate} at ${newStartTime}. Note: ${reason}. Questions? Text us at (206) 825-4061. Reply STOP to opt out.`
+            : `Hi ${booking.client_name}! Your Clean Slate Club visit has been moved to ${displayDate} at ${newStartTime}. Questions? Text us at (206) 825-4061. Reply STOP to opt out.`;
 
           const auth = btoa(`${accountSid}:${authToken}`);
           await fetch(
@@ -183,15 +233,15 @@ Deno.serve(async (req) => {
     <p class="brand-sub">Club™</p>
   </div>
   <div class="body">
-    <p class="greeting">Your visit has been rescheduled 📅</p>
+    <p class="greeting">Your visit has been moved 📅</p>
     <p>No worries — your upcoming visit has been moved to a new time. Here are your updated details:</p>
     <div class="card">
       <p class="card-label">Previous Date &amp; Time</p>
-      <p class="card-value muted">${oldDisplayDate} at ${oldStart}</p>
+      <p class="card-value muted">${oldDisplayDate} at ${oldStart || 'previous time'}</p>
       <p class="card-label" style="margin-top:14px;">New Date &amp; Time</p>
       <p class="card-value"><strong>${displayDate} at ${newStartTime}</strong></p>
       ${booking.client_address ? `<p class="card-label" style="margin-top:14px;">Location</p><p class="card-value">${booking.client_address}</p>` : ''}
-      ${reason ? `<p class="card-label" style="margin-top:14px;">Reason</p><p class="card-value">${reason}</p>` : ''}
+      ${reason ? `<p class="card-label" style="margin-top:14px;">Note</p><p class="card-value">${reason}</p>` : ''}
     </div>
     <p style="font-size:14px;color:#888;font-weight:300;">If this doesn’t work for you, just reply to this email or text us and we’ll sort it out.</p>
     <p style="font-size:13px;color:#aaa;margin-top:24px;font-weight:300;">With care,<br><strong style="color:#EB9486;font-family:'Montserrat',sans-serif;font-weight:600;">Masha</strong><br>Clean Slate Club™</p>
@@ -204,7 +254,7 @@ Deno.serve(async (req) => {
 
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: booking.client_email,
-            subject: `Your Clean Slate Club visit has been rescheduled — ${displayDate}`,
+            subject: `Your Clean Slate Club visit has been moved — ${displayDate}`,
             body: emailBody,
           });
         } catch (emailErr) {
@@ -217,16 +267,16 @@ Deno.serve(async (req) => {
     try {
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: 'cleanslateclubpa@gmail.com',
-        subject: `📅 Booking rescheduled by ${rescheduledBy || 'Provider'} — ${booking.client_name}`,
+        subject: `📅 Booking moved by ${actor} — ${booking.client_name}`,
         body: [
-          `A booking has been rescheduled.`,
+          `A booking time was changed.`,
           ``,
-          `Client: ${booking.client_name}`,
-          `Rescheduled by: ${rescheduledBy || 'Provider'}`,
-          `From: ${oldDisplayDate} at ${oldStart}`,
+          `Guest: ${booking.client_name}`,
+          `Changed by: ${actor}`,
+          `From: ${oldDisplayDate} at ${oldStart || 'previous time'}`,
           `To: ${displayDate} at ${newStartTime}`,
-          reason ? `Reason: ${reason}` : null,
-          `Client notified: ${notifyClient ? 'Yes (SMS + Email)' : 'No'}`,
+          reason ? `Note: ${reason}` : null,
+          `Guest notified: ${notifyClient ? 'Yes' : 'No'}`,
           ``,
           `View in dashboard: https://cleanslateclub.co/admin`,
         ].filter(Boolean).join('\n'),
@@ -237,11 +287,11 @@ Deno.serve(async (req) => {
 
     return Response.json({
       success: true,
-      message: `Booking rescheduled to ${displayDate} at ${newStartTime}. Client ${notifyClient ? 'was' : 'was not'} notified.`,
+      message: `Booking moved to ${displayDate} at ${newStartTime}. Guest ${notifyClient ? 'was' : 'was not'} notified.`,
     });
 
   } catch (error) {
     console.error('rescheduleBooking error:', error);
-    return Response.json({ success: false, error: error.message }, { status: 500 });
+    return Response.json({ success: false, error: error?.message || 'Could not update booking schedule.' }, { status: 500 });
   }
 });
