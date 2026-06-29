@@ -15,9 +15,27 @@ const PAYMENT_BADGE = {
   unpaid:        'bg-coral/10 border-coral/30 text-coral',
   deposit_paid:  'bg-butter/15 border-butter/50 text-amber-700',
   checkout_sent: 'bg-blue-gray/15 border-blue-gray/40 text-blue-gray',
+  partially_paid:'bg-coral/10 border-coral/30 text-coral',
   paid:          'bg-sage/20 border-sage/60 text-green-700',
   refunded:      'bg-taupe/10 border-taupe/30 text-charcoal/40',
   disputed:      'bg-red-50 border-red-200 text-red-600',
+};
+
+const toNumber = (value, fallback = 0) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const getDepositCredit = (booking) => (
+  booking.deposit_status === 'paid' ? toNumber(booking.deposit_amount, 50) : 0
+);
+
+const getFinalTotal = (booking) => toNumber(booking.final_price, toNumber(booking.estimated_price_high, 0));
+
+const getBalanceDue = (booking) => {
+  const recordedBalance = Number(booking.final_balance_due);
+  if (Number.isFinite(recordedBalance)) return Math.max(0, recordedBalance);
+  return Math.max(0, getFinalTotal(booking) - getDepositCredit(booking));
 };
 
 export default function AdminPaymentsOS({ sidebarItem }) {
@@ -49,12 +67,16 @@ export default function AdminPaymentsOS({ sidebarItem }) {
   }, []);
 
   const pendingDeposits = bookings.filter(b => b.deposit_status === 'pending' && !['cancelled', 'archived'].includes(b.status));
-  const balancesDue = bookings.filter(b => ['unpaid', 'deposit_paid'].includes(b.payment_status) && b.status === 'completed');
+  const balancesDue = bookings.filter(b => (
+    b.status === 'completed' &&
+    ['unpaid', 'deposit_paid', 'partially_paid', 'checkout_sent'].includes(b.payment_status) &&
+    getBalanceDue(b) > 0
+  ));
   const pendingPayouts = payouts.filter(p => p.status === 'pending');
 
   const stats = [
     { label: 'Pending Deposits', value: pendingDeposits.length, amount: pendingDeposits.length * 50, color: 'bg-butter/20 border-butter/40' },
-    { label: 'Balances Due', value: balancesDue.length, amount: balancesDue.reduce((s, b) => s + (b.final_price || b.estimated_price_high || 0), 0), color: 'bg-coral/10 border-coral/30' },
+    { label: 'Balances Due', value: balancesDue.length, amount: balancesDue.reduce((s, b) => s + getBalanceDue(b), 0), color: 'bg-coral/10 border-coral/30' },
     { label: 'Pending Payouts', value: pendingPayouts.length, amount: pendingPayouts.reduce((s, p) => s + (p.total_payout || 0), 0), color: 'bg-sage/15 border-sage/40' },
     { label: 'Active Members', value: memberships.filter(m => m.status === 'active').length, amount: memberships.filter(m => m.status === 'active').length * 49, color: 'bg-blue-gray/10 border-blue-gray/30' },
   ];
@@ -93,9 +115,9 @@ export default function AdminPaymentsOS({ sidebarItem }) {
         ) : tab === 'deposits' ? (
           <BookingPaymentTable bookings={pendingDeposits} title="Pending Deposits" emptyMsg="No pending deposits." onViewBooking={setSelectedBooking} />
         ) : tab === 'balances' ? (
-          <BookingPaymentTable bookings={balancesDue} title="Balances Due" emptyMsg="No outstanding balances." onViewBooking={setSelectedBooking} />
+          <BookingPaymentTable bookings={balancesDue} title="Balances Due" emptyMsg="No outstanding balances." onViewBooking={setSelectedBooking} showBalance />
         ) : tab === 'invoices' ? (
-          <BookingPaymentTable bookings={bookings.filter(b => b.status === 'completed')} title="Completed Bookings / Invoices" emptyMsg="No completed bookings." onViewBooking={setSelectedBooking} />
+          <BookingPaymentTable bookings={bookings.filter(b => b.status === 'completed')} title="Completed Bookings / Invoices" emptyMsg="No completed bookings." onViewBooking={setSelectedBooking} showBalance />
         ) : tab === 'payouts' ? (
           <PayoutsTable payouts={payouts} />
         ) : tab === 'membership' ? (
@@ -118,7 +140,7 @@ export default function AdminPaymentsOS({ sidebarItem }) {
   );
 }
 
-function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking }) {
+function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking, showBalance = false }) {
   return (
     <div>
       <h3 className="font-heading text-base font-semibold text-charcoal mb-3">{title} <span className="font-body text-sm text-charcoal/40 font-light">({bookings.length})</span></h3>
@@ -129,7 +151,7 @@ function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking }) {
           <table className="w-full">
             <thead>
               <tr className="border-b border-taupe/10 bg-cream/50">
-                {['Guest', 'Service', 'Date', 'Estimate', 'Deposit', 'Payment', 'Actions'].map(h => (
+                {['Guest', 'Service', 'Date', showBalance ? 'Final / Balance' : 'Estimate', 'Deposit', 'Payment', 'Actions'].map(h => (
                   <th key={h} className="px-3 py-2.5 text-left font-body text-[10px] uppercase tracking-wider text-charcoal/40">{h}</th>
                 ))}
               </tr>
@@ -148,7 +170,14 @@ function BookingPaymentTable({ bookings, title, emptyMsg, onViewBooking }) {
                     <p className="font-body text-sm font-medium text-gray-700">{b.scheduled_date || '—'}</p>
                   </td>
                   <td className="px-3 py-2.5">
-                    <p className="font-body text-sm font-semibold text-gray-800">${b.estimated_price_low}–${b.estimated_price_high}</p>
+                    {showBalance ? (
+                      <div>
+                        <p className="font-body text-xs font-medium text-gray-500">Final ${getFinalTotal(b).toFixed(2)}</p>
+                        <p className="font-body text-sm font-semibold text-coral">Due ${getBalanceDue(b).toFixed(2)}</p>
+                      </div>
+                    ) : (
+                      <p className="font-body text-sm font-semibold text-gray-800">${b.estimated_price_low}–${b.estimated_price_high}</p>
+                    )}
                   </td>
                   <td className="px-3 py-2.5">
                     <span className="px-1.5 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-body bg-taupe/10 border-taupe/30 text-charcoal/50">
