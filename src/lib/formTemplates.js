@@ -87,9 +87,15 @@ export const buildFormResponse = ({ template = {}, answers = {}, guest = {}, boo
   submitted_at: new Date().toISOString(),
 });
 
+const hasRequiredAnswer = (value) => {
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'string') return value.trim().length > 0;
+  return value !== null && value !== undefined && value !== false;
+};
+
 export const validateFormAnswers = (template = {}, answers = {}) => {
   const missing = (template.fields || [])
-    .filter(field => field.required && !answers[field.key])
+    .filter(field => field.required && !hasRequiredAnswer(answers[field.key]))
     .map(field => field.label || field.key);
 
   return {
