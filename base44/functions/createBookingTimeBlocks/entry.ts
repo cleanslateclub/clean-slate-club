@@ -31,6 +31,12 @@ const minutesToTime = (totalMinutes: number) => {
   return `${hours12}:${String(minutes).padStart(2, '0')} ${meridiem}`;
 };
 
+const safeTravelMinutes = (value: unknown) => {
+  const parsed = Number(value ?? 20);
+  if (!Number.isFinite(parsed)) return 20;
+  return Math.max(0, Math.min(120, Math.round(parsed)));
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -60,16 +66,23 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, skipped: true, reason: 'Booking has no confirmed date/time.' });
     }
 
-    const travelMinutes = Number(booking.travel_buffer_minutes ?? 20);
+    const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
-    const travelEndTime = endMinutes === null ? endTime : minutesToTime(endMinutes + travelMinutes);
+
+    if (startMinutes === null || endMinutes === null || endMinutes <= startMinutes) {
+      return Response.json({ success: false, error: 'Booking has an invalid start/end time.' }, { status: 400 });
+    }
+
+    const travelMinutes = safeTravelMinutes(booking.travel_buffer_minutes);
+    const travelEndTime = minutesToTime(endMinutes + travelMinutes);
 
     const existing = await base44.asServiceRole.entities.TimeBlock.filter({ booking_id: bookingId }, 10);
     if (existing?.length) {
       return Response.json({ success: true, skipped: true, reason: 'TimeBlocks already exist for booking.', count: existing.length });
     }
 
-    const blocks = await base44.asServiceRole.entities.TimeBlock.bulkCreate([
+    const timestamp = new Date().toISOString();
+    const records = [
       {
         date,
         start_time: startTime,
@@ -85,9 +98,12 @@ Deno.serve(async (req) => {
         is_publicly_bookable: false,
         created_by_role: 'system',
         last_changed_by: 'createBookingTimeBlocks',
-        last_changed_at: new Date().toISOString(),
+        last_changed_at: timestamp,
       },
-      {
+    ];
+
+    if (travelMinutes > 0) {
+      records.push({
         date,
         start_time: endTime,
         end_time: travelEndTime,
@@ -103,9 +119,11 @@ Deno.serve(async (req) => {
         is_publicly_bookable: false,
         created_by_role: 'system',
         last_changed_by: 'createBookingTimeBlocks',
-        last_changed_at: new Date().toISOString(),
-      },
-    ]);
+        last_changed_at: timestamp,
+      });
+    }
+
+    const blocks = await base44.asServiceRole.entities.TimeBlock.bulkCreate(records);
 
     await base44.asServiceRole.entities.Booking.update(bookingId, {
       backend_repair_needed: false,
@@ -113,7 +131,7 @@ Deno.serve(async (req) => {
       admin_notes: booking.admin_notes || '',
     });
 
-    return Response.json({ success: true, bookingId, count: blocks?.length || 2 });
+    return Response.json({ success: true, bookingId, count: blocks?.length || records.length });
   } catch (error) {
     console.error('createBookingTimeBlocks error:', error);
     return Response.json({ success: false, error: error?.message || 'Could not create booking TimeBlocks.' }, { status: 500 });
