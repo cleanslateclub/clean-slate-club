@@ -179,7 +179,13 @@ export default function ProviderDashboard() {
           setBookings(prev => [...prev, event.data]);
         }
       } else if (event.type === 'update') {
-        setBookings(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
+        const isOwn = event.data?.provider_email === providerData.email;
+        const isAllowed = !event.data?.status || ALLOWED_BOOKING_STATUSES.includes(event.data?.status);
+        setBookings(prev => {
+          const exists = prev.some(b => b.id === event.id);
+          if (!exists && isOwn && isAllowed) return [...prev, { id: event.id, ...event.data }];
+          return prev.map(b => b.id === event.id ? { ...b, ...event.data } : b);
+        });
       } else if (event.type === 'delete') {
         setBookings(prev => prev.filter(b => b.id !== event.id));
       }
@@ -188,11 +194,18 @@ export default function ProviderDashboard() {
     const unsubBlocks = base44.entities.TimeBlock.subscribe((event) => {
       if (event.type === 'create') {
         setTimeBlocks(prev => {
-          if (!getProviderScopedTimeBlocks([event.data], bookings, providerData).length) return prev;
+          if (!getProviderScopedTimeBlocks([event.data], [], providerData).length) return prev;
           return [...prev, event.data];
         });
       } else if (event.type === 'update') {
-        setTimeBlocks(prev => prev.map(b => b.id === event.id ? { ...b, ...event.data } : b));
+        setTimeBlocks(prev => {
+          const existing = prev.find(b => b.id === event.id);
+          const nextBlock = { ...(existing || {}), id: event.id, ...event.data };
+          const isProviderBlock = getProviderScopedTimeBlocks([nextBlock], [], providerData).length > 0;
+          if (!isProviderBlock) return prev.filter(b => b.id !== event.id);
+          if (!existing) return [...prev, nextBlock];
+          return prev.map(b => b.id === event.id ? nextBlock : b);
+        });
       } else if (event.type === 'delete') {
         setTimeBlocks(prev => prev.filter(b => b.id !== event.id));
       }
@@ -202,7 +215,7 @@ export default function ProviderDashboard() {
       unsubBookings();
       unsubBlocks();
     };
-  }, [providerData, bookings]);
+  }, [providerData]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
@@ -257,6 +270,7 @@ export default function ProviderDashboard() {
       {activeVisitBooking && (
         <CompleteVisitWizard
           booking={activeVisitBooking}
+          providerData={providerData}
           onComplete={() => setActiveVisitBooking(null)}
           onClose={() => setActiveVisitBooking(null)}
         />
