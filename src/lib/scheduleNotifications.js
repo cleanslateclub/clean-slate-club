@@ -27,6 +27,8 @@ const compactTimeBlockSummary = (timeBlock = {}) => ({
   provider_email: timeBlock.provider_email,
 });
 
+const getErrorMessage = (error) => error?.message || String(error || 'Unknown error');
+
 export const buildScheduleChangePayload = ({
   eventType,
   source = 'admin',
@@ -49,13 +51,16 @@ export const buildScheduleChangePayload = ({
 
 export const notifyScheduleChange = async (payload) => {
   const normalizedPayload = buildScheduleChangePayload(payload);
+  const errors = [];
 
   // Preferred new backend function. It should notify admin for every schedule change,
   // and notify providers by email/SMS when their assigned schedule changes.
   try {
     await base44.functions.invoke('notifyScheduleChange', { data: normalizedPayload });
-    return { success: true, method: 'notifyScheduleChange' };
+    return { success: true, method: 'notifyScheduleChange', errors };
   } catch (primaryError) {
+    const message = getErrorMessage(primaryError);
+    errors.push({ method: 'notifyScheduleChange', message });
     console.warn('notifyScheduleChange function unavailable or failed:', primaryError);
   }
 
@@ -71,11 +76,13 @@ export const notifyScheduleChange = async (payload) => {
           note: normalizedPayload.note,
         },
       });
-      return { success: true, method: 'notifyTeamNewBooking' };
+      return { success: true, method: 'notifyTeamNewBooking', errors };
     }
   } catch (fallbackError) {
+    const message = getErrorMessage(fallbackError);
+    errors.push({ method: 'notifyTeamNewBooking', message });
     console.warn('Schedule change fallback notification failed:', fallbackError);
   }
 
-  return { success: false };
+  return { success: false, errors };
 };
