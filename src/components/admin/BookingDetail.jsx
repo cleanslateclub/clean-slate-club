@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { SERVICE_CONFIG } from '@/lib/bookingConfig';
-import { Phone, Mail, MapPin, FileText, Image, Trash2, MessageSquare, ExternalLink, Pencil, Check, X, RefreshCw } from 'lucide-react';
+import { Phone, Mail, MapPin, FileText, Image, MessageSquare, ExternalLink, Pencil, Check, X, RefreshCw } from 'lucide-react';
 import InvoiceModal from './InvoiceModal';
 import PhotoViewer from './PhotoViewer';
 import CancellationPolicyPanel from './CancellationPolicyPanel';
@@ -15,13 +15,12 @@ const STATUS_COLORS = {
 
 const STATUS_LIST = ['pending', 'confirmed', 'completed', 'cancelled', 'archived'];
 
-export default function BookingDetail({ booking, onUpdateStatus, onDelete, updatingId, onBookingUpdated }) {
+export default function BookingDetail({ booking, onUpdateStatus, updatingId, onBookingUpdated }) {
   const cfg = SERVICE_CONFIG[booking.service_category];
   const [showInvoice, setShowInvoice] = useState(false);
   const [showPhotos, setShowPhotos] = useState(false);
   const [adminNote, setAdminNote] = useState(booking.admin_notes || '');
   const [savingNote, setSavingNote] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Inline edit state
   const [editing, setEditing] = useState(false);
@@ -425,34 +424,6 @@ export default function BookingDetail({ booking, onUpdateStatus, onDelete, updat
         {['pending', 'confirmed'].includes(booking.status) && (
           <CancellationPolicyPanel compact />
         )}
-
-        {/* Delete */}
-        <div className="pt-2 border-t border-taupe/10">
-          {!confirmDelete ? (
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-1.5 text-xs font-body font-light text-charcoal/30 hover:text-red-400 transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> Delete booking
-            </button>
-          ) : (
-            <div className="flex items-center gap-3">
-              <p className="font-body text-xs text-charcoal/50 font-light">Delete permanently?</p>
-              <button
-                onClick={() => onDelete(booking.id)}
-                className="px-3 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-400 text-xs font-body font-light hover:bg-red-100 transition-colors"
-              >
-                Yes, delete
-              </button>
-              <button
-                onClick={() => setConfirmDelete(false)}
-                className="text-xs font-body font-light text-charcoal/40 hover:text-charcoal transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       {showInvoice && (
