@@ -17,7 +17,6 @@ export const buildSchedulePreview = ({ booking = {}, existingBlocks = [] } = {})
 };
 
 export const buildRescheduleFields = ({ booking = {}, date, startTime, endTime, actorName = 'Admin' } = {}) => ({
-  ...booking,
   status: 'rescheduled',
   original_scheduled_date: booking.original_scheduled_date || booking.scheduled_date,
   original_scheduled_start_time: booking.original_scheduled_start_time || booking.scheduled_start_time,
