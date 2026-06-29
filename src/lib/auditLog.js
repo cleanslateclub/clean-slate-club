@@ -52,8 +52,21 @@ export const writeAuditLog = async (entry) => {
   }
 };
 
+const normalizeInlineAuditLog = (existingLog = []) => {
+  if (Array.isArray(existingLog)) return existingLog;
+  if (typeof existingLog === 'string') {
+    try {
+      const parsed = JSON.parse(existingLog);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 export const appendInlineAuditEvent = (existingLog = [], entry = {}) => {
-  const log = Array.isArray(existingLog) ? existingLog : [];
+  const log = normalizeInlineAuditLog(existingLog);
   return [
     ...log,
     {
