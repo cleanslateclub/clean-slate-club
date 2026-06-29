@@ -4,6 +4,8 @@ export const COMPLIANCE_OVERRIDE_STATUSES = {
   revoked: 'revoked',
 };
 
+const normalize = (value = '') => String(value || '').trim().toLowerCase();
+
 export const getComplianceOverrides = (provider = {}) => {
   if (Array.isArray(provider.compliance_overrides)) return provider.compliance_overrides;
 
@@ -18,9 +20,11 @@ export const getComplianceOverrides = (provider = {}) => {
 export const serializeComplianceOverrides = (overrides = []) => JSON.stringify(overrides || []);
 
 export const isOverrideActive = (override = {}, now = new Date()) => {
-  if (!override || override.status !== COMPLIANCE_OVERRIDE_STATUSES.active) return false;
+  if (!override || normalize(override.status) !== COMPLIANCE_OVERRIDE_STATUSES.active) return false;
   if (!override.expires_at) return false;
-  return new Date(override.expires_at) >= now;
+  const expiresAt = new Date(override.expires_at);
+  if (Number.isNaN(expiresAt.getTime())) return false;
+  return expiresAt >= now;
 };
 
 export const getActiveComplianceOverrides = (provider = {}) => {
@@ -75,6 +79,6 @@ export const getProviderReadinessWithOverrides = ({ provider, checklist }) => {
     completeCount: completedOrOverridden.length,
     totalCount: checklist.length,
     missing,
-    readyWithOverrides: checklist.length > 0 && completedOrOverridden.length === checklist.length && provider?.status === 'active',
+    readyWithOverrides: checklist.length > 0 && completedOrOverridden.length === checklist.length && normalize(provider?.status) === 'active',
   };
 };
