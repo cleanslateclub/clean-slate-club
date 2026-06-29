@@ -25,6 +25,5 @@ export const summarizeVisitNotes = (answers = {}) => ([
 ].filter(Boolean).join('\n\n'));
 
 export const buildProviderNotesPatch = ({ booking = {}, answers = {} } = {}) => ({
-  ...booking,
   provider_notes: [booking.provider_notes, summarizeVisitNotes(answers)].filter(Boolean).join('\n\n'),
 });
