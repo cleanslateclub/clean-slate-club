@@ -58,7 +58,7 @@ export default function CompleteVisitWizard({ booking, providerData = null, onCo
         provider_notes: providerNotes.trim(),
         incident_occurred: incidentOccurred,
         incident_notes: incidentOccurred ? incidentNotes.trim() : '',
-        payment_status: balanceDue > 0 ? 'final_balance_due' : 'paid_in_full',
+        payment_status: balanceDue > 0 ? 'partially_paid' : 'paid',
         checkout_status: balanceDue > 0 ? 'ready_for_admin_checkout' : 'not_required',
         admin_notes: [
           booking.admin_notes || '',
