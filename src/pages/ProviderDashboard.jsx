@@ -10,7 +10,7 @@ import ProviderPayoutsPanel from '@/components/provider/ProviderPayoutsPanel';
 import { buildGoogleMapsDirectionsUrl, hasMapAddress } from '@/lib/mapLinks';
 import { notifyScheduleChange } from '@/lib/scheduleNotifications';
 
-const ALLOWED_BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
+const ALLOWED_BOOKING_STATUSES = ['pending', 'approved', 'confirmed', 'provider_assigned', 'in_progress', 'completed'];
 
 const getProviderScopedTimeBlocks = (blocks = [], bookings = [], providerData = {}) => {
   const providerEmail = providerData?.email;
@@ -120,6 +120,7 @@ export default function ProviderDashboard() {
 
         const parsed = JSON.parse(session);
         const providerId = parsed?.providerId;
+        const providerEmail = parsed?.providerEmail;
         const expiresAt = parsed?.expiresAt;
 
         if (!providerId || !expiresAt || Date.now() > expiresAt) {
@@ -129,7 +130,7 @@ export default function ProviderDashboard() {
         }
 
         const provider = await base44.entities.Provider.get(providerId);
-        if (!provider) {
+        if (!provider || provider.status !== 'active' || (providerEmail && provider.email !== providerEmail)) {
           localStorage.removeItem('providerSession');
           navigate('/team');
           return;
@@ -179,12 +180,15 @@ export default function ProviderDashboard() {
           setBookings(prev => [...prev, event.data]);
         }
       } else if (event.type === 'update') {
-        const isOwn = event.data?.provider_email === providerData.email;
-        const isAllowed = !event.data?.status || ALLOWED_BOOKING_STATUSES.includes(event.data?.status);
         setBookings(prev => {
-          const exists = prev.some(b => b.id === event.id);
-          if (!exists && isOwn && isAllowed) return [...prev, { id: event.id, ...event.data }];
-          return prev.map(b => b.id === event.id ? { ...b, ...event.data } : b);
+          const existing = prev.find(b => b.id === event.id);
+          const nextBooking = { ...(existing || {}), id: event.id, ...event.data };
+          const isOwn = nextBooking.provider_email === providerData.email;
+          const isAllowed = ALLOWED_BOOKING_STATUSES.includes(nextBooking.status);
+
+          if (!isOwn || !isAllowed) return prev.filter(b => b.id !== event.id);
+          if (!existing) return [...prev, nextBooking];
+          return prev.map(b => b.id === event.id ? nextBooking : b);
         });
       } else if (event.type === 'delete') {
         setBookings(prev => prev.filter(b => b.id !== event.id));
@@ -201,7 +205,7 @@ export default function ProviderDashboard() {
         setTimeBlocks(prev => {
           const existing = prev.find(b => b.id === event.id);
           const nextBlock = { ...(existing || {}), id: event.id, ...event.data };
-          const isProviderBlock = getProviderScopedTimeBlocks([nextBlock], [], providerData).length > 0;
+          const isProviderBlock = getProviderScopedTimeBlocks([nextBlock], bookings, providerData).length > 0;
           if (!isProviderBlock) return prev.filter(b => b.id !== event.id);
           if (!existing) return [...prev, nextBlock];
           return prev.map(b => b.id === event.id ? nextBlock : b);
@@ -215,7 +219,7 @@ export default function ProviderDashboard() {
       unsubBookings();
       unsubBlocks();
     };
-  }, [providerData]);
+  }, [providerData, bookings]);
 
   const handleTimeBlockUpdate = async (blockId, updates) => {
     try {
@@ -262,7 +266,7 @@ export default function ProviderDashboard() {
 
   const today = new Date().toISOString().split('T')[0];
   const todaysJobs = bookings.filter(b =>
-    b.scheduled_date === today && ['confirmed', 'pending'].includes(b.status)
+    b.scheduled_date === today && ['confirmed', 'provider_assigned', 'in_progress'].includes(b.status)
   );
 
   return (
