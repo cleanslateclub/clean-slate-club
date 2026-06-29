@@ -199,6 +199,139 @@ Rules:
 
 ---
 
+### `createFinalCheckoutSession`
+
+Used by: future admin checkout flow from `src/components/admin/os/BookingDrawer.jsx` or replacement checkout component.
+
+Purpose: Create a Stripe Checkout Session or Payment Link for the final post-service balance after admin review.
+
+Expected request:
+
+```json
+{
+  "data": {
+    "bookingId": "Booking record id",
+    "clientEmail": "guest@example.com",
+    "clientName": "Guest Name",
+    "lineItems": [
+      {
+        "description": "Hot Mess Express",
+        "quantity": 1,
+        "amount": 300
+      }
+    ],
+    "subtotal": 300,
+    "discountAmount": 0,
+    "discountNote": "Optional admin note",
+    "tipAmount": 0,
+    "depositCredit": 50,
+    "finalTotal": 300,
+    "finalBalanceDue": 250,
+    "checkoutNote": "Optional guest-facing note"
+  }
+}
+```
+
+Expected success response:
+
+```json
+{
+  "success": true,
+  "checkoutUrl": "https://checkout.stripe.com/...",
+  "stripeCheckoutSessionId": "cs_..."
+}
+```
+
+Expected failure response:
+
+```json
+{
+  "success": false,
+  "error": "Unable to create final checkout session."
+}
+```
+
+Rules:
+
+- Must reject missing `bookingId`.
+- Must reject `finalBalanceDue <= 0`; zero-balance visits should be marked paid without creating a Stripe checkout.
+- Must use cents server-side and never trust frontend math as the only source of truth.
+- Must write Stripe session id, checkout url, final balance, and checkout timestamp back to the Booking record or a linked Invoice record.
+- Must not charge automatically from the admin drawer without an explicit, verified payment flow.
+- Must be idempotent by booking id/status so duplicate button clicks do not create duplicate active checkout sessions.
+
+---
+
+### `recordManualPayment`
+
+Used by: future admin reconciliation tools.
+
+Purpose: Let admin record cash/Zelle/other non-Stripe payments against a booking without pretending Stripe collected the money.
+
+Expected request:
+
+```json
+{
+  "data": {
+    "bookingId": "Booking record id",
+    "amount": 250,
+    "method": "zelle",
+    "reference": "Optional reference id or note",
+    "recordedBy": "Admin",
+    "recordedAt": "ISO timestamp"
+  }
+}
+```
+
+Expected success response:
+
+```json
+{
+  "success": true,
+  "paymentStatus": "paid",
+  "finalBalanceDue": 0
+}
+```
+
+Rules:
+
+- Must append an audit/admin note.
+- Must not create a Stripe transaction record.
+- Must preserve the manual method and reference for reconciliation.
+- Must reduce balance due but never below zero.
+
+---
+
+### `stripeWebhook`
+
+Used by: Stripe webhook endpoint, not directly by frontend.
+
+Purpose: Reconcile deposit and final checkout payment events from Stripe back into Base44 records.
+
+Expected event types:
+
+```json
+[
+  "payment_intent.succeeded",
+  "payment_intent.payment_failed",
+  "checkout.session.completed",
+  "charge.refunded",
+  "charge.dispute.created"
+]
+```
+
+Rules:
+
+- Must verify the Stripe signature before parsing the event.
+- Must use Stripe metadata to resolve the Booking or Invoice record.
+- Must update deposit status and final payment status separately.
+- Must store Stripe ids for reconciliation.
+- Must be idempotent by Stripe event id.
+- Must append admin/audit notes for succeeded, failed, refunded, and disputed events.
+- Must not expose webhook secrets to the frontend.
+
+---
+
 ### `addBookingToCalendar`
 
 Used by: `src/pages/BookNow.jsx`
@@ -358,6 +491,8 @@ Do not treat this PR as launch-ready until:
 
 - The Base44 live function layer matches these contracts.
 - Booking creation works with deposit payment.
+- Final checkout creates one reconciled Stripe session or records a verified manual payment.
+- Stripe webhooks reconcile deposits, final balances, refunds, failures, and disputes idempotently.
 - Consults schedule only inside the confirmed consult window.
 - Admin and provider portal login work on mobile and desktop.
 - Provider compliance saves and reloads without schema errors.
