@@ -1,11 +1,13 @@
 import { buildGoogleMapsDirectionsUrl } from '@/lib/mapLinks';
 
+const normalizeEmail = (value = '') => String(value || '').trim().toLowerCase();
+
 export const PROVIDER_PORTAL_TABS = [
   { key: 'today', label: 'Today', description: 'Assigned visits for today.' },
   { key: 'upcoming', label: 'Upcoming', description: 'Future assigned visits.' },
   { key: 'availability', label: 'Availability', description: 'Provider schedule windows and time off.' },
   { key: 'completion', label: 'Visit Notes', description: 'Completion notes and follow-up needs.' },
-  { key: 'profile', label: 'Profile', description: 'Provider-safe profile details.' },
+  { key: 'profile', label: 'Provider-safe profile details.' },
 ];
 
 export const getProviderVisibleBooking = (booking = {}) => {
@@ -36,9 +38,11 @@ export const getProviderVisibleBooking = (booking = {}) => {
   };
 };
 
-export const filterProviderBookings = (bookings = [], providerEmail = '') => (
-  bookings.filter(booking => booking.provider_email === providerEmail)
-);
+export const filterProviderBookings = (bookings = [], providerEmail = '') => {
+  const targetEmail = normalizeEmail(providerEmail);
+  if (!targetEmail) return [];
+  return bookings.filter(booking => normalizeEmail(booking.provider_email) === targetEmail);
+};
 
 export const getProviderTodayBookings = (bookings = [], providerEmail = '', dateKey = new Date().toISOString().split('T')[0]) => (
   filterProviderBookings(bookings, providerEmail)
@@ -48,11 +52,11 @@ export const getProviderTodayBookings = (bookings = [], providerEmail = '', date
 
 export const getProviderUpcomingBookings = (bookings = [], providerEmail = '', dateKey = new Date().toISOString().split('T')[0]) => (
   filterProviderBookings(bookings, providerEmail)
-    .filter(booking => booking.scheduled_date >= dateKey && !['cancelled', 'archived'].includes(booking.status))
+    .filter(booking => booking.scheduled_date && booking.scheduled_date >= dateKey && !['cancelled', 'archived'].includes(booking.status))
     .sort((a, b) => `${a.scheduled_date || ''} ${a.scheduled_start_time || ''}`.localeCompare(`${b.scheduled_date || ''} ${b.scheduled_start_time || ''}`))
     .map(getProviderVisibleBooking)
 );
 
 export const canProviderEditBooking = (booking = {}, providerEmail = '') => {
-  return booking.provider_email === providerEmail && ['provider_assigned', 'confirmed', 'in_progress'].includes(booking.status);
+  return normalizeEmail(booking.provider_email) === normalizeEmail(providerEmail) && ['provider_assigned', 'confirmed', 'in_progress'].includes(booking.status);
 };
