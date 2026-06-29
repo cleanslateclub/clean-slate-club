@@ -14,11 +14,17 @@ export const LAUNCH_SERVICE_AREAS = [
   'Willow Grove',
 ];
 
-export const normalizeAddressText = (value = '') => String(value).toLowerCase().replace(/\s+/g, ' ').trim();
+export const normalizeAddressText = (value = '') => (
+  String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+);
 
 export const detectServiceArea = (address = '') => {
   const normalized = normalizeAddressText(address);
-  const matchedTown = LAUNCH_SERVICE_AREAS.find(town => normalized.includes(town.toLowerCase()));
+  const matchedTown = LAUNCH_SERVICE_AREAS.find(town => normalized.includes(normalizeAddressText(town)));
 
   if (matchedTown) {
     return {
