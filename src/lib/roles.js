@@ -62,8 +62,23 @@ export const canViewOwnPayouts = (user) => isAdmin(user) || isProvider(user);
  */
 export const sanitizeBookingForProvider = (booking) => {
   if (!booking) return null;
-  // Remove CEO-only fields
-  const { admin_notes, estimated_price_low, estimated_price_high, ...safe } = booking;
+  const {
+    admin_notes,
+    approval_notes,
+    final_price,
+    final_balance_due,
+    final_deposit_credit,
+    estimated_price_low,
+    estimated_price_high,
+    payment_status,
+    checkout_status,
+    deposit_status,
+    deposit_amount,
+    stripe_customer_id,
+    stripe_payment_intent_id,
+    payment_intent_id,
+    ...safe
+  } = booking;
   return safe;
 };
 
@@ -74,6 +89,9 @@ export const sanitizeBookingForGuest = (booking) => {
   if (!booking) return null;
   const {
     admin_notes,
+    approval_notes,
+    provider_notes,
+    incident_notes,
     // provider-internal fields that guests shouldn't see
     ...safe
   } = booking;
