@@ -64,7 +64,7 @@ export default function BookingActionsPanel({ booking, onUpdated }) {
     try {
       const patch = action.buildPatch(booking);
       const updated = await base44.entities.Booking.update(booking.id, patch);
-      onUpdated?.({ ...booking, ...patch, ...(updated || {}), id: booking.id });
+      onUpdated?.({ id: booking.id, ...patch, ...(updated || {}) });
       setMessage(`${action.label} saved.`);
     } catch (error) {
       console.error('Booking action failed:', error);
