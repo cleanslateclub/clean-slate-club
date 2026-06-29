@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { CreditCard, LockKeyhole, ReceiptText } from 'lucide-react';
 
 const centsToDollars = (value = 0) => `$${(Number(value || 0) / 100).toFixed(2)}`;
-const dollarsToCents = (value = '') => Math.round(Number(String(value).replace(/[^0-9.]/g, '') || 0) * 100);
+const dollarsToCents = (value = '') => {
+  const cleaned = String(value || '').replace(/[^0-9.-]/g, '');
+  const parsed = Number(cleaned);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.round(Math.max(0, parsed) * 100);
+};
 
 export default function CheckoutPreviewPanel({ invoice }) {
   const [manualSubtotal, setManualSubtotal] = useState('300.00');
