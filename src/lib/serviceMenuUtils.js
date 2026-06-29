@@ -25,6 +25,10 @@ export const findAddon = (services, serviceKey, addonKey) => {
   return service?.addons?.find(addon => addon.key === addonKey || addon.id === addonKey);
 };
 
+const uniqueAddonKeys = (addonKeys = []) => ([
+  ...new Set((addonKeys || []).map(key => String(key || '').trim()).filter(Boolean)),
+]);
+
 export const calculateServiceEstimateFromMenu = ({
   services = SERVICE_MENU_DEFAULTS,
   serviceKey,
@@ -37,7 +41,7 @@ export const calculateServiceEstimateFromMenu = ({
   const service = findService(normalized, serviceKey);
   if (!service) return null;
 
-  const selectedAddons = addonKeys
+  const selectedAddons = uniqueAddonKeys(addonKeys)
     .map(addonKey => findAddon(normalized, serviceKey, addonKey))
     .filter(Boolean);
 
